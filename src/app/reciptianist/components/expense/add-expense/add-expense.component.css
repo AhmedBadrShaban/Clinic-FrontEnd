@@ -1,0 +1,37 @@
+.file-upload-container {
+  display: flex;
+  align-items: center;
+}
+
+.file-upload-label i {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.file-upload-label {
+  position: relative;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: white;
+}
+
+.file-upload-input {
+  display: none;
+}
+
+.fa-cloud-upload-alt {
+  /* margin-left: 60%; */
+  
+  color: rgb(173, 169, 169);
+}
+/* Hide the default file input button */
+input[type="file"] {
+  display: none;
+}

@@ -1,0 +1,58 @@
+<nz-table
+  class="mx-auto"
+  style="width: 70%"
+  #dynamicTable
+  [nzData]="reservations"
+  [nzTableLayout]="'auto'"
+  [nzBordered]="true"
+  [nzOuterBordered]="true"
+  [nzSimple]="false"
+  [nzPaginationType]="paginationType"
+  [nzPaginationPosition]="position"
+  [nzFrontPagination]="true"
+  [nzShowPagination]="true"
+  [nzSize]="size"
+>
+  <thead>
+    <tr>
+      <th [nzAlign]="'center'">Doctor</th>
+      <th [nzAlign]="'center'">Service</th>
+      <th [nzAlign]="'center'">Payment Method</th>
+      <th [nzAlign]="'center'">Date</th>
+      <th [nzAlign]="'center'">Status</th>
+    </tr>
+  </thead>
+  <tbody style="background-color: #f2f2f2">
+    <ng-container *ngFor="let data of dynamicTable.data">
+      <tr  style="cursor: pointer" >
+        <td [nzAlign]="'center'">{{ data.doctorName }}</td>
+        <td [nzAlign]="'center'">{{ data.serviceName }}</td>
+        <td [nzAlign]="'center'" *ngIf="data.vodafoneCash != 0">VFCash : {{data.vodafoneCash}}</td>
+        <td [nzAlign]="'center'"  *ngIf="data.debit != 0" >Debit : {{data.debit}}</td>
+        <td [nzAlign]="'center'"  *ngIf="data.credit != 0">Credit : {{data.credit}}</td>
+        <td [nzAlign]="'center'" style="font-size: 12px">20/10/2024</td>
+        <td [nzAlign]="'center'" *ngIf="data.status == 0">
+          <a
+            style="width: 150px; cursor: default"
+            class="btn  btn-sm btn-info small-font"
+            >Waiting</a
+          >
+        </td>
+        <td [nzAlign]="'center'" *ngIf="data.status == 1">
+          <a
+            style="width: 150px; cursor: default"
+            class="btn  btn-sm btn-success small-font"
+            >Confirmed</a
+          >
+        </td>
+        <td [nzAlign]="'center'" *ngIf="data.status == 2">
+          <a
+            style="width: 150px; cursor: default"
+            class="btn  btn-sm btn-warning small-font"
+            >Canceled</a
+          >
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>

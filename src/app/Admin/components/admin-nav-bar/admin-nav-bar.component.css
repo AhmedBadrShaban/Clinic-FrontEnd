@@ -1,0 +1,31 @@
+.navv {
+  background-color: rgba(111, 45, 189, 0.64);
+  align-items: center;
+  display: flex;
+  height: 70px;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+.rightNav{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 21px;
+  cursor: pointer;
+}
+
+.imgDiv{
+
+}
+
+.NavItem{
+  font-size: 30px;
+}
+
+.active{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: underline;
+}

@@ -1,0 +1,10 @@
+
+.date_picker{
+  display: flex;
+  align-items: center;
+  .btn{
+    background-color: rgba(111,45,189,0.8) !important;
+    margin-left: 15%;
+    margin-bottom: 26px;
+  }
+}

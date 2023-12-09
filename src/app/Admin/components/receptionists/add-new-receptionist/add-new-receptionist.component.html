@@ -1,0 +1,182 @@
+<div
+  class="border rounded container shadow"
+  style="width: 600px; background-color: #f8f8f8; border: none"
+>
+  <form  [formGroup]="newRecpFm" (ngSubmit)="submit()">
+    <div class="row m-2 mt-4 justify-content-between">
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px"></i>
+            <label class="form-label w-100">Name</label>
+          </div>
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Name"
+            id="Name"
+            class="form-control shadow"
+          />
+          <div *ngIf="newRecpFm.get('name')?.hasError('required') && newRecpFm.get('name')?.touched">
+            Name is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px"></i>
+            <label class="form-label w-100">Email</label>
+          </div>
+          <input
+            type="text"
+            formControlName="email"
+            placeholder="Email"
+            id="Email"
+            class="form-control shadow"
+          />
+          <div *ngIf="newRecpFm.get('email')?.hasError('required') && newRecpFm.get('email')?.touched">
+            Email is required.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row m-2 mt-4 justify-content-between">
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px"></i>
+            <label class="form-label w-100">phoneNumber</label>
+          </div>
+          <input
+            type="text"
+            formControlName="phoneNumber"
+            placeholder="phoneNumber"
+            id="phoneNumber"
+            class="form-control shadow"
+          />
+          <div *ngIf="newRecpFm.get('phoneNumber')?.hasError('required') && newRecpFm.get('phoneNumber')?.touched">
+            Phone Number is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px"></i>
+            <label class="form-label w-100">NationalId</label>
+          </div>
+          <input
+            type="text"
+            formControlName="nationalId"
+            placeholder="nationalId"
+            id="nationalId"
+            class="form-control shadow"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row m-2 mt-4 justify-content-between">
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-house me-2 fs-4" style="margin-bottom: 7px"></i>
+            <label class="form-label w-100">Address</label>
+          </div>
+          <input
+            type="text"
+            formControlName="address"
+            placeholder="address"
+            id="address"
+            class="form-control shadow"
+          />
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-wallet me-2 fs-4" style="margin-bottom: 5px"></i>
+            <label class="form-label w-100">Salary</label>
+          </div>
+          <input
+            type="number"
+            formControlName="salary"
+            placeholder="salary"
+            id="salary"
+            class="form-control shadow"
+          />
+          <div *ngIf="newRecpFm.get('salary')?.hasError('required') && newRecpFm.get('salary')?.touched">
+            Salary is required.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row m-2 mt-4 justify-content-between">
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <!-- <i class="bi bi-house me-2 fs-4" style="margin-bottom:7px;"></i> -->
+            <label class="form-label w-100">Password</label>
+          </div>
+          <input
+            type="text"
+            formControlName="password"
+            placeholder="password"
+            id="password"
+            class="form-control shadow"
+          />
+          <div *ngIf="newRecpFm.get('password')?.hasError('required') && newRecpFm.get('password')?.touched">
+            password is required.
+          </div>
+        </div>
+
+
+      </div>
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px"></i>
+            <label class="form-label w-100">User Name</label>
+          </div>
+          <input
+            type="text"
+            formControlName="username"
+            placeholder="username"
+            id="username"
+            class="form-control shadow"
+          />
+          <div *ngIf="newRecpFm.get('username')?.hasError('required') && newRecpFm.get('username')?.touched">
+            Username is required.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
+      <button
+        type="submit"
+        style="
+          width: 160px;
+          height: 40px;
+          background-color: green;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+        "
+      >
+        Add Receptionist
+      </button>
+    </div>
+  </form>
+
+  <!-- <div class="text-danger">
+    <h3>To be Removed [For Test]:</h3>
+    <div>
+        Form Value: {{newRecpFm.value |json}}
+    </div>
+</div> -->
+</div>

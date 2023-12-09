@@ -1,0 +1,98 @@
+.Content{
+  height: 510px;
+  width: 590px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .Header{
+    padding: 6%;
+    font-size: 40px;
+    border-bottom: 2px solid #6F2DBD ;
+  }
+  .grid-item {
+    background-color: #e0e0e0;
+    padding: 10px;
+    text-align: center;
+  }
+  .grid-item-processed{
+    color: rgb(60, 179, 113);
+    padding: 10px;
+    text-align: center;
+  }
+  .grid-item-inProgress{
+    color: rgb(0, 149, 170 );
+    padding: 10px;
+    text-align: center;
+  }
+  .grid-item-waiting{
+    color: rgb(255, 155, 0);
+    padding: 10px;
+    text-align: center;
+  }
+
+  .header-Service{
+    display: flex;
+    display: flex;
+    width: 50%;
+    border: #701c8e 1px solid;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    border-radius: 44px;
+    padding: 0%;
+    margin: 5px;
+    gap: 54px;
+  }
+  .toggle-img{
+    background: transparent;
+  }
+
+  .row-service{
+    display: flex;
+    width: 46%;
+    justify-content: space-between;
+  }
+
+  .toggle-inn{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cell-data{
+    width: 33%;
+    text-align: center;
+    font-size: 15px;
+  }
+
+
+}
+tr,th,td{
+  padding: 15px;
+  border-collapse: collapse;
+}
+
+td{
+  text-align: center;
+}
+
+.inprogress{
+  color:orange;
+  font-weight:bold;
+}
+.confirmed{
+  color:green;
+  font-weight:bold;
+}
+.cancelled{
+  color:red;
+  font-weight:bold;
+}
+.waiting{
+  color:yellow;
+  font-weight:bold;
+}
+.done{
+  color:black;
+  font-weight:bold;
+}

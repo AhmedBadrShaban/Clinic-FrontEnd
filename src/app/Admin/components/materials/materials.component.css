@@ -1,0 +1,25 @@
+.navClass{
+  margin-top: 2%;
+  width: 80%;
+  height: 75px;
+  display: flex;
+  background-color: rgb(76, 44, 119);
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px;
+}
+.buttnAdd{
+  color: white;
+  margin-left: 10%;
+}
+.searchInput{
+  margin-right: 10%;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+
+.searchInput .form-control {
+  margin-right: 10px;
+}

@@ -1,0 +1,179 @@
+
+<div class="border  rounded container  shadow"
+    style="width:600px; background-color: #F8F8F8;border: none;">
+
+    <form  [formGroup]="newDoctorFm" (ngSubmit)="submit()">
+        <div class="row m-2 mt-4 justify-content-between">
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+                        <label class="form-label w-100">Name</label>
+                    </div>
+                    <input type="text" formControlName="doctorName" placeholder="Name" id="Name" class="form-control shadow" />
+
+                </div>
+
+            </div>
+
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px;"></i> -->
+                        <label class="form-label w-100">Email</label>
+                    </div>
+                    <input type="text" formControlName="email" placeholder="Email" id="Email" class="form-control shadow"  />
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row m-2 mt-4 justify-content-between">
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+                        <label class="form-label w-100">phone Number</label>
+                    </div>
+                    <input type="text" formControlName="phoneNumber" placeholder="phoneNumber" id="phoneNumber" class="form-control shadow" />
+
+                </div>
+
+            </div>
+
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
+                        <label class="form-label w-100">NationalId</label>
+                    </div>
+                    <input type="text" formControlName="nationalID" placeholder="nationalId" id="nationalId" class="form-control shadow"  />
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row m-2 mt-4 justify-content-between">
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+                        <label class="form-label w-100">Address</label>
+                    </div>
+                    <input type="text" formControlName="address" placeholder="address" id="address" class="form-control shadow"  />
+
+                </div>
+
+            </div>
+
+            <div class="col-5">
+              <div class="row">
+                <div class="d-flex align-items-center">
+                    <label class="form-label w-100">Gender</label>
+                </div>
+                <select   id="gender" class="form-select shadow">
+                    <option selected disabled>Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                 </select>
+            </div>
+            </div>
+        </div>
+        <div class="row m-2 mt-4 justify-content-between">
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+                        <label class="form-label w-100">Price Per Hour</label>
+                    </div>
+                    <input type="number" formControlName="pricePerHour" placeholder="hour" id="hour" class="form-control shadow"  />
+                </div>
+
+            </div>
+
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
+                        <label class="form-label w-100">Liser</label>
+                    </div>
+                     <select class="form-select shadow" id="laser" formControlName="laser">
+                        <option selected disabled>Choose </option>
+                        <option value="true" >Yes</option>
+                        <option value="false" >No</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row m-2 mt-4 justify-content-between">
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+                        <label class="form-label w-100">liser Cost</label>
+                    </div>
+                    <input type="number" formControlName="laserCost" placeholder="liserCost" id="liserCost" class="form-control shadow"  />
+
+                </div>
+
+            </div>
+
+            <div class="col-5">
+                <div class="row">
+                    <div class="d-flex align-items-center">
+                        <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
+                        <label class="form-label w-100">Pulses Percentage</label>
+                    </div>
+                    <input type="number" formControlName="pulsesPercentage" placeholder="pulsesPercentage" id="pulsesPercentage" class="form-control shadow"  />
+
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="row m-2 mt-4 justify-content-between">
+
+          <div class="col-5">
+            <div class="row">
+            <div class="d-flex align-items-center">
+                <!-- <i class="bi bi-house me-2 fs-4" style="margin-bottom:7px;"></i> -->
+                <label class="form-label w-100">Password</label>
+            </div>
+            <input  type="text" formControlName="password" placeholder="password" id="password" class="form-control shadow"  />
+            </div>
+          </div>
+
+          <div class="col-5">
+            <div class="row">
+            <div class="d-flex align-items-center">
+                <!-- <i class="bi bi-house me-2 fs-4" style="margin-bottom:7px;"></i> -->
+                <label class="form-label w-100">UserName</label>
+            </div>
+            <input  type="text" formControlName="userName" placeholder="user name" id="userName" class="form-control shadow"  />
+            </div>
+          </div>
+        </div>
+        <div class="mt-3 d-flex justify-content-center" style=" margin-bottom: 25px;">
+            <button type="submit"
+                style="width: 160px; height: 40px; background-color: green; color: #fff; border: none; border-radius: 4px;">Add
+                Doctor
+            </button>
+
+        </div>
+    </form>
+
+
+
+<!-- <div class="text-danger">
+    <h3>To be Removed [For Test]:</h3>
+    <div>
+        Form Value: {{newDoctorFm.value |json}}
+    </div>
+</div> -->
+

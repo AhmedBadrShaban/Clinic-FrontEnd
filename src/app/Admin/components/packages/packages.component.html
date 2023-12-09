@@ -1,0 +1,112 @@
+<div style="display: flex;justify-content: space-around;">
+  <div class="navClass">
+    <div class="buttnAdd" (click)="goToForm()">
+
+      <button (click)="openDialog()" class="btn btn-info" style="width: fit-content; height: 37px;">Add new package</button>
+
+    </div>
+    <div class="searchInput" >
+      <div class="col-6">
+        <input  class="form-control h-100 bg-light" id="material-search"
+        placeholder="search" type="search"
+        nz-input
+        [(ngModel)]="searchValue"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="onChange($event)"
+        [nzAutocomplete]="packagesAuto"
+      />
+      <nz-autocomplete [nzDataSource]="filteredData" #packagesAuto></nz-autocomplete>
+      </div>
+      <button class="btn btn-sm btn-info mx-2" (click)="search()">Search</button>
+      <a  class="text-decoration-underline" style="color: white;" (click)="clearSearch()">Clear</a>
+    </div>
+  </div>
+</div>
+
+<nz-table #nestedTable
+          [nzData]="packages"
+          [nzPageSize]="10"
+          class="mx-auto"
+          style="width: 55%; margin-top: 3%"
+          #dynamicTable
+          [nzTableLayout]="'auto'"
+          [nzBordered]="true"
+          [nzOuterBordered]="true"
+          [nzSimple]="false"
+          [nzPaginationType]="paginationType"
+          [nzPaginationPosition]="position"
+          [nzFrontPagination]="true"
+          [nzShowPagination]="true"
+          [nzSize]="size"
+>
+  <thead>
+  <tr>
+    <th [nzAlign]="'center'">Type</th>
+    <th [nzAlign]="'center'">Name</th>
+    <th [nzAlign]="'center'">Cost</th>
+    <th [nzAlign]="'center'">Points</th>
+    <th [nzAlign]="'center'">Valid Dayes</th>
+    <th [nzAlign]="'center'">Status</th>
+    <th [nzAlign]="'center'"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <ng-template ngFor let-data [ngForOf]="nestedTable.data">
+    <tr>
+      <td [nzAlign]="'center'" *ngIf="data.services.length > 0" [(nzExpand)]="data.expand">Service</td>
+      <td [nzAlign]="'center'" *ngIf="data.services.length == 0" >Points</td>
+      <td [nzAlign]="'center'">{{ data.packageName }}</td>
+      <td [nzAlign]="'center'">{{ data.packageCost }}</td>
+      <td [nzAlign]="'center'">{{ data.numberOfPoints }}</td>
+      <td [nzAlign]="'center'">{{ data.validatedDays }}</td>
+      <td [nzAlign]="'center'">
+        <a
+          *ngIf="data.isActive"
+          style="width: 120px; cursor:pointer"
+          class = 'btn  btn-sm btn-success  small-font'
+          (click)="switchStatus(data.packageId)">
+          Active
+         </a>
+        <a
+          *ngIf="!data.isActive"
+          style="width: 120px; cursor: pointer"
+          class = 'btn  btn-sm  btn-warning small-font'
+          (click)="switchStatus(data.packageId)"
+        >
+        Not Active
+         </a>
+      </td>
+      <td [nzAlign]="'center'"
+          (click)="removeService(data.packageId)"
+      >
+        <img src="../../../../assets/7347206.png" height="30" width="30"/></td>
+    </tr>
+    <tr  *ngIf="data.services.length > 0" [nzExpand]="!data.expand">
+      <nz-table
+        #innerTable
+       [nzTableLayout]="'auto'"
+       [nzBordered]="true"
+       [nzOuterBordered]="true"
+       [nzSimple]="true"
+         [nzFrontPagination]="true"
+        [nzSize]="'small'"
+       [nzData]="data.services"
+       [nzShowPagination]="false">
+       <thead>
+       <tr>
+         <th [nzAlign]="'center'" >Service Name</th>
+         <th  [nzAlign]="'center'" >Sessions</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr style="background-color: rgba(111, 45, 189, 0.24);" *ngFor="let data of innerTable.data">
+         <td [nzAlign]="'center'" >{{ data.serviceName }}</td>
+          <td [nzAlign]="'center'">  {{data.sessions}}  </td>
+        </tr>
+       </tbody>
+     </nz-table>
+     </tr>
+  </ng-template>
+  </tbody>
+</nz-table>
+

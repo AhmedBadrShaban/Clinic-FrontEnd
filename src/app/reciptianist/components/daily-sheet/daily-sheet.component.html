@@ -1,0 +1,86 @@
+<div class="mx-auto my-2 d-flex justify-content-between overflow-hidden" style="width: 90%; height: 50px;">
+    <div class="h-100">
+        <mat-form-field>
+            <mat-label>Room</mat-label>
+            <mat-select [(ngModel)]="selectedRoom"  (ngModelChange)="onRoomChange()">
+                <mat-option value="laser 1">laser room</mat-option>
+                <mat-option value="skin">skin room</mat-option>
+             </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="h-100">
+        <mat-form-field>
+            <mat-label>Reciptianist</mat-label>
+            <mat-select [(ngModel)]="selectedReciptianist" (ngModelChange)="onDoctorChange()">
+                <mat-option value="Dr. Smith">Dr. Smith</mat-option>
+                <mat-option value="John Snow">John Snow</mat-option>
+                <!-- <mat-option value="Reciptianist 3">Reciptianist 3</mat-option> -->
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="h-100">
+        <mat-form-field>
+            <mat-label>Choose a date</mat-label>
+            <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <div class="h-100">
+      <button mat-button class="custom-gray-button" (click)="clearFilter()">Clear Filters</button>
+  </div>
+</div>
+
+<nz-table
+class="mx-auto"  style="width:90%"
+#dynamicTable
+[nzScroll]="{ x: scrollX, y: scrollY }"
+[nzData]="dailyInfo"
+[nzTableLayout]="settingValue.tableLayout"
+[nzBordered]="settingValue.bordered"
+[nzOuterBordered]	=true
+[nzSimple]="settingValue.simple"
+[nzLoading]="settingValue.loading"
+[nzPaginationType]="settingValue.paginationType"
+[nzPaginationPosition]="settingValue.position"
+[nzFrontPagination]="settingValue.pagination"
+[nzShowPagination]="settingValue.pagination"
+[nzSize]="settingValue.size"
+>
+<thead>
+  <tr *ngIf="settingValue.header"  style="cursor: pointer;">
+    <th [nzAlign]="'center'">Patient</th>
+    <th [nzAlign]="'center'">Payment Type</th>
+    <th [nzAlign]="'center'">What She Will Do</th>
+    <th [nzAlign]="'center'">pulses</th>
+    <th [nzAlign]="'center'">cash</th>
+    <th [nzAlign]="'center'">visa</th>
+    <th [nzAlign]="'center'">debit</th>
+    <th [nzAlign]="'center'">total</th>
+
+  </tr>
+</thead>
+<tbody style="background-color: #F2F2F2;">
+  <ng-container *ngFor="let data of dynamicTable.data">
+    <tr >
+      <td [nzLeft]="fixedColumn" [nzAlign]="'center'">{{ data.patientName }}</td>
+      <td [nzAlign]="'center'" [nzAlign]="'center'">{{ data.paymentType }}</td>
+      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.whatSheWillDo }}</td>
+      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.startPulse -  data.endPulse }}</td>
+      <td  [nzAlign]="'center'">{{ data.cash }}</td>
+      <td  [nzAlign]="'center'">{{ data.visa }}</td>
+      <td  [nzAlign]="'center'">{{ data.debit }}</td>
+      <td  [nzAlign]="'center'">{{ data.totalMoney }}</td>
+    </tr>
+  </ng-container>
+</tbody>
+</nz-table>
+<!-- <div class="text-danger">
+    <h3>To be Removed [For Test]:</h3>
+    <div>
+        Selected room: {{ selectedRoom|json }} <br>
+        Selected Reciptianist: {{ selectedReciptianist | json }} <br>
+
+        Selected Date: {{ selectedDate | date }}
+    </div>
+</div> -->

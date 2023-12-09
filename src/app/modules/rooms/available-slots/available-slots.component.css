@@ -1,0 +1,13 @@
+.whole{
+    background-color: rgba(82, 196, 26, 0.75);
+    width: 80%;
+    height: 13%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5%;
+    padding: 5%;
+
+    .Slot{
+    }
+}

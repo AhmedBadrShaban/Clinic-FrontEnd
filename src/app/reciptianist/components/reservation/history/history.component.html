@@ -1,0 +1,42 @@
+<nz-table
+  class="mx-auto"
+  style="width: 80%"
+  #dynamicTable
+  [nzData]="history"
+  [nzTableLayout]="'auto'"
+  [nzBordered]="true"
+  [nzOuterBordered]="true"
+  [nzSimple]="false"
+  [nzPaginationType]="paginationType"
+  [nzPaginationPosition]="position"
+  [nzFrontPagination]="true"
+  [nzShowPagination]="true"
+  [nzSize]="size"
+>
+  <thead>
+    <tr style="font-size: 18px">
+      <th [nzAlign]="'center'">Date</th>
+      <th [nzAlign]="'center'">Treatment Area</th>
+      <th [nzAlign]="'center'">Pulses</th>
+      <th [nzAlign]="'center'">Flunce 1</th>
+      <th [nzAlign]="'center'">Flunce 2</th>
+      <th [nzAlign]="'center'">Spot</th>
+      <th [nzAlign]="'center'">Doctor</th>
+      <th [nzAlign]="'center'">Notes</th>
+    </tr>
+  </thead>
+  <tbody style="background-color: #f2f2f2">
+    <ng-container *ngFor="let data of dynamicTable.data">
+      <tr  style="cursor: pointer; font-size: 16px" (click)="openModal(data.patient_id)">
+        <td [nzAlign]="'center'">{{ data.data  }}</td>
+        <td [nzAlign]="'center'">{{ data.service }}</td>
+        <td [nzAlign]="'center'">{{ data.pulse }}</td>
+        <td [nzAlign]="'center'">{{ data.fluence1 }}</td>
+        <td [nzAlign]="'center'">{{ data.fluence2 }}</td>
+        <td [nzAlign]="'center'">{{ data.spot }}</td>
+        <td [nzAlign]="'center'">Doctor Name</td>
+        <td [nzAlign]="'center'">{{ data.note }}</td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>

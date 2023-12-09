@@ -1,0 +1,37 @@
+.whole{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+}
+
+.container {
+    display: grid;
+    align-content: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 40px 25px;
+    position: absolute;
+    grid-template-areas:
+    ". . . ."
+    ". . . ."
+    ". . . .";
+}
+.rectangle{
+    display: flex;
+    text-align: center;
+    border-radius: 10px;
+    background: rgba(111, 45, 189, 0.68);
+    color: white;
+    font-size: 43px;
+    font-weight: 500;
+    height: 105px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.rectangle:hover {
+    transform: scale(1.1); /* Zoom in effect */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); /* Box shadow on hover */
+}

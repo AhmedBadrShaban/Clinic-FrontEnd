@@ -1,0 +1,21 @@
+<div class="content">
+
+  <!-- <app-auto-complete class="picker" style="padding-top: 4%;"></app-auto-complete> -->
+  <!--add a condition if the auto complete comp return true show the following
+  block, otherwise we will print the latest reservations-->
+  <nz-tabset nzCentered style="padding-top: 2%">
+    <nz-tab nzTitle="Main info">
+      <!-- <app-patient-info></app-patient-info> -->
+      <!-- <app-after-work></app-after-work> -->
+    </nz-tab>
+    <nz-tab id="history" nzTitle="History">
+      <app-history></app-history>
+    </nz-tab>
+
+    <nz-tab id="AfterWork" nzTitle="After work">
+      <app-after-work></app-after-work>
+    </nz-tab>
+
+  </nz-tabset>
+
+</div>

@@ -1,0 +1,36 @@
+.grid-events {
+  display: grid;
+  width: 80%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  .grid-item {
+    background-color: #e0e0e0;
+    padding: 10px;
+    text-align: center;
+  }
+  .grid-item-processed{
+    background-color: rgb(60, 179, 113,0.3);
+    padding: 10px;
+    text-align: center;
+  }
+  .grid-item-inProgress{
+    background-color: rgb(0, 149, 170 , 0.3);
+    padding: 10px;
+    text-align: center;
+  }
+  .grid-item-waiting{
+    background-color: rgb(255, 155, 0 , 0.3);
+    padding: 10px;
+    text-align: center;
+  }
+}
+
+.grid-item-inProgress:hover {
+  transform: scale(0.9); /* Zoom in effect */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Box shadow on hover */
+}
+.flex-all{
+  display: flex;
+  justify-content: space-between;
+  width: 85%;
+}

@@ -1,0 +1,84 @@
+<div style="display: flex;justify-content: space-around;">
+    <div class="navClass">
+        <div class="buttnAdd" (click)="goToForm()">
+
+            <button (click)="openDialog()" class="btn btn-info" style="width: 150px; height: 37px;">Add new Doctor</button>
+
+        </div>
+        <div class="searchInput" >
+          <div class="col-6">
+            <input  class="form-control h-100 bg-light" id="material-search"
+            placeholder="search" type="search"
+            nz-input
+            [(ngModel)]="searchValue"
+            [ngModelOptions]="{standalone: true}"
+            (ngModelChange)="onChange($event)"
+            [nzAutocomplete]="doctorsAuto"
+          />
+          <nz-autocomplete [nzDataSource]="filteredData" #doctorsAuto></nz-autocomplete>
+          </div>
+          <button class="btn btn-sm btn-info mx-2" (click)="search()">Search</button>
+          <a  class="text-decoration-underline" style="color: white;" (click)="clearSearch()">Clear</a>
+        </div>
+    </div>
+</div>
+
+<nz-table
+        class="mx-auto"
+        style="width: 75%; margin-top: 3%"
+        #dynamicTable
+        [nzData]="doctors"
+        [nzTableLayout]="'auto'"
+        [nzBordered]="true"
+        [nzOuterBordered]="true"
+        [nzSimple]="false"
+        [nzPaginationType]="paginationType"
+        [nzPaginationPosition]="position"
+        [nzFrontPagination]="true"
+        [nzShowPagination]="true"
+        [nzSize]="size"
+>
+    <thead>
+    <tr style="font-size: 18px">
+        <th [nzAlign]="'center'">Name</th>
+        <th [nzAlign]="'center'">Phone Number</th>
+        <th [nzAlign]="'center'">Hours</th>
+        <th [nzAlign]="'center'">Liser</th>
+        <th [nzAlign]="'center'">status</th>
+    </tr>
+    </thead>
+    <tbody style="background-color: #f2f2f2">
+    <ng-container *ngFor="let data of dynamicTable.data">
+        <tr  style="cursor: pointer; font-size: 16px" >
+          <!--  -->
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId , data)">{{ data.doctorName  }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId , data)">{{ data.phoneNumber  }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId , data)">{{ data.pricePerHour }}</td>
+            <td *ngIf="data.isLaser" [nzAlign]="'center'" >
+                <img src="../../../../assets/5289675.png" height="35" width="35"/>
+            </td>
+            <td *ngIf="!data.isLaser" [nzAlign]="'center'">
+                <img src="../../../../assets/image_processing20210717-12803-1pmcnvj.png" height="32" width="32"/>
+            </td>
+            <td [nzAlign]="'center'">
+              <a
+              *ngIf="data.isActive"
+              style="width: 120px; cursor:pointer"
+              class = 'btn  btn-sm btn-success  small-font'
+              (click)="switchStatus(data.userName)">
+              Active
+             </a>
+            <a
+              *ngIf="!data.isActive"
+              style="width: 120px; cursor: pointer"
+              class = 'btn  btn-sm  btn-warning small-font'
+              (click)="switchStatus(data.userName)"
+            >
+            Not Active
+             </a>
+            </td>
+        </tr>
+    </ng-container>
+    </tbody>
+</nz-table>
+

@@ -1,0 +1,74 @@
+<div class="filter" style="height: 80px;color:white; font-size: large; font-size: 25px;padding: 30px;  background-color: #31263E; border-radius: 30px; margin-top: 20px;">
+    Cover Sheet
+    <div class="h-70" style="margin-left: 73%; margin-top: -4%;">
+        <mat-form-field>
+          <mat-label>Choose a date</mat-label>
+          <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+</div>
+<nz-table 
+class="mx-auto"  style="width:90%"
+#dynamicTable
+[nzScroll]="{ x: scrollX, y: scrollY }"
+[nzData]="listOfData"
+[nzTableLayout]="settingValue.tableLayout"
+[nzBordered]="settingValue.bordered"
+[nzOuterBordered]	=true
+[nzSimple]="settingValue.simple"
+[nzLoading]="settingValue.loading"
+[nzPaginationType]="settingValue.paginationType"
+[nzPaginationPosition]="settingValue.position"
+[nzFrontPagination]="settingValue.pagination"
+[nzShowPagination]="settingValue.pagination"
+[nzSize]="settingValue.size"
+>
+<thead>
+  <!-- <tr *ngIf="settingValue.header"  style="cursor: pointer;">
+    <th [nzAlign]="'center'">Date</th>
+    <th [nzAlign]="'center'">User</th>
+    <th [nzAlign]="'center'">Profit</th>
+    <th [nzAlign]="'center'">Expense</th>
+    <th [nzAlign]="'center'">Net</th>
+  </tr> -->
+</thead>
+<tbody style="background-color: #F2F2F2;">
+  <ng-container *ngFor="let data of dynamicTable.data">
+    <tr >
+      <th [nzAlign]="'center'">Date</th>
+      <td [nzLeft]="fixedColumn" [nzAlign]="'center'">{{ data.Date }}</td>
+    </tr>
+    <tr>
+        <th [nzAlign]="'center'">User</th>
+        <td [nzAlign]="'center'" [nzAlign]="'center'">{{ data.User}}</td>
+    </tr>
+    <tr>
+        <th [nzAlign]="'center'">Profit</th>
+        <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.Profit }}</td>
+      
+    </tr>
+    <tr>
+        <th [nzAlign]="'center'">Expense</th>
+        <td  [nzAlign]="'center'">{{ data.Expense }}</td>
+    </tr>
+    <tr>
+        <th [nzAlign]="'center'">Net</th>
+       
+        <td  [nzAlign]="'center'">{{ data.Net }}</td>
+    </tr>
+   
+      <!-- <br> -->
+      
+      
+    <!-- <div style="color: #31263E; height: 20px;"></div> -->
+  </ng-container>
+  
+</tbody>
+</nz-table>
+<button class="mt-3 justify-content-center" type="submit"
+        style="margin-bottom: 30px;margin-left: 43%; width: 130px; height: 30px; background-color: green; color: #fff; border: none; border-radius: 4px;">
+        Print
+    </button>
+

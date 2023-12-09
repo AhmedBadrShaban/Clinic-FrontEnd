@@ -1,0 +1,12 @@
+.smaller-mat-form-field {
+  height: 80px;
+  width:200px;
+  font-size: 12px;
+  padding: 0px;
+  color: black;
+ }
+.smaller-mat-form-field  mat-label, .custom-mat-form-field .mat-select-value-text {
+  color: black;}
+  .mat-mdc-text-field-wrapper.mdc-text-field.ng-tns-c1205077789-1.mdc-text-field--filled {
+    background-color: white;
+}

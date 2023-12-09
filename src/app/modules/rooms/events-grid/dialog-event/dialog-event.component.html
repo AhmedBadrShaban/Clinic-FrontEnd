@@ -1,0 +1,63 @@
+<!--<div>{{data.DoctorName}}</div>-->
+<div class="Content">
+  <div class="Header">
+    Reservation Information
+  </div>
+  <div class="Content">
+    <table class="Table">
+      <tr>
+        <th scope="col"> Patient Name</th>
+        <td> {{data.patientName}}</td>
+      </tr>
+      <tr>
+        <th>Patient Phone Number</th>
+        <td>{{data.patientPhone}}</td>
+      </tr>
+      <tr>
+        <th> Doctor Name </th>
+        <td> {{data.doctorName}} </td>
+      </tr>
+
+      <tr>
+        <th>Date Of Reservation</th>
+        <td>{{data.reservationDate | date: 'dd/MM/yyyy'}}</td>
+      </tr>
+
+      <tr>
+      <tr>
+        <th>Time</th>
+        <td> From [ {{ data.reservationStart.slice(0,5)}}] - To [{{data.reservationEnd.slice(0,5)}} ]</td>
+      </tr>
+
+      <tr>
+        <th>Status</th>
+        <td [ngClass]="{
+          'inprogress': data.status === 'In progress',
+          'confirmed': data.status === 'confirmed',
+          'cancelled': data.status === 'cancelled'
+        }">
+          {{ data.status }}</td>
+      </tr>
+    </table>
+
+    <div class="header-Service">
+        Reserved Services
+        <img *ngIf="!toggle" (click)="changeToogle()" class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40"/>
+        <img *ngIf="toggle" (click)="changeToogle()" class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40" style="transform: rotate(180deg);"/>
+    </div>
+    <div *ngIf = "toggle" class="toggle-inn" >
+
+      <div *ngFor="let service of data.services" class="row-service">
+         Service Name:<span>{{service}}</span>
+      </div>
+      </div>
+  </div>
+ <div *ngIf="data.status != 'cancelled'">
+   <button mat-raised-button style="background-color: red !important; margin-right: 5px;" (click)="chengeReservationStatus(data.reservationId , 'cancelled')">Cancel Reservation</button>
+   <button mat-raised-button style="background-color:orange !important;" (click)="chengeReservationStatus(data.reservationId , 'confirmed')">Confirm Reservation</button>
+</div>
+
+</div>
+
+<!--<button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>-->
+

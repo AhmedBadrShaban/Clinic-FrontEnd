@@ -1,0 +1,57 @@
+<div class="content">
+  <div *ngIf="userType!='Doctor'" class="w-75 mx-auto">
+    <div class="row" style="height: 50px;">
+      <div class="col-6">
+        <input  class="form-control h-100 bg-light" id="patient-number"
+        placeholder="search" type="search"
+        nz-input
+        [(ngModel)]="searchValue"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="onChange($event)"
+        [nzAutocomplete]="PatientAuto"
+      />
+      <nz-autocomplete [nzDataSource]="filteredData" #PatientAuto></nz-autocomplete>
+      </div>
+     <div class="col-2">
+      <button (click)="search()"  type="button" class="btn btn-info h-100">
+        <i class="bi bi-search"></i>
+      </button>
+     </div>
+
+     <div class="col-4" *ngIf="userType=='Admin'" >
+      <div class="ms-auto">
+        <button (click)="openDialog()" class="btn btn-info" style="width: 200px; height: 50px;"> <span class="bi bi-plus"></span> New Patient</button>
+      </div>
+     </div>
+    </div>
+  </div>
+
+  <nz-tabset nzCentered style="padding-top: 2%">
+
+    <nz-tab *ngIf="userType=='Admin'" nzTitle="Idle Patients">
+      <app-idle-patients></app-idle-patients>
+    </nz-tab>
+    <nz-tab *ngIf="userType!='Doctor'"  nzTitle="Main Info">
+      <app-patient-info [info]="PatientInfo"></app-patient-info>
+    </nz-tab>
+    <nz-tab id="history" nzTitle="History">
+      <app-history [history]="patientHistory"></app-history>
+    </nz-tab>
+    <nz-tab  *ngIf="userType!='Doctor'" id="packages" nzTitle="Packages">
+      <app-packages [packages]="patientPackages"></app-packages>
+    </nz-tab>
+    <nz-tab  *ngIf="userType!='Doctor'" id="points" nzTitle="Points">
+      <app-points [pointsHistory]="pointsHistory" [totalIn]="totalIn" [totalOut]="totalOut"></app-points>
+    </nz-tab>
+    <nz-tab  *ngIf="userType!='Doctor'" nzTitle="Reservations">
+      <app-reservations [reservations]="patientReservations"> </app-reservations>
+    </nz-tab>
+    <nz-tab  *ngIf="userType!='Doctor'" nzTitle="Payment History">
+      <!-- <app-reservations [reservations]="patientReservations"> </app-reservations> -->
+    </nz-tab>
+    <nz-tab *ngIf="userType=='Doctor'" nzTitle="After Work">
+      <!-- <app-idle-patients></app-idle-patients> -->
+    </nz-tab>
+  </nz-tabset>
+
+</div>

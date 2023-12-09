@@ -1,0 +1,155 @@
+<div
+  class="border rounded container shadow"
+  style="width: 600px; background-color: #f8f8f8; margin-top: 10px"
+>
+  <form [formGroup]="reservationFm" (ngSubmit)="submit()">
+    <div class="row m-2 justify-content-between">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px"></i>
+        <label for="patient-number" class="form-label w-100 ">Patient Number</label><br>
+        </div>
+        <input class="form-select" id="patient-number"
+        placeholder="Type Patient's Phone Number"
+        formControlName="patientPhone"
+        nz-input
+        [(ngModel)]="patientphone"
+         (ngModelChange)="onChange($event)"
+        [nzAutocomplete]="PatientAuto"
+      />
+      <nz-autocomplete [nzDataSource]="filteredNumbers" #PatientAuto></nz-autocomplete>
+    </div>
+    <div class="row m-2 mt-3 justify-content-between">
+      <div class="d-flex align-items-center">
+        <img
+          src="assets\doctor.png"
+          alt=""
+          style="
+            width: 30px;
+            height: 25px;
+            margin-bottom: 7px;
+            margin-right: 5px;
+          "
+        />
+      <label for="patient-number" class="form-label w-100 ">Doctor Name</label><br>
+      </div>
+      <input class="form-select" id="patient-number"
+      placeholder="Type Doctor Name "
+      formControlName="doctorName"
+      nz-input
+      [(ngModel)]="doctorName"
+       (ngModelChange)="onChange($event)"
+      [nzAutocomplete]="doctor"
+    />
+    <nz-autocomplete [nzDataSource]="FilterdNames" #doctor></nz-autocomplete>
+    </div>
+    <div
+      class="d-flex mt-3 align-items-center"
+      style="margin-left: 24px; margin-bottom: -14px"
+    >
+      <i class="bi bi-list-task me-1 fs-3" style="margin-bottom: 7px"></i>
+      <label class="form-label w-100">Service</label>
+    </div>
+    <div
+      formArrayName="service"
+      class="row m-2 justify-content-between"
+      *ngFor="let service of Services.controls; let i = index"
+    >
+      <div>
+        <select
+          class="form-select shadow"
+          id="select-options"
+          [formControlName]="i"
+        >
+          <option value="">Select Service</option>
+          <option
+            *ngFor="let service of AllServices"
+            [value]="service"
+          >
+            {{ service }}
+          </option>
+        </select>
+      </div>
+
+      <button
+        type="button"
+        style="
+          width: 500px;
+          margin-top: 10px;
+          margin-left: 30px;
+          height: 30px;
+          background-color: #adb3bd;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+        "
+        (click)="addService($event)"
+      >
+        Add Service
+      </button>
+    </div>
+
+    <div class="row m-2 mt-4 justify-content-between">
+      <div class="col-5">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <label class="form-label w-100">From</label>
+          </div>
+          <input
+            type="time"
+            formControlName="start"
+            id="from"
+            class="form-control shadow"
+            name="From"
+          />
+        </div>
+        <div class="row" style="margin-top: 8px">
+          <div class="d-flex align-items-center">
+            <label class="form-label w-100">To</label>
+          </div>
+          <input
+            type="time"
+            formControlName="end"
+            id="from"
+            class="form-control shadow"
+            name="to"
+          />
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-card-text me-2 fs-4" style="margin-bottom: 5px"></i>
+          <label class="form-label w-100">Note</label>
+        </div>
+        <textarea
+          id="note"
+          rows="4"
+          placeholder="Note"
+           class="form-control shadow"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
+      <button
+        type="submit"
+        style="
+          width: 180px;
+          height: 40px;
+          background-color: green;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+        "
+      >
+        Create Reservation
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- <div class="text-danger">
+    <h3>To be Removed [For Test]:</h3>
+    <div>
+        Form Value: {{reservationFm.value |json}}
+    </div>
+</div> -->

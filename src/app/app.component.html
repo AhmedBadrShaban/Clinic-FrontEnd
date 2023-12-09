@@ -1,0 +1,28 @@
+<!-- <router-outlet></router-outlet> -->
+
+
+<div *ngIf="userType == 'Reciptianist'">
+  <div>
+    <app-nav-bar></app-nav-bar>
+  </div>
+  <div class="sideBarContent mt-5">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<div *ngIf="userType == 'Admin'">
+  <app-admin-nav-bar></app-admin-nav-bar>
+  <div class="navBarContent">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+
+<div *ngIf="userType == 'Doctor'">
+  <app-doctor-nav-bar></app-doctor-nav-bar>
+  <div class="navBarContent">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+

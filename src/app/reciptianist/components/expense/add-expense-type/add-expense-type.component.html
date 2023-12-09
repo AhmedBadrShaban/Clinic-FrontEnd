@@ -1,0 +1,22 @@
+
+<div class="border border-2 border-primary rounded container overflow-hidden"
+style="width:600px; background-color: #E5E5E5;">
+
+<div class="row mt-2 text-center">
+  <h1 style="font-size: 33; color: black; font-weight: 800;">New Expense Type</h1>
+</div>
+<form [formGroup]="expensetypeFm" (ngSubmit)="submit()">
+  <div class="row m-2 justify-content-between">
+    <label class="form-label w-100 " for="typ">Type Name</label><br>
+    <input type="text" class="form-control" id="text-input" placeholder="Enter Type Name" formControlName="typeName">
+  </div>
+  <div class="mt-3 d-flex justify-content-center" style=" margin-bottom: 25px;">
+    <button type="submit" style="width: 100px; height: 30px; background-color: #1E3A8A; color: #fff;
+         border: none; border-radius: 4px;">
+      Add
+    </button>
+
+  </div>
+</form>
+</div>
+

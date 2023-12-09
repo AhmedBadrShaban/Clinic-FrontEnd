@@ -1,0 +1,43 @@
+<!--<app-events-bar></app-events-bar>-->
+<div class="flex-all">
+  <div class="grid-events" >
+    <div *ngFor="let e of eventsPerRoom let i = index">
+    <div [ngClass]="{
+    'grid-item-processed' : e.status === 'done',
+    'grid-item-inProgress' : e.status === 'In progress',
+    'grid-item-waiting' : e.status === 'confirmed',
+    'grid-item-cancelled' : e.status === 'cancelled',
+    ' ' : e.status === 'Ready to cash'
+    }"
+           (click)="openDialog(e)"
+      >
+        <div>
+          Patient Name : {{e.patientName}}
+        </div>
+        <div>
+          Doctor Name : {{e.doctorName}}
+        </div>
+        <div>
+          From [ {{e.reservationStart.slice(0,5)}}] - To [ {{e.reservationEnd.slice(0,5)}} ]
+        </div>
+        <div [ngClass]="{
+          'badge bg-warning text-dark': e.status === 'In progress',
+          'badge bg-success': e.status === 'confirmed',
+          'badge bg-primary': e.status === 'done',
+          'badge bg-danger': e.status === 'cancelled'
+        }">
+          {{ e.status }}
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div style="width: 20%; margin-left: 3%; align-content: center; border: #6F2DBD 1px solid; height: fit-content; text-align: center">
+    <h2>Available Slots</h2>
+    <!-- <app-available-slots [eventsPerDayTO] = "eventsPerDay" style="display: flex; display: flex;
+    flex-direction: column;
+    align-items: center;"> </app-available-slots> -->
+  </div>
+</div>
+
+

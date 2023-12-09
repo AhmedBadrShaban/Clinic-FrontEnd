@@ -1,0 +1,46 @@
+import { Injectable } from '@angular/core';
+import{ HttpClient, HttpParams }from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+@Injectable({
+  providedIn: 'root'
+})
+export class DoctorScheduleServiceService {
+  private baseUrl:string="http://localhost:8080/";
+  constructor(private http :HttpClient) { }
+  getAllSchedules():Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}receptionist/DoctorScheduler` );
+  }
+  newSchedule(data:any){
+    return this.http.post(`${this.baseUrl}receptionist/DoctorScheduler` , data);
+  }
+
+  changeScheduleStatus(id:number){
+    const url = `http://localhost:8080/receptionist/confirmdoctorScheduler?id=${id}`;
+    // const url2 = 'http://localhost:8080/receptionist/confirmdoctorScheduler';
+      return this.http.post<any>(url , id);
+   }
+  editSchedule(updatedData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}receptionist/DoctorScheduler`, updatedData);
+  }
+  Search(key:string): Observable<any> {
+    const url = 'http://localhost:8080/receptionist/DoctorScheduler/search';
+
+    let queryParams = new HttpParams().append("searchString",key);
+
+    return this.http.get<any>(url,{params:queryParams});
+}
+filterByDate(date:any): Observable<any> {
+  const url = 'http://localhost:8080/receptionist/DoctorSchedulerbyDate';
+  console.log("filtling by date of :" ,date);
+
+  let queryParams = new HttpParams().append("date",date);
+
+  return this.http.get<any>(url,{params:queryParams});
+}
+
+private listOfDataSubject = new BehaviorSubject<readonly any[]>([]);
+listOfData$ = this.listOfDataSubject.asObservable();
+updateListOfData(data: readonly any[]) {
+  this.listOfDataSubject.next(data);
+}
+}

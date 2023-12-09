@@ -1,0 +1,77 @@
+<div class=" mx-auto my-2 d-flex justify-content-between overflow-hidden "    style="width:90%; height: 50px;">
+  <div class="h-100"> <a (click)="openDialog({new:true})" class="btn btn-info h-100" style="line-height: 40px;"> <i class="bi bi-plus"></i> Add Doctor Schedule </a></div>
+  <div class="h-100">
+    <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div class="h-100">
+    <div class="input-group h-100">
+      <div class="form-outline h-100">
+        <input  placeholder="search" type="search" id="form1" class="form-control h-100 bg-light" [(ngModel)]="searchValue" />
+       </div>
+      <button (click)="search(searchValue)"  type="button" class="btn btn-info">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+   </div>
+</div>
+
+    <nz-table
+      class="mx-auto"  style="width:90%"
+      #dynamicTable
+      [nzScroll]="{ x: scrollX, y: scrollY }"
+      [nzData]="listOfData"
+      [nzTableLayout]="settingValue.tableLayout"
+      [nzBordered]="settingValue.bordered"
+      [nzOuterBordered]	=true
+      [nzSimple]="settingValue.simple"
+      [nzLoading]="settingValue.loading"
+      [nzPaginationType]="settingValue.paginationType"
+      [nzPaginationPosition]="settingValue.position"
+      [nzFrontPagination]="settingValue.pagination"
+      [nzShowPagination]="settingValue.pagination"
+      [nzSize]="settingValue.size"
+     >
+      <thead>
+        <tr *ngIf="settingValue.header"  style="cursor: pointer;">
+          <th [nzAlign]="'center'">Room</th>
+          <th [nzAlign]="'center'">Doctor</th>
+          <th [nzAlign]="'center'">Date</th>
+          <th [nzAlign]="'center'">Start</th>
+          <th [nzAlign]="'center'">End</th>
+          <th colspan="2" [nzAlign]="'center'">Confirm</th>
+          <th [nzAlign]="'center'">Action</th>
+        </tr>
+      </thead>
+      <tbody style="background-color: #F2F2F2;">
+        <ng-container *ngFor="let data of dynamicTable.data">
+          <tr >
+            <td [nzLeft]="fixedColumn" [nzAlign]="'center'">{{ data.roomName }}</td>
+            <td [nzLeft]="fixedColumn" [nzAlign]="'center'">{{ data.doctorName }}</td>
+            <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.date }}</td>
+            <td  [nzAlign]="'center'">{{ data.startTime }}</td>
+            <td [nzAlign]="'center'">{{ data.endTime }}</td>
+            <td colspan="2" [nzAlign]="'center'" *ngIf="data.confirmed"><a (click)="changeConfirmStatus(data.schedulerId , data)" class="btn btn-success">Confirmed</a></td>
+            <td colspan="2" [nzAlign]="'center'" *ngIf="!data.confirmed"><a (click)="changeConfirmStatus(data.schedulerId ,data)" class="btn btn-warning small-font">NotConfirmed</a></td>
+            <td  [nzRight]="fixedColumn" [nzAlign]="'center'">
+              <a  class="btn btn-info" (click)="openDialog({
+                new:false,
+                schedulerId:data.schedulerId,
+                roomName:data.roomName,
+                doctorName:data.doctorName,
+                date:data.date,
+                startTime:data.startTime,
+                endTime:data.endTime
+              })">Edit</a>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+
+
+

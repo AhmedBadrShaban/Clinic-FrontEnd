@@ -1,0 +1,11 @@
+.bg{
+  background-color: #FBDA61;
+  background-image: linear-gradient(45deg, #FBDA61 0%, #FF5ACD 100%);
+}
+.header {
+  background-color: rgba(111, 45, 189, 0.7);
+}
+.logo img {
+  width:100px;
+  height:100px;
+}
