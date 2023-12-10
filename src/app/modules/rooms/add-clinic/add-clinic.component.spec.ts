@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AfterWorkComponent } from './after-work.component';
+import { AddClinicComponent } from './add-clinic.component';
 
-describe('AfterWorkComponent', () => {
-  let component: AfterWorkComponent;
-  let fixture: ComponentFixture<AfterWorkComponent>;
+describe('AddClinicComponent', () => {
+  let component: AddClinicComponent;
+  let fixture: ComponentFixture<AddClinicComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AfterWorkComponent]
+      declarations: [AddClinicComponent]
     });
-    fixture = TestBed.createComponent(AfterWorkComponent);
+    fixture = TestBed.createComponent(AddClinicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

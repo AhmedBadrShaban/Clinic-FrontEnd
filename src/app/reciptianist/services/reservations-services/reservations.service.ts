@@ -17,65 +17,10 @@ export class ReservationsService {
   getPatientByNumber(phoneNumber:any):Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone?phoneNumber=${phoneNumber}`);
   }
-   // getPatientHistory(phoneNumber: string):PatientHistory[]{
-  //   return ([
-  //     {
-  //       id: 1,
-  //       data:  '11/11/2011',
-  //       treatmentArea: "Here",
-  //       pulses: 1500,
-  //       flunce1: 1850,
-  //       flunce2: 865,
-  //       spot: "Hamda testing strategy",
-  //       doctorName: "mafesh Ism",
-  //       notes: "empty",
-  //     },
-  //     {
-  //         id: '2',
-  //         data:  '11/11/2011',
-  //       treatmentArea: "Here",
-  //       pulses: 1500,
-  //       flunce1: 1850,
-  //       flunce2: 865,
-  //       spot: "Hamda testing strategy",
-  //       doctorName: "mafesh Ism",
-  //       notes: "empty",
-  //     },
-  //     {
-  //       id: '3',
-  //       data:  '11/11/2011',
-  //       treatmentArea: "Here",
-  //       pulses: 1500,
-  //       flunce1: 1850,
-  //       flunce2: 865,
-  //       spot: "Hamda testing strategy",
-  //       doctorName: "mafesh Ism",
-  //       notes: "empty",
-  //     },
-  //     {
-  //       id: '4',
-  //       data:  '11/11/2011',
-  //       treatmentArea: "Here",
-  //       pulses: 1500,
-  //       flunce1: 1850,
-  //       flunce2: 865,
-  //       spot: "Hamda testing strategy",
-  //       doctorName: "mafesh Ism",
-  //       notes: "empty",
-  //     },
-  //     {
-  //       id: '5',
-  //       data: '11/11/2011',
-  //       treatmentArea: "Here",
-  //       pulses: 1500,
-  //       flunce1: 1850,
-  //       flunce2: 865,
-  //       spot: "Hamda testing strategy",
-  //       doctorName: "mafesh Ism",
-  //       notes: "empty",
-  //     }
-  //     ])
-  // }
+  getPatientsNamesAndPhones():Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones` );
+  }
+ 
   modifyOnHistoryTable(id : string , date:PatientHistory){
 
   }

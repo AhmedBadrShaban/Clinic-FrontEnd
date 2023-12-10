@@ -47,7 +47,7 @@
       <app-reservations [reservations]="patientReservations"> </app-reservations>
     </nz-tab>
     <nz-tab  *ngIf="userType!='Doctor'" nzTitle="Payment History">
-      <!-- <app-reservations [reservations]="patientReservations"> </app-reservations> -->
+      <app-payment-history [paymentHistory]="patientReservations"> </app-payment-history>
     </nz-tab>
     <nz-tab *ngIf="userType=='Doctor'" nzTitle="After Work">
       <!-- <app-idle-patients></app-idle-patients> -->

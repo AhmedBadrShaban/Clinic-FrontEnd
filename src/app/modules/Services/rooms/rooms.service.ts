@@ -11,11 +11,11 @@ export class RoomsService {
   getAllReservations():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/get-rooms-with-all-reservation`);
   }
-  getRoomReservation(roomName:any):Observable<any>{
-      return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation?roomName=${roomName}`);
+  getRoomReservation(roomName:any , date:any):Observable<any>{
+      return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation?roomName=${roomName}&date=${date}`);
     }
   allRooms():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/rooms-names`);
+    return this.http.get<any>(`${this.baseUrl}admin/rooms/name`);
   }
   addRoom(data:any){
     return this.http.post(`${this.baseUrl}admin/rooms` , data);
@@ -24,6 +24,12 @@ export class RoomsService {
     console.log('chenging reservation status with id : ', id , "to status : " , status);
     return this.http.post(`${this.baseUrl}receptionist/roomreservationn?id=${id}&status=${status}` ,id);
 
+  }
+  addClinic(data:string){
+    return this.http.post(`${this.baseUrl}admin/clinic-branch` , data);
+  }
+  allClinics():Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}admin/get-all-clinic-names`);
   }
 private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);
 listOfData$ = this.listOfDataSubject.asObservable();

@@ -7,10 +7,9 @@ import { DoctorNavBarComponent } from './components/doctor-nav-bar/doctor-nav-ba
 
 import { DoctorProfileComponent } from './components/doctor-profile/doctor-profile.component';
 import {NzTableModule} from "ng-zorro-antd/table";
-import { ReservationHomePageComponent } from './Components/reservation-home-page/reservation-home-page.component';
+// import { ReservationHomePageComponent } from './Components/reservation-home-page/reservation-home-page.component';
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import {ReceptionistModule} from "../reciptianist/receptionist.module";
-import { AfterWorkComponent } from './components/after-work/after-work.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
@@ -20,9 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     DoctorNavBarComponent,
 
     DoctorProfileComponent,
-    ReservationHomePageComponent,
-    AfterWorkComponent
-  ],
+    ],
   exports: [
     DoctorNavBarComponent
   ],

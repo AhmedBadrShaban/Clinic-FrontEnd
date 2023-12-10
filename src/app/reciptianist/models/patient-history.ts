@@ -11,5 +11,6 @@ export interface PatientHistory {
     doctorName:string
   }
   doctorName: string;
+  clinic: string;
   note: string;
 }

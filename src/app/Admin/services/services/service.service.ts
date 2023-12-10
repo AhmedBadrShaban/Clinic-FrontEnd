@@ -17,7 +17,7 @@ export class ServiceService {
     return this.http.get<any>(`${this.baseUrl}admin/service-search?searchString=${searchVal}`)
   }
   getAllRooms():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/rooms-names`);
+    return this.http.get<any>(`${this.baseUrl}admin/rooms/name`);
   }
   addService(data:any){
       return this.http.post(`${this.baseUrl}admin/patientservice` , data);

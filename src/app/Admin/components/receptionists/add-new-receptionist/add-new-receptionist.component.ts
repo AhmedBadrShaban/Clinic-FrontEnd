@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Receptionist } from 'src/app/Admin/models/receptionist';
 import { ReceptionistsService } from 'src/app/Admin/services/receptionists/receptionists.service';
+import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 
 @Component({
   selector: 'app-add-new-receptionist',
@@ -12,8 +13,9 @@ import { ReceptionistsService } from 'src/app/Admin/services/receptionists/recep
 export class AddNewReceptionistComponent implements OnInit {
   selectedDate: any | undefined;
   newRecpFm: FormGroup;
+  clinics:string[]=[]
   flag:boolean=true;
-  constructor(private fb: FormBuilder ,private reciptianistService:ReceptionistsService , public dialogRef: MatDialogRef<AddNewReceptionistComponent>) {
+  constructor(private fb: FormBuilder ,private reciptianistService:ReceptionistsService , private roomService:RoomsService, public dialogRef: MatDialogRef<AddNewReceptionistComponent>) {
     this.newRecpFm = fb.group({
       name: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       email: ['', [Validators.required]],
@@ -23,14 +25,17 @@ export class AddNewReceptionistComponent implements OnInit {
       username: ['', [Validators.required]],
       salary: ['', [Validators.required]],
       password: ['', [Validators.required]],
+      clinic :['', [Validators.required]],
+      superReceptionist: [false],         
       role: ['ROLE_RECEPTIONIST', [Validators.required]],
     });
   }
 
   ngOnInit(): void {
+    this.roomService.allClinics().subscribe((data)=>{
+      this.clinics=data;
+    })
   }
-
-
   submit() {
     let userModel:Receptionist=this.newRecpFm.value as Receptionist;
     this.reciptianistService.addReciptianist(userModel).subscribe({

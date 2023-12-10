@@ -1,0 +1,36 @@
+<div
+  class="border rounded container shadow"
+  style="width: 600px; background-color: #f8f8f8; border: none"
+>
+  <form [formGroup]="newClinicFm" (ngSubmit)="submit()">
+    <div class="row m-2 justify-content-between">
+      <div class="d-flex align-items-center">
+        <!-- <i class="bi bi-screwdriver me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+        <label class="form-label w-100">Clinic Name</label>
+      </div>
+      <input
+        type="text"
+        formControlName="clinicName"
+        placeholder="Clinic Name"
+        id="name"
+        class="form-control shadow"
+      />
+    </div>
+  
+    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
+      <button
+        type="submit"
+        style="
+          width: 180px;
+          height: 40px;
+          background-color: green;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+        "
+      >
+        Add Clinic
+      </button>
+    </div>
+  </form>
+</div>

@@ -42,7 +42,8 @@
   <tr style="font-size: 18px">
     <th [nzAlign]="'center'">Name</th>
     <th [nzAlign]="'center'">Phone Number</th>
-    <th [nzAlign]="'center'">email</th>
+    <th [nzAlign]="'center'">Email</th>
+    <th [nzAlign]="'center'">Clinic</th>
     <th [nzAlign]="'center'">Statues</th>
   </tr>
   </thead>
@@ -52,6 +53,7 @@
       <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.name  }}</td>
       <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.phoneNumber  }}</td>
       <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.email  }}</td>
+      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.clinic  }}</td>
       <td [nzAlign]="'center'">
         <a
         *ngIf="data.isActive"

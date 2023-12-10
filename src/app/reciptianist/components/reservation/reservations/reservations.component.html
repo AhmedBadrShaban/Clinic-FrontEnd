@@ -17,8 +17,7 @@
     <tr>
       <th [nzAlign]="'center'">Doctor</th>
       <th [nzAlign]="'center'">Service</th>
-      <th [nzAlign]="'center'">Payment Method</th>
-      <th [nzAlign]="'center'">Date</th>
+       <th [nzAlign]="'center'">Date</th>
       <th [nzAlign]="'center'">Status</th>
     </tr>
   </thead>
@@ -27,10 +26,7 @@
       <tr  style="cursor: pointer" >
         <td [nzAlign]="'center'">{{ data.doctorName }}</td>
         <td [nzAlign]="'center'">{{ data.serviceName }}</td>
-        <td [nzAlign]="'center'" *ngIf="data.vodafoneCash != 0">VFCash : {{data.vodafoneCash}}</td>
-        <td [nzAlign]="'center'"  *ngIf="data.debit != 0" >Debit : {{data.debit}}</td>
-        <td [nzAlign]="'center'"  *ngIf="data.credit != 0">Credit : {{data.credit}}</td>
-        <td [nzAlign]="'center'" style="font-size: 12px">20/10/2024</td>
+        <td [nzAlign]="'center'" style="font-size: 12px">{{data.date}}</td>
         <td [nzAlign]="'center'" *ngIf="data.status == 0">
           <a
             style="width: 150px; cursor: default"

@@ -4,4 +4,5 @@ export interface Expense {
     amount: number;
     image: string;
     note:string;
+    receptionistName:string;
 }
