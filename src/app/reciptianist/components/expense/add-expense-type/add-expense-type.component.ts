@@ -13,7 +13,8 @@ export class AddExpenseTypeComponent implements OnInit {
   expensetypeFm: FormGroup;
   constructor(private fb: FormBuilder ,public dialogRef: MatDialogRef<AddExpenseTypeComponent> , private expenseService:ExpenseService){
     this.expensetypeFm = fb.group({
-      typeName: ['', [Validators.required]],
+      type: ['', [Validators.required]],
+      company:[false],
     });
   }
   ngOnInit(): void {
@@ -23,12 +24,12 @@ export class AddExpenseTypeComponent implements OnInit {
     let userModel=this.expensetypeFm.value;
     console.log( "form data before sending request",userModel);
     this.expenseService.addNewExpenseType(userModel).subscribe({
-      next:(data)=>{
-        console.log('new expense Type added :>> ',data);
+      next:(data:any)=>{
+        alert(data.message);
         this.closeDialog();
        },
       error:(err)=>{
-        console.log("error in editing: ", err);
+        alert(err.error.message);
       }
     })
     this.closeDialog();

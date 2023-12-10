@@ -43,6 +43,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AutoCompleteComponent } from '../shared/components/auto-complete/auto-complete.component';
 import { IdlePatientsComponent } from './components/reservation/idle-patients copy/idle-patients.component';
 import { AddExpenseTypeComponent } from './components/expense/add-expense-type/add-expense-type.component';
+import { PaymentHistoryComponent } from './components/reservation/payment-history/payment-history.component';
  @NgModule({
   declarations: [
     ReceptionistHomeComponent,
@@ -64,6 +65,7 @@ import { AddExpenseTypeComponent } from './components/expense/add-expense-type/a
     ReservationFmComponent,
     CoverSheetComponent,
     AddExpenseTypeComponent,
+    PaymentHistoryComponent,
 
     // SharedModule,
     // DatePickerComponent,

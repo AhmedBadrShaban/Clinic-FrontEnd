@@ -1,33 +1,44 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { LoginService } from 'src/app/modules/Services/Login-Services/login.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExpenseService {
 
-  private baseUrl:string="http://localhost:8080/receptionist/";
-  constructor(private http :HttpClient) { }
+  private baseUrl:string="http://localhost:8080/";
+  constructor(private http :HttpClient , private loggedIn:LoginService) { }
   getAllExpensesTypes():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}get-expences-type`)
+    if(this.loggedIn.userType=='Admin'){
+       return this.http.get<any>(`${this.baseUrl}admin/get-expenses-type`)
+    }
+    return this.http.get<any>(`${this.baseUrl}receptionist/get-normal-expenses-type`)
   }
   getAllExpenses():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist-expenses`);
+    if(this.loggedIn.userType=='Admin'){
+    return this.http.get<any>(`${this.baseUrl}admin/expenses`);
+    }
+    return this.http.get<any>(`${this.baseUrl}receptionist/receptionist-expenses`);
+
   }
   addNewExpense(data:any){
-    return this.http.post(`${this.baseUrl}expenses` , data);
+    if(this.loggedIn.userType=='Admin'){
+    return this.http.post(`${this.baseUrl}admin/expenses` , data);
+    }
+    return this.http.post(`${this.baseUrl}receptionist/expenses` , data);
+
   }
   addNewExpenseType(data:any){
-    return this.http.post(`${this.baseUrl}expenses/type` , data);
+    return this.http.post(`${this.baseUrl}admin/add-expense-type` , data);
   }
   filterByDate(date:any): Observable<any> {
-    const url = 'http://localhost:8080/receptionist/filter-expenses';
     console.log("filtling by date of :" ,date);
-
-    let queryParams = new HttpParams().append("date",date);
-
-    return this.http.get<any>(url,{params:queryParams});
+    if(this.loggedIn.userType=='Admin'){
+    return this.http.get<any>(`${this.baseUrl}admin/filter-add-reciptionist-expenses-by-date?date=${date}`);
+    }
+    return this.http.get<any>(`${this.baseUrl}receptionist/filter-expenses?date=${date}`);
   }
 
 

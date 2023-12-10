@@ -38,6 +38,7 @@
           <th [nzAlign]="'center'">Amount</th>
           <th [nzAlign]="'center'">Image</th>
           <th [nzAlign]="'center'">Note</th>
+          <th *ngIf="userType=='Admin'" [nzAlign]="'center'">Reciptianist Name</th>
         </tr>
       </thead>
       <tbody style="background-color: #F2F2F2;">
@@ -47,6 +48,7 @@
             <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.amount }}</td>
             <td  [nzAlign]="'center'">{{ data.image }}</td>
             <td  [nzAlign]="'center'">{{ data.note }}</td>
+            <td *ngIf="userType=='Admin'"  [nzAlign]="'center'">{{ data.receptionistName }}</td>
           </tr>
         </ng-container>
       </tbody>

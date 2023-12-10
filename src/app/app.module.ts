@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
- import { AppComponent } from './app.component';
- // import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -16,7 +15,6 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatButtonModule} from "@angular/material/button";
 import{MatDialogModule} from "@angular/material/dialog"
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {SharedModule} from "./shared/shared.module";
 import {NavBarComponent} from "./shared/components/nav-bar/nav-bar.component";
@@ -25,34 +23,23 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {DatePickerComponent} from "./shared/components/date-picker/date-picker.component";
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import { DialogEventComponent } from './modules/rooms/events-grid/dialog-event/dialog-event.component';
-// import { AddPatientComponent } from './components/expense/add-patient/add-patient.component';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import {AutoCompleteComponent} from "./shared/components/auto-complete/auto-complete.component";
  import { ReceptionistModule } from './reciptianist/receptionist.module';
 import {RoomsComponent} from "./modules/rooms/rooms.component";
 import {LoginComponent} from "./modules/login/login.component";
-import { ReceptionistRoutingModule } from './reciptianist/receptionist-routing.module';
-import {RouterLink, RouterModule} from '@angular/router';
+ import {RouterLink, RouterModule} from '@angular/router';
 import { AdministratorRoutingModule } from './Admin/administrator-routing.module';
 import { ReceptionistHomeComponent } from './reciptianist/receptionist-home/receptionist-home.component';
 import {AdminNavBarComponent} from "./Admin/components/admin-nav-bar/admin-nav-bar.component";
-import {AdminHomeComponent} from "./Admin/admin-home/admin-home.component";
  import {AdministratorModule} from "./Admin/administrator.module";
-import {DoctorsComponent} from "./Admin/components/doctors/doctors.component";
-import {DoctorComponent} from "./Admin/components/doctors/doctor/doctor.component";
-import {ReceptionistsComponent} from "./Admin/components/receptionists/receptionists.component";
-import {ReceptionistComponent} from "./Admin/components/receptionists/receptionist/receptionist.component";
-import {ServicesComponent} from "./Admin/components/services/services.component";
-import {PackagesComponent} from "./Admin/components/packages/packages.component";
-import {MaterialsComponent} from "./Admin/components/materials/materials.component";
-import {ReservationsComponent} from "./Admin/components/reservations/reservations.component";
 import {DoctorModule} from "./Doctor/doctor.module";
-import {MainPageComponent} from "./Doctor/main-page/main-page.component";
-import {DoctorRoutingModule} from "./Doctor/doctor-routing.module";
+ import {DoctorRoutingModule} from "./Doctor/doctor-routing.module";
 import { DatePipe } from '@angular/common';
 import { AddNewRoomComponent } from './modules/rooms/add-new-room/add-new-room.component';
 import { AvailableSlotsComponent } from './modules/rooms/available-slots/available-slots.component';
+import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.component';
 
 @NgModule({
   declarations: [
@@ -61,13 +48,14 @@ import { AvailableSlotsComponent } from './modules/rooms/available-slots/availab
     EventsGridComponent,
     LoginComponent,
     AddNewRoomComponent,
-    AvailableSlotsComponent
+    AvailableSlotsComponent,
+    AddClinicComponent
 
   ],
   imports: [
     AdminNavBarComponent,
     RouterModule.forRoot([
-      {path: 'Receptionist-portal', loadChildren: () => ReceptionistHomeComponent},
+      {path: 'Receptionist-portal', loadComponent: () => ReceptionistHomeComponent},
       {path: 'Admin-portal', loadChildren: () => AdministratorRoutingModule},
       {path: 'Doctor-portal', loadChildren: () => DoctorRoutingModule},
 

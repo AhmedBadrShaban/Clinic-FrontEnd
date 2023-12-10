@@ -11,6 +11,7 @@ import {DialogEventComponent} from "./dialog-event/dialog-event.component";
 })
 export class EventsGridComponent implements OnInit{
   @Input() roomName:string;
+  @Input() date:any;
   @Input() eventsPerRoom :reservation [] = [];
 
   constructor(public dialog: MatDialog , private roomsService:RoomsService) {
@@ -18,9 +19,9 @@ export class EventsGridComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.roomsService.getRoomReservation(this.roomName).subscribe((data)=>{
+    this.roomsService.getRoomReservation(this.roomName , this.date).subscribe((data)=>{
       // this.eventsPerRoom=data;
-       console.log("recived reservations ofthis room is is : " , data)
+       console.log("recived reservations of this room in date : " , this.date , "is: " , data )
     })
    
     }

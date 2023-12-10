@@ -17,12 +17,13 @@
     <tr style="font-size: 18px">
       <th [nzAlign]="'center'">Date</th>
       <th [nzAlign]="'center'">Treatment Area</th>
+      <th [nzAlign]="'center'">Doctor</th>
       <th [nzAlign]="'center'">Pulses</th>
       <th [nzAlign]="'center'">Flunce 1</th>
       <th [nzAlign]="'center'">Flunce 2</th>
       <th [nzAlign]="'center'">Spot</th>
-      <th [nzAlign]="'center'">Doctor</th>
-      <th [nzAlign]="'center'">Notes</th>
+      <th [nzAlign]="'center'">Clinic</th>
+      <th [nzAlign]="'center'">Note</th>
     </tr>
   </thead>
   <tbody style="background-color: #f2f2f2">
@@ -30,11 +31,12 @@
       <tr  style="cursor: pointer; font-size: 16px" (click)="openModal(data.patient_id)">
         <td [nzAlign]="'center'">{{ data.data  }}</td>
         <td [nzAlign]="'center'">{{ data.service }}</td>
+        <td [nzAlign]="'center'">{{data.doctorName}}</td>
         <td [nzAlign]="'center'">{{ data.pulse }}</td>
         <td [nzAlign]="'center'">{{ data.fluence1 }}</td>
         <td [nzAlign]="'center'">{{ data.fluence2 }}</td>
         <td [nzAlign]="'center'">{{ data.spot }}</td>
-        <td [nzAlign]="'center'">Doctor Name</td>
+        <td [nzAlign]="'center'">{{ data.clinic }}</td>
         <td [nzAlign]="'center'">{{ data.note }}</td>
       </tr>
     </ng-container>

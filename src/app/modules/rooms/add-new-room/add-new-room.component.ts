@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RoomsService } from '../../Services/rooms/rooms.service';
 
 @Component({
@@ -9,18 +9,25 @@ import { RoomsService } from '../../Services/rooms/rooms.service';
   styleUrls: ['./add-new-room.component.css']
 })
 export class AddNewRoomComponent implements OnInit {
-  newRoomFm: FormGroup;
+   newRoomFm: FormGroup;
+   clinics:string[]=[]
 
-  constructor(private fb: FormBuilder , public dialogRef: MatDialogRef<AddNewRoomComponent>  , private roomService:RoomsService){
+  constructor(  private fb: FormBuilder , public dialogRef: MatDialogRef<AddNewRoomComponent>  , private roomService:RoomsService){
+ 
+
     this.newRoomFm = fb.group({
       roomName: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       isLaser: ['', [Validators.required]],
+      clinicName: ['', [Validators.required]],
     });
 
 
   }
 
   ngOnInit(): void {
+    this.roomService.allClinics().subscribe((data)=>{
+      this.clinics=data;
+    })
 
   }
 

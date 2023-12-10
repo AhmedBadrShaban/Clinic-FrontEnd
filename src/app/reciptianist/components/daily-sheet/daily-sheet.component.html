@@ -53,10 +53,13 @@ class="mx-auto"  style="width:90%"
     <th [nzAlign]="'center'">Payment Type</th>
     <th [nzAlign]="'center'">What She Will Do</th>
     <th [nzAlign]="'center'">pulses</th>
-    <th [nzAlign]="'center'">cash</th>
-    <th [nzAlign]="'center'">visa</th>
-    <th [nzAlign]="'center'">debit</th>
-    <th [nzAlign]="'center'">total</th>
+    <th [nzAlign]="'center'">Cash</th>
+    <th [nzAlign]="'center'">Vcash</th>
+    <th [nzAlign]="'center'">InstaPay</th>
+    <th [nzAlign]="'center'">Visa</th>
+    <th [nzAlign]="'center'">Credit</th>
+    <th [nzAlign]="'center'">Debit</th>
+    <th [nzAlign]="'center'">Total</th>
 
   </tr>
 </thead>
@@ -65,10 +68,13 @@ class="mx-auto"  style="width:90%"
     <tr >
       <td [nzLeft]="fixedColumn" [nzAlign]="'center'">{{ data.patientName }}</td>
       <td [nzAlign]="'center'" [nzAlign]="'center'">{{ data.paymentType }}</td>
-      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.whatSheWillDo }}</td>
+      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.service }}</td>
       <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.startPulse -  data.endPulse }}</td>
       <td  [nzAlign]="'center'">{{ data.cash }}</td>
+      <td  [nzAlign]="'center'">{{ data.vCash}}</td>
+      <td  [nzAlign]="'center'">{{ data.instaPay }}</td>
       <td  [nzAlign]="'center'">{{ data.visa }}</td>
+      <td  [nzAlign]="'center'">{{ data.credit }}</td>
       <td  [nzAlign]="'center'">{{ data.debit }}</td>
       <td  [nzAlign]="'center'">{{ data.totalMoney }}</td>
     </tr>

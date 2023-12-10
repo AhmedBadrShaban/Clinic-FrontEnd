@@ -7,6 +7,8 @@ export interface Receptionist {
   phoneNumber: string;
   address: string;
   email: string;
+  clinic:string;
+  superReceptionist:boolean;
   salary: number;
   isActive: string;
   password:string

@@ -5,6 +5,9 @@
     <div class="h-100" *ngIf="loggedIn.userType=='Admin'">
       <a class="btn btn-success h-100" style="line-height: 40px;" (click)="openDialog('room' , activeTabTitle)"><i class="bi bi-plus"></i> Add New Room</a>
     </div>
+    <div class="h-100" *ngIf="loggedIn.userType=='Admin'">
+      <a class="btn btn-success h-100" style="line-height: 40px;" (click)="openDialog('clinic' , activeTabTitle)"><i class="bi bi-plus"></i> Add New Clinic</a>
+    </div>
     <div class="h-100">
     <a class="btn btn-success h-100" style="line-height: 40px;" (click)="openDialog('reservation' ,activeTabTitle ,selectedDate)"><i class="bi bi-plus"></i> Add New Reservation</a>
     </div>
@@ -26,7 +29,7 @@
   <app-available-slots></app-available-slots>
   <nz-tabset nzCentered [(nzSelectedIndex)]="selectedTabIndex" (nzSelectedIndexChange)="onTabChange($event)">
     <nz-tab *ngFor="let room of roomsNames" [nzTitle]="room">
-      <app-events-grid  [eventsPerRoom]="allReservations[room]" [roomName]="room" class="grid"></app-events-grid>
+      <app-events-grid  [eventsPerRoom]="allReservations[room]" [roomName]="room" [date]="selectedDate" class="grid"></app-events-grid>
     </nz-tab>
   </nz-tabset>
 

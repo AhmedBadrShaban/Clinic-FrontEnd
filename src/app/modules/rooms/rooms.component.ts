@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
 import { ReservationFmComponent } from 'src/app/reciptianist/components/reservation-fm/reservation-fm.component';
 import { DatePipe } from '@angular/common';
+import { AddClinicComponent } from './add-clinic/add-clinic.component';
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
@@ -21,7 +22,7 @@ export class RoomsComponent implements OnInit {
   selectedDate: any =new Date();
   searchValue:string;
   constructor( private datePipe:DatePipe  ,private router: Router , private allReservation:RoomsService , public loggedIn:LoginService , public dialog: MatDialog){
-
+    this.selectedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
   }
   ngOnInit(): void {
     this.allReservation.allRooms().subscribe((rooms)=>{
@@ -60,6 +61,9 @@ export class RoomsComponent implements OnInit {
       }
       this.dialog.open(ReservationFmComponent ,  {data:data} );
     }
+    else if(dialogType == 'clinic'){
+      this.dialog.open(AddClinicComponent);
+    }
   }
   getAllReservations(){
     this.allReservation.getAllReservations().subscribe({
@@ -84,7 +88,7 @@ export class RoomsComponent implements OnInit {
     this.selectedDate = event.value;
     this.selectedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     console.log('selected date :>> ', this.selectedDate);
-
+    this.getAllReservations();
     // this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
     //   // console.log(data);
     //   this.listOfData =data;
