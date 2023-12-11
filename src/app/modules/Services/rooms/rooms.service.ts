@@ -8,8 +8,8 @@ import{ BehaviorSubject, Observable }from'rxjs';
 export class RoomsService {
   private baseUrl:string="http://localhost:8080/";
   constructor(private http :HttpClient) { }
-  getAllReservations():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/get-rooms-with-all-reservation`);
+  getAllReservations(date:any):Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}receptionist/get-rooms-with-all-reservation?date=${date}`);
   }
   getRoomReservation(roomName:any , date:any):Observable<any>{
       return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation?roomName=${roomName}&date=${date}`);

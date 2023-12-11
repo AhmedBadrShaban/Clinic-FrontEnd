@@ -19,6 +19,7 @@ import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 export class DialogEventComponent implements OnInit {
   toggle = false;
   toggle2 = false;
+  date = '2023-12-10'
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
     @Inject(MAT_DIALOG_DATA) public data: reservation, private roomsService:RoomsService
@@ -57,7 +58,7 @@ export class DialogEventComponent implements OnInit {
     this.dialogRef.close();
   }
   UpdateAllReservations(){
-    this.roomsService.getAllReservations().subscribe((data:any)=>{
+    this.roomsService.getAllReservations(this.data.reservationDate).subscribe((data:any)=>{
       this.roomsService.updateData(data);
       console.log( "data Updated : " ,data);
     })
