@@ -66,7 +66,7 @@ export class RoomsComponent implements OnInit {
     }
   }
   getAllReservations(){
-    this.allReservation.getAllReservations().subscribe({
+    this.allReservation.getAllReservations(this.selectedDate).subscribe({
       next: (data) => {
         this.allReservations = data;
          console.log( "Here is all Rooms Reservations",this.allReservations )

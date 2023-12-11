@@ -14,6 +14,7 @@ import { DatePipe } from '@angular/common';
 export class ReservationFmComponent implements OnInit {
   reservationFm: FormGroup;
   roomName:string;
+  date:any;
   patientphone:any;
   doctorName:any;
   AllNumbers:any[]=[];
@@ -25,12 +26,14 @@ export class ReservationFmComponent implements OnInit {
     this.roomName=data.activeRoom;
     console.log('recived room Name :>> ', this.roomName);
     console.log('recived reservation date :>> ',  this.datePipe.transform(data.date, 'yyyy-MM-dd'),);
+    this.date = data.date;
     this.reservationFm = fb.group({
       patientPhone: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       doctorName: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       reservationDate: this.datePipe.transform(data.date, 'yyyy-MM-dd'),
       start: ['', [Validators.required]],
       end: ['', [Validators.required]],
+      reservedAt:[data.date],
       service: fb.array([this.fb.control('')]),
     });
   }
@@ -100,7 +103,7 @@ export class ReservationFmComponent implements OnInit {
     this.dialogRef.close();
   }
   UpdateAllReservations(){
-    this.roomService.getAllReservations().subscribe((data:any)=>{
+    this.roomService.getAllReservations(this.date).subscribe((data:any)=>{
       this.roomService.updateData(data);
       console.log( "data Updated : " ,data);
     })

@@ -8,21 +8,37 @@
     padding: 10px;
     text-align: center;
   }
-  .grid-item-processed{
-    background-color: rgb(60, 179, 113,0.3);
+
+  /* Green color for CONFIRMED status */
+  .grid-item-confirmed {
+    background-color: rgba(0, 149, 170, 0.3);
     padding: 10px;
     text-align: center;
-  }
-  .grid-item-inProgress{
-    background-color: rgb(0, 149, 170 , 0.3);
+}
+/* Blue color for IN_PROGRESS status */
+.grid-item-inProgress {
+  background-color: rgba(60, 179, 113, 0.3);
     padding: 10px;
     text-align: center;
-  }
-  .grid-item-waiting{
-    background-color: rgb(255, 155, 0 , 0.3);
+}
+/* Yellow color for WAITING status */
+.grid-item-waiting {
+    background-color: rgba(255, 155, 0, 0.3);
     padding: 10px;
     text-align: center;
-  }
+}
+/* Red color for CANCELLED status */
+.grid-item-cancelled {
+    background-color: rgba(255, 0, 0, 0.3); 
+    padding: 10px;
+    text-align: center;
+}
+/* Purple color for TO_DOCTOR status */
+.grid-item-toDoctor {
+    background-color: rgba(128, 0, 128, 0.3); 
+    padding: 10px;
+    text-align: center;
+}
 }
 
 .grid-item-inProgress:hover {

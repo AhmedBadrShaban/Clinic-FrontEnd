@@ -1,14 +1,21 @@
 <!--<app-events-bar></app-events-bar>-->
+
+<!-- IN_PROGRESS,
+CONFIRMED,
+WAITING,
+CANCELLED,
+TO_DOCTOR,
+DONE -->
 <div class="flex-all">
   <div class="grid-events" >
     <div *ngFor="let e of eventsPerRoom let i = index">
     <div [ngClass]="{
-    'grid-item-processed' : e.status === 'done',
-    'grid-item-inProgress' : e.status === 'In progress',
-    'grid-item-waiting' : e.status === 'confirmed',
-    'grid-item-cancelled' : e.status === 'cancelled',
-    ' ' : e.status === 'Ready to cash'
-    }"
+    'grid-item-inProgress' : e.status === 'IN_PROGRESS',
+    'grid-item-confirmed' : e.status === 'CONFIRMED',
+    'grid-item-toDoctor' : e.status === 'TO_DOCTOR',
+    'grid-item-waiting' : e.status === 'WAITING',
+    'grid-item-cancelled' : e.status === 'CANCELLED',
+     }"
            (click)="openDialog(e)"
       >
         <div>
@@ -18,13 +25,15 @@
           Doctor Name : {{e.doctorName}}
         </div>
         <div>
-          From [ {{e.reservationStart.slice(0,5)}}] - To [ {{e.reservationEnd.slice(0,5)}} ]
+           From [ {{e.reservationStart.slice(0,5)}}] - To [ {{e.reservationEnd.slice(0,5)}} ]
         </div>
         <div [ngClass]="{
-          'badge bg-warning text-dark': e.status === 'In progress',
-          'badge bg-success': e.status === 'confirmed',
-          'badge bg-primary': e.status === 'done',
-          'badge bg-danger': e.status === 'cancelled'
+          'badge bg-primary text-white': e.status === 'IN_PROGRESS',
+          'badge bg-success': e.status === 'CONFIRMED',
+          'badge bg-warning': e.status === 'WAITING',
+          'badge bg-danger': e.status === 'CANCELLED',
+          'badge bg-info': e.status === 'TO_DOCTOR',
+          'badge bg-secondary': e.status === 'DONE'
         }">
           {{ e.status }}
         </div>

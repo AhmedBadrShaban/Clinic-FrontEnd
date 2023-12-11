@@ -32,9 +32,9 @@
       <tr>
         <th>Status</th>
         <td [ngClass]="{
-          'inprogress': data.status === 'In progress',
-          'confirmed': data.status === 'confirmed',
-          'cancelled': data.status === 'cancelled'
+          'inprogress': data.status === 'IN_PROGRESS',
+          'confirmed': data.status === 'CONFIRMED',
+          'cancelled': data.status === 'CANCELLED'
         }">
           {{ data.status }}</td>
       </tr>
@@ -52,9 +52,10 @@
       </div>
       </div>
   </div>
- <div *ngIf="data.status != 'cancelled'">
-   <button mat-raised-button style="background-color: red !important; margin-right: 5px;" (click)="chengeReservationStatus(data.reservationId , 'cancelled')">Cancel Reservation</button>
-   <button mat-raised-button style="background-color:orange !important;" (click)="chengeReservationStatus(data.reservationId , 'confirmed')">Confirm Reservation</button>
+ <div  *ngIf="data.status != 'CANCELLED'">
+   <button mat-raised-button style="background-color: red !important; margin-right: 5px;  color: white;" (click)="chengeReservationStatus(data.reservationId , 'CANCELLED')">Cancel Reservation</button>
+   <button *ngIf="data.status != 'CONFIRMED'" mat-raised-button style="background-color:green !important;  margin-right: 5px; color: white;" (click)="chengeReservationStatus(data.reservationId , 'CONFIRMED')">Confirm Reservation</button>
+   <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white;" (click)="chengeReservationStatus(data.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
 </div>
 
 </div>
