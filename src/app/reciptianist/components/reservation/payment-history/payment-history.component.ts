@@ -20,7 +20,7 @@ interface Setting {
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
  }
- 
+
 
 @Component({
   selector: 'app-payment-history',
@@ -48,7 +48,7 @@ export class PaymentHistoryComponent {
       size: 'small' as NzTableSize,
       paginationType: 'default' as NzTablePaginationType,
       tableLayout: 'auto' as NzTableLayout,
-      position: 'both' as NzTablePaginationPosition
+      position: 'bottom' as NzTablePaginationPosition
     };
   }
 

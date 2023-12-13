@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
 import { AddPackageComponent } from './add-package/add-package.component';
 import { PackageService } from '../../services/package-service/package.service';
+import { AddProductComponent } from './add-product/add-product.component';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 interface Setting {
@@ -82,8 +83,13 @@ export class PackageComponent implements OnInit {
    })
    }
 
-  openDialog(){
+  openDialog(type:string){
+    if(type=='Package'){
     this.dialogRef.open(AddPackageComponent);
+    }
+    else if(type=='Product'){
+      this.dialogRef.open(AddProductComponent);
+    }
   }
   onDateChange(event: any) {
     this.selectedDate = event.value;

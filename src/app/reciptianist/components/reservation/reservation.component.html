@@ -41,7 +41,7 @@
       <app-packages [packages]="patientPackages"></app-packages>
     </nz-tab>
     <nz-tab  *ngIf="userType!='Doctor'" id="points" nzTitle="Points">
-      <app-points [pointsHistory]="pointsHistory" [totalIn]="totalIn" [totalOut]="totalOut"></app-points>
+      <app-points [patientNumber]="PatientInfo.primaryPhone" [pointsHistory]="pointsHistory" [totalIn]="totalIn" [totalOut]="totalOut"></app-points>
     </nz-tab>
     <nz-tab  *ngIf="userType!='Doctor'" nzTitle="Reservations">
       <app-reservations [reservations]="patientReservations"> </app-reservations>

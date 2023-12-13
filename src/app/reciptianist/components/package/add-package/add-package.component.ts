@@ -14,10 +14,13 @@ export class AddPackageComponent {
   formData: any = {
     patientPhone: '',
     packageName: '',
+    packageCost:'0',
     clinicName: 'NasrCity',
     cash:null ,
     visa:null,
     debit:null,
+    credit:null,
+    instaPay:null,
     vodafoneCash:null,
    };
   AllNumbers:any[];
@@ -38,13 +41,27 @@ export class AddPackageComponent {
     this.packageservice.getAllPackages().subscribe((data: any) => {
       this.AllPackages = data;
       console.log('AllPackages :>> ', this.AllPackages);
-      this.filteredPackages = this.AllPackages;
+      this.filteredPackages = this.AllPackages.map(pkg => pkg.packageName);
     });
   }
 
 
   submit() {
     console.log('Form Data:', this.formData);
+    console.log('sum of Payments is :>> ',this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit );
+    if(this.formData.packageCost > this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit)
+    {
+      alert("Total Payments Value is Less Than the Package Cost !! ")
+      return;
+    }
+    else if (this.formData.packageCost < this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit)
+    {
+      alert("Total Payments Value is More Than the Package Cost !! ")
+      return;
+    }
+    {
+
+    }
     this.packageservice.reservePackage(this.formData).subscribe(
       {
       next: (data) => {
@@ -64,7 +81,11 @@ export class AddPackageComponent {
     this.filteredNumbers = this.AllNumbers.filter(AllNumbers => AllNumbers.toLowerCase().indexOf(value.toLowerCase()) !== -1);
   }
   onChange2(value: string): void {
-    this.filteredPackages = this.AllPackages.filter(AllPackages => AllPackages.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredPackages = this.AllPackages.map(pkg => pkg.packageName)
+    .filter(packageName => packageName.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    const selectedPackage = this.AllPackages.find(pkg => pkg.packageName === this.formData.packageName);
+    this.formData.packageCost = selectedPackage ? selectedPackage.packageCost : '';
+    console.log('cost of selected Package :>> ', this.formData.packageCost);
   }
   closeDialog() {
     this.dialogRef.close(AddPackageComponent);

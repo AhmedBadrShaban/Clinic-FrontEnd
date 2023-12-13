@@ -1,0 +1,36 @@
+
+<div class="border border-2 border-primary rounded container overflow-hidden"
+  style="width:600px; background-color: #E5E5E5;">
+
+  <div class="row mt-2 text-center">
+    <h1 style="font-size: 33; color: black; font-weight: 800;">Convert Points</h1>
+  </div>
+
+  <form (submit)="submit()">
+    <div class="row m-2 justify-content-between">
+      <label for="patient-number" class="form-label w-100 ">Patient Number</label><br>
+      <input class="form-select" id="patient-number"
+      placeholder="Type Patient's Phone Number"
+      nz-input
+      [(ngModel)]="formData.receiverPhone"
+      [ngModelOptions]="{standalone: true}"
+      (ngModelChange)="onChange($event)"
+      [nzAutocomplete]="PatientAuto"
+    />
+    <nz-autocomplete [nzDataSource]="filteredNumbers" #PatientAuto></nz-autocomplete>
+    </div>
+    <div class="row m-2 justify-content-between">
+      <label for="Points-number" class="form-label w-100 ">Points Number</label><br>
+      <input type="number" placeholder="Points Number" id="points-number"  [(ngModel)]="formData.theAmount" class="form-control shadow"
+      name="points-number"/>
+    </div>
+    <div class="mt-3 d-flex justify-content-center" style=" margin-bottom: 25px;">
+      <button type="submit"
+        style="width: 120px; height: 30px; background-color: #1E3A8A; color: #fff; border: none; border-radius: 4px;">
+       Send
+      </button>
+
+    </div>
+
+    </form>
+</div>

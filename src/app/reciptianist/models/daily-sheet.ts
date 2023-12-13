@@ -10,7 +10,7 @@ export interface DailySheet {
     credit:number;
     debit: number;
     instaPay: number;
-    vCash: number;
+    vodafoneCash: number;
     totalMoney: number;
     startPulse:number;
     endPulse:number;
