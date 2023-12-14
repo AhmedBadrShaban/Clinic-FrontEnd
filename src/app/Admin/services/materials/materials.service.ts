@@ -22,7 +22,9 @@ export class MaterialsService {
   addMaterial(data:any){
       return this.http.post(`${this.baseUrl}admin/add-material` , data);
   }
-
+  addProuduct(data:any){
+    return this.http.post(`${this.baseUrl}receptionist/product` , data);
+  }
   private listOfDataSubject = new BehaviorSubject<readonly Materials[]> ([]);
   listOfData$ = this.listOfDataSubject.asObservable();
   updateData(data: any[]){

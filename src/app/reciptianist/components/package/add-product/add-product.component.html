@@ -1,0 +1,185 @@
+<div
+  class="border border-2 border-primary rounded container overflow-hidden"
+  style="width: 600px; background-color: #e5e5e5"
+>
+  <div class="row mt-2 text-center">
+    <h1 style="font-size: 33; color: black; font-weight: 800">New Product</h1>
+  </div>
+
+  <form [formGroup]="addProductFm" (submit)="submit()">
+    <div class="row m-2 justify-content-between">
+      <label for="patient-number" class="form-label w-100">Patient Number</label
+      ><br />
+      <input
+        class="form-select"
+        id="patient-number"
+        placeholder="Type Patient's Phone Number"
+        formControlName="patientPhone"
+         (ngModelChange)="onChange($event)"
+        [nzAutocomplete]="PatientAuto"
+      />
+      <nz-autocomplete
+        [nzDataSource]="filteredNumbers"
+        #PatientAuto
+      ></nz-autocomplete>
+    </div>
+    <div formArrayName="products">
+      <div
+        *ngFor="let productGroup of Products.controls; let i = index"
+        [formGroupName]="i"
+        class="row m-2 justify-content-between"
+      >
+        <div class="col-5">
+          <div class="row">
+            <label for="select-options" class="form-label w-100"
+              >Product Name</label
+            ><br />
+            <select
+              class="form-select shadow"
+              id="select-options"
+              formControlName="productName"
+              (change)="updatePrice(i)"
+            >
+              <option value="">Select Product</option>
+              <option
+                *ngFor="let product of AllProducts"
+                [value]="product.materialName"
+              >
+                {{ product.materialName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="row">
+            <label for="quantity" class="form-label w-100">Quantity</label
+            ><br />
+            <input
+              type="number"
+              placeholder="Quantity"
+              class="form-control shadow"
+              formControlName="amount"
+              id="quantity"
+              name="quantity"
+              (input)="updatePrice(i)"
+            />
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="row">
+            <label for="product-cost" class="form-label w-100">Cost</label
+            ><br />
+            <input
+              class="form-control"
+              style="background-color: lightgray;"
+              id="product-cost"
+              readonly
+               formControlName="price"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      type="button"
+      style="
+        width: 500px;
+        margin-top: 10px;
+        margin-left: 30px;
+        height: 30px;
+        background-color: #adb3bd;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+      "
+      (click)="addProduct($event)"
+    >
+      Add Product
+    </button>
+    <div class="row m-2 justify-content-between">
+      <label for="Payment" class="form-label w-100">Payment Method</label><br />
+      <div class="col">
+        <input
+          type="number"
+          placeholder="Cash"
+          id="cash"
+          formControlName="cash"
+          class="form-control shadow"
+          name="cash"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="number"
+          placeholder="VCash"
+          id="Vodafone"
+          formControlName="vodafoneCash"
+          class="form-control shadow"
+          name="Vodafone"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="number"
+          placeholder="Visa"
+          id="visa"
+          formControlName="visa"
+          class="form-control shadow"
+          name="visa"
+        />
+      </div>
+    </div>
+    <div class="row m-2 justify-content-between">
+      <div class="col">
+        <input
+          type="number"
+          placeholder="Credit"
+          id="credit"
+          formControlName="credit"
+          class="form-control shadow"
+          name="credit"
+        />
+      </div>
+      <div class="col">
+        <input
+          type="number"
+          placeholder="InstaPay"
+          id="visa"
+          formControlName="instaPay"
+          class="form-control shadow"
+          name="InstaPay"
+        />
+      </div>
+      <!-- <div class="col">
+      <input type="number" placeholder="Debit" id="debit"   formControlName="debit" class="form-control shadow"
+      name="debit"/>
+     </div> -->
+    </div>
+
+    <div class="row m-2 justify-content-between">
+      <label for="Payment" class="form-label w-100">Total Cost</label><br />
+      <input
+              class="form-control"
+              style="background-color: lightgray;"
+              id="total-cost"
+              readonly
+              formControlName="total"
+            />
+    </div>
+    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
+      <button
+        type="submit"
+        style="
+          width: 120px;
+          height: 30px;
+          background-color: #1e3a8a;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+        "
+      >
+      Add Product
+      </button>
+    </div>
+  </form>
+</div>

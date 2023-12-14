@@ -16,7 +16,7 @@
   <thead>
     <tr>
       <th [nzAlign]="'center'">Doctor</th>
-      <th [nzAlign]="'center'">Service</th>
+      <th [nzAlign]="'center'">Services</th>
        <th [nzAlign]="'center'">Date</th>
       <th [nzAlign]="'center'">Status</th>
     </tr>
@@ -25,28 +25,21 @@
     <ng-container *ngFor="let data of dynamicTable.data">
       <tr  style="cursor: pointer" >
         <td [nzAlign]="'center'">{{ data.doctorName }}</td>
-        <td [nzAlign]="'center'">{{ data.serviceName }}</td>
-        <td [nzAlign]="'center'" style="font-size: 12px">{{data.date}}</td>
-        <td [nzAlign]="'center'" *ngIf="data.status == 0">
-          <a
-            style="width: 150px; cursor: default"
-            class="btn  btn-sm btn-info small-font"
-            >Waiting</a
-          >
-        </td>
-        <td [nzAlign]="'center'" *ngIf="data.status == 1">
-          <a
-            style="width: 150px; cursor: default"
-            class="btn  btn-sm btn-success small-font"
-            >Confirmed</a
-          >
-        </td>
-        <td [nzAlign]="'center'" *ngIf="data.status == 2">
-          <a
-            style="width: 150px; cursor: default"
-            class="btn  btn-sm btn-warning small-font"
-            >Canceled</a
-          >
+        <td [nzAlign]="'center'">
+          <span *ngFor="let service of data.services">
+            {{service }}
+           </span>
+         </td>
+        <td [nzAlign]="'center'" style="font-size: 12px">{{data.reservedAt}}</td>
+        <td [nzAlign]="'center'">
+        <span class="badge btn" [ngClass]="{
+          ' btn-primary': data.status === 'IN_PROGRESS',
+          ' btn-success': data.status === 'CONFIRMED',
+          ' btn-warning': data.status === 'WAITING',
+          ' btn-danger': data.status === 'CANCELLED',
+          ' btn-info': data.status === 'TO_DOCTOR',
+          ' btn-secondary': data.status === 'DONE'
+        }"> {{ data.status }} </span>
         </td>
       </tr>
     </ng-container>

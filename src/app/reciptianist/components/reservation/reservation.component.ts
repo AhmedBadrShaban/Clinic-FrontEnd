@@ -19,7 +19,7 @@ export class ReservationComponent implements OnInit {
   AllDataToSearchIn:any[]=[];
    filteredData:  any[] = [];
    searchValue?:any;
-  PatientInfo:PatientInfo[]=[
+  PatientInfo:PatientInfo=
     {
       name:"",
       id:-1,
@@ -30,8 +30,7 @@ export class ReservationComponent implements OnInit {
       note:"",
       date:"",
       lastReservation:"",
-    },
-  ];
+    }
 patientHistory:any =[];
 pointsHistory:PatientPoints[];
 patientPackages:any=[];
@@ -55,13 +54,14 @@ constructor(private allPatients:ReservationsService ,private patientService:Pati
     console.log(this.filteredData);
     this.allPatients.getPatientByNumber(this.extractPhoneNumberFromSearchResult(this.allPatientsNamesAndNumbers[0])).subscribe((patient1)=>{
       this.patientData =patient1;
+      console.log('object :>> ', this.patientData);
       this.extractPatientInfo();
     })
     } else {
     console.log("there is no Patients in the system yet");
   }
     })
-  
+
   }
   else
   {
@@ -83,10 +83,10 @@ constructor(private allPatients:ReservationsService ,private patientService:Pati
       this.patientHistory = firstPatient.patientHistory;
       this.patientPackages = firstPatient.reservedPackages;
       this.pointsHistory =firstPatient.pointHistories;
-      this.patientReservations =firstPatient.patientReservations;
+      this.patientReservations =firstPatient.reservations;
       this.totalIn =firstPatient.total_points_in;
       this.totalOut=firstPatient.total_points_out;
-      this.PatientInfo = [
+      this.PatientInfo =
         {
           date: firstPatient.date,
           gender: firstPatient.gender,
@@ -98,14 +98,13 @@ constructor(private allPatients:ReservationsService ,private patientService:Pati
           primaryPhone: firstPatient.primaryPhone,
           secondaryPhone: firstPatient.secondaryPhone
         }
-      ];
-      // this.getPatientPointsHistory(this.PatientInfo[0].primaryPhone);
+       // this.getPatientPointsHistory(this.PatientInfo[0].primaryPhone);
 
 
       console.log('PatientInfo:', this.PatientInfo);
       console.log(' and his history ',  this.patientHistory);
       console.log(' and his packages ',  this.patientPackages);
-      console.log(' and his Points History ',  this.patientHistory);
+      console.log(' and his Points History ',  this.pointsHistory);
       console.log(' and his reservations ',  this.patientReservations);
    }
 

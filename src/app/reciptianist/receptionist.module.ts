@@ -44,6 +44,8 @@ import { AutoCompleteComponent } from '../shared/components/auto-complete/auto-c
 import { IdlePatientsComponent } from './components/reservation/idle-patients copy/idle-patients.component';
 import { AddExpenseTypeComponent } from './components/expense/add-expense-type/add-expense-type.component';
 import { PaymentHistoryComponent } from './components/reservation/payment-history/payment-history.component';
+import { AddProductComponent } from './components/package/add-product/add-product.component';
+import { SendPointsComponent } from './components/reservation/points/send-points/send-points.component';
  @NgModule({
   declarations: [
     ReceptionistHomeComponent,
@@ -66,6 +68,8 @@ import { PaymentHistoryComponent } from './components/reservation/payment-histor
     CoverSheetComponent,
     AddExpenseTypeComponent,
     PaymentHistoryComponent,
+    AddProductComponent,
+    SendPointsComponent,
 
     // SharedModule,
     // DatePickerComponent,

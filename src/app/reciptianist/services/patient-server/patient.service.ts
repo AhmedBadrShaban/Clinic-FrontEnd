@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { PatientInfo } from '../../models/patient-Info';
 
 @Injectable({
@@ -25,6 +25,13 @@ export class PatientService {
     console.log("data : " , patientData )
     return this.http.post(`${this.baseUrl}receptionist/patients` , patientData);
   }
+  sendPoints(data:any){
+    console.log("data : " , data )
+    return this.http.post(`${this.baseUrl}receptionist/convertPoints` , data);
+  }
+  updatePointsHistory(primaryPhone:any){
+     return this.http.get<any>(`http://localhost:8080/receptionist/point-histories?phone=${primaryPhone}` );
+  }
   searchPatients(phoneNumber:any): Observable<any> {
     const url = 'http://localhost:8080/receptionist/patients-with-phone';
     console.log("Searching by Number:" ,phoneNumber);
@@ -35,5 +42,16 @@ export class PatientService {
     const url = `http://localhost:8080/receptionist/update-patient?phone=${primaryPhone}`;
     return this.http.put<any>(url, updatedData);
   }
+
+  private listOfDataSubject = new BehaviorSubject<any>([]);
+  private listOfDataSubject2 = new BehaviorSubject<any>([]);
+listOfData$ = this.listOfDataSubject.asObservable();
+out$ = this.listOfDataSubject2.asObservable();
+updateListOfData(data:any) {
+  this.listOfDataSubject.next(data);
+}
+updateTotalOut(data:any){
+  this.listOfDataSubject2.next(data);
+}
 
 }

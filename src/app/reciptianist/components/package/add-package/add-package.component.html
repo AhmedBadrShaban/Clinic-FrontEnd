@@ -21,35 +21,59 @@
     </div>
 
     <div class="row m-2 justify-content-between">
-      <label for="package-type" class="form-label w-100 ">Package</label><br>
-      <input class="form-select" id="package-type"
-      placeholder="Select Package Name"
-      nz-input
-      [(ngModel)]="formData.packageName"
-      [ngModelOptions]="{standalone: true}"
-      (ngModelChange)="onChange2($event)"
-      [nzAutocomplete]="PackageAuto"
-    />
-    <nz-autocomplete [nzDataSource]="filteredPackages" #PackageAuto></nz-autocomplete>
+      <div class="col-7">
+        <div class="row">
+          <label for="package-type" class="form-label w-100 ">Package</label><br>
+          <input class="form-select" id="package-type"
+          placeholder="Select Package Name"
+          nz-input
+          [(ngModel)]="formData.packageName"
+          [ngModelOptions]="{standalone: true}"
+          (ngModelChange)="onChange2($event)"
+          [nzAutocomplete]="PackageAuto"
+        />
+        <nz-autocomplete [nzDataSource]="filteredPackages" #PackageAuto></nz-autocomplete>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="row">
+          <label for="package-cost" class="form-label w-100 ">Package Cost</label><br>
+      <input class="form-control" id="package-cost"
+             [(ngModel)]="formData.packageCost"
+             [ngModelOptions]="{standalone: true}"
+             readonly
+      />
+        </div>
+      </div>
+
     </div>
     <div class="row m-2 justify-content-between">
       <label for="Payment" class="form-label w-100" >Payment Method</label><br>
-
       <div class="col">
         <input type="number" placeholder="Cash" id="cash" [(ngModel)]="formData.cash" class="form-control shadow"
         name="cash"/>
       </div>
       <div class="col">
+        <input type="number" placeholder="VCash" id="Vodafone"  [(ngModel)]="formData.vodafoneCash" class="form-control shadow"
+        name="Vodafone"/>
+       </div>
+      <div class="col">
         <input type="number" placeholder="Visa" id="visa"  [(ngModel)]="formData.visa" class="form-control shadow"
         name="visa"/>
+      </div>
+    </div>
+    <div  class="row m-2 justify-content-between">
+      <div class="col">
+        <input type="number" placeholder="Credit" id="visa"  [(ngModel)]="formData.credit" class="form-control shadow"
+        name="credit"/>
+      </div>
+      <div class="col">
+        <input type="number" placeholder="InstaPay" id="visa"  [(ngModel)]="formData.instaPay" class="form-control shadow"
+        name="InstaPay"/>
       </div>
      <div class="col">
       <input type="number" placeholder="Debit" id="debit"  [(ngModel)]="formData.debit" class="form-control shadow"
       name="debit"/>
-     </div>
-     <div class="col">
-      <input type="number" placeholder="VCash" id="Vodafone"  [(ngModel)]="formData.vodafoneCash" class="form-control shadow"
-      name="Vodafone"/>
      </div>
     </div>
     <div class="mt-3 d-flex justify-content-center" style=" margin-bottom: 25px;">

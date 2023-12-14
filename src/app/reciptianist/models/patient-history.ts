@@ -1,7 +1,7 @@
 export interface PatientHistory {
   room_reservation_id:number;
   patient_id: string;
-  data: string;
+  date: string;
   service: String;
   pulse: number;
   fluence1: number;

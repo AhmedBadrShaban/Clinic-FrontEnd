@@ -9,14 +9,14 @@ import { PatientInfo } from 'src/app/reciptianist/models/patient-Info';
   styleUrls: ['./patient-info.component.css']
 })
 export class PatientInfoComponent implements OnInit, OnChanges  {
-  @Input() info: PatientInfo[];
+  @Input() info: PatientInfo;
   formData: FormGroup;
   oldInfo: PatientInfo;
 
   constructor(private fb: FormBuilder , private patientService:PatientService) {}
 
   ngOnInit(): void {
-     this.initForm(this.info[0]);
+     this.initForm(this.info);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -25,19 +25,19 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
        this.initForm(info);
     }
   }
-  
+
   initForm(info: PatientInfo): void {
     this.formData = this.fb.group({
-      name:this.info[0].name,
-      gender: this.info[0].gender,
-      primaryPhone:this.info[0].primaryPhone,
-      secondaryPhone:this.info[0].secondaryPhone,
-      note: this.info[0].note,
-      date:this.info[0].date,
-      lastReservation: this.info[0].lastReservation,
-      knowUsThrough: this.info[0].knowUsThrough
+      name:this.info.name,
+      gender: this.info.gender,
+      primaryPhone:this.info.primaryPhone,
+      secondaryPhone:this.info.secondaryPhone,
+      note: this.info.note,
+      date:this.info.date,
+      lastReservation: this.info.lastReservation,
+      knowUsThrough: this.info.knowUsThrough
     });
-  
+
     this.oldInfo = { ...this.formData.value };
   }
   UpdateInfo() {
@@ -51,7 +51,7 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
         console.log("error in Updating: ", err);
       }
     })
-    
+
    }
 
   cancel() {
