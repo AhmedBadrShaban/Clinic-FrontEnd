@@ -26,20 +26,16 @@ import { DialogEventComponent } from './modules/rooms/events-grid/dialog-event/d
  import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import {AutoCompleteComponent} from "./shared/components/auto-complete/auto-complete.component";
- import { ReceptionistModule } from './reciptianist/receptionist.module';
-import {RoomsComponent} from "./modules/rooms/rooms.component";
+ import {RoomsComponent} from "./modules/rooms/rooms.component";
 import {LoginComponent} from "./modules/login/login.component";
- import {RouterLink, RouterModule} from '@angular/router';
-import { AdministratorRoutingModule } from './Admin/administrator-routing.module';
-import { ReceptionistHomeComponent } from './reciptianist/receptionist-home/receptionist-home.component';
-import {AdminNavBarComponent} from "./Admin/components/admin-nav-bar/admin-nav-bar.component";
- import {AdministratorModule} from "./Admin/administrator.module";
-import {DoctorModule} from "./Doctor/doctor.module";
- import {DoctorRoutingModule} from "./Doctor/doctor-routing.module";
-import { DatePipe } from '@angular/common';
+ import {Route, RouterLink, RouterModule, Routes} from '@angular/router';
+  import { DatePipe } from '@angular/common';
 import { AddNewRoomComponent } from './modules/rooms/add-new-room/add-new-room.component';
 import { AvailableSlotsComponent } from './modules/rooms/available-slots/available-slots.component';
 import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @NgModule({
   declarations: [
@@ -49,24 +45,18 @@ import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.compon
     LoginComponent,
     AddNewRoomComponent,
     AvailableSlotsComponent,
-    AddClinicComponent
+    AddClinicComponent,
+    NotFoundComponent
 
   ],
   imports: [
-    AdminNavBarComponent,
-    RouterModule.forRoot([
-      {path: 'Receptionist-portal', loadComponent: () => ReceptionistHomeComponent},
-      {path: 'Admin-portal', loadChildren: () => AdministratorRoutingModule},
-      {path: 'Doctor-portal', loadChildren: () => DoctorRoutingModule},
-
-    ]),
     BrowserModule,
+    AppRoutingModule,
     HttpClientModule,
     NzTableModule, NzDividerModule, NzLayoutModule, NzButtonModule, NzDatePickerModule, NzFormModule,
     FormsModule,
     DatePipe,
     ReactiveFormsModule,
-    ReceptionistModule,
     MatButtonModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatDialogModule,
     SharedModule,
     NavBarComponent,
@@ -77,9 +67,7 @@ import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.compon
     NzPaginationModule,
     NzSelectModule,
     AutoCompleteComponent,
-    RouterLink,
-    AdministratorModule, DoctorModule
-
+    RouterLink
   ],
   exports:[
     // ExpenseComponent,

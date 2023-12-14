@@ -1,0 +1,12 @@
+#sidebar {
+  width:20%;
+  height:100%;
+  position:fixed;
+}
+.sideBarContent{
+  margin-left:22%;
+  height: 100%;
+}
+.navBarContent{
+  margin-top: 2%;
+}

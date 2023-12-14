@@ -1,5 +1,4 @@
 import {Component, NgModule} from '@angular/core';
-import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 
 @Component({
@@ -7,7 +6,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css'],
   standalone:true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage]
+  imports: [RouterLink, RouterLinkActive,  ]
 })
 export class NavBarComponent {
 

@@ -1,0 +1,37 @@
+<nav>
+  <div class="navvq">
+    <div class="rightNav">
+      <div class="NavItem"
+           style="margin-right: 50px"
+           [routerLink]="['/login']"
+           routerLinkActive = 'active'
+           [routerLinkActiveOptions]="{exact: true}"
+
+      >
+        Logout
+      </div>
+      <div class="NavItem"
+           [routerLink]="['doctorProfile']"
+           routerLinkActive = 'active'
+           [routerLinkActiveOptions]="{exact: true}"
+
+      >
+        Profile
+      </div>
+      <div class="NavItem"
+           [routerLink]="['/doctor']"
+           routerLinkActive = 'active'
+           [routerLinkActiveOptions]="{exact: true}"
+
+      >
+        Home
+      </div>
+    </div>
+
+    <div style="margin-left: 50px">
+      <img src="../../../../assets/logo.png" height="60" width="85"/>
+    </div>
+
+  </div>
+
+</nav>

@@ -1,6 +1,6 @@
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import {Component, Input, OnInit} from '@angular/core';
-import { reservation} from "../../../reciptianist/models/event-reservation.model";
+import { reservation} from "../../receptionist/models/event-reservation.model";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogEventComponent} from "./dialog-event/dialog-event.component";
 
@@ -23,7 +23,7 @@ export class EventsGridComponent implements OnInit{
       // this.eventsPerRoom=data;
        console.log("recived reservations of this room in date : " , this.date , "is: " , data )
     })
-   
+
     }
   openDialog( data : any){
     // const currentEvent = this.eventsPerDay?.[index];

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {reservation} from "../../../reciptianist/models/event-reservation.model";
+import {reservation} from "../../receptionist/models/event-reservation.model";
 
 @Component({
   selector: 'app-available-slots',

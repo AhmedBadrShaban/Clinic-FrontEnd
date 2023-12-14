@@ -1,14 +1,13 @@
-import { reservation } from './../../reciptianist/models/event-reservation.model';
+import { reservation } from './../receptionist/models/event-reservation.model';
 import { Component, OnInit } from '@angular/core';
-import {ServicesToReserve,reservationStatus} from "../../reciptianist/models/event-reservation.model";
-import { RoomsService } from '../Services/rooms/rooms.service';
+ import { RoomsService } from '../Services/rooms/rooms.service';
 import { Router } from '@angular/router';
 import { LoginService } from '../Services/Login-Services/login.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
-import { ReservationFmComponent } from 'src/app/reciptianist/components/reservation-fm/reservation-fm.component';
 import { DatePipe } from '@angular/common';
 import { AddClinicComponent } from './add-clinic/add-clinic.component';
+import { ReservationFmComponent } from '../receptionist/components/reservation-fm/reservation-fm.component';
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
