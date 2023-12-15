@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Route, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
@@ -7,10 +7,17 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   @ViewChild('username') username :ElementRef
   @ViewChild('password') password :ElementRef
     constructor(private authService:AuthService , private router:Router){
+
+    }
+    ngOnInit(): void {
+      console.log("loggedin user type"  ,this.authService.userType);
+      if(this.authService.isLogged){
+        this.router.navigate([this.authService.userType])
+      }
 
     }
     onLoginClicked(){
@@ -24,7 +31,15 @@ export class LoginComponent {
       }
       else{
         alert("welcome" + user.name );
-        this.router.navigateByUrl('')
+        if(this.authService.userType==='receptionist'){
+          this.router.navigateByUrl('receptionist')
+        }
+        else if(this.authService.userType==='admin'){
+          this.router.navigateByUrl('admin')
+        }
+        else if(this.authService.userType==='doctor'){
+          this.router.navigateByUrl('doctor')
+        }
       }
 
 

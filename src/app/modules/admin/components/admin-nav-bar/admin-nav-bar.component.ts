@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-admin-nav-bar',
@@ -10,5 +11,10 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
   styleUrls: ['./admin-nav-bar.component.css']
 })
 export class AdminNavBarComponent {
+  constructor(private logOut : AuthService , private router:Router){
+  }
+  loggOut(){
+    this.logOut.logout();
+   }
 
 }

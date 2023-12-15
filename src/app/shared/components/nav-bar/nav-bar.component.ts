@@ -1,5 +1,6 @@
 import {Component, NgModule} from '@angular/core';
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -9,5 +10,11 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
   imports: [RouterLink, RouterLinkActive,  ]
 })
 export class NavBarComponent {
+  constructor(private logOut : AuthService , private router:Router){
+  }
+  loggOut(){
+    this.logOut.logout();
+   }
+
 
 }

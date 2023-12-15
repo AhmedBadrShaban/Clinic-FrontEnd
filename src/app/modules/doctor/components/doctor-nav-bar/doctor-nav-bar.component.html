@@ -3,6 +3,7 @@
     <div class="rightNav">
       <div class="NavItem"
            style="margin-right: 50px"
+           (click)="loggOut()"
            [routerLink]="['/login']"
            routerLinkActive = 'active'
            [routerLinkActiveOptions]="{exact: true}"

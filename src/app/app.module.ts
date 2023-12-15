@@ -36,6 +36,7 @@ import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.compon
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { AdminModule } from './modules/admin/admin.module';
     AddNewRoomComponent,
     AvailableSlotsComponent,
     AddClinicComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ForbiddenComponent
 
   ],
   imports: [
