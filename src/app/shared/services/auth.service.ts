@@ -5,8 +5,8 @@ import { UserService } from "./user.service";
   providedIn :'root'
 })
 export class AuthService{
-  isLogged: boolean = localStorage.getItem('isLogged') === 'true';
-  userType: string | null = localStorage.getItem('userType');
+  isLogged: boolean = sessionStorage.getItem('isLogged') === 'true';
+  userType: string | null = sessionStorage.getItem('userType');
   constructor(private userService: UserService) {}
   login(username:string , password:string ){
     let user = this.userService.testUsers.find((u)=>u.username === username && u.password === password);
@@ -17,8 +17,8 @@ export class AuthService{
      this.isLogged=true;
      this.userType=user.role;
 
-     localStorage.setItem('isLogged', 'true');
-     localStorage.setItem('userType', this.userType);
+     sessionStorage.setItem('isLogged', 'true');
+     sessionStorage.setItem('userType', this.userType);
     }
 
      return user;
@@ -28,8 +28,8 @@ export class AuthService{
     this.isLogged =false;
     this.userType=null;
 
-    localStorage.removeItem('isLogged');
-    localStorage.removeItem('userType');
+    sessionStorage.removeItem('isLogged');
+    sessionStorage.removeItem('userType');
   }
   isAauthenticated(){
     return this.isLogged;

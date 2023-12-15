@@ -4,8 +4,7 @@ import { PatientInfo } from '../../models/patient-Info';
  import { PatientPoints } from '../../models/patient-points';
 import { AddNewPatientComponent } from '../add-new-patient/add-new-patient.component';
 import { MatDialog } from '@angular/material/dialog';
-import { LoginService } from 'src/app/modules/Services/Login-Services/login.service';
-import { ActivatedRoute } from '@angular/router';
+ import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../../services/patient-server/patient.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
  @Component({

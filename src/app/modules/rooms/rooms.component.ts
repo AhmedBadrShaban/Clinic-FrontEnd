@@ -2,7 +2,6 @@ import { reservation } from './../receptionist/models/event-reservation.model';
 import { Component, OnInit } from '@angular/core';
  import { RoomsService } from '../Services/rooms/rooms.service';
 import { Router } from '@angular/router';
-import { LoginService } from '../Services/Login-Services/login.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
 import { DatePipe } from '@angular/common';

@@ -6,8 +6,8 @@ import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
 import { ExpenseService } from '../../services/expenses-service/expense.service';
 import { DatePipe } from '@angular/common';
-import { LoginService } from 'src/app/modules/Services/Login-Services/login.service';
-import { AddExpenseTypeComponent } from './add-expense-type/add-expense-type.component';
+ import { AddExpenseTypeComponent } from './add-expense-type/add-expense-type.component';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 interface Setting {
@@ -50,7 +50,7 @@ export class ExpenseComponent implements OnInit {
 
 
   constructor(private dialogRef : MatDialog  ,
-    private ExpenseService:ExpenseService , private datePipe:DatePipe , private loggedIn:LoginService ){
+    private ExpenseService:ExpenseService , private datePipe:DatePipe , private loggedIn:AuthService ){
       this.userType = loggedIn.userType;
     this.selectedDate = new Date();
     this.settingValue ={
