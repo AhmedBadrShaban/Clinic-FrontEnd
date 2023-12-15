@@ -2,10 +2,10 @@
 
 
   <div class=" mx-auto my-2 d-flex justify-content-between overflow-hidden "    style="width:90%; height: 50px;">
-    <div class="h-100" *ngIf="loggedIn.userType=='Admin'">
+    <div class="h-100" *ngIf="loggedIn.userType=='admin'">
       <a class="btn btn-success h-100" style="line-height: 40px;" (click)="openDialog('room' , activeTabTitle)"><i class="bi bi-plus"></i> Add New Room</a>
     </div>
-    <div class="h-100" *ngIf="loggedIn.userType=='Admin'">
+    <div class="h-100" *ngIf="loggedIn.userType=='admin'">
       <a class="btn btn-success h-100" style="line-height: 40px;" (click)="openDialog('clinic' , activeTabTitle)"><i class="bi bi-plus"></i> Add New Clinic</a>
     </div>
     <div class="h-100">

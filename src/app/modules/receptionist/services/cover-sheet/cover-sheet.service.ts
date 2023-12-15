@@ -7,10 +7,13 @@ import { Observable } from 'rxjs';
 })
 export class CoverSheetService {
 
-  private baseUrl:string="http://localhost:3000/";
+  private baseUrl:string="http://localhost:8080/";
   constructor(private http :HttpClient) { }
   
   getAllSheets():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}CoverSheet`);
+    return this.http.get<any>(`${this.baseUrl}reciptianists/get-all-covers-sheet`);
   }
+  // getAllSheets():Observable<any>{
+  //   return this.http.get<any>(`${this.baseUrl}receptionist/daily-sheet`);
+  // }
 }

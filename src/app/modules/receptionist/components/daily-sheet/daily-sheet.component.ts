@@ -31,8 +31,10 @@ interface Setting {
   styleUrls: ['./daily-sheet.component.css']
 })
 export class DailySheetComponent {
+  allRooms:string [];
+  allDoctors:string[];
   selectedRoom: string;
-  selectedReciptianist: string;
+  selectedDoctor: any;
   selectedDate: any;
   dailyInfo: readonly DailySheet[] =[];
   displayData: readonly DailySheet[] = [];
@@ -76,12 +78,21 @@ export class DailySheetComponent {
       // console.log(data);
       this.dailyInfo =data;
       console.log( "daily sheet recived : " ,this.dailyInfo);
-    })}
+    })
+    this.dailySheetService.getAllRooms().subscribe((rooms)=>{
+      this.allRooms =rooms;
+      console.log('rooms :>> ', this.allRooms);
+    })
+    this.dailySheetService.getAllDoctorsNames().subscribe((data:any)=>{
+      this.allDoctors =data;
+      console.log('AllNames of Doctors:>> ', this.allDoctors);
+     })
+  }
 
     onRoomChange(){
       // console.log("executing Room Filtering");
       console.log("selected room before filtring is : " , this.selectedRoom)
-      this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedReciptianist).subscribe((data:any)=>{
+      this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
           console.log(data);
           this.dailyInfo =data;
           console.log( "Search result is  : " ,this.dailyInfo);
@@ -89,8 +100,8 @@ export class DailySheetComponent {
     }
     onDoctorChange(){
       // console.log("executing Doctor Filtering");
-      console.log("selected Doctor before filtring is : " , this.selectedReciptianist)
-      this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedReciptianist).subscribe((data:any)=>{
+      console.log("selected Doctor before filtring is : " , this.selectedDoctor)
+      this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
           console.log(data);
           this.dailyInfo =data;
           console.log( "Search result is  : " ,this.dailyInfo);
@@ -101,7 +112,7 @@ export class DailySheetComponent {
       this.selectedDate= this.datePipe.transform(formattedDate, 'yyyy-MM-dd');
       console.log("executing Date Filtering");
       console.log("selected Date before filtring is : " ,this.selectedDate)
-      this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedReciptianist).subscribe((data:any)=>{
+      this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
           console.log(data);
           this.dailyInfo =data;
           console.log( "Search result is : " ,this.dailyInfo);
@@ -113,7 +124,7 @@ export class DailySheetComponent {
       // Reset the selectedRoom and selectedReciptianist to their default values
       this.selectedDate = null;
       this.selectedRoom = "Room";
-      this.selectedReciptianist = "Reciptianist";
+      this.selectedDoctor = null;
 
       // Call the filterDailySheet method
       this.dailySheetService.filterDailySheet().subscribe((data: any) => {

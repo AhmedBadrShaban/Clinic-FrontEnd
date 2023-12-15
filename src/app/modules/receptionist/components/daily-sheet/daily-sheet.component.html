@@ -3,17 +3,17 @@
         <mat-form-field>
             <mat-label>Room</mat-label>
             <mat-select [(ngModel)]="selectedRoom"  (ngModelChange)="onRoomChange()">
-                <mat-option value="laser 1">laser room</mat-option>
-                <mat-option value="skin">skin room</mat-option>
+                <mat-option   [disabled]="true">Choose Rooms</mat-option>
+                <mat-option *ngFor="let room of allRooms" [value]="room">{{room}}</mat-option>
              </mat-select>
         </mat-form-field>
     </div>
     <div class="h-100">
         <mat-form-field>
-            <mat-label>Reciptianist</mat-label>
-            <mat-select [(ngModel)]="selectedReciptianist" (ngModelChange)="onDoctorChange()">
-                <mat-option value="Dr. Smith">Dr. Smith</mat-option>
-                <mat-option value="John Snow">John Snow</mat-option>
+            <mat-label>Doctor</mat-label>
+            <mat-select [placeholder]="'Select Doctor'" [(ngModel)]="selectedDoctor" (ngModelChange)="onDoctorChange()">
+              <mat-option    [disabled]="true">Choose Doctor</mat-option>
+                <mat-option *ngFor="let doc of allDoctors" [value]="doc">{{doc}}</mat-option>
                 <!-- <mat-option value="Reciptianist 3">Reciptianist 3</mat-option> -->
             </mat-select>
         </mat-form-field>

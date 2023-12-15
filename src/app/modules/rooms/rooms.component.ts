@@ -8,6 +8,7 @@ import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
 import { DatePipe } from '@angular/common';
 import { AddClinicComponent } from './add-clinic/add-clinic.component';
 import { ReservationFmComponent } from '../receptionist/components/reservation-fm/reservation-fm.component';
+import { AuthService } from 'src/app/shared/services/auth.service';
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
@@ -20,7 +21,7 @@ export class RoomsComponent implements OnInit {
   allReservations:any;
   selectedDate: any =new Date();
   searchValue:string;
-  constructor( private datePipe:DatePipe  ,private router: Router , private allReservation:RoomsService , public loggedIn:LoginService , public dialog: MatDialog){
+  constructor( private datePipe:DatePipe  ,private router: Router , private allReservation:RoomsService , public loggedIn:AuthService , public dialog: MatDialog){
     this.selectedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
   }
   ngOnInit(): void {

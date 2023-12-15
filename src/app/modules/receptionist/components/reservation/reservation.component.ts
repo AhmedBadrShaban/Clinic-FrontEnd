@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginService } from 'src/app/modules/Services/Login-Services/login.service';
 import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../../services/patient-server/patient.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
  @Component({
   selector: 'app-reservation',
   encapsulation: ViewEncapsulation.None,
@@ -37,10 +38,11 @@ patientPackages:any=[];
 patientReservations:any=[];
 totalOut:number;
 totalIn:number;
-userType:string;
+userType:string|null;
 
-constructor(private allPatients:ReservationsService ,private patientService:PatientService,private route: ActivatedRoute , private loggedIn:LoginService, private dialogRef : MatDialog ){
+constructor(private allPatients:ReservationsService ,private patientService:PatientService,private route: ActivatedRoute , private loggedIn:AuthService, private dialogRef : MatDialog ){
   this.userType = loggedIn.userType;
+  console.log('User Type in Reservation is :>> ' , this.userType);
   }
   ngOnInit(): void {
     if(this.userType != 'Doctor'){

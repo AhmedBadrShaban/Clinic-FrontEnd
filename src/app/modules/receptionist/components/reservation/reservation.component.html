@@ -1,7 +1,7 @@
 <div class="content">
-  <div *ngIf="userType!='Doctor'" class="w-75 mx-auto">
-    <div class="row" style="height: 50px;">
-      <div class="col-6">
+  <div *ngIf="userType!='doctor'" class="w-75 mx-auto">
+    <div class="d-flex justify-content-center" style="height: 50px;">
+      <div class="w-50 mx-2">
         <input  class="form-control h-100 bg-light" id="patient-number"
         placeholder="search" type="search"
         nz-input
@@ -12,44 +12,41 @@
       />
       <nz-autocomplete [nzDataSource]="filteredData" #PatientAuto></nz-autocomplete>
       </div>
-     <div class="col-2">
-      <button (click)="search()"  type="button" class="btn btn-info h-100">
-        <i class="bi bi-search"></i>
-      </button>
-     </div>
-
-     <div class="col-4" *ngIf="userType=='Admin'" >
-      <div class="ms-auto">
+      <div class="mx-2">
+        <button (click)="search()"  type="button" class="btn btn-info h-100">
+          <i class="bi bi-search"></i>
+        </button>
+       </div>
+      <div *ngIf="userType=='admin'" class="mx-2 align-self-end">
         <button (click)="openDialog()" class="btn btn-info" style="width: 200px; height: 50px;"> <span class="bi bi-plus"></span> New Patient</button>
       </div>
-     </div>
     </div>
   </div>
 
   <nz-tabset nzCentered style="padding-top: 2%">
 
-    <nz-tab *ngIf="userType=='Admin'" nzTitle="Idle Patients">
+    <nz-tab *ngIf="userType=='admin'" nzTitle="Idle Patients">
       <app-idle-patients></app-idle-patients>
     </nz-tab>
-    <nz-tab *ngIf="userType!='Doctor'"  nzTitle="Main Info">
+    <nz-tab *ngIf="userType!='doctor'"  nzTitle="Main Info">
       <app-patient-info [info]="PatientInfo"></app-patient-info>
     </nz-tab>
     <nz-tab id="history" nzTitle="History">
       <app-history [history]="patientHistory"></app-history>
     </nz-tab>
-    <nz-tab  *ngIf="userType!='Doctor'" id="packages" nzTitle="Packages">
+    <nz-tab  *ngIf="userType!='doctor'" id="packages" nzTitle="Packages">
       <app-packages [packages]="patientPackages"></app-packages>
     </nz-tab>
-    <nz-tab  *ngIf="userType!='Doctor'" id="points" nzTitle="Points">
+    <nz-tab  *ngIf="userType!='doctor'" id="points" nzTitle="Points">
       <app-points [patientNumber]="PatientInfo.primaryPhone" [pointsHistory]="pointsHistory" [totalIn]="totalIn" [totalOut]="totalOut"></app-points>
     </nz-tab>
-    <nz-tab  *ngIf="userType!='Doctor'" nzTitle="Reservations">
+    <nz-tab  *ngIf="userType!='doctor'" nzTitle="Reservations">
       <app-reservations [reservations]="patientReservations"> </app-reservations>
     </nz-tab>
-    <nz-tab  *ngIf="userType!='Doctor'" nzTitle="Payment History">
+    <nz-tab  *ngIf="userType!='doctor'" nzTitle="Payment History">
       <app-payment-history [paymentHistory]="patientReservations"> </app-payment-history>
     </nz-tab>
-    <nz-tab *ngIf="userType=='Doctor'" nzTitle="After Work">
+    <nz-tab *ngIf="userType=='doctor'" nzTitle="After Work">
       <!-- <app-idle-patients></app-idle-patients> -->
     </nz-tab>
   </nz-tabset>
