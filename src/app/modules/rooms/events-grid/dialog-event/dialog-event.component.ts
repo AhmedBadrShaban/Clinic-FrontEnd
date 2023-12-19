@@ -7,6 +7,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {reservation} from "../../../receptionist/models/event-reservation.model";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-event',
@@ -19,10 +20,10 @@ import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 export class DialogEventComponent implements OnInit {
   toggle = false;
   toggle2 = false;
-  date = '2023-12-10'
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: reservation, private roomsService:RoomsService
+    @Inject(MAT_DIALOG_DATA) public data: reservation, private roomsService:RoomsService ,
+   private router : Router
   ) {}
   ngOnInit(): void {
 
@@ -62,5 +63,10 @@ export class DialogEventComponent implements OnInit {
       this.roomsService.updateData(data);
       console.log( "data Updated : " ,data);
     })
+  }
+  checkOut(id:number){
+    console.log('id before navigating :>> ', id);
+    this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
+    this.close();
   }
 }

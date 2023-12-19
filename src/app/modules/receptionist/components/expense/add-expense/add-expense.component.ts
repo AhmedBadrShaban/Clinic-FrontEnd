@@ -53,8 +53,8 @@ export class AddExpenseComponent implements OnInit{
     let userModel:Expense=this.expenseFm.value as Expense;
     console.log( "form data before sending request",userModel);
     this.expenseService.addNewExpense(userModel).subscribe({
-      next:(data)=>{
-        console.log('new expense added :>> ',data);
+      next:(data:any)=>{
+        alert(data.message);
         this.closeDialog();
         this.UpdateAllExpenses();
       },

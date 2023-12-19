@@ -49,16 +49,15 @@
 
   .row-service{
     display: flex;
-    width: 46%;
     justify-content: space-between;
   }
 
   .toggle-inn{
     display: flex;
-    width: 100%;
+    width: 46%;
+    margin:auto;
     flex-direction: column;
-    align-items: center;
-  }
+   }
   .cell-data{
     width: 33%;
     text-align: center;
@@ -95,4 +94,26 @@ td{
 .done{
   color:black;
   font-weight:bold;
+}
+.to-doctor{
+  color:purple;
+  font-weight:bold;
+}
+.modal-content {
+  max-height: calc(100vh - 120px);  
+   position: relative;
+}
+
+.buttons-container {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: white; /* Set the desired background color */
+  padding: 10px;
+  border-top: 1px solid #ccc; /* Add a border at the top for separation */
+  display: flex;
+  justify-content: space-around; /* Adjust as needed */
+  z-index: 1000; /* Adjust the z-index to ensure it appears above other elements */
 }

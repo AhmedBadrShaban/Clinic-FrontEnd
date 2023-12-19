@@ -51,9 +51,9 @@
     <ng-container *ngFor="let data of dynamicTable.data">
         <tr  style="cursor: pointer; font-size: 16px" >
           <!--  -->
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId , data)">{{ data.doctorName  }}</td>
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId , data)">{{ data.phoneNumber  }}</td>
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId , data)">{{ data.pricePerHour }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! , data)">{{ data.doctorName  }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! , data)">{{ data.phoneNumber  }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! , data)">{{ data.pricePerHour }}</td>
             <td *ngIf="data.isLaser" [nzAlign]="'center'" >
                 <img src="../../../../assets/5289675.png" height="35" width="35"/>
             </td>

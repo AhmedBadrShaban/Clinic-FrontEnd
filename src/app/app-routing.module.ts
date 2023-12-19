@@ -13,16 +13,16 @@ const routes:Routes = [
   { path: 'receptionist', loadChildren:
   () => import('./modules/receptionist/receptionist.module').then(m => m.ReceptionistModule),
   canActivate: [AuthGuardService],
-  data: { requiredRole: 'receptionist' } 
+  data: { requiredRole: 'ROLE_RECEPTIONIST' }
 },
 
-  { path: 'admin', loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule) ,  
+  { path: 'admin', loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule) ,
     canActivate: [AuthGuardService],
-    data: { requiredRole: 'admin' } 
+    data: { requiredRole: 'ROLE_ADMIN' }
 },
   { path: 'doctor', loadChildren: () => import('./modules/doctor/doctor.module').then(m => m.DoctorModule),
     canActivate: [AuthGuardService],
-    data: { requiredRole: 'doctor' } 
+    data: { requiredRole: 'ROLE_DOCTOR' }
 },
 { path: 'forbidden', component: ForbiddenComponent }, // Create a ForbiddenComponent for unauthorized access
   {path: '**' , component: NotFoundComponent}

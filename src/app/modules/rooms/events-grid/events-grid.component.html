@@ -1,19 +1,22 @@
 <!--<app-events-bar></app-events-bar>-->
 
-<!-- IN_PROGRESS,
+<!-- 
+IN_PROGRESS,
 CONFIRMED,
-WAITING,
-CANCELLED,
+WAITING,,
 TO_DOCTOR,
-DONE -->
+DONE
+CANCELLED
+ -->
 <div class="flex-all">
   <div class="grid-events" >
     <div *ngFor="let e of eventsPerRoom let i = index">
     <div [ngClass]="{
     'grid-item-inProgress' : e.status === 'IN_PROGRESS',
     'grid-item-confirmed' : e.status === 'CONFIRMED',
-    'grid-item-toDoctor' : e.status === 'TO_DOCTOR',
     'grid-item-waiting' : e.status === 'WAITING',
+    'grid-item-toDoctor' : e.status === 'TO_DOCTOR',
+    'grid-item-done' : e.status === 'DONE',
     'grid-item-cancelled' : e.status === 'CANCELLED',
      }"
            (click)="openDialog(e)"
@@ -27,14 +30,7 @@ DONE -->
         <div>
            From [ {{e.reservationStart.slice(0,5)}}] - To [ {{e.reservationEnd.slice(0,5)}} ]
         </div>
-        <div [ngClass]="{
-          'badge bg-primary text-white': e.status === 'IN_PROGRESS',
-          'badge bg-success': e.status === 'CONFIRMED',
-          'badge bg-warning': e.status === 'WAITING',
-          'badge bg-danger': e.status === 'CANCELLED',
-          'badge bg-info': e.status === 'TO_DOCTOR',
-          'badge bg-secondary': e.status === 'DONE'
-        }">
+        <div class="badge bg-secondary">
           {{ e.status }}
         </div>
 

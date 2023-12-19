@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {Doctors} from "../../models/doctors";
 
@@ -8,6 +8,7 @@ import {Doctors} from "../../models/doctors";
 })
 export class DoctorsService {
   private baseUrl:string="http://localhost:8080/";
+  private token: string | null = sessionStorage.getItem('token');
   constructor(private http:HttpClient) { }
   addDoctor(data:any){
     return this.http.post(`${this.baseUrl}api/auth/signup/doctor` , data);
@@ -26,6 +27,11 @@ search(searchVal:any):Observable<any>{
 changeStatus(userName: any){
   console.log('userName before Sending Api :>> ', userName);
   return this.http.patch<any>(`${this.baseUrl}api/auth/update-user-status?username=${userName}` , userName)
+}
+updateProfile(id: string, data: any) {
+  const params = new HttpParams().set('id', id);
+  console.log('data :>> ', data);
+  return this.http.put(`${this.baseUrl}admin/update-doctor-profile`, data , { params });
 }
 private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);
 listOfData$ = this.listOfDataSubject.asObservable();

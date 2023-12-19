@@ -11,6 +11,7 @@ import { ExpenseComponent } from './components/expense/expense.component';
 import { PackageComponent } from './components/package/package.component';
 import { ReservationFmComponent } from './components/reservation-fm/reservation-fm.component';
 import { ReservationComponent } from './components/reservation/reservation.component';
+import { CheckOutComponent } from '../rooms/check-out/check-out.component';
 
 const routes: Routes = [
   { path: '', component: ReceptionistComponent ,children:[
@@ -24,6 +25,8 @@ const routes: Routes = [
     {path:"reservation",component:ReservationComponent},
     {path:"reservationform",component:ReservationFmComponent},
     {path: 'rooms', component: RoomsComponent, pathMatch:'full'},
+    {path: 'rooms/check-out/:id', component: CheckOutComponent},
+
   ] },
 
 

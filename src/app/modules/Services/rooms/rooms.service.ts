@@ -15,7 +15,15 @@ export class RoomsService {
       return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation?roomName=${roomName}&date=${date}`);
     }
   allRooms():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/rooms/name`);
+    if(sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST')
+    {
+      return this.http.get<any>(`${this.baseUrl}receptionist/rooms-names-to-specific-clinic`);
+    }
+    else
+    {
+      return this.http.get<any>(`${this.baseUrl}admin/rooms/name`);
+    }
+
   }
   addRoom(data:any){
     return this.http.post(`${this.baseUrl}admin/rooms` , data);

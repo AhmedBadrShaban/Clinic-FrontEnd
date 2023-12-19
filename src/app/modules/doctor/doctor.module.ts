@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { FormsModule } from '@angular/forms';
 import { DoctorRoutingModule } from './doctor-routing.module';
 import { DoctorComponent } from './doctor.component';
 import { DoctorNavBarComponent } from './components/doctor-nav-bar/doctor-nav-bar.component';
@@ -28,7 +28,8 @@ import { MainPageComponent } from './main-page/main-page.component';
     ReactiveFormsModule,
     NzTableModule,
     NzTabsModule,
-    ReceptionistModule
+    ReceptionistModule,
+    FormsModule
   ]
 })
 export class DoctorModule { }

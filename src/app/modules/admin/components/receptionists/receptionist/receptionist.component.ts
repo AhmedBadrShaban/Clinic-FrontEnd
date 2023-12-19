@@ -9,7 +9,7 @@ import {ReceptionistsService} from "../../../services/receptionists/receptionist
   templateUrl: './receptionist.component.html',
   styleUrls: ['./receptionist.component.css']
 })
-export class ReceptionistComponent implements OnInit{
+export class ReceptionistProfileComponent implements OnInit{
   receptionistData: any;
   @Input() editable : boolean = false;
   constructor(private router: Router , private route: ActivatedRoute , private recpService : ReceptionistsService) {

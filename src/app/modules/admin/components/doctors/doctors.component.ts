@@ -90,6 +90,6 @@ export class DoctorsComponent implements OnInit {
     this.dialogRef.open(AddNewDoctorComponent);
   }
   goToDoctorData(id : string ,data:any){
-    this.router.navigate(['doctor' , id] , {queryParams:data})
+    this.router.navigate(['admin/doctor' , id] , {queryParams:data})
   }
 }

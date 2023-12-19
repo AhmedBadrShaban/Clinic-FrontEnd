@@ -21,28 +21,60 @@ export class LoginComponent implements OnInit {
 
     }
     onLoginClicked(){
-      const userName= this.username.nativeElement.value;
-      const password= this.password.nativeElement.value;
-      const user = this.authService.login(userName , password);
-
-      if(user === undefined)
-      {
-        alert("Wrong Credintials")
+      const credentials = {
+        username: this.username.nativeElement.value,
+        password: this.password.nativeElement.value
       }
-      else{
-        alert("welcome" + user.name );
-        if(this.authService.userType==='receptionist'){
-          this.router.navigateByUrl('receptionist')
+      this.authService.login(credentials).subscribe(
+        (data: any) => {
+          // Handle successful login response
+          console.log('Login successful', data);
+          this.authService.isLogged=true;
+          this.authService.userType=data.authority;
+          this.authService.setToken( data.token);
+          sessionStorage.setItem('isLogged', 'true');
+          sessionStorage.setItem('userType',  data.authority);
+
+          const userAuthority = data.authority;
+          if(userAuthority==='ROLE_RECEPTIONIST'){
+            this.router.navigateByUrl('receptionist')
+          }
+          else if(userAuthority==='ROLE_ADMIN'){
+            this.router.navigateByUrl('admin')
+          }
+          else if( userAuthority==='ROLE_DOCTOR'){
+            this.router.navigateByUrl('doctor')
+          }
+        },
+        error => {
+          // Handle login error
+          alert(error.error.message);
         }
-        else if(this.authService.userType==='admin'){
-          this.router.navigateByUrl('admin')
-        }
-        else if(this.authService.userType==='doctor'){
-          this.router.navigateByUrl('doctor')
-        }
+        )
+        // alert("welcome " + user.name );
+
+      }
+
+      test(c:number){
+          this.authService.isLogged=true;
+           sessionStorage.setItem('isLogged', 'true');
+           if(c==2){
+            this.authService.userType= 'ROLE_RECEPTIONIST';
+            sessionStorage.setItem('userType',  this.authService.userType);
+            this.router.navigateByUrl('receptionist')
+          }
+          else if(c==1){
+            this.authService.userType= 'ROLE_ADMIN';
+            sessionStorage.setItem('userType',  this.authService.userType);
+            this.router.navigateByUrl('admin')
+          }
+          else if( c==3){
+            this.authService.userType= 'ROLE_DOCTOR';
+            sessionStorage.setItem('userType',  this.authService.userType);
+             this.router.navigateByUrl('doctor')
+          }
       }
 
 
 
     }
-}

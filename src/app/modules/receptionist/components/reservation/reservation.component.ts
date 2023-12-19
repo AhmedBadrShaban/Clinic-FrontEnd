@@ -113,6 +113,7 @@ constructor(private allPatients:ReservationsService ,private patientService:Pati
     const patientPhone = this.extractPhoneNumberFromSearchResult(this.searchValue);
     this.patientService.searchPatients(patientPhone).subscribe((data:any)=>{
       this.patientData =data;
+      console.log( "Patient recived all data: " ,this.patientData);
       this.extractPatientInfo();
      console.log( "Patient recived : " ,this.PatientInfo);
    })

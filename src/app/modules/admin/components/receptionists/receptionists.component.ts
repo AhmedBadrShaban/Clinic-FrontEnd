@@ -97,6 +97,6 @@ export class ReceptionistsComponent implements OnInit {
     this.dialogRef.open(AddNewReceptionistComponent);
   }
   goToReceptionistData(id: string , data:any) {
-     this.router.navigate(['Areceptionist', id] , { queryParams: data });
+     this.router.navigate(['admin/receptionist', id] , { queryParams: data });
   }
 }

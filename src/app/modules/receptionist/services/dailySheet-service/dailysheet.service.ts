@@ -13,12 +13,7 @@ export class DailysheetService {
   getAllReciptianists():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}reciptianists`);
   }
-  // getAllRooms(clinic = 'Maadi'):Observable<any>{
-  //   return this.http.get<any>(`${this.baseUrl}reciptianists/rooms-names-to-specific-clinic`);
-  // }
-  getAllRooms():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/rooms/name`);
-  }
+
   getAllDoctorsNames():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/doctors-names`);
   }

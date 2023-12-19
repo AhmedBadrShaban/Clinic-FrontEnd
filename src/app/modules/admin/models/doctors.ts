@@ -1,5 +1,5 @@
 export interface Doctors {
-    doctorId: string;
+    doctorId?: string;
     doctorName: string;
     userName:string;
     email : string;
@@ -12,7 +12,7 @@ export interface Doctors {
     isLaser: boolean;
     isActive:boolean;
     laserCost: number;
-    doctor:{
+    doctor?:{
       username:string;
       password:string;
     }

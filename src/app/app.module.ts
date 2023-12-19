@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -35,8 +35,11 @@ import { AvailableSlotsComponent } from './modules/rooms/available-slots/availab
 import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AdminModule } from './modules/admin/admin.module';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
+import { AuthService } from './shared/services/auth.service';
+import { AuthInterceptor } from './shared/services/auth.interceptor';
+import { CheckOutComponent } from './modules/rooms/check-out/check-out.component';
+
 
 @NgModule({
   declarations: [
@@ -48,8 +51,8 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
     AvailableSlotsComponent,
     AddClinicComponent,
     NotFoundComponent,
-    ForbiddenComponent
-
+    ForbiddenComponent,
+    CheckOutComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +78,7 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
     // ExpenseComponent,
 
   ],
-  providers: [DatePipe],
+  providers: [DatePipe ,  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },AuthService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

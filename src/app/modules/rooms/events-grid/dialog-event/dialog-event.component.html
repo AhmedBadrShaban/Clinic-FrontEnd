@@ -1,5 +1,5 @@
 <!--<div>{{data.DoctorName}}</div>-->
-<div class="Content">
+<div class="Content modal-content">
   <div class="Header">
     Reservation Information
   </div>
@@ -34,29 +34,46 @@
         <td [ngClass]="{
           'inprogress': data.status === 'IN_PROGRESS',
           'confirmed': data.status === 'CONFIRMED',
+          'waiting': data.status === 'WAITING',
+          'to-doctor': data.status === 'TO_DOCTOR',
+          'done': data.status === 'DONE',
           'cancelled': data.status === 'CANCELLED'
         }">
           {{ data.status }}</td>
       </tr>
     </table>
 
-    <div class="header-Service">
-        Reserved Services
-        <img *ngIf="!toggle" (click)="changeToogle()" class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40"/>
-        <img *ngIf="toggle" (click)="changeToogle()" class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40" style="transform: rotate(180deg);"/>
+    <div (click)="changeToogle()"   class="header-Service">
+      <h3 class="m-auto" *ngIf="!toggle && data.status != 'DONE'">Show Reserved Services</h3>
+      <h3 class="m-auto"  *ngIf="toggle  && data.status != 'DONE'">Hide Reserved Services</h3>
+      <h3 class="m-auto"  *ngIf="!toggle && data.status === 'DONE'">Show Completed Services</h3>
+      <h3  class="m-auto" *ngIf="toggle  && data.status === 'DONE'">Hide Completed Services</h3>
+         <img *ngIf="!toggle"  class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40"/>
+        <img *ngIf="toggle"   class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40" style="transform: rotate(180deg);"/>
     </div>
-    <div *ngIf = "toggle" class="toggle-inn" >
-
-      <div *ngFor="let service of data.services" class="row-service">
-         Service Name:<span>{{service}}</span>
-      </div>
-      </div>
+    <table *ngIf="toggle">
+      <thead>
+        <tr>
+          <th>Index</th>
+          <th>Service Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let service of data.services; let i = index" >
+          <td>{{ i + 1 }}</td> 
+          <td>{{ service }}</td>
+        </tr>
+      </tbody>
+    </table>
+    
   </div>
- <div  *ngIf="data.status != 'CANCELLED'">
-   <button mat-raised-button style="background-color: red !important; margin-right: 5px;  color: white;" (click)="chengeReservationStatus(data.reservationId , 'CANCELLED')">Cancel Reservation</button>
-   <button *ngIf="data.status != 'CONFIRMED'" mat-raised-button style="background-color:green !important;  margin-right: 5px; color: white;" (click)="chengeReservationStatus(data.reservationId , 'CONFIRMED')">Confirm Reservation</button>
-   <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white;" (click)="chengeReservationStatus(data.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
-</div>
+ <div class="buttons-container"  *ngIf="data.status != 'CANCELLED'">
+  <button *ngIf="data.status == 'IN_PROGRESS'" mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'CONFIRMED')">Confirm Reservation</button>
+   <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'WAITING')">Waiting Reservation</button>
+   <button *ngIf="data.status == 'CONFIRMED' || data.status == 'WAITING' " mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
+   <button *ngIf="data.status == 'DONE'" mat-raised-button style="background-color:blue  !important; margin-right: 2px;  color: white; font-size:12px"  (click)="checkOut(data.reservationId)">GO TO CHECKOUT</button>
+   <button *ngIf="data.status != 'DONE'" mat-raised-button style="background-color: red !important; margin-right: 2px;  color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'CANCELLED')">Cancel Reservation</button>
+  </div>
 
 </div>
 

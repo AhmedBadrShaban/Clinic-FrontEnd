@@ -9,7 +9,7 @@ import { DoctorComponent } from './components/doctors/doctor/doctor.component';
 import { AddNewDoctorComponent } from './components/doctors/add-new-doctor/add-new-doctor.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReceptionistsComponent } from './components/receptionists/receptionists.component';
-import { ReceptionistComponent } from './components/receptionists/receptionist/receptionist.component';
+import { ReceptionistProfileComponent } from './components/receptionists/receptionist/receptionist.component';
 import { ServicesComponent } from './components/services/services.component';
 import { PackagesComponent } from './components/packages/packages.component';
 import {NzBadgeModule} from "ng-zorro-antd/badge";
@@ -28,7 +28,7 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { ReceptionistModule } from '../receptionist/receptionist.module';
 import { ReservationComponent } from '../receptionist/components/reservation/reservation.component';
- 
+
 @NgModule({
   declarations: [
       AdminComponent,
@@ -36,7 +36,7 @@ import { ReservationComponent } from '../receptionist/components/reservation/res
       DoctorComponent,
       AddNewDoctorComponent,
       ReceptionistsComponent,
-      ReceptionistComponent,
+      ReceptionistProfileComponent,
       ServicesComponent,
       PackagesComponent,
       AddNewReceptionistComponent,
@@ -46,7 +46,7 @@ import { ReservationComponent } from '../receptionist/components/reservation/res
       AdminProfileComponent,
       MaterialsComponent,
       AddNewMatrialComponent,
-        
+
    ],
   exports: [
     ],
