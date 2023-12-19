@@ -19,10 +19,10 @@ export class EventsGridComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.roomsService.getRoomReservation(this.roomName , this.date).subscribe((data)=>{
-      // this.eventsPerRoom=data;
-       console.log("recived reservations of this room in date : " , this.date , "is: " , data )
-    })
+    // this.roomsService.getRoomReservation(this.roomName , this.date).subscribe((data)=>{
+    //   // this.eventsPerRoom=data;
+    //    console.log("recived reservations of this room in date : " , this.date , "is: " , data )
+    // })
 
     }
   openDialog( data : any){

@@ -4,6 +4,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { IPatient } from 'src/app/modules/receptionist/models/ipatient';
 import { PatientService } from '../../services/patient-server/patient.service';
 import { Router } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class AddNewPatientComponent implements OnInit {
   newPatientFm: FormGroup;
   displayError = false;
   displayError2 = false;
-  constructor(private fb: FormBuilder , private router: Router ,  public newPatient:PatientService , private authService:AuthService ) {
+  constructor(private fb: FormBuilder , private router: Router , private dialogRef: MatDialogRef<AddNewPatientComponent>  ,  public newPatient:PatientService , private authService:AuthService ) {
     this.newPatientFm = fb.group({
       name: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       note: ['', [Validators.required]],
@@ -44,14 +45,14 @@ export class AddNewPatientComponent implements OnInit {
         alert(data.message)
          if(this.authService.userType === 'ROLE_RESEPTIANIST')
               this.router.navigateByUrl('receptionist/addpatient')
-            else if(this.authService.userType === 'ROLE_RESEPTIANIST')
+            else if(this.authService.userType === 'ROLE_ADMIN')
             {
-              this.router.navigateByUrl('admin/addpatient')
-            }
+              this.closeDialog();
+             }
         },
       error: (err) => {
         console.log('err :>> ', err);
-        alert(err.error);
+        alert(err.error.message);
       }
 
     });
@@ -60,22 +61,21 @@ export class AddNewPatientComponent implements OnInit {
     if(o){
     const primaryPhoneControl = this.newPatientFm.get('primaryPhone');
     if (primaryPhoneControl && primaryPhoneControl.value) {
-      const phoneNumberRegex = /^\d{11}$/;   // Regular expression for 11 digits
+      const phoneNumberRegex = /^\d{11}$/;    
       return phoneNumberRegex.test(primaryPhoneControl.value);
     }
     }
     else{
       const sPhone = this.newPatientFm.get('secondaryPhone');
       if (sPhone && sPhone.value) {
-        const phoneNumberRegex = /^\d{11}$/;   // Regular expression for 11 digits
+        const phoneNumberRegex = /^\d{11}$/;    
         return phoneNumberRegex.test(sPhone.value);
       }
-
     }
-
-
-
-    return false;  // Return false if control is null or has no value
+    return false;   
   }
 
+  closeDialog() {
+    this.dialogRef.close(AddNewPatientComponent);
+  }
 }
