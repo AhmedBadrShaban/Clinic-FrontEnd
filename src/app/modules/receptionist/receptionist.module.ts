@@ -44,6 +44,7 @@ import { PaymentHistoryComponent } from './components/reservation/payment-histor
 import { AddProductComponent } from './components/package/add-product/add-product.component';
 import { SendPointsComponent } from './components/reservation/points/send-points/send-points.component';
 import { RoomsComponent } from '../rooms/rooms.component';
+import { AfterWorkComponent } from './components/reservation/after-work/after-work.component';
  
 
 @NgModule({
@@ -70,6 +71,7 @@ import { RoomsComponent } from '../rooms/rooms.component';
    PaymentHistoryComponent,
    AddProductComponent,
    SendPointsComponent,
+   AfterWorkComponent,
   ],
   imports: [
   CommonModule,

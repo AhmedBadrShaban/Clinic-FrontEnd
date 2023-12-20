@@ -49,6 +49,22 @@
           "hash": "4689145951703824387"
         },
         {
+          "file": ".nx/cache/file-map.json",
+          "hash": "17310031263941845138"
+        },
+        {
+          "file": ".nx/cache/lockfile.hash",
+          "hash": "7814524769412460831"
+        },
+        {
+          "file": ".nx/cache/parsed-lock-file.json",
+          "hash": "18083909802857530034"
+        },
+        {
+          "file": ".nx/cache/project-graph.json",
+          "hash": "8948242631785125101"
+        },
+        {
           "file": ".vscode/extensions.json",
           "hash": "11934160580685414355"
         },
@@ -116,675 +132,15 @@
         },
         {
           "file": "server/db.json",
-          "hash": "5076712048588241999"
-        },
-        {
-          "file": "src/app/Admin/admin-home/admin-home.component.css",
-          "hash": "3679319518122040681"
-        },
-        {
-          "file": "src/app/Admin/admin-home/admin-home.component.html",
-          "hash": "12165529092210445186"
-        },
-        {
-          "file": "src/app/Admin/admin-home/admin-home.component.spec.ts",
-          "hash": "5764203606686324334",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/admin-home/admin-home.component.ts",
-          "hash": "16519008370299101152",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Admin/administrator-routing.module.ts",
-          "hash": "16864676707751082809",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Admin/administrator.module.ts",
-          "hash": "16500105145971813649",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common",
-            "npm:@angular/router",
-            "npm:ng-zorro-antd",
-            "npm:@angular/forms"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/admin-nav-bar/admin-nav-bar.component.css",
-          "hash": "11338333209746950998"
-        },
-        {
-          "file": "src/app/Admin/components/admin-nav-bar/admin-nav-bar.component.html",
-          "hash": "12405530495920918943"
-        },
-        {
-          "file": "src/app/Admin/components/admin-nav-bar/admin-nav-bar.component.spec.ts",
-          "hash": "2323829251239538991",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/admin-nav-bar/admin-nav-bar.component.ts",
-          "hash": "1737703142857665364",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/admin-profile/admin-profile.component.css",
-          "hash": "16500082696324668267"
-        },
-        {
-          "file": "src/app/Admin/components/admin-profile/admin-profile.component.html",
-          "hash": "8560894889263040556"
-        },
-        {
-          "file": "src/app/Admin/components/admin-profile/admin-profile.component.spec.ts",
-          "hash": "13615934561699275359",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/admin-profile/admin-profile.component.ts",
-          "hash": "5869646579603739944",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctor/doctor-routing.module.ts",
-          "hash": "6310725730518185505",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctor/doctor.module.ts",
-          "hash": "16158749888730590767",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctors/add-new-doctor/add-new-doctor.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/Admin/components/doctors/add-new-doctor/add-new-doctor.component.html",
-          "hash": "2889841186202836505"
-        },
-        {
-          "file": "src/app/Admin/components/doctors/add-new-doctor/add-new-doctor.component.spec.ts",
-          "hash": "2949955832404393314",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctors/add-new-doctor/add-new-doctor.component.ts",
-          "hash": "10002396357241075442",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctor/doctor.component.css",
-          "hash": "6622516059099018025"
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctor/doctor.component.html",
-          "hash": "16478253531374778505"
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctor/doctor.component.spec.ts",
-          "hash": "3229941993460404726",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctor/doctor.component.ts",
-          "hash": "5188479632089213627",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctors.component.css",
-          "hash": "108910136566253989"
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctors.component.html",
-          "hash": "10320485301294976457"
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctors.component.spec.ts",
-          "hash": "15258123339260084290",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/doctors/doctors.component.ts",
-          "hash": "13179256799443834647",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd",
-            "npm:@angular/router",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/materials/add-new-matrial/add-new-matrial.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/Admin/components/materials/add-new-matrial/add-new-matrial.component.html",
-          "hash": "18238773732806924400"
-        },
-        {
-          "file": "src/app/Admin/components/materials/add-new-matrial/add-new-matrial.component.spec.ts",
-          "hash": "2901199015947164204",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/materials/add-new-matrial/add-new-matrial.component.ts",
-          "hash": "18250275211167056802",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/materials/materials.component.css",
-          "hash": "10045553465502024674"
-        },
-        {
-          "file": "src/app/Admin/components/materials/materials.component.html",
-          "hash": "12197204483067916849"
-        },
-        {
-          "file": "src/app/Admin/components/materials/materials.component.spec.ts",
-          "hash": "480345368393063501",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/materials/materials.component.ts",
-          "hash": "17408965779956908382",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/packages/add-new-package/add-new-package.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/Admin/components/packages/add-new-package/add-new-package.component.html",
-          "hash": "7250683763507178214"
-        },
-        {
-          "file": "src/app/Admin/components/packages/add-new-package/add-new-package.component.spec.ts",
-          "hash": "15211488859103941751",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/packages/add-new-package/add-new-package.component.ts",
-          "hash": "5744937537191776270",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/packages/packages.component.css",
-          "hash": "18256779012538637474"
-        },
-        {
-          "file": "src/app/Admin/components/packages/packages.component.html",
-          "hash": "8107791153370565079"
-        },
-        {
-          "file": "src/app/Admin/components/packages/packages.component.spec.ts",
-          "hash": "10230443993968050985",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/packages/packages.component.ts",
-          "hash": "14422746386105645561",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/patients/idle-patients/idle-patients.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/Admin/components/patients/idle-patients/idle-patients.component.html",
-          "hash": "10330686486955716110"
-        },
-        {
-          "file": "src/app/Admin/components/patients/idle-patients/idle-patients.component.spec.ts",
-          "hash": "17911777816986203706",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/patients/idle-patients/idle-patients.component.ts",
-          "hash": "7615308966121753260",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/patients/patients.component.css",
-          "hash": "10698633315589461003"
-        },
-        {
-          "file": "src/app/Admin/components/patients/patients.component.html",
-          "hash": "1932994249236656353"
-        },
-        {
-          "file": "src/app/Admin/components/patients/patients.component.spec.ts",
-          "hash": "12973408402435518051",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/patients/patients.component.ts",
-          "hash": "2449928314002105612",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.html",
-          "hash": "10490769794751606477"
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.spec.ts",
-          "hash": "12493854543968083023",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.ts",
-          "hash": "9476393191465835292",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionist/receptionist.component.css",
-          "hash": "8374002184483548397"
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionist/receptionist.component.html",
-          "hash": "1517067965892956437"
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionist/receptionist.component.spec.ts",
-          "hash": "6183456237055022574",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionist/receptionist.component.ts",
-          "hash": "9666749519498682206",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionists.component.css",
-          "hash": "10045553465502024674"
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionists.component.html",
-          "hash": "9967905359634827083"
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionists.component.spec.ts",
-          "hash": "7406450049515945287",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/receptionists/receptionists.component.ts",
-          "hash": "18196967763225855921",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd",
-            "npm:@angular/router",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/reports-summary/reports-summary.component.css",
-          "hash": "13781537915128662484"
-        },
-        {
-          "file": "src/app/Admin/components/reports-summary/reports-summary.component.html",
-          "hash": "2923768823328559117"
-        },
-        {
-          "file": "src/app/Admin/components/reports-summary/reports-summary.component.spec.ts",
-          "hash": "16600517108564499085",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/reports-summary/reports-summary.component.ts",
-          "hash": "15293838242428557869",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/reservations/reservations.component.css",
-          "hash": "1051824889197323386"
-        },
-        {
-          "file": "src/app/Admin/components/reservations/reservations.component.html",
-          "hash": "3687199974575658171"
-        },
-        {
-          "file": "src/app/Admin/components/reservations/reservations.component.spec.ts",
-          "hash": "15538785576123084918",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/reservations/reservations.component.ts",
-          "hash": "7351863928810395723",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/services/add-new-service/add-new-service.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/Admin/components/services/add-new-service/add-new-service.component.html",
-          "hash": "839426949426744572"
-        },
-        {
-          "file": "src/app/Admin/components/services/add-new-service/add-new-service.component.spec.ts",
-          "hash": "17385243864692334127",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/services/add-new-service/add-new-service.component.ts",
-          "hash": "1335032849628047705",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/services/services.component.css",
-          "hash": "10045553465502024674"
-        },
-        {
-          "file": "src/app/Admin/components/services/services.component.html",
-          "hash": "7111642724856941402"
-        },
-        {
-          "file": "src/app/Admin/components/services/services.component.spec.ts",
-          "hash": "12237704229884208434",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/components/services/services.component.ts",
-          "hash": "4214758400627766839",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/Admin/models/admin.ts",
-          "hash": "13309379971566001557"
-        },
-        {
-          "file": "src/app/Admin/models/doctors.ts",
-          "hash": "14518338741584159560"
-        },
-        {
-          "file": "src/app/Admin/models/materials.ts",
-          "hash": "8269252281886318419"
-        },
-        {
-          "file": "src/app/Admin/models/package.ts",
-          "hash": "5736434316718123861"
-        },
-        {
-          "file": "src/app/Admin/models/receptionist.ts",
-          "hash": "16075657631905762078"
-        },
-        {
-          "file": "src/app/Admin/models/service.ts",
-          "hash": "4038790898620464619"
-        },
-        {
-          "file": "src/app/Admin/services/Reports/reports.service.spec.ts",
-          "hash": "15033593556969135436",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/Reports/reports.service.ts",
-          "hash": "9755258692493531767",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/admin/admin.service.spec.ts",
-          "hash": "5210544817652068259",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/admin/admin.service.ts",
-          "hash": "8035076966569163811",
-          "deps": [
-            "npm:@angular/common",
-            "npm:@angular/core",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/doctors/doctors.service.spec.ts",
-          "hash": "12322102671129547880",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/doctors/doctors.service.ts",
-          "hash": "5804706121361284848",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/materials/materials.service.spec.ts",
-          "hash": "5842323703901152122",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/materials/materials.service.ts",
-          "hash": "1584722374067325142",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/package/package.service.spec.ts",
-          "hash": "11082767691087010554",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/package/package.service.ts",
-          "hash": "7287625025159380260",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/receptionists/receptionists.service.spec.ts",
-          "hash": "9773294409482268089",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/receptionists/receptionists.service.ts",
-          "hash": "8173007011234775404",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/services/service.service.spec.ts",
-          "hash": "2548068423580007757",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Admin/services/services/service.service.ts",
-          "hash": "13787859584855280738",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/Doctor/Models/basic-reservation-data.ts",
-          "hash": "1396307390425917861"
-        },
-        {
-          "file": "src/app/Doctor/Services/doctor-reservations.service.spec.ts",
-          "hash": "13594637838757665333",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Doctor/Services/doctor-reservations.service.ts",
-          "hash": "13439374149003247314",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Doctor/doctor-routing.module.ts",
-          "hash": "7643878936049751194",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/Doctor/doctor.module.ts",
-          "hash": "9412955358397435567",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common"
-          ]
-        },
-        {
-          "file": "src/app/Doctor/main-page/main-page.component.css",
-          "hash": "1227719579691070252"
-        },
-        {
-          "file": "src/app/Doctor/main-page/main-page.component.html",
-          "hash": "7855447630888416023"
-        },
-        {
-          "file": "src/app/Doctor/main-page/main-page.component.spec.ts",
-          "hash": "15995903252720441015",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/Doctor/main-page/main-page.component.ts",
-          "hash": "11969276662226558404",
-          "deps": [
-            "npm:@angular/core"
-          ]
+          "hash": "1549561266211283837"
         },
         {
           "file": "src/app/app-routing.module.ts",
-          "hash": "14357456132128126309"
+          "hash": "11867301980542184023",
+          "deps": [
+            "npm:@angular/router",
+            "npm:@angular/core"
+          ]
         },
         {
           "file": "src/app/app.component.css",
@@ -792,7 +148,7 @@
         },
         {
           "file": "src/app/app.component.html",
-          "hash": "15155561253309857819"
+          "hash": "14978884540111032850"
         },
         {
           "file": "src/app/app.component.spec.ts",
@@ -804,15 +160,14 @@
         },
         {
           "file": "src/app/app.component.ts",
-          "hash": "12866485150114996840",
+          "hash": "3006506913454201640",
           "deps": [
-            "npm:@angular/core",
-            "npm:@angular/router"
+            "npm:@angular/core"
           ]
         },
         {
           "file": "src/app/app.module.ts",
-          "hash": "1388699505356670609",
+          "hash": "4085750317290319367",
           "deps": [
             "npm:@angular/core",
             "npm:@angular/platform-browser",
@@ -824,31 +179,767 @@
           ]
         },
         {
-          "file": "src/app/modules/Services/Login-Services/login.service.spec.ts",
-          "hash": "6455698513478357297",
+          "file": "src/app/forbidden/forbidden.component.css",
+          "hash": "17930320919347234984"
+        },
+        {
+          "file": "src/app/forbidden/forbidden.component.html",
+          "hash": "8125313003589292583"
+        },
+        {
+          "file": "src/app/forbidden/forbidden.component.spec.ts",
+          "hash": "12226175729214518806",
           "deps": [
             "npm:@angular/core"
           ]
         },
         {
-          "file": "src/app/modules/Services/Login-Services/login.service.ts",
-          "hash": "7040592484245828812",
+          "file": "src/app/forbidden/forbidden.component.ts",
+          "hash": "4147680116906993955",
           "deps": [
             "npm:@angular/core"
           ]
         },
         {
           "file": "src/app/modules/Services/rooms/rooms.service.spec.ts",
-          "hash": "6090205578644746535",
+          "hash": "15485201396320358307",
           "deps": [
             "npm:@angular/core"
           ]
         },
         {
           "file": "src/app/modules/Services/rooms/rooms.service.ts",
-          "hash": "6077540459561134952",
+          "hash": "3276457420038072723",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/admin-routing.module.ts",
+          "hash": "3860518028483896847",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/admin.component.css",
+          "hash": "14305909258448525356"
+        },
+        {
+          "file": "src/app/modules/admin/admin.component.html",
+          "hash": "8978745239949007337"
+        },
+        {
+          "file": "src/app/modules/admin/admin.component.spec.ts",
+          "hash": "203036169966721150",
           "deps": [
             "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/admin.component.ts",
+          "hash": "16237842064636189394",
+          "deps": [
+            "npm:@angular/router",
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/admin.module.ts",
+          "hash": "12435843594992673451",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/forms",
+            "npm:@angular/router",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-home/admin-home.component.css",
+          "hash": "5157686065784910746"
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-home/admin-home.component.html",
+          "hash": "3290656178559153675"
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-home/admin-home.component.spec.ts",
+          "hash": "5764203606686324334",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-home/admin-home.component.ts",
+          "hash": "17532437270824141763",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-nav-bar/admin-nav-bar.component.css",
+          "hash": "11338333209746950998"
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-nav-bar/admin-nav-bar.component.html",
+          "hash": "16672334450643654321"
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-nav-bar/admin-nav-bar.component.spec.ts",
+          "hash": "2880321713842544791",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-nav-bar/admin-nav-bar.component.ts",
+          "hash": "9263214355279006510",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-profile/admin-profile.component.css",
+          "hash": "16500082696324668267"
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-profile/admin-profile.component.html",
+          "hash": "8560894889263040556"
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-profile/admin-profile.component.spec.ts",
+          "hash": "13615934561699275359",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/admin-profile/admin-profile.component.ts",
+          "hash": "5869646579603739944",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/add-new-doctor/add-new-doctor.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/add-new-doctor/add-new-doctor.component.html",
+          "hash": "10041296147917115316"
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/add-new-doctor/add-new-doctor.component.spec.ts",
+          "hash": "2949955832404393314",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/add-new-doctor/add-new-doctor.component.ts",
+          "hash": "5741946966104430747",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctor/doctor.component.css",
+          "hash": "6622516059099018025"
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctor/doctor.component.html",
+          "hash": "9758379429039343407"
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctor/doctor.component.spec.ts",
+          "hash": "4623946907295563547",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctor/doctor.component.ts",
+          "hash": "10393473803450578158",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctors.component.css",
+          "hash": "108910136566253989"
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctors.component.html",
+          "hash": "14737478700736222191"
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctors.component.spec.ts",
+          "hash": "16937746475258683129",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/doctors/doctors.component.ts",
+          "hash": "9138799863589102542",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/router",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/add-new-matrial/add-new-matrial.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/add-new-matrial/add-new-matrial.component.html",
+          "hash": "5754655273354732381"
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/add-new-matrial/add-new-matrial.component.spec.ts",
+          "hash": "2901199015947164204",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/add-new-matrial/add-new-matrial.component.ts",
+          "hash": "8612095469238511933",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/materials.component.css",
+          "hash": "10045553465502024674"
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/materials.component.html",
+          "hash": "9309315395370063407"
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/materials.component.spec.ts",
+          "hash": "14976349078034108305",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/materials/materials.component.ts",
+          "hash": "336548299971706251",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/add-new-package/add-new-package.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/add-new-package/add-new-package.component.html",
+          "hash": "13200712215977405191"
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/add-new-package/add-new-package.component.spec.ts",
+          "hash": "15211488859103941751",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/add-new-package/add-new-package.component.ts",
+          "hash": "13355796420617038945",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/packages.component.css",
+          "hash": "18256779012538637474"
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/packages.component.html",
+          "hash": "15234538274874423956"
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/packages.component.spec.ts",
+          "hash": "609700616006140475",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/packages/packages.component.ts",
+          "hash": "16695733542831216690",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.css",
+          "hash": "7741896614534001104"
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.html",
+          "hash": "7222503405076033799"
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.spec.ts",
+          "hash": "12493854543968083023",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/add-new-receptionist/add-new-receptionist.component.ts",
+          "hash": "359846054238160595",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionist/receptionist.component.css",
+          "hash": "8374002184483548397"
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionist/receptionist.component.html",
+          "hash": "9507329995686559862"
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionist/receptionist.component.spec.ts",
+          "hash": "12774480207363284543",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionist/receptionist.component.ts",
+          "hash": "15703885316767341995",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionists.component.css",
+          "hash": "10045553465502024674"
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionists.component.html",
+          "hash": "18377087003088750084"
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionists.component.spec.ts",
+          "hash": "17777969206843645940",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/receptionists/receptionists.component.ts",
+          "hash": "8770337561929357583",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/router",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/reservations/reservations.component.css",
+          "hash": "1051824889197323386"
+        },
+        {
+          "file": "src/app/modules/admin/components/reservations/reservations.component.html",
+          "hash": "3687199974575658171"
+        },
+        {
+          "file": "src/app/modules/admin/components/reservations/reservations.component.spec.ts",
+          "hash": "5122190937792062162",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/reservations/reservations.component.ts",
+          "hash": "4056141813454062619",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/services/add-new-service/add-new-service.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/admin/components/services/add-new-service/add-new-service.component.html",
+          "hash": "14285388391301889526"
+        },
+        {
+          "file": "src/app/modules/admin/components/services/add-new-service/add-new-service.component.spec.ts",
+          "hash": "17385243864692334127",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/services/add-new-service/add-new-service.component.ts",
+          "hash": "16919148347675036016",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/services/services.component.css",
+          "hash": "10045553465502024674"
+        },
+        {
+          "file": "src/app/modules/admin/components/services/services.component.html",
+          "hash": "14676870634345224821"
+        },
+        {
+          "file": "src/app/modules/admin/components/services/services.component.spec.ts",
+          "hash": "1265231874461763335",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/components/services/services.component.ts",
+          "hash": "9418515096758768565",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/models/admin.ts",
+          "hash": "13309379971566001557"
+        },
+        {
+          "file": "src/app/modules/admin/models/apiResponse",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/admin/models/doctors.ts",
+          "hash": "14195928285880693662"
+        },
+        {
+          "file": "src/app/modules/admin/models/materials.ts",
+          "hash": "3433586685986240304"
+        },
+        {
+          "file": "src/app/modules/admin/models/package.ts",
+          "hash": "18001547229877018367"
+        },
+        {
+          "file": "src/app/modules/admin/models/receptionist.ts",
+          "hash": "10362924909275402694"
+        },
+        {
+          "file": "src/app/modules/admin/models/service.ts",
+          "hash": "18268920689073489696"
+        },
+        {
+          "file": "src/app/modules/admin/services/Reports/reports.service.spec.ts",
+          "hash": "11211687620632732267",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/Reports/reports.service.ts",
+          "hash": "14774442591050025492",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/admin/admin.service.spec.ts",
+          "hash": "5210544817652068259",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/admin/admin.service.ts",
+          "hash": "8035076966569163811",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/doctors/doctors.service.spec.ts",
+          "hash": "9080350640933357303",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/doctors/doctors.service.ts",
+          "hash": "12361867932537576274",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/materials/materials.service.spec.ts",
+          "hash": "6052276864788527634",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/materials/materials.service.ts",
+          "hash": "740530839782028905",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/package/package.service.spec.ts",
+          "hash": "13128833015551399892",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/package/package.service.ts",
+          "hash": "11795923852212045180",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/receptionists/receptionists.service.spec.ts",
+          "hash": "5768962847108940225",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/receptionists/receptionists.service.ts",
+          "hash": "2374000328502398413",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/services/service.service.spec.ts",
+          "hash": "5300048318946449",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/admin/services/services/service.service.ts",
+          "hash": "3713367149081507513",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/Models/after-work.ts",
+          "hash": "18144958981508997351"
+        },
+        {
+          "file": "src/app/modules/doctor/Models/basic-reservation-data.ts",
+          "hash": "12384682976345758566"
+        },
+        {
+          "file": "src/app/modules/doctor/Services/doctor-reservations.service.spec.ts",
+          "hash": "3127695269517597397",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/Services/doctor-reservations.service.ts",
+          "hash": "17686008994437466546",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/Services/service.service.spec.ts",
+          "hash": "5300048318946449",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/Services/service.service.ts",
+          "hash": "11593750924900123315",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/components/doctor-nav-bar/doctor-nav-bar.component.css",
+          "hash": "10477902245892004428"
+        },
+        {
+          "file": "src/app/modules/doctor/components/doctor-nav-bar/doctor-nav-bar.component.html",
+          "hash": "18116624181875223051"
+        },
+        {
+          "file": "src/app/modules/doctor/components/doctor-nav-bar/doctor-nav-bar.component.ts",
+          "hash": "5352917426306694141",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/components/doctor-profile/doctor-profile.component.css",
+          "hash": "6622516059099018025"
+        },
+        {
+          "file": "src/app/modules/doctor/components/doctor-profile/doctor-profile.component.html",
+          "hash": "1288616758610981764"
+        },
+        {
+          "file": "src/app/modules/doctor/components/doctor-profile/doctor-profile.component.spec.ts",
+          "hash": "16244562611550609971",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/components/doctor-profile/doctor-profile.component.ts",
+          "hash": "6482734793640996852",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/components/reservation-home-page/reservation-home-page.component.css",
+          "hash": "14852585795373654277"
+        },
+        {
+          "file": "src/app/modules/doctor/components/reservation-home-page/reservation-home-page.component.html",
+          "hash": "134063088417570381"
+        },
+        {
+          "file": "src/app/modules/doctor/components/reservation-home-page/reservation-home-page.component.spec.ts",
+          "hash": "11494171071567815788",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/components/reservation-home-page/reservation-home-page.component.ts",
+          "hash": "474240293320569065",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/doctor-routing.module.ts",
+          "hash": "16895630801664723859",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/doctor.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/doctor/doctor.component.html",
+          "hash": "8421142532438256251"
+        },
+        {
+          "file": "src/app/modules/doctor/doctor.component.spec.ts",
+          "hash": "4623946907295563547",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/doctor.component.ts",
+          "hash": "12297396048108976588",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/doctor.module.ts",
+          "hash": "14933772598564102622",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:ng-zorro-antd",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/main-page/main-page.component.css",
+          "hash": "16833704751132133643"
+        },
+        {
+          "file": "src/app/modules/doctor/main-page/main-page.component.html",
+          "hash": "16388186921407836104"
+        },
+        {
+          "file": "src/app/modules/doctor/main-page/main-page.component.spec.ts",
+          "hash": "7674083393937033844",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/doctor/main-page/main-page.component.ts",
+          "hash": "5310808972613568714",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
           ]
         },
         {
@@ -857,7 +948,7 @@
         },
         {
           "file": "src/app/modules/login/login.component.html",
-          "hash": "14133021959851181347"
+          "hash": "9630187781615735746"
         },
         {
           "file": "src/app/modules/login/login.component.spec.ts",
@@ -868,9 +959,778 @@
         },
         {
           "file": "src/app/modules/login/login.component.ts",
-          "hash": "11794318175694926557",
+          "hash": "9294582229207616726",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/add-new-patient/add-new-patient.component.css",
+          "hash": "8540543508672332083"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/add-new-patient/add-new-patient.component.html",
+          "hash": "10163521550260413901"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/add-new-patient/add-new-patient.component.spec.ts",
+          "hash": "12237759422274226708",
           "deps": [
             "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/add-new-patient/add-new-patient.component.ts",
+          "hash": "7682539933759907878",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/cover-sheet/cover-sheet.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/cover-sheet/cover-sheet.component.html",
+          "hash": "9388731966655899369"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/cover-sheet/cover-sheet.component.spec.ts",
+          "hash": "16149456148134451097",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/cover-sheet/cover-sheet.component.ts",
+          "hash": "2535378334008414896",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/daily-sheet/daily-sheet.component.css",
+          "hash": "529520971119324542"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/daily-sheet/daily-sheet.component.html",
+          "hash": "3583923804343000531"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/daily-sheet/daily-sheet.component.spec.ts",
+          "hash": "9661454315663071971",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/daily-sheet/daily-sheet.component.ts",
+          "hash": "13158768267671975855",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/doctor-schedule.component.css",
+          "hash": "8352147037371431509"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/doctor-schedule.component.html",
+          "hash": "9827120908042362201"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/doctor-schedule.component.spec.ts",
+          "hash": "10774701288740576334",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/doctor-schedule.component.ts",
+          "hash": "14038497193882550368",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/pop-up-form/pop-up-form.component.css",
+          "hash": "1094852795234294171"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/pop-up-form/pop-up-form.component.html",
+          "hash": "10116536264601119301"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/pop-up-form/pop-up-form.component.spec.ts",
+          "hash": "771876980405298781",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/doctor-schedule/pop-up-form/pop-up-form.component.ts",
+          "hash": "16139346734505241827",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense/add-expense.component.css",
+          "hash": "3918269063123255849"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense/add-expense.component.html",
+          "hash": "12300539235617702378"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense/add-expense.component.spec.ts",
+          "hash": "1979487972856971011",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense/add-expense.component.ts",
+          "hash": "2739975785164185201",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense-type/add-expense-type.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense-type/add-expense-type.component.html",
+          "hash": "8717569920962726283"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense-type/add-expense-type.component.spec.ts",
+          "hash": "4052780255725561995",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/add-expense-type/add-expense-type.component.ts",
+          "hash": "8691274910311218960",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/expense.component.css",
+          "hash": "7787223230333912116"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/expense.component.html",
+          "hash": "12520245999083305092"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/expense.component.spec.ts",
+          "hash": "10248876620642116044",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/expense/expense.component.ts",
+          "hash": "2197226222931180085",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material",
+            "npm:@angular/forms",
+            "npm:ng-zorro-antd",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-package/add-package.component.css",
+          "hash": "10085106367885706426"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-package/add-package.component.html",
+          "hash": "12654096244976431771"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-package/add-package.component.spec.ts",
+          "hash": "12537325438775446444",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-package/add-package.component.ts",
+          "hash": "16262942741046272427",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-product/add-product.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-product/add-product.component.html",
+          "hash": "12016121484201774856"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-product/add-product.component.spec.ts",
+          "hash": "813342372653896736",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/add-product/add-product.component.ts",
+          "hash": "10560940012570567268",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/package.component.css",
+          "hash": "529520971119324542"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/package.component.html",
+          "hash": "1176137437418775896"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/package.component.spec.ts",
+          "hash": "13904285310579744477",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/package/package.component.ts",
+          "hash": "7577601846258213673",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/history/history.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/history/history.component.html",
+          "hash": "693621492120194554"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/history/history.component.spec.ts",
+          "hash": "16632743727554967090",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/history/history.component.ts",
+          "hash": "16914924864376594708",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/idle-patients copy/idle-patients.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/idle-patients copy/idle-patients.component.html",
+          "hash": "3816798253169902327"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/idle-patients copy/idle-patients.component.spec.ts",
+          "hash": "2323695153371258295",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/idle-patients copy/idle-patients.component.ts",
+          "hash": "9261690446987167915",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/packages/packages.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/packages/packages.component.html",
+          "hash": "16761291200238526192"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/packages/packages.component.spec.ts",
+          "hash": "609700616006140475",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/packages/packages.component.ts",
+          "hash": "8512370620917866805",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/patient-info/patient-info.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/patient-info/patient-info.component.html",
+          "hash": "2739249544484618878"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/patient-info/patient-info.component.spec.ts",
+          "hash": "8277337089425624005",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/patient-info/patient-info.component.ts",
+          "hash": "15835363238640133002",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/payment-history/payment-history.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/payment-history/payment-history.component.html",
+          "hash": "15299763740314346397"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/payment-history/payment-history.component.spec.ts",
+          "hash": "16901095874937832528",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/payment-history/payment-history.component.ts",
+          "hash": "16390355128382262354",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/points.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/points.component.html",
+          "hash": "14263243684132697544"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/points.component.spec.ts",
+          "hash": "1773960664088954834",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/points.component.ts",
+          "hash": "14906639698112733748",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/send-points/send-points.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/send-points/send-points.component.html",
+          "hash": "15126521136867602137"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/send-points/send-points.component.spec.ts",
+          "hash": "1927019335049194668",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/points/send-points/send-points.component.ts",
+          "hash": "6482637401731808168",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservation.component.css",
+          "hash": "11854349197563960237"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservation.component.html",
+          "hash": "11539986056470264820"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservation.component.spec.ts",
+          "hash": "2533471978887050062",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservation.component.ts",
+          "hash": "5254105984326693945",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservations/reservations.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservations/reservations.component.html",
+          "hash": "3328763074546650540"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservations/reservations.component.spec.ts",
+          "hash": "5122190937792062162",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation/reservations/reservations.component.ts",
+          "hash": "14576632739062498271",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-zorro-antd"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation-fm/reservation-fm.component.css",
+          "hash": "7478928928165480405"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation-fm/reservation-fm.component.html",
+          "hash": "1392918378040274721"
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation-fm/reservation-fm.component.spec.ts",
+          "hash": "4688354509442233086",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/components/reservation-fm/reservation-fm.component.ts",
+          "hash": "14121568984383772274",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/models/cover-sheet.ts",
+          "hash": "12313903416721503386"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/daily-sheet.ts",
+          "hash": "8811053264140060599"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/doctor.schedule.model.ts",
+          "hash": "2008196908867972168"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/event-reservation.model.ts",
+          "hash": "17340724382676973033",
+          "deps": [
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/models/expense.ts",
+          "hash": "11479311955028841374"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/idle-patients.ts",
+          "hash": "2620746605454892170"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/ipatient.ts",
+          "hash": "17489437528021413695"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/package.ts",
+          "hash": "12784320537037892885"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/patient-Info.ts",
+          "hash": "1852078698448100183"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/patient-history.ts",
+          "hash": "10582833107310598309"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/patient-packages.ts",
+          "hash": "15587121787043419726"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/patient-points.ts",
+          "hash": "1052167255000159720"
+        },
+        {
+          "file": "src/app/modules/receptionist/models/reservation-res.ts",
+          "hash": "13794314990737421087",
+          "deps": [
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/receptionist-routing.module.ts",
+          "hash": "4988725654478797490",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/receptionist.component.css",
+          "hash": "16352949718926604391"
+        },
+        {
+          "file": "src/app/modules/receptionist/receptionist.component.html",
+          "hash": "7204195039512894951"
+        },
+        {
+          "file": "src/app/modules/receptionist/receptionist.component.spec.ts",
+          "hash": "12774480207363284543",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/receptionist.component.ts",
+          "hash": "15272633021139698949",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/receptionist.module.ts",
+          "hash": "17059188161030537690",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:ng-zorro-antd",
+            "npm:@angular/material",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/Reservation_Form/reservationfm.service.spec.ts",
+          "hash": "18349948807228693431",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/Reservation_Form/reservationfm.service.ts",
+          "hash": "6307387851827363341",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/cover-sheet/cover-sheet.service.spec.ts",
+          "hash": "12460168092083062033",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/cover-sheet/cover-sheet.service.ts",
+          "hash": "3618556591116226650",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/dailySheet-service/dailysheet.service.spec.ts",
+          "hash": "6857831713988097704",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/dailySheet-service/dailysheet.service.ts",
+          "hash": "1745971278642213241",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/doctor-schedule-service/doctor-schedule-service.service.ts",
+          "hash": "18333172009554413255",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/expenses-service/expense.service.spec.ts",
+          "hash": "13787971799254588913",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/expenses-service/expense.service.ts",
+          "hash": "16105648681651367061",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/package-service/package.service.spec.ts",
+          "hash": "13128833015551399892",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/package-service/package.service.ts",
+          "hash": "848127917170194373",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/patient-server/patient.service.spec.ts",
+          "hash": "6317043247891448992",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/patient-server/patient.service.ts",
+          "hash": "8005821931762748435",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/reservations-services/reservations.service.spec.ts",
+          "hash": "152819550225531727",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/receptionist/services/reservations-services/reservations.service.ts",
+          "hash": "741777409564463246",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "src/app/modules/rooms/add-clinic/add-clinic.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/rooms/add-clinic/add-clinic.component.html",
+          "hash": "18268458441282493045"
+        },
+        {
+          "file": "src/app/modules/rooms/add-clinic/add-clinic.component.spec.ts",
+          "hash": "6599564250574089071",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/rooms/add-clinic/add-clinic.component.ts",
+          "hash": "2458213274133843025",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "src/app/modules/rooms/add-new-room/add-new-room.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/modules/rooms/add-new-room/add-new-room.component.html",
+          "hash": "4530856056656319521"
+        },
+        {
+          "file": "src/app/modules/rooms/add-new-room/add-new-room.component.spec.ts",
+          "hash": "11805487741601754646",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/modules/rooms/add-new-room/add-new-room.component.ts",
+          "hash": "2203679521891164864",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
           ]
         },
         {
@@ -890,18 +1750,18 @@
         },
         {
           "file": "src/app/modules/rooms/available-slots/available-slots.component.ts",
-          "hash": "15580980875722101654",
+          "hash": "15868218473878203781",
           "deps": [
             "npm:@angular/core"
           ]
         },
         {
           "file": "src/app/modules/rooms/events-grid/dialog-event/dialog-event.component.css",
-          "hash": "10486894542934502493"
+          "hash": "9150417933853382668"
         },
         {
           "file": "src/app/modules/rooms/events-grid/dialog-event/dialog-event.component.html",
-          "hash": "8631208977210183959"
+          "hash": "4322849162430523134"
         },
         {
           "file": "src/app/modules/rooms/events-grid/dialog-event/dialog-event.component.spec.ts",
@@ -912,7 +1772,7 @@
         },
         {
           "file": "src/app/modules/rooms/events-grid/dialog-event/dialog-event.component.ts",
-          "hash": "7822353526815011968",
+          "hash": "5646136773705204488",
           "deps": [
             "npm:@angular/core",
             "npm:@angular/material",
@@ -944,11 +1804,11 @@
         },
         {
           "file": "src/app/modules/rooms/events-grid/events-grid.component.css",
-          "hash": "2325265828359668918"
+          "hash": "3967628244059808417"
         },
         {
           "file": "src/app/modules/rooms/events-grid/events-grid.component.html",
-          "hash": "15655954980376517245"
+          "hash": "10833618583650284684"
         },
         {
           "file": "src/app/modules/rooms/events-grid/events-grid.component.spec.ts",
@@ -959,7 +1819,7 @@
         },
         {
           "file": "src/app/modules/rooms/events-grid/events-grid.component.ts",
-          "hash": "11248740761487727999",
+          "hash": "14040455007358055308",
           "deps": [
             "npm:@angular/core",
             "npm:@angular/material"
@@ -971,7 +1831,7 @@
         },
         {
           "file": "src/app/modules/rooms/rooms.component.html",
-          "hash": "18417822279470848565"
+          "hash": "15993122740281963919"
         },
         {
           "file": "src/app/modules/rooms/rooms.component.spec.ts",
@@ -982,595 +1842,32 @@
         },
         {
           "file": "src/app/modules/rooms/rooms.component.ts",
-          "hash": "11985494152717210632",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/add-new-patient/add-new-patient.component.css",
-          "hash": "8540543508672332083"
-        },
-        {
-          "file": "src/app/reciptianist/components/add-new-patient/add-new-patient.component.html",
-          "hash": "10746507904447818168"
-        },
-        {
-          "file": "src/app/reciptianist/components/add-new-patient/add-new-patient.component.spec.ts",
-          "hash": "12237759422274226708",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/add-new-patient/add-new-patient.component.ts",
-          "hash": "10223008685965226691",
+          "hash": "16421635686774471856",
           "deps": [
             "npm:@angular/core",
-            "npm:@angular/forms"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/cover-sheet/cover-sheet.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/cover-sheet/cover-sheet.component.html",
-          "hash": "9388731966655899369"
-        },
-        {
-          "file": "src/app/reciptianist/components/cover-sheet/cover-sheet.component.spec.ts",
-          "hash": "16149456148134451097",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/cover-sheet/cover-sheet.component.ts",
-          "hash": "3617164640216079652",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/daily-sheet/daily-sheet.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/daily-sheet/daily-sheet.component.html",
-          "hash": "4086224062069460894"
-        },
-        {
-          "file": "src/app/reciptianist/components/daily-sheet/daily-sheet.component.spec.ts",
-          "hash": "9661454315663071971",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/daily-sheet/daily-sheet.component.ts",
-          "hash": "17698291310095565681",
-          "deps": [
-            "npm:@angular/forms",
-            "npm:@angular/core",
-            "npm:@angular/material",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/doctor-schedule.component.css",
-          "hash": "8352147037371431509"
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/doctor-schedule.component.html",
-          "hash": "14324432213743285912"
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/doctor-schedule.component.spec.ts",
-          "hash": "10774701288740576334",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/doctor-schedule.component.ts",
-          "hash": "2057664935798447428",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms",
-            "npm:ng-zorro-antd",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/pop-up-form/pop-up-form.component.css",
-          "hash": "1094852795234294171"
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/pop-up-form/pop-up-form.component.html",
-          "hash": "12947611058716043228"
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/pop-up-form/pop-up-form.component.spec.ts",
-          "hash": "771876980405298781",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/doctor-schedule/pop-up-form/pop-up-form.component.ts",
-          "hash": "8420754073830168716",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/material",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/add-expense/add-expense.component.css",
-          "hash": "3918269063123255849"
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/add-expense/add-expense.component.html",
-          "hash": "7923883443486973431"
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/add-expense/add-expense.component.spec.ts",
-          "hash": "1979487972856971011",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/add-expense/add-expense.component.ts",
-          "hash": "16483201173809613667",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms",
-            "npm:@angular/material"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/expense.component.css",
-          "hash": "7787223230333912116"
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/expense.component.html",
-          "hash": "16906554324553767424"
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/expense.component.spec.ts",
-          "hash": "10248876620642116044",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/expense/expense.component.ts",
-          "hash": "408266134078560645",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/material",
-            "npm:@angular/forms",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/package/add-package/add-package.component.css",
-          "hash": "5381375998528269407"
-        },
-        {
-          "file": "src/app/reciptianist/components/package/add-package/add-package.component.html",
-          "hash": "2909604609587599937"
-        },
-        {
-          "file": "src/app/reciptianist/components/package/add-package/add-package.component.spec.ts",
-          "hash": "12537325438775446444",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/package/add-package/add-package.component.ts",
-          "hash": "10322059053291899015",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/package/package.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/package/package.component.html",
-          "hash": "7738911443470741879"
-        },
-        {
-          "file": "src/app/reciptianist/components/package/package.component.spec.ts",
-          "hash": "13904285310579744477",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/package/package.component.ts",
-          "hash": "3119524203825717830",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/material",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/history/history.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/history/history.component.html",
-          "hash": "16401694372636690734"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/history/history.component.spec.ts",
-          "hash": "16632743727554967090",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/history/history.component.ts",
-          "hash": "13100889497085331214",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/packages/packages.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/packages/packages.component.html",
-          "hash": "12767918512915856584"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/packages/packages.component.spec.ts",
-          "hash": "609700616006140475",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/packages/packages.component.ts",
-          "hash": "60794403832816807",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/patient-info/patient-info.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/patient-info/patient-info.component.html",
-          "hash": "6295323314941140347"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/patient-info/patient-info.component.spec.ts",
-          "hash": "8277337089425624005",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/patient-info/patient-info.component.ts",
-          "hash": "1993727230968227802",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/points/points.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/points/points.component.html",
-          "hash": "15966598852926286769"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/points/points.component.spec.ts",
-          "hash": "1773960664088954834",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/points/points.component.ts",
-          "hash": "14850453520266330609",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservation.component.css",
-          "hash": "14852585795373654277"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservation.component.html",
-          "hash": "15379076056608973775"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservation.component.spec.ts",
-          "hash": "2533471978887050062",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservation.component.ts",
-          "hash": "14215294668877667104",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservations/reservations.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservations/reservations.component.html",
-          "hash": "15218088262146208223"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservations/reservations.component.spec.ts",
-          "hash": "5122190937792062162",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation/reservations/reservations.component.ts",
-          "hash": "17866709543617676751",
-          "deps": [
-            "npm:@angular/core",
-            "npm:ng-zorro-antd"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation-fm/reservation-fm.component.css",
-          "hash": "7478928928165480405"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation-fm/reservation-fm.component.html",
-          "hash": "1034083222744550260"
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation-fm/reservation-fm.component.spec.ts",
-          "hash": "4688354509442233086",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/components/reservation-fm/reservation-fm.component.ts",
-          "hash": "3035293207023862853",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/forms"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/models/cover-sheet.ts",
-          "hash": "12313903416721503386"
-        },
-        {
-          "file": "src/app/reciptianist/models/daily-sheet.ts",
-          "hash": "12815710474780040958"
-        },
-        {
-          "file": "src/app/reciptianist/models/doctor.schedule.model.ts",
-          "hash": "4533807751434378423"
-        },
-        {
-          "file": "src/app/reciptianist/models/event-reservation.model.ts",
-          "hash": "16061394518037670443",
-          "deps": [
-            "npm:@angular/common"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/models/expense.ts",
-          "hash": "579615951895529994"
-        },
-        {
-          "file": "src/app/reciptianist/models/idle-patients.ts",
-          "hash": "1501900506959508130"
-        },
-        {
-          "file": "src/app/reciptianist/models/ipatient.ts",
-          "hash": "15636680135360452822"
-        },
-        {
-          "file": "src/app/reciptianist/models/package.ts",
-          "hash": "8598118664773102562"
-        },
-        {
-          "file": "src/app/reciptianist/models/patient-history.ts",
-          "hash": "6336064064587183347"
-        },
-        {
-          "file": "src/app/reciptianist/models/patient-points.ts",
-          "hash": "3269900714785608921"
-        },
-        {
-          "file": "src/app/reciptianist/models/reservation-res.ts",
-          "hash": "17037734432884600196",
-          "deps": [
-            "npm:@angular/common"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/receptionist-home/receptionist-home.component.css",
-          "hash": "3244421341483603138"
-        },
-        {
-          "file": "src/app/reciptianist/receptionist-home/receptionist-home.component.html",
-          "hash": "8900950554068155444"
-        },
-        {
-          "file": "src/app/reciptianist/receptionist-home/receptionist-home.component.spec.ts",
-          "hash": "16560918549495394556",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/receptionist-home/receptionist-home.component.ts",
-          "hash": "1781109961750383461",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/receptionist-routing.module.ts",
-          "hash": "6944291875394396494",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common",
-            "npm:@angular/router"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/receptionist.module.ts",
-          "hash": "14863936871548069983",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common",
             "npm:@angular/router",
-            "npm:ng-zorro-antd",
             "npm:@angular/material",
-            "npm:@angular/forms",
-            "npm:@angular/platform-browser"
+            "npm:@angular/common"
           ]
         },
         {
-          "file": "src/app/reciptianist/services/Reservation_Form/reservationfm.service.spec.ts",
-          "hash": "18349948807228693431",
+          "file": "src/app/not-found/not-found.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/not-found/not-found.component.html",
+          "hash": "8698525063818681956"
+        },
+        {
+          "file": "src/app/not-found/not-found.component.spec.ts",
+          "hash": "1774614569630794280",
           "deps": [
             "npm:@angular/core"
           ]
         },
         {
-          "file": "src/app/reciptianist/services/Reservation_Form/reservationfm.service.ts",
-          "hash": "14957010597910286736",
-          "deps": [
-            "npm:@angular/common",
-            "npm:@angular/core",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/cover-sheet/cover-sheet.service.spec.ts",
-          "hash": "12460168092083062033",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/cover-sheet/cover-sheet.service.ts",
-          "hash": "18022760676432159323",
-          "deps": [
-            "npm:@angular/common",
-            "npm:@angular/core",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/dailySheet-service/dailysheet.service.spec.ts",
-          "hash": "6857831713988097704",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/dailySheet-service/dailysheet.service.ts",
-          "hash": "17004586158062099172",
-          "deps": [
-            "npm:@angular/common",
-            "npm:@angular/core",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/doctor-schedule-service/doctor-schedule-service.service.ts",
-          "hash": "5346782567403815270",
-          "deps": [
-            "npm:@angular/core",
-            "npm:@angular/common",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/expenses-service/expense.service.spec.ts",
-          "hash": "13787971799254588913",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/expenses-service/expense.service.ts",
-          "hash": "9150007652417067167",
-          "deps": [
-            "npm:@angular/common",
-            "npm:@angular/core",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/package-service/package.service.spec.ts",
-          "hash": "13128833015551399892",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/package-service/package.service.ts",
-          "hash": "11692498038525335639",
-          "deps": [
-            "npm:@angular/common",
-            "npm:@angular/core",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/patient-server/patient.service.spec.ts",
-          "hash": "6317043247891448992",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/patient-server/patient.service.ts",
-          "hash": "1198784666590719894",
-          "deps": [
-            "npm:@angular/common",
-            "npm:@angular/core",
-            "npm:rxjs"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/reservations-services/reservations.service.spec.ts",
-          "hash": "15813585511062492847",
-          "deps": [
-            "npm:@angular/core"
-          ]
-        },
-        {
-          "file": "src/app/reciptianist/services/reservations-services/reservations.service.ts",
-          "hash": "15318034261253474847",
+          "file": "src/app/not-found/not-found.component.ts",
+          "hash": "455811367457747068",
           "deps": [
             "npm:@angular/core"
           ]
@@ -1631,7 +1928,7 @@
         },
         {
           "file": "src/app/shared/components/nav-bar/nav-bar.component.html",
-          "hash": "18041014856002120162"
+          "hash": "7985114645916834971"
         },
         {
           "file": "src/app/shared/components/nav-bar/nav-bar.component.spec.ts",
@@ -1642,16 +1939,37 @@
         },
         {
           "file": "src/app/shared/components/nav-bar/nav-bar.component.ts",
-          "hash": "2030717879257020335",
+          "hash": "5670344381309677786",
           "deps": [
             "npm:@angular/core",
-            "npm:@angular/common",
             "npm:@angular/router"
           ]
         },
         {
-          "file": "src/app/shared/services/testSharedService.ts",
-          "hash": "3244421341483603138"
+          "file": "src/app/shared/models/user.ts",
+          "hash": "9809847356346575331"
+        },
+        {
+          "file": "src/app/shared/services/auth-guard.service.ts",
+          "hash": "16803508549436255332",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "src/app/shared/services/auth.service.ts",
+          "hash": "9449840284556248503",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "src/app/shared/services/user.service.ts",
+          "hash": "13803992847488878022",
+          "deps": [
+            "npm:@angular/core"
+          ]
         },
         {
           "file": "src/app/shared/shared.module.ts",
@@ -1696,6 +2014,10 @@
         {
           "file": "src/assets/logo.png",
           "hash": "3607431213155546996"
+        },
+        {
+          "file": "src/assets/onTime.png",
+          "hash": "18038647549714265894"
         },
         {
           "file": "src/assets/outCome.png",

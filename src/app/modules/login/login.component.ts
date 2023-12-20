@@ -49,10 +49,8 @@ export class LoginComponent implements OnInit {
         error => {
           // Handle login error
           alert(error.error.message);
-        }
-        )
+        })
         // alert("welcome " + user.name );
-
       }
 
       test(c:number){

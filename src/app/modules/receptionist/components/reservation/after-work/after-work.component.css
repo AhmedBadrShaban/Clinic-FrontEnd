@@ -1,0 +1,53 @@
+.body{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .service-cart{
+        padding: 20px;
+        margin-top: 15px;
+        border: rgba(90, 53, 143, 0.74) solid 1px;
+        border-radius: 20px;
+    }
+    .carts-reservation{
+        width: 82%;
+        display: flex;
+        border-radius: 20px;
+        margin-top: 0px;
+        background: rgba(245, 245, 245, 0.1);
+        flex-direction: column;
+        align-items: center;
+    }
+    .title{
+        font-size: 27px;
+        font-weight: 500;
+        line-height: 28px;
+        font-family: Roboto, sans-serif;
+        letter-spacing: .009375em;
+        margin: 4px 14px 10px;
+    }
+    .first-Row{
+        width: 95%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        .div-btn{
+            margin-left: 30px;
+        }
+
+    }
+    .notes-div{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+}
+.Confirm{
+    margin-top: 20px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
