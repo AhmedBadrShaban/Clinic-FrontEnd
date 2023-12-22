@@ -16,6 +16,9 @@ export class ReservationfmService {
 getAllServicesNames():Observable<any>{
   return this.http.get<any>(`${this.baseUrl}receptionist/services-names`);
 }
+getAllServicesNamesToRoom(roomName:any):Observable<any>{
+  return this.http.get<any>(`${this.baseUrl}receptionist/services-room?roomName=${roomName}`);
+}
 addReservation(data:any , roomName:any): Observable<any> {
   console.log('roomName before Api Request :>> ', roomName);
   console.log('and Data before Api Request :>> ', data);

@@ -14,6 +14,7 @@ export class AddNewDoctorComponent implements OnInit {
 
   selectedDate: any | undefined;
   newDoctorFm: FormGroup;
+  displayError = false;
   flag:boolean=true;
   constructor(private fb: FormBuilder , private doctorService:DoctorsService , public dialogRef: MatDialogRef<AddNewDoctorComponent>) {
     this.newDoctorFm = fb.group({
@@ -29,6 +30,9 @@ export class AddNewDoctorComponent implements OnInit {
       laserCost: ['', [Validators.required]],
       pulsesPercentage: ['', [Validators.required]],
       role: ['ROLE_DOCTOR', [Validators.required]],
+    });
+    this.newDoctorFm.get('phoneNumber')?.valueChanges.subscribe(() => {
+      this.displayError = !this.validatePhoneNumber();
     });
   }
 
@@ -64,5 +68,13 @@ export class AddNewDoctorComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
+  }
+  validatePhoneNumber(): boolean {
+    const phoneNumber = this.newDoctorFm.get('phoneNumber');
+    if (phoneNumber && phoneNumber.value) {
+       const phoneNumberRegex = /^\d{11}$/;
+      return phoneNumberRegex.test(phoneNumber.value);
+    }
+    return false;
   }
 }

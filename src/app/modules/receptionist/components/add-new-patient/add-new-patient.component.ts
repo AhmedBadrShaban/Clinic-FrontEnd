@@ -1,3 +1,4 @@
+import { ReservationsService } from 'src/app/modules/receptionist/services/reservations-services/reservations.service';
 import { AuthService } from './../../../../shared/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -17,7 +18,7 @@ export class AddNewPatientComponent implements OnInit {
   newPatientFm: FormGroup;
   displayError = false;
   displayError2 = false;
-  constructor(private fb: FormBuilder , private router: Router , private dialogRef: MatDialogRef<AddNewPatientComponent>  ,  public newPatient:PatientService , private authService:AuthService ) {
+  constructor(private fb: FormBuilder , private router: Router , private dialogRef: MatDialogRef<AddNewPatientComponent>  ,  public newPatient:PatientService , private authService:AuthService , private updatePatients:ReservationsService ) {
     this.newPatientFm = fb.group({
       name: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       note: ['', [Validators.required]],
@@ -47,8 +48,14 @@ export class AddNewPatientComponent implements OnInit {
               this.router.navigateByUrl('receptionist/addpatient')
             else if(this.authService.userType === 'ROLE_ADMIN')
             {
+              this.updatePatients.getPatientsNamesAndPhones().subscribe((data)=>
+              {
+                this.updatePatients.updatePatientsArray(data);
+              }
+              )
               this.closeDialog();
-             }
+
+            }
         },
       error: (err) => {
         console.log('err :>> ', err);
@@ -61,18 +68,18 @@ export class AddNewPatientComponent implements OnInit {
     if(o){
     const primaryPhoneControl = this.newPatientFm.get('primaryPhone');
     if (primaryPhoneControl && primaryPhoneControl.value) {
-      const phoneNumberRegex = /^\d{11}$/;    
+      const phoneNumberRegex = /^\d{11}$/;
       return phoneNumberRegex.test(primaryPhoneControl.value);
     }
     }
     else{
       const sPhone = this.newPatientFm.get('secondaryPhone');
       if (sPhone && sPhone.value) {
-        const phoneNumberRegex = /^\d{11}$/;    
+        const phoneNumberRegex = /^\d{11}$/;
         return phoneNumberRegex.test(sPhone.value);
       }
     }
-    return false;   
+    return false;
   }
 
   closeDialog() {

@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class ServiceService {
 
-  private baseUrl:string="http://localhost:3000/";
+  private baseUrl:string="http://localhost:8080/";
   constructor(private http :HttpClient) { }
   
-  getAllServices():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}services`);
+  getAllServices(id:any):Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}doctor/reservtionservices?id=${id}`);
   }
 }

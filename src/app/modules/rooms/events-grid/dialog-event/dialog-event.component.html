@@ -60,17 +60,17 @@
       </thead>
       <tbody>
         <tr *ngFor="let service of data.services; let i = index" >
-          <td>{{ i + 1 }}</td> 
+          <td>{{ i + 1 }}</td>
           <td>{{ service }}</td>
         </tr>
       </tbody>
     </table>
-    
+
   </div>
  <div class="buttons-container"  *ngIf="data.status != 'CANCELLED'">
-  <button *ngIf="data.status == 'IN_PROGRESS'" mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'CONFIRMED')">Confirm Reservation</button>
-   <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'WAITING')">Waiting Reservation</button>
-   <button *ngIf="data.status == 'CONFIRMED' || data.status == 'WAITING' " mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
+  <button *ngIf="data.status == 'IN_PROGRESS' || data.status == 'WAITING' " mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'CONFIRMED')">Confirm Reservation</button>
+   <!-- <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'WAITING')">Waiting Reservation</button> -->
+   <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
    <button *ngIf="data.status == 'DONE'" mat-raised-button style="background-color:blue  !important; margin-right: 2px;  color: white; font-size:12px"  (click)="checkOut(data.reservationId)">GO TO CHECKOUT</button>
    <button *ngIf="data.status != 'DONE'" mat-raised-button style="background-color: red !important; margin-right: 2px;  color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'CANCELLED')">Cancel Reservation</button>
   </div>

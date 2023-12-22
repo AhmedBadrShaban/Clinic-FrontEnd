@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
+import { ReservationsService } from '../../../services/reservations-services/reservations.service';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 
@@ -14,9 +15,11 @@ export class ReservationsComponent implements OnInit  {
   tableLayout: NzTableLayout;
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
-  @Input() reservations:any[];
+ reservations:any[];
+  @Input() phoneNumber:any;
 
-  constructor() {
+
+  constructor(private reservationsService:ReservationsService) {
 
       this.size= 'small' as NzTableSize,
       this.paginationType= 'default' as NzTablePaginationType,
@@ -25,9 +28,31 @@ export class ReservationsComponent implements OnInit  {
       this.position= 'bottom' as NzTablePaginationPosition
    }
   ngOnInit(){
-    console.log('good morning')
-   }
+    console.log('rservations History ini :>> ' );
+    console.log('Recived rservations History  phoneNumber :>> ', this.phoneNumber);
+    this.reservationsService.phone$.subscribe((data:any) => {
+      console.log('Updated  Reservations History phoneNumber :>> ', data);
+      if(data!=0 && this.phoneNumber){
+        this.phoneNumber = data;
+        this.getReservations();
+      }
+      else if(this.phoneNumber){
+        this.getReservations();
+      }
 
+    });
+
+    }
+
+   getReservations(){
+    console.log('phone Before API :>> ', this.phoneNumber);
+    if(this.phoneNumber){
+    this.reservationsService.getReservationsHistory(this.phoneNumber).subscribe((data)=>{
+      this.reservations =data;
+      console.log('recived Reservations History :>> ',  this.reservations);
+     })
+    }
+    }
 
 
 

@@ -15,8 +15,7 @@ class="mx-auto"  style="width:70%"
 <thead>
   <tr  >
     <th [nzAlign]="'center'">Package</th>
-    <th [nzAlign]="'center'">Cost</th>
-    <th [nzAlign]="'center'">number of Points</th>
+    <th [nzAlign]="'center'">Clinic</th>
     <th [nzAlign]="'center'">Date</th>
     <th [nzAlign]="'center'">Action</th>
   </tr>
@@ -25,10 +24,9 @@ class="mx-auto"  style="width:70%"
   <ng-container *ngFor="let data of dynamicTable.data">
     <tr style="cursor: pointer;" >
       <td  [nzAlign]="'center'">{{ data.packageName }}</td>
-      <td  [nzAlign]="'center'">{{ data.packageCost }}</td>
-      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.numberOfPoints }}</td>
-      <td [nzAlign]="'center'" style="font-size: 12px;">20/10/2024</td>
-       <td colspan="2" [nzAlign]="'center'"><a style="width:150px;cursor: default;"  class="btn btn-sm btn-primary  small-font">Details</a></td>
+      <td  [nzAlign]="'center'">{{ data.clinicName }}</td>
+      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.date }}</td>
+        <td colspan="2" [nzAlign]="'center'"><a style="width:150px;cursor: default;"  class="btn btn-sm btn-primary  small-font">Details</a></td>
      </tr>
   </ng-container>
 </tbody>

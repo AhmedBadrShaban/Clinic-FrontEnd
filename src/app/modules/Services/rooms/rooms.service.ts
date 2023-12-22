@@ -33,11 +33,19 @@ export class RoomsService {
     return this.http.post(`${this.baseUrl}receptionist/roomreservationn?id=${id}&status=${status}` ,id);
 
   }
+  checkOutReservation(id:number){
+    return this.http.get<any>(`${this.baseUrl}receptionist/normal-payment?id=${id}`);
+  }
   addClinic(data:string){
     return this.http.post(`${this.baseUrl}admin/clinic-branch` , data);
   }
   allClinics():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}admin/get-all-clinic-names`);
+  }
+  private listOfRooms = new BehaviorSubject<readonly any[]> ([]);
+rooms$ = this.listOfRooms.asObservable();
+updatedRooms(data: any[]){
+  this.listOfRooms.next(data);
   }
 private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);
 listOfData$ = this.listOfDataSubject.asObservable();

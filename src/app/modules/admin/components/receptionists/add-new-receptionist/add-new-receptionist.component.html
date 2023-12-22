@@ -56,6 +56,9 @@
             id="phoneNumber"
             class="form-control shadow"
           />
+          <div *ngIf="displayError" style="color: red; font-size: 12px;">
+            Invalid, phone number should be 11 digits
+          </div>
           <div *ngIf="newRecpFm.get('phoneNumber')?.hasError('required') && newRecpFm.get('phoneNumber')?.touched">
             Phone Number is required.
           </div>
@@ -114,7 +117,7 @@
         </div>
       </div>
     </div>
-    <div class="row m-2 mt-4 justify-content-between">    
+    <div class="row m-2 mt-4 justify-content-between">
       <div class="col-5">
         <div class="row">
           <div class="d-flex align-items-center">
@@ -153,9 +156,9 @@
         </div>
       </div>
     </div>
-    
+
     <div class="row m-2 mt-4 justify-content-between">
-     
+
       <div class="col-5">
         <div class="row">
           <div class="d-flex align-items-center">
@@ -182,7 +185,7 @@
             <i class="bi bi-bookmark-check me-2 fs-4" style="margin-bottom: 5px"></i>
             <label class="form-label w-100">IS Super Receptionist</label>
           </div>
-           
+
           <input
             type="checkbox"
             formControlName="superReceptionist"
@@ -192,7 +195,7 @@
            Yes
         </div>
       </div>
-      
+
     </div>
 
     <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">

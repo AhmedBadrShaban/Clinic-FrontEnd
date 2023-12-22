@@ -1,5 +1,5 @@
 <div class="whole">
-  <div *ngFor="let r of reservations" (click)="openReservation(r.patientPhone)" class="the-box">
+  <div *ngFor="let r of reservations" (click)="openReservation(r.patientPhone , r.reservationId )" class="the-box">
     <div class="left-part">
       <div style="display: flex;justify-content: center; margin-top: 2%; margin-bottom: 3%;
                   font-size: 27px ; font-weight: 800">

@@ -1,47 +1,45 @@
 <div class="body">
-    <div class="carts-reservation" [formGroup]="doneServicesForm">
-        <form [formGroup]="doneServicesForm" style="width: 87%;">
-            <div formArrayName="dataList">
-                <div *ngFor="let serviceGroup of dataListControls; let i = index"
-                     [formGroupName]="i"
-                     class="service-cart"
-                >
-                    <h3 class="title">{{ serviceGroup.get('serviceName')!.value }}</h3>
-                    <div class="first-Row">
-                        <div class="div-btn">
-                            <label for="pulses"> Pulses</label>
-                            <input id="pulses" type="number" formControlName="Pulses" class="form-control">
-                        </div>
-
-                        <div class="div-btn">
-                            <label for="Spot"> Spot</label>
-                            <input class="form-control" id="Spot" type="number" formControlName="Spot">
-                        </div>
-
-                        <div class="div-btn">
-                            <label for="Flunce1"> Flunce 1</label>
-                            <input class="form-control" id="Flunce1" type="number" formControlName="Flunce1">
-                        </div>
-
-                        <div class="div-btn">
-                            <label for="Flunce2"> Flunce 2</label>
-                            <input class="form-control" id="Flunce2" type="number" formControlName="Flunce2">
-                        </div>
-                    </div>
-                    <div class="notes-div">
-                        <div style="width: 80%;">
-                            <label>Notes:</label>
-                            <input type="text" formControlName="notes" class="form-control">
-                        </div>
-                        <div>
-                            <button class="btn btn-danger" style="margin-top: 30%" (click)="onCancel(i)"> Cancel</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="Confirm">
-                    <button [disabled]="dataListControls.length == 0 || doneServicesForm.invalid" class="btn btn-success" style="width: 70%" (click)="onSubmit()"> Confirm </button>
-                </div>
+  <div class="carts-reservation" [formGroup]="doneServicesForm">
+    <form [formGroup]="doneServicesForm" style="width: 87%;">
+      <div formArrayName="dataList">
+        <div *ngFor="let serviceGroup of dataListControls; let i = index" [formGroupName]="i" class="service-cart">
+          <h3 class="title text-center m-2">{{ serviceGroup.get('service')!.value }}</h3>
+          <div class="first-Row">
+            <div class="div-btn">
+              <label for="pulses"> Pulses</label>
+              <input id="pulses" type="number" formControlName="pulse" class="form-control">
             </div>
-        </form>
-    </div>
+
+            <div class="div-btn">
+              <label for="Spot"> Spot</label>
+              <input class="form-control" id="Spot" type="number" formControlName="spot">
+            </div>
+
+            <div class="div-btn">
+              <label for="Flunce1"> Flunce 1</label>
+              <input class="form-control" id="Flunce1" type="number" formControlName="fluence1">
+            </div>
+
+            <div class="div-btn">
+              <label for="Flunce2"> Flunce 2</label>
+              <input class="form-control" id="Flunce2" type="number" formControlName="fluence2">
+            </div>
+          </div>
+          <div class="notes-div">
+            <div style="width: 80%;">
+              <label>Notes:</label>
+              <input type="text" formControlName="note" class="form-control">
+            </div>
+            <div>
+              <button class="btn btn-danger" style="margin-top: 30%" (click)="onCancel(i)"> Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div class="Confirm">
+          <button [disabled]="dataListControls.length == 0 || doneServicesForm.invalid" class="btn btn-success"
+            style="width: 70%" (click)="onSubmit()"> Confirm </button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

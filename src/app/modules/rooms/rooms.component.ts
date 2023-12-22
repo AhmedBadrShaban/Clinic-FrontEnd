@@ -27,10 +27,14 @@ export class RoomsComponent implements OnInit {
     this.allReservation.allRooms().subscribe((rooms)=>{
       this.roomsNames=rooms;
     })
+    this.allReservation.rooms$.subscribe((data:any)=>{
+      this.roomsNames=data;
+      console.log('Updated Rooms recived : ', this.roomsNames);
+    })
     this.getAllReservations();
      this.allReservation.listOfData$.subscribe((data: any) => {
        this.allReservations = data;
-      console.log('Updated Data recived : ', this.allReservations);
+      console.log('Updated Reservations recived : ', this.allReservations);
      });
   }
 

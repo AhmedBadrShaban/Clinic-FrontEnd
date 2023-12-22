@@ -13,7 +13,7 @@ export class AddNewRoomComponent implements OnInit {
    clinics:string[]=[]
 
   constructor(  private fb: FormBuilder , public dialogRef: MatDialogRef<AddNewRoomComponent>  , private roomService:RoomsService){
- 
+
 
     this.newRoomFm = fb.group({
       roomName: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
@@ -38,12 +38,18 @@ export class AddNewRoomComponent implements OnInit {
     this.roomService.addRoom(userModel).subscribe({
       next:(responed:any)=>{
          alert(responed.message);
+        this.updateRooms();
          this.closeDialog();
         //  this.UpdateAllMaterials();
       },
       error: (err) => {
         alert(  err.error.message);
       }
+    })
+  }
+  updateRooms(){
+    this.roomService.allRooms().subscribe((data)=>{
+      this.roomService.updatedRooms(data);
     })
   }
   closeDialog() {

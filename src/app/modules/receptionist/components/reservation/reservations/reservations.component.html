@@ -26,11 +26,12 @@
       <tr  style="cursor: pointer" >
         <td [nzAlign]="'center'">{{ data.doctorName }}</td>
         <td [nzAlign]="'center'">
-          <span *ngFor="let service of data.services">
-            {{service }}
+          <span *ngFor="let ser of data.service let last = last">
+            {{ser }}
+            <ng-container *ngIf="!last"> - </ng-container>
            </span>
          </td>
-        <td [nzAlign]="'center'" style="font-size: 12px">{{data.reservedAt}}</td>
+        <td [nzAlign]="'center'" style="font-size: 12px">{{data.date}}</td>
         <td [nzAlign]="'center'">
         <span class="badge btn" [ngClass]="{
           ' btn-primary': data.status === 'IN_PROGRESS',

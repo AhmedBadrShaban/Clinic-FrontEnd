@@ -1,54 +1,115 @@
 <div class="content">
-  <div *ngIf="userType!='ROLE_DOCTOR'" class="w-75 mx-auto">
-    <div class="d-flex justify-content-center" style="height: 50px;">
+  <div *ngIf="userType != 'ROLE_DOCTOR'" class="w-75 mx-auto">
+    <div class="d-flex justify-content-center" style="height: 50px">
       <div class="w-50 mx-2">
-        <input  class="form-control h-100 bg-light" id="patient-number"
-        placeholder="search" type="search"
-        nz-input
-        [(ngModel)]="searchValue"
-        [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="onChange($event)"
-        [nzAutocomplete]="PatientAuto"
-      />
-      <nz-autocomplete [nzDataSource]="filteredData" #PatientAuto></nz-autocomplete>
+        <input
+          class="form-control h-100 bg-light"
+          id="patient-number"
+          placeholder="search"
+          type="search"
+          nz-input
+          [(ngModel)]="searchValue"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="onChange($event)"
+          [nzAutocomplete]="PatientAuto"
+        />
+        <nz-autocomplete
+          [nzDataSource]="filteredData"
+          #PatientAuto
+        ></nz-autocomplete>
       </div>
       <div class="mx-2">
-        <button (click)="search()"  type="button" class="btn btn-info h-100">
+        <button (click)="search()" type="button" class="btn btn-info h-100">
           <i class="bi bi-search"></i>
         </button>
-       </div>
-      <div *ngIf="userType=='ROLE_ADMIN'" class="mx-2 align-self-end">
-        <button (click)="openDialog()" class="btn btn-info" style="width: 200px; height: 50px;"> <span class="bi bi-plus"></span> New Patient</button>
+      </div>
+      <div *ngIf="userType == 'ROLE_ADMIN'" class="mx-2 align-self-end">
+        <button
+          (click)="openDialog()"
+          class="btn btn-info"
+          style="width: 200px; height: 50px"
+        >
+          <span class="bi bi-plus"></span> New Patient
+        </button>
       </div>
     </div>
   </div>
 
-  <nz-tabset nzCentered style="padding-top: 2%">
+  <nz-tabset
+    nzCentered
+    style="padding-top: 2%"
+    (nzSelectedIndexChange)="onTabSelectChange($event)"
+  >
+    <ng-container *ngIf="userType == 'ROLE_ADMIN'">
+      <nz-tab nzTitle="Idle Patients">
+        <ng-template nz-tab>
+        <app-idle-patients
+       ></app-idle-patients>
+      </ng-template>
+      
+      </nz-tab>
+    </ng-container>
+    <ng-container *ngIf="userType != 'ROLE_DOCTOR'">
+      <nz-tab nzTitle="Main Info">
+        <ng-template nz-tab>
+          <app-patient-info
+            [phoneNumber]="patientNumber"
+            [info]="PatientInfo"
+           ></app-patient-info>
+        </ng-template>
+      </nz-tab>
+    </ng-container>
 
-    <nz-tab *ngIf="userType=='ROLE_ADMIN'" nzTitle="Idle Patients">
-      <app-idle-patients></app-idle-patients>
-    </nz-tab>
-    <nz-tab *ngIf="userType!='ROLE_DOCTOR'"  nzTitle="Main Info">
-      <app-patient-info [info]="PatientInfo"></app-patient-info>
-    </nz-tab>
     <nz-tab id="history" nzTitle="History">
-      <app-history [history]="patientHistory"></app-history>
+      <ng-template nz-tab>
+        <app-history
+          [phoneNumber]="patientNumber"
+         ></app-history>
+      </ng-template>
     </nz-tab>
-    <nz-tab  *ngIf="userType!='ROLE_DOCTOR'" id="packages" nzTitle="Packages">
-      <app-packages [packages]="patientPackages"></app-packages>
-    </nz-tab>
-    <nz-tab  *ngIf="userType!='ROLE_DOCTOR'" id="points" nzTitle="Points">
-      <app-points [patientNumber]="PatientInfo.primaryPhone" [pointsHistory]="pointsHistory" [totalIn]="totalIn" [totalOut]="totalOut"></app-points>
-    </nz-tab>
-    <nz-tab  *ngIf="userType!='ROLE_DOCTOR'" nzTitle="Reservations">
-      <app-reservations [reservations]="patientReservations"> </app-reservations>
-    </nz-tab>
-    <nz-tab  *ngIf="userType!='ROLE_DOCTOR'" nzTitle="Payment History">
-      <app-payment-history [paymentHistory]="patientReservations"> </app-payment-history>
-    </nz-tab>
-    <nz-tab *ngIf="userType=='ROLE_DOCTOR'" nzTitle="After Work">
-       <app-after-work></app-after-work>
-    </nz-tab>
-  </nz-tabset>
 
+    <ng-container *ngIf="userType != 'ROLE_DOCTOR'">
+      <nz-tab id="packages" nzTitle="Packages">
+        <ng-template nz-tab>
+          <app-packages
+            [phoneNumber]="patientNumber"
+           ></app-packages>
+        </ng-template>
+      </nz-tab>
+
+      <nz-tab id="points" nzTitle="Points">
+        <ng-template nz-tab>
+          <app-points
+            [phoneNumber]="patientNumber"
+           ></app-points>
+        </ng-template>
+      </nz-tab>
+
+      <nz-tab nzTitle="Reservations">
+        <ng-template nz-tab>
+          <app-reservations
+            [phoneNumber]="patientNumber"
+           ></app-reservations>
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Payment History">
+        <ng-template nz-tab>
+          <app-payment-history
+            [phoneNumber]="patientNumber"
+           ></app-payment-history>
+        </ng-template>
+      </nz-tab>
+    </ng-container>
+
+    <ng-container *ngIf="userType == 'ROLE_DOCTOR'">
+      <nz-tab nzTitle="After Work">
+        <ng-template nz-tab>
+          <app-after-work
+            [phoneNumber]="patientNumber"
+            [id]="reservationID"
+           ></app-after-work>
+        </ng-template>
+      </nz-tab>
+    </ng-container>
+  </nz-tabset>
 </div>

@@ -19,8 +19,8 @@ export class MainPageComponent {
       console.log('Your Reservations is :>> ', this.reservations);
     })
   }
-  openReservation(phoneNumber: any) {
+  openReservation(phoneNumber: any , id:any) {
     console.log("Sending");
-    this.router.navigate(['doctor' ,'reservation'], { queryParams: { phoneNumber: phoneNumber } });
+    this.router.navigate(['doctor' ,'reservation'], { queryParams: { phoneNumber: phoneNumber  , id:id} });
   }
 }

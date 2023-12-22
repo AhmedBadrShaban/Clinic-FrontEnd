@@ -52,8 +52,9 @@
       <td [nzAlign]="'center'">{{ data.serviceName }}</td>
       <td [nzAlign]="'center'">{{ data.costPerSession  }}</td>
       <td [nzAlign]="'center'">
-        <span *ngFor="let room of data.rooms">
-          {{room.roomName}}
+        <span *ngFor="let room of data.rooms let last = last">
+          {{room.roomName }}
+          <ng-container *ngIf="!last"> - </ng-container>
          </span>
       </td>
       <td [nzAlign]="'center'">

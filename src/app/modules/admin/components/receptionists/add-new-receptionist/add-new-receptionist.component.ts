@@ -14,7 +14,7 @@ export class AddNewReceptionistComponent implements OnInit {
   selectedDate: any | undefined;
   newRecpFm: FormGroup;
   clinics:string[]=[]
-  flag:boolean=true;
+  displayError = false;
   constructor(private fb: FormBuilder ,private reciptianistService:ReceptionistsService , private roomService:RoomsService, public dialogRef: MatDialogRef<AddNewReceptionistComponent>) {
     this.newRecpFm = fb.group({
       name: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
@@ -28,6 +28,9 @@ export class AddNewReceptionistComponent implements OnInit {
       clinic :['', [Validators.required]],
       superReceptionist: [false],
       role: ['ROLE_RECEPTIONIST', [Validators.required]],
+    });
+    this.newRecpFm.get('phoneNumber')?.valueChanges.subscribe(() => {
+      this.displayError = !this.validatePhoneNumber();
     });
   }
 
@@ -64,4 +67,12 @@ export class AddNewReceptionistComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  validatePhoneNumber(): boolean {
+    const phoneNumber = this.newRecpFm.get('phoneNumber');
+    if (phoneNumber && phoneNumber.value) {
+       const phoneNumberRegex = /^\d{11}$/;
+      return phoneNumberRegex.test(phoneNumber.value);
+    }
+    return false;
+  }
 }

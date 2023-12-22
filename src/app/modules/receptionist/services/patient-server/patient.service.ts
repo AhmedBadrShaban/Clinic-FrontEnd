@@ -25,6 +25,9 @@ export class PatientService {
     console.log("data : " , patientData )
     return this.http.post(`${this.baseUrl}receptionist/patients` , patientData);
   }
+  patientInfo(primaryPhone:any): Observable<any> {
+    return this.http.get<any>(`http://localhost:8080/receptionist/patients-with-phone?phoneNumber=${primaryPhone}`);
+  }
   sendPoints(data:any){
     console.log("data : " , data )
     return this.http.post(`${this.baseUrl}receptionist/convertPoints` , data);
@@ -45,7 +48,7 @@ export class PatientService {
 
   private listOfDataSubject = new BehaviorSubject<any>([]);
   private listOfDataSubject2 = new BehaviorSubject<any>([]);
-listOfData$ = this.listOfDataSubject.asObservable();
+historyObservable$ = this.listOfDataSubject.asObservable();
 out$ = this.listOfDataSubject2.asObservable();
 updateListOfData(data:any) {
   this.listOfDataSubject.next(data);

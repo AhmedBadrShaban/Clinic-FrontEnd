@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
 import {PatientHistory} from "../../../models/patient-history";
 import {ReservationsService} from "../../../services/reservations-services/reservations.service";
+import { PatientService } from '../../../services/patient-server/patient.service';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 
@@ -17,9 +18,10 @@ export class HistoryComponent implements OnInit {
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
   @Input() history:PatientHistory[]=[];
+  @Input() phoneNumber:any;
 
   @Input() editable : boolean = false;
-  constructor(private reservationservice: ReservationsService) {
+  constructor(private reservationservice: ReservationsService ) {
     // this.history = reservationservice.getPatientHistory("010");
       this.size= 'small' as NzTableSize,
       this.paginationType= 'default' as NzTablePaginationType,
@@ -28,8 +30,27 @@ export class HistoryComponent implements OnInit {
       this.position= 'bottom' as NzTablePaginationPosition
    }
   ngOnInit(){
-    console.log("history recived : " , this.history)
-    }
+    console.log('Recived History phoneNumber :>> ', this.phoneNumber);
+    this.reservationservice.phone$.subscribe((data:any) => {
+      console.log('Updated History phoneNumber :>> ', data);
+      if(data!=0){
+        this.phoneNumber = data;
+        this.getPatientHistory();
+      }
+      else{
+        this.getPatientHistory();
+      }
+    });
+     }
+
+     getPatientHistory(){
+      if(this.phoneNumber){
+        this.reservationservice.getHistory(this.phoneNumber).subscribe((data)=>{
+          this.history = data;
+          console.log(' History :>> ' , this.history );
+        })
+      }
+     }
   openModal(id : string){
     if(this.editable){
       //Open Modal of Edit

@@ -37,7 +37,9 @@
                         <label class="form-label w-100">phone Number</label>
                     </div>
                     <input type="text" formControlName="phoneNumber" placeholder="phoneNumber" id="phoneNumber" class="form-control shadow" />
-
+                    <div *ngIf="displayError" style="color: red; font-size: 12px;">
+                      Invalid, phone number should be 11 digits
+                    </div>
                 </div>
 
             </div>
@@ -147,7 +149,7 @@
             </div>
           </div>
 
-        
+
         </div>
         <div class="mt-3 d-flex justify-content-center" style=" margin-bottom: 25px;">
             <button type="submit"

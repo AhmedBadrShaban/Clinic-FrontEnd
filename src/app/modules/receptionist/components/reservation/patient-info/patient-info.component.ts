@@ -10,15 +10,16 @@ import { PatientInfo } from 'src/app/modules/receptionist/models/patient-Info';
 })
 export class PatientInfoComponent implements OnInit, OnChanges  {
   @Input() info: PatientInfo;
+  @Input() phoneNumber: string;
   formData: FormGroup;
   oldInfo: PatientInfo;
 
   constructor(private fb: FormBuilder , private patientService:PatientService) {}
 
   ngOnInit(): void {
-     this.initForm(this.info);
+    console.log('Recived phoneNumber :>> ', this.phoneNumber);
+    this.initForm(this.info);
   }
-
   ngOnChanges(changes: SimpleChanges): void {
     const info = changes['info'] && changes['info'].currentValue;
     if (info) {
@@ -51,9 +52,7 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
         console.log("error in Updating: ", err);
       }
     })
-
    }
-
   cancel() {
     this.formData.setValue(this.oldInfo);
     console.log('Cancelled info', this.formData.value);

@@ -74,7 +74,7 @@ export class ReservationFmComponent implements OnInit {
       console.log('AllNames of Doctors:>> ', this.AllNames);
       this.FilterdNames = this.AllNames;
     })
-    this.reservationService.getAllServicesNames().subscribe((data:any)=>{
+    this.reservationService.getAllServicesNamesToRoom(this.roomName).subscribe((data:any)=>{
       this.AllServices=data;
       console.log('AllServices', this.AllServices);
      })

@@ -14,7 +14,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatButtonModule} from "@angular/material/button";
-import{MatDialogModule} from "@angular/material/dialog"
+import{MatDialogModule, MatDialogRef} from "@angular/material/dialog"
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {SharedModule} from "./shared/shared.module";
 import {NavBarComponent} from "./shared/components/nav-bar/nav-bar.component";
@@ -78,7 +78,12 @@ import { CheckOutComponent } from './modules/rooms/check-out/check-out.component
     // ExpenseComponent,
 
   ],
-  providers: [DatePipe ,  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },AuthService ],
+  providers: [
+    {
+      provide: MatDialogRef,
+      useValue: {}
+    },
+    DatePipe ,   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, AuthService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -12,5 +12,8 @@ export class DoctorReservationsService {
   getAllDoctorReservation():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}doctor/reservation`)
   }
+  completeReservation(id:any , data:any){
+    return this.http.post<any>(`${this.baseUrl}doctor/completeReservation?id=${id}` , data)
+  }
 
  }

@@ -13,18 +13,18 @@ type TableScroll = 'unset' | 'scroll' | 'fixed';
   styleUrls: ['./points.component.css']
 })
 export class PointsComponent implements OnInit {
-  @Input() totalIn:number=-1;
-  @Input() totalOut:number=-1;
-  @Input() patientNumber:string;
-  @Input() pointsHistory:PatientPoints[]=[];
-
+  @Input() phoneNumber:any;
+  remain:number=0;
+  totalOut:number=0
+  totalIn:number=0;
+  pointsHistory:PatientPoints[]=[];
   size: NzTableSize;
   tableScroll: TableScroll;
   tableLayout: NzTableLayout;
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
 
-  constructor(private reservationsService : ReservationsService , private dialogRef : MatDialog , private patientService:PatientService ){
+  constructor(private reservationsService : ReservationsService ,  private patientService:PatientService ,  private dialogRef : MatDialog  ){
      this.size= 'small' as NzTableSize,
       this.paginationType= 'default' as NzTablePaginationType,
       this.tableScroll='unset' as TableScroll,
@@ -32,17 +32,57 @@ export class PointsComponent implements OnInit {
       this.position= 'bottom' as NzTablePaginationPosition
   }
 ngOnInit(){
-  this.patientService.listOfData$.subscribe((data:any) => {
-    this.pointsHistory = data;
+  console.log('points History ini :>> ' );
+  console.log('Recived points History  phoneNumber :>> ', this.phoneNumber);
+   this.reservationsService.phone$.subscribe((data:any) => {
+    console.log('Updated  points History phoneNumber :>> ', data);
+    if(data!=0 && this.phoneNumber){
+      this.phoneNumber = data;
+      this.getPointsHistory();
+    }
+    else if(this.phoneNumber){
+      this.getPointsHistory();
+    }
   });
-  this.patientService.out$.subscribe((data:any) => {
-    console.log('object :>> ', data);
-    this.totalOut += data;
-  });
+  this.patientService.historyObservable$.subscribe((data)=>{
+    console.log('data historyObservable :>> ', data);
+    this.pointsHistory = data
+    this.getTotalInAndOut()
+  })
+
+   // this.patientService.listOfData$.subscribe((data:any) => {
+  //   this.pointsHistory = data;
+  // });
+  // this.patientService.out$.subscribe((data:any) => {
+  //   console.log('object :>> ', data);
+  //   this.totalOut += data;
+  // });
  }
 
+ getPointsHistory(){
+  console.log('phone Before API :>> ', this.phoneNumber);
+  if(this.phoneNumber){
+  this.reservationsService.getPointsHistory(this.phoneNumber).subscribe((data)=>{
+    this.pointsHistory =data;
+    console.log('recived Points History :>> ',  this.pointsHistory);
+    this.getTotalInAndOut();
+  })
+  }
+  }
+  getTotalInAndOut(){
+    if(this.phoneNumber){
+    this.reservationsService.getPatientByNumber(this.phoneNumber).subscribe((data)=>{
+      this.totalIn =data.total_points_in;
+      this.totalOut =data.total_points_out;
+      this.remain =data.remain;
+     })
+    }
+    }
+
   openModal(){
-    this.dialogRef.open(SendPointsComponent , {data:this.patientNumber});
+    if(this.phoneNumber){
+    this.dialogRef.open(SendPointsComponent , {data:this.phoneNumber});
+    }
   }
 
 

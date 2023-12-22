@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NzTableSize, NzTableLayout, NzTablePaginationPosition, NzTablePaginationType } from 'ng-zorro-antd/table';
 import { DailySheet } from 'src/app/modules/receptionist/models/daily-sheet';
+import { ReservationsService } from '../../../services/reservations-services/reservations.service';
 interface Setting {
   bordered: boolean;
   loading: boolean;
@@ -27,10 +28,13 @@ interface Setting {
   templateUrl: './payment-history.component.html',
   styleUrls: ['./payment-history.component.css']
 })
-export class PaymentHistoryComponent {
-  @Input() paymentHistory:DailySheet[];
+export class PaymentHistoryComponent implements OnInit {
+ paymentHistory:DailySheet[];
+  @Input() phoneNumber:any;
+
   settingValue: Setting;
-  constructor(){
+  constructor(private reservationsService :ReservationsService){
+    console.log('payment History ini :>> ' );
     this.settingValue ={
       bordered: true,
       loading: false,
@@ -51,6 +55,31 @@ export class PaymentHistoryComponent {
       position: 'bottom' as NzTablePaginationPosition
     };
   }
+  ngOnInit(): void {
+    console.log('Recived paymentHistory phoneNumber :>> ', this.phoneNumber);
+    this.reservationsService.phone$.subscribe((data:any) => {
+      console.log('Updated  Reservations History phoneNumber :>> ', data);
+      if(data!=0 && this.phoneNumber){
+        this.phoneNumber = data;
+        this.getPaymentHistory();
+      }
+      else if(this.phoneNumber){
+        this.getPaymentHistory();
+      }
+
+    });
+
+  }
+
+  getPaymentHistory(){
+    console.log('phone Before API :>> ', this.phoneNumber);
+    if(this.phoneNumber){
+    this.reservationsService.getPaymentHistory(this.phoneNumber).subscribe((data)=>{
+      this.paymentHistory =data;
+      console.log('recived paymentHistory  :>> ',  this.paymentHistory);
+     })
+    }
+    }
 
 
 }
