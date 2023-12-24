@@ -16,6 +16,12 @@ export class DoctorsService {
 getAllDoctors():Observable<any>{
   return this.http.get<any>(`${this.baseUrl}admin/doctors`)
 }
+DoctorsReport():Observable<any>{
+  return this.http.get<any>(`${this.baseUrl}admin/doctors-report`)
+}
+getDoctor(id:any):Observable<any>{
+  return this.http.get<any>(`${this.baseUrl}admin/doctor-profile?id=${id}`)
+}
 getDoctorProfile():Observable<any>{
   return this.http.get<any>(`${this.baseUrl}doctor/doctor-profile`)
 }

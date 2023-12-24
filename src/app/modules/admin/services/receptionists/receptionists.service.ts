@@ -16,6 +16,9 @@ export class ReceptionistsService {
 getAllReciptianist():Observable<any>{
   return this.http.get<any>(`${this.baseUrl}admin/receptionists`)
 }
+getReciptionist(id:any):Observable<any>{
+  return this.http.get<any>(`${this.baseUrl}admin/receptionist-profile?id=${id}`)
+}
 search(searchVal:any):Observable<any>{
   console.log('searchVal :>> ', searchVal);
   return this.http.get<any>(`${this.baseUrl}admin/receptionist-search?searchString=${searchVal}`)

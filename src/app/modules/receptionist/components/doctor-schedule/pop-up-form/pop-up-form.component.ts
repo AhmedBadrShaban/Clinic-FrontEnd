@@ -1,3 +1,4 @@
+import { AuthService } from './../../../../../shared/services/auth.service';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { DoctorScheduleComponent } from './../doctor-schedule.component';
 import { scheduleData } from './../../../models/doctor.schedule.model';
@@ -13,9 +14,11 @@ import { ReservationfmService } from 'src/app/modules/receptionist/services/Rese
 export class PopUpFormComponent implements OnInit {
    formData: scheduleData;
    doctors:string[];
+   disableEndPulse:boolean = false;
+   isAdmin:boolean = false;
    rooms:string[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, public dialogRef: MatDialogRef<PopUpFormComponent>, private DoctorScheduleService: DoctorScheduleServiceService ,private scheduleDataService:ReservationfmService ,private roomsService:RoomsService ) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, public dialogRef: MatDialogRef<PopUpFormComponent>, private DoctorScheduleService: DoctorScheduleServiceService ,private scheduleDataService:ReservationfmService ,private roomsService:RoomsService , private loogedIn:AuthService ) {
     this.formData = data;
     console.log("received data is: ", this.formData);
   }
@@ -23,34 +26,56 @@ export class PopUpFormComponent implements OnInit {
   ngOnInit(): void {
     this.getAllDoctorsNames();
     this.getAllRoomsNames();
+    if(this.formData.endPulses > 0){
+      this.disableEndPulse =true;
+    }
+    if(this.loogedIn.userType === 'ROLE_ADMIN')
+    {
+      this.isAdmin = true;
+    }
   }
 
   create() {
     delete (this.formData as any)['new'];
+    console.log('formData :>> ', this.formData);
     this.formData.startTime = this.formatTime(this.formData.startTime);
     this.formData.endTime = this.formatTime(this.formData.endTime);
     this.DoctorScheduleService.newSchedule(this.formData).subscribe({
-      next: (data) => {
+      next: (data:any) => {
         this.closeDialog();
         this.UpdateAllSchedules();
+        alert(data.message)
        },
       error: (err) => {
-        console.log("error in posting: ", err);
+        alert(err.error.message)
       }
     });
   }
 
 
-  // Add an edit method to update a schedule
+  // edit method to update a schedule
   edit() {
+    if( this.formData.startTime ==  this.formData.endTime){
+      alert("Start Time Cant be Equal to End Time")
+      return
+    }
+    if( this.formData.startTime.length !== 8 ){
+      this.formData.startTime = this.formatTime(this.formData.startTime);
+    }
+    else if( this.formData.endTime.length !== 8){
+      this.formData.endTime = this.formatTime(this.formData.endTime);
+    }
+    console.log('formData :>> ', this.formData);
     this.DoctorScheduleService.editSchedule(this.formData).subscribe({
       next: (data) => {
         this.closeDialog();
+        alert(data.message);
         this.UpdateAllSchedules();
+
       },
       error: (err) => {
-        console.log("error in editing: ", err);
-      }
+        alert(err.error.message);
+       }
     });
   }
 

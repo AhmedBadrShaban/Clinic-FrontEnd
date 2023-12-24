@@ -11,13 +11,13 @@
             src="../../../../../assets/receptionist-girl-vector-11694435.jpg" alt="">
           <!-- Profile picture upload button-->
           <!--          <img src="../../../../../assets/receptionist-girl-vector-11694435.jpg" height="996" width="949"/><img src="../../../../../assets/receptionist-girl-vector-11694435.jpg" height="996" width="949"/>-->
-          <div class="small font-italic text-muted mb-2">{{receptionistData.username}}</div>
-          <div class="small font-italic text-muted mb-2">{{receptionistData.email}}</div>
+          <div class="small font-italic text-muted mb-2">{{receptionistData?.username}}</div>
+          <div class="small font-italic text-muted mb-2">{{receptionistData?.email}}</div>
 
           <!-- Profile picture help block-->
           <div class="small font-italic text-muted mb-2">status</div>
-          <button ng class="btn btn-primary" type="button"   *ngIf="receptionistData.isActive== 'false' " (click)="switchStatus(receptionistData.username)">Suspended</button>
-          <button ng class="btn btn-primary" type="button"   *ngIf="receptionistData.isActive == 'true' "  (click)="switchStatus(receptionistData.username)">Active</button>
+          <button ng class="btn btn-primary" type="button"   *ngIf="receptionistData?.isActive== 'false' " (click)="switchStatus(receptionistData?.username)">Suspended</button>
+          <button ng class="btn btn-primary" type="button"   *ngIf="receptionistData?.isActive == 'true' "  (click)="switchStatus(receptionistData?.username)">Active</button>
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@
                     <!-- <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                     <label class="form-label w-100">Name</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData.name}}" />
+                  <input type="text" class="form-control shadow" value="{{receptionistData?.name}}" />
 
                 </div>
 
@@ -46,7 +46,7 @@
                     <!-- <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px;"></i> -->
                     <label class="form-label w-100">Password</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData.password}}" />
+                  <input type="text" class="form-control shadow" value="{{receptionistData?.password}}" />
                 </div>
               </div>
 
@@ -58,7 +58,7 @@
                     <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                     <label class="form-label w-100">phoneNumber</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData.phoneNumber}}" />
+                  <input type="text" class="form-control shadow" value="{{receptionistData?.phoneNumber}}" />
 
                 </div>
 
@@ -70,7 +70,7 @@
                     <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
                     <label class="form-label w-100">NationalId</label>
                   </div>
-                  <input type="text" value="{{receptionistData.nationalId}}" class="form-control shadow" />
+                  <input type="text" value="{{receptionistData?.nationalId}}" class="form-control shadow" />
 
                 </div>
 
@@ -84,7 +84,7 @@
                     <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                     <label class="form-label w-100">Address</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData.address}}" />
+                  <input type="text" class="form-control shadow" value="{{receptionistData?.address}}" />
 
                 </div>
 
@@ -95,7 +95,7 @@
                   <div class="d-flex align-items-center">
                      <label class="form-label w-100">Salary</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData.salary}}" />
+                  <input type="text" class="form-control shadow" value="{{receptionistData?.salary}}" />
 
                 </div>
 
@@ -108,7 +108,7 @@
                 <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                 <label class="form-label w-100">Password</label>
               </div>
-              <input type="text" class="form-control shadow" value="{{receptionistData.password}}" />
+              <input type="text" class="form-control shadow" value="{{receptionistData?.password}}" />
             </div>
             <!-- Save changes button-->
             <button class="btn btn" type="button"

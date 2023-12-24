@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from './../../shared/shared.module';
 import {RouterLink} from "@angular/router";
 import {NzTableModule} from "ng-zorro-antd/table";
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
@@ -27,8 +28,8 @@ import { AdminNavBarComponent } from './components/admin-nav-bar/admin-nav-bar.c
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { ReceptionistModule } from '../receptionist/receptionist.module';
-import { ReservationComponent } from '../receptionist/components/reservation/reservation.component';
-
+import { BlblComponent } from './components/admin-home/blbl/blbl.component';
+ 
 @NgModule({
   declarations: [
       AdminComponent,
@@ -46,14 +47,15 @@ import { ReservationComponent } from '../receptionist/components/reservation/res
       AdminProfileComponent,
       MaterialsComponent,
       AddNewMatrialComponent,
+      BlblComponent,
 
    ],
-  exports: [
-    ],
+
 imports: [
   CommonModule,
   AdminRoutingModule,
   AdminNavBarComponent,
+  SharedModule,
   ReactiveFormsModule,
   FormsModule,
   RouterLink,

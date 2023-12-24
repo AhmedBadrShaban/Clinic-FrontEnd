@@ -34,8 +34,7 @@ export class RoomsComponent implements OnInit {
     this.getAllReservations();
      this.allReservation.listOfData$.subscribe((data: any) => {
        this.allReservations = data;
-      console.log('Updated Reservations recived : ', this.allReservations);
-     });
+      });
   }
 
   eventsPerDayAndRoomOne:reservation[]=[];

@@ -44,13 +44,13 @@ export class ReservationFmComponent implements OnInit {
     console.log(userModel);
     this.reservationService.addReservation(userModel , this.roomName).subscribe({
       next:(responed:any)=>{
-        console.log("Reservation Added Successfully in Room : " , this.roomName);
-        this.UpdateAllReservations();
+        alert(responed.message)
+         this.UpdateAllReservations();
         this.closeDialog();
 
      },
      error: (err) => {
-       alert("Error while adding User");
+       alert(err.error.message);
 
        // alert(  err.error.message);
      }

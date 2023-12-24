@@ -11,24 +11,22 @@ import {ReceptionistsService} from "../../../services/receptionists/receptionist
 })
 export class ReceptionistProfileComponent implements OnInit{
   receptionistData: any;
+  receptionistId: any;
+
   @Input() editable : boolean = false;
   constructor(private router: Router , private route: ActivatedRoute , private recpService : ReceptionistsService) {
   }
   ngOnInit(): void {
     // Subscribe to route params and query params
     this.route.params.subscribe(params => {
-      // const id = params['id'];
-
-      // Retrieve additional data from queryParams
-      this.route.queryParams.subscribe(queryParams => {
-        this.receptionistData =queryParams;
-         console.log('Additional data:', this.receptionistData);
-
-
-      });
+      this.receptionistId = params['id'];
+      console.log('receptionistId :>> ', this.receptionistId);
+      this.recpService.getReciptionist(this.receptionistId).subscribe((data)=>{
+        this.receptionistData= data;
+        console.log('data :>> ', data);
+      })
     });
-  }
-
+}
   switchStatus(id: any) {
     this.recpService.changeStatus(id).subscribe({
       next: (responed) => {

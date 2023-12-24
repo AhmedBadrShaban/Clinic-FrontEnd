@@ -60,7 +60,7 @@ export class AddNewDoctorComponent implements OnInit {
     console.log(userModel);
   }
   updateAllDoctors(){
-    this.doctorService.getAllDoctors().subscribe((data:any)=>{
+    this.doctorService.DoctorsReport().subscribe((data:any)=>{
       this.doctorService.updateData(data);
       console.log( "data Updated : " ,data);
     })

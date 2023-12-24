@@ -15,13 +15,13 @@ export class DoctorComponent {
   constructor(private router: Router , private route: ActivatedRoute , private docService : DoctorsService) {
  // Subscribe to route params and query params
  this.route.params.subscribe(params => {
-  // const id = params['id'];
+    this.doctorId = params['id'];
+  console.log('doctorId :>> ', this.doctorId);
+  this.docService.getDoctor(this.doctorId).subscribe((data)=>{
+    this.doctorData= data;
+    console.log('data :>> ', data);
+  })
 
-  // Retrieve additional data from queryParams
-  this.route.queryParams.subscribe(queryParams => {
-    this.doctorData =queryParams;
-     console.log('Additional data:', this.doctorData);
-  });
 });
   }
 

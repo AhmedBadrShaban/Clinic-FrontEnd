@@ -12,12 +12,12 @@
                         src="https://png.pngtree.com/png-clipart/20210913/ourlarge/pngtree-professional-female-doctor-character-png-image_3915444.jpg"
                         alt="">
 
-                     <div class="small font-italic text-muted mb-2">{{doctorData.userName}} </div>
-                    <div class="small font-italic text-muted mb-2">{{doctorData.email}}</div>
+                     <div class="small font-italic text-muted mb-2">{{doctorData?.userName}} </div>
+                    <div class="small font-italic text-muted mb-2">{{doctorData?.email}}</div>
 
                      <div class="small font-italic text-muted mb-2">status</div>
-                    <button ng class="btn btn-primary" type="button"  *ngIf="doctorData.isActive== 'false' "  (click)="switchStatus(doctorData.userName)">Suspended</button>
-                    <button ng class="btn btn-primary" type="button"  *ngIf="doctorData.isActive == 'true' "  (click)="switchStatus(doctorData.userName)">Active</button>
+                    <button ng class="btn btn-primary" type="button"  *ngIf="doctorData?.isActive== false "  (click)="switchStatus(doctorData.userName)">Suspended</button>
+                    <button ng class="btn btn-primary" type="button"  *ngIf="doctorData?.isActive == true"  (click)="switchStatus(doctorData.userName)">Active</button>
                               </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                                         <!-- <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                                         <label class="form-label w-100">Name</label>
                                     </div>
-                                    <input type="text" class="form-control shadow" value="{{doctorData.doctorName}}" />
+                                    <input type="text" class="form-control shadow" value="{{doctorData?.doctorName}}" />
 
                                 </div>
 
@@ -47,7 +47,7 @@
                                       <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                                       <label class="form-label w-100">Password</label>
                                     </div>
-                                    <input type="text" class="form-control shadow" value="{{doctorData.password}}" />
+                                    <input type="text" class="form-control shadow" value="{{doctorData?.password}}" />
                                 </div>
 
                             </div>
@@ -60,7 +60,7 @@
                                         <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                                         <label class="form-label w-100">phoneNumber</label>
                                     </div>
-                                    <input type="text" class="form-control shadow" value="{{doctorData.phoneNumber}}" />
+                                    <input type="text" class="form-control shadow" value="{{doctorData?.phoneNumber}}" />
 
                                 </div>
 
@@ -72,7 +72,7 @@
                                         <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
                                         <label class="form-label w-100">NationalId</label>
                                     </div>
-                                    <input type="text" value="{{doctorData.nationalId}}" class="form-control shadow" />
+                                    <input type="text" value="{{doctorData?.nationalId}}" class="form-control shadow" />
 
                                 </div>
 
@@ -86,7 +86,7 @@
                                         <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                                         <label class="form-label w-100">Address</label>
                                     </div>
-                                    <input type="text" class="form-control shadow" value="{{doctorData.address}}" />
+                                    <input type="text" class="form-control shadow" value="{{doctorData?.address}}" />
 
                                 </div>
 
@@ -98,7 +98,7 @@
                                     <!-- <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px;"></i> -->
                                     <label class="form-label w-100">Email</label>
                                 </div>
-                                <input type="text" class="form-control shadow" value="{{doctorData.email}}" />
+                                <input type="text" class="form-control shadow" value="{{doctorData?.email}}" />
                                 </div>
                             </div>
 
@@ -110,7 +110,7 @@
                                         <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                                         <label class="form-label w-100">Price per hour</label>
                                     </div>
-                                    <input type="number" value="{{doctorData.pricePerHour}}" class="form-control shadow"
+                                    <input type="number" value="{{doctorData?.pricePerHour}}" class="form-control shadow"
                                         name="phone1" />
 
                                 </div>
@@ -124,9 +124,9 @@
 
                                         <label class="form-label w-100">isLiser</label>
                                     </div>
-                                    <input *ngIf="doctorData.isLaser==false" type="text" class="form-control shadow"
+                                    <input *ngIf="doctorData?.isLaser==true" type="text" class="form-control shadow"
                                         value="true" />
-                                    <input *ngIf="doctorData.isLaser!=false" type="text" class="form-control shadow"
+                                    <input *ngIf="doctorData?.isLaser==false" type="text" class="form-control shadow"
                                         value="false" />
                                 </div>
 
@@ -141,7 +141,7 @@
                                         <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
                                         <label class="form-label w-100">pulsesPercentage</label>
                                     </div>
-                                    <input type="number" value="{{doctorData.pulsesPercentage}}"
+                                    <input type="number" value="{{doctorData?.pulsesPercentage}}"
                                         class="form-control shadow" name="phone2" />
 
                                 </div>

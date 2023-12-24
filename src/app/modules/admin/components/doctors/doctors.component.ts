@@ -17,6 +17,7 @@ export class DoctorsComponent implements OnInit {
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
   doctors: Doctors[] = [];
+  doctorsTemp: Doctors[] = [];
   AllDataToSearchIn: any[];
   filteredData: any[] = [];
   searchValue?: any;
@@ -30,11 +31,20 @@ export class DoctorsComponent implements OnInit {
         // this.doctors = docService.getDoctors()
   }
   ngOnInit(): void {
-    this.getAllDoctors();
+    this.getAllDoctorsReports();
     this.docService.listOfData$.subscribe((data: any) => {
       this.doctors = data;
       console.log('Updated Data recived : ', this.doctors);
       this.autoComplete();
+    });
+  }
+  getAllDoctorsReports() {
+    this.docService.DoctorsReport().subscribe((data) => {
+      this.doctors = data;
+      this.doctorsTemp=this.doctors;
+      console.log('AllDataToSearchIn :>> ', this.doctorsTemp);
+      this.autoComplete();
+      console.log('Doctors :>> ', this.doctors);
     });
   }
   getAllDoctors() {
@@ -48,7 +58,7 @@ export class DoctorsComponent implements OnInit {
     this.docService.changeStatus(id).subscribe({
       next: (responed) => {
         alert(responed.message);
-        this.getAllDoctors();
+        this.getAllDoctorsReports();
       },
       error: (err) => {
         console.log('err :>> ', err.error.message);
@@ -57,14 +67,16 @@ export class DoctorsComponent implements OnInit {
   }
 
   search() {
-    this.docService.search(this.searchValue).subscribe((data: any) => {
-       this.doctors=data;
-      console.log('search recived dtaa : ', data);
-    });
+    this.doctors = this.doctorsTemp;
+    console.log('doctors :>> ', this.doctors);
+    this.doctors = this.doctors.filter((doctor) =>
+      doctor.doctorName.toLowerCase().includes(this.searchValue.toLowerCase())
+    );
+    console.log('Search results:', this.doctors);
   }
 
   clearSearch() {
-    this.getAllDoctors();
+    this.getAllDoctorsReports();
     this.searchValue = null;
   }
 
@@ -89,7 +101,7 @@ export class DoctorsComponent implements OnInit {
   openDialog(){
     this.dialogRef.open(AddNewDoctorComponent);
   }
-  goToDoctorData(id : string ,data:any){
-    this.router.navigate(['admin/doctor' , id] , {queryParams:data})
+  goToDoctorData(id : string){
+    this.router.navigate(['admin/doctor' , id])
   }
 }

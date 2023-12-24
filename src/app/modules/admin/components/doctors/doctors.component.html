@@ -40,9 +40,10 @@
 >
     <thead>
     <tr style="font-size: 18px">
-        <th [nzAlign]="'center'">Name</th>
-        <th [nzAlign]="'center'">Phone Number</th>
-        <th [nzAlign]="'center'">Hours</th>
+        <th [nzAlign]="'center'">Doctor Name</th>
+        <th [nzAlign]="'center'">Number of Services</th>
+        <th [nzAlign]="'center'">Total Hours</th>
+        <th [nzAlign]="'center'">Total Pulses</th>
         <th [nzAlign]="'center'">Liser</th>
         <th [nzAlign]="'center'">status</th>
     </tr>
@@ -51,9 +52,10 @@
     <ng-container *ngFor="let data of dynamicTable.data">
         <tr  style="cursor: pointer; font-size: 16px" >
           <!--  -->
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! , data)">{{ data.doctorName  }}</td>
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! , data)">{{ data.phoneNumber  }}</td>
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! , data)">{{ data.pricePerHour }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId!  )">{{ data.doctorName  }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! )">{{ data.numberOfServices !== undefined ? data.numberOfServices : 0 }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! )">{{ data.totalHours !== undefined ? data.totalHours : 0 }}</td>
+            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! )">{{ data.totalPulses !== undefined ? data.totalPulses : 0 }}</td>
             <td *ngIf="data.isLaser" [nzAlign]="'center'" >
                 <img src="../../../../assets/5289675.png" height="35" width="35"/>
             </td>
@@ -65,15 +67,15 @@
               *ngIf="data.isActive"
               style="width: 120px; cursor:pointer"
               class = 'btn  btn-sm btn-success  small-font'
-              (click)="switchStatus(data.userName)">
+              (click)="goToDoctorData(data.doctorId!  )">
               Active
              </a>
             <a
               *ngIf="!data.isActive"
               style="width: 120px; cursor: pointer"
               class = 'btn  btn-sm  btn-warning small-font'
-              (click)="switchStatus(data.userName)"
-            >
+              (click)="goToDoctorData(data.doctorId!  )"
+             >
             Not Active
              </a>
             </td>

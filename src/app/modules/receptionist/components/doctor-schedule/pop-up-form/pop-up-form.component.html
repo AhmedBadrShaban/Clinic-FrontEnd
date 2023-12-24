@@ -49,13 +49,13 @@
       <div class="col-5">
         <div class="cs-form smaller-mat-form-field w-100">
           <label class="form-label w-100 text-center" for="startPulses">Pulses Start</label>
-          <input  [disabled]="true" type="number" id="startPulses" class="form-control"  value="0" [(ngModel)]="formData.startPulses" name="startPulses" />
+          <input  [disabled]="!formData.new && !isAdmin" type="number" id="startPulses" class="form-control"  value="0" [(ngModel)]="formData.startPulses" name="startPulses" />
         </div>
       </div>
       <div class="col-5">
         <div class="cs-form smaller-mat-form-field w-100">
           <label class="form-label w-100 text-center" for="endPulses">Pulses End</label>
-          <input  [disabled]="true" type="number" id="endPulses" class="form-control"  value="0"  [(ngModel)]="formData.endPulses" name="endPulses" />
+          <input  [disabled]="disableEndPulse && !isAdmin" type="number" id="endPulses" class="form-control"  value="0"  [(ngModel)]="formData.endPulses" name="endPulses" />
 
         </div>
       </div>

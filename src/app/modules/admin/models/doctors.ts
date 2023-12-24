@@ -17,7 +17,8 @@ export interface Doctors {
       password:string;
     }
     pulsesPercentage : number;
-    numberPulses: number;
-    MonthlyHours : number;
+    totalPulses: number;
+    totalHours : number;
+    numberOfServices: number;
     password:string
 }

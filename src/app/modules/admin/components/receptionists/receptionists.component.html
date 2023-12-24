@@ -50,10 +50,10 @@
   <tbody style="background-color: #f2f2f2">
   <ng-container *ngFor="let data of dynamicTable.data">
     <tr  style="cursor: pointer; font-size: 16px" >
-      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.name  }}</td>
-      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.phoneNumber  }}</td>
-      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.email  }}</td>
-      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId , data)">{{ data.clinic  }}</td>
+      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId  )">{{ data.name  }}</td>
+      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId  )">{{ data.phoneNumber  }}</td>
+      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId  )">{{ data.email  }}</td>
+      <td [nzAlign]="'center'" (click)="goToReceptionistData(data.receptionistId )">{{ data.clinic  }}</td>
       <td [nzAlign]="'center'">
         <a
         *ngIf="data.isActive"
