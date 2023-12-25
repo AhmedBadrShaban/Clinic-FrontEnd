@@ -39,6 +39,7 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { AuthService } from './shared/services/auth.service';
 import { AuthInterceptor } from './shared/services/auth.interceptor';
 import { CheckOutComponent } from './modules/rooms/check-out/check-out.component';
+import { PaymentComponent } from './modules/rooms/check-out/payment/payment.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { CheckOutComponent } from './modules/rooms/check-out/check-out.component
     AddClinicComponent,
     NotFoundComponent,
     ForbiddenComponent,
-    CheckOutComponent
+    CheckOutComponent,
+    PaymentComponent
   ],
   imports: [
     BrowserModule,

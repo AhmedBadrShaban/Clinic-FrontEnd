@@ -30,6 +30,7 @@ export class ReservationComponent implements OnInit {
     secondaryPhone: '',
     knowUsThrough: '',
     note: '',
+    debit:0,
     date: '',
     lastReservation: '',
   };

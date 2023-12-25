@@ -53,6 +53,18 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
       }
     })
    }
+   updateDepit(){
+     this.patientService.updatePatientDepit(this.oldInfo.primaryPhone , this.info.debit).subscribe({
+      next: (data) => {
+        console.log('Updated Debit');
+        // alert(data.message)
+        },
+      error: (err) => {
+        console.log('error :>> ', err);
+       }
+    })
+
+   }
   cancel() {
     this.formData.setValue(this.oldInfo);
     console.log('Cancelled info', this.formData.value);

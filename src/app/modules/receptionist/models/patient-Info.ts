@@ -7,6 +7,7 @@ export interface PatientInfo {
   secondaryPhone:string;
   knowUsThrough:string;
   note:string;
+  debit:number;
   date:string;
   lastReservation:string;
 }

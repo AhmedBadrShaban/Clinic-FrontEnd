@@ -88,7 +88,9 @@ export class DoctorScheduleComponent implements OnInit {
   });
     }
     getAllSchedules(){
-      this.DoctorScheduleService.getAllSchedules().subscribe((data:any)=>{
+      const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
+
+      this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
         // console.log(data);
         this.listOfData =data;
         console.log( "data recived : " ,this.listOfData);

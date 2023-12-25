@@ -51,7 +51,8 @@ export class DailySheetComponent {
 
 
   constructor(private dailySheetService:DailysheetService , private roomsService:RoomsService ,private datePipe:DatePipe ){
-     this.settingValue ={
+    this.selectedDate = new Date(); 
+    this.settingValue ={
       bordered: true,
       loading: false,
       pagination: true,
@@ -75,9 +76,11 @@ export class DailySheetComponent {
    }
 
   ngOnInit(): void {
-    this.dailySheetService.getAllDailyInfo().subscribe((data:any)=>{
+    this.selectedDate= this.datePipe.transform(this.selectedDate , 'yyyy-MM-dd');
+
+    this.dailySheetService.filterDailySheet( undefined , this.selectedDate ).subscribe((data:any)=>{
       // console.log(data);
-      this.dailyInfo =data;
+      this.dailyInfo = data[0].dailySheets;
       console.log( "daily sheet recived : " ,this.dailyInfo);
     })
     this.roomsService.allRooms().subscribe((rooms)=>{

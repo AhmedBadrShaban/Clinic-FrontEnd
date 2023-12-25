@@ -45,6 +45,10 @@ export class PatientService {
     const url = `http://localhost:8080/receptionist/update-patient?phone=${primaryPhone}`;
     return this.http.put<any>(url, updatedData);
   }
+  updatePatientDepit(primaryPhone:string, amount:any){
+    const url = `http://localhost:8080/receptionist/update-debit-for-patient?phone=${primaryPhone}&amount=${amount}`;
+    return this.http.patch<any>(url , amount);
+  }
 
   private listOfDataSubject = new BehaviorSubject<any>([]);
   private listOfDataSubject2 = new BehaviorSubject<any>([]);
