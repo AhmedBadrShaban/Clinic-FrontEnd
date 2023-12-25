@@ -71,6 +71,11 @@ export class LoginComponent implements OnInit {
             sessionStorage.setItem('userType',  this.authService.userType);
              this.router.navigateByUrl('doctor')
           }
+          else if( c==4){
+            this.authService.userType= 'ROLE_CONTRIBUTER';
+            sessionStorage.setItem('userType',  this.authService.userType);
+             this.router.navigateByUrl('contributer')
+          }
       }
 
 

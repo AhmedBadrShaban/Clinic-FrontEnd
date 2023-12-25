@@ -24,7 +24,11 @@ const routes:Routes = [
     canActivate: [AuthGuardService],
     data: { requiredRole: 'ROLE_DOCTOR' }
 },
-{ path: 'forbidden', component: ForbiddenComponent }, // Create a ForbiddenComponent for unauthorized access
+{ path: 'forbidden', component: ForbiddenComponent },
+  { path: 'contributer', loadChildren: () => import('./modules/conteributer/conteributer.module').then(m => m.ConteributerModule), 
+  canActivate: [AuthGuardService],
+  data: { requiredRole: 'ROLE_CONTRIBUTER'} 
+},
   {path: '**' , component: NotFoundComponent}
 ]
 @NgModule({
