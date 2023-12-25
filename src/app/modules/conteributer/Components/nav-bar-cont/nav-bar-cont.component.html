@@ -1,0 +1,22 @@
+<nav class="mb-4">
+  <div class="navv">
+    <div class="rightNav">
+      <div class="NavItem"
+           style="margin-right: 50px"
+           (click)="loggOut()"
+           [routerLink]="['/login']"
+           routerLinkActive = 'active'
+           [routerLinkActiveOptions]="{exact: true}"
+      >
+        Logout
+      </div>
+
+    </div>
+
+    <div style="margin-left: 50px">
+      <img src="../../../../assets/logo.png" height="60" width="85"/>
+    </div>
+
+  </div>
+
+</nav>
