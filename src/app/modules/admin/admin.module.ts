@@ -29,7 +29,8 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { ReceptionistModule } from '../receptionist/receptionist.module';
 import { BlblComponent } from './components/admin-home/blbl/blbl.component';
- 
+import {ReportsComponent} from "../../shared/components/reports/reports.component";
+
 @NgModule({
   declarations: [
       AdminComponent,
@@ -64,6 +65,7 @@ imports: [
   NzDropDownModule,
   NzAutocompleteModule,
   ReceptionistModule,
+  ReportsComponent
  ]
 })
 export class AdminModule { }

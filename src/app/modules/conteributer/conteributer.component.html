@@ -1,1 +1,38 @@
+<app-nav-bar-cont></app-nav-bar-cont>
 <app-reports></app-reports>
+<nz-table #nestedTable
+          [nzData]="data"
+          [nzPageSize]="10"
+          class="mx-auto"
+          style="width: 60%; margin-top: 3%"
+          #dynamicTable
+          [nzTableLayout]="'auto'"
+          [nzBordered]="true"
+          [nzOuterBordered]="true"
+          [nzSimple]="false"
+          [nzPaginationType]="paginationType"
+          [nzPaginationPosition]="position"
+          [nzFrontPagination]="true"
+          [nzShowPagination]="true"
+          [nzSize]="size"
+>
+  <thead>
+  <tr>
+    <th [nzAlign]="'center'">Date</th>
+    <th [nzAlign]="'center'">Profit</th>
+    <th [nzAlign]="'center'">Expenses</th>
+    <th [nzAlign]="'center'">Total</th>
+  </tr>
+  </thead>
+  <tbody>
+  <ng-container *ngFor="let data of dynamicTable.data">
+    <tr  style="cursor: pointer; font-size: 16px">
+      <td [nzAlign]="'center'">{{ data.date  }}</td>
+      <td [nzAlign]="'center'">{{ data.profit  }}</td>
+      <td [nzAlign]="'center'">{{ data.expenses  }}</td>
+      <td [nzAlign]="'center'">{{ data.total  }}</td>
+    </tr>
+  </ng-container>
+  </tbody>
+</nz-table>
+

@@ -40,6 +40,7 @@ import { AuthService } from './shared/services/auth.service';
 import { AuthInterceptor } from './shared/services/auth.interceptor';
 import { CheckOutComponent } from './modules/rooms/check-out/check-out.component';
 import { PaymentComponent } from './modules/rooms/check-out/payment/payment.component';
+import {ReportsComponent} from "./shared/components/reports/reports.component";
 
 
 @NgModule({
@@ -74,7 +75,8 @@ import { PaymentComponent } from './modules/rooms/check-out/payment/payment.comp
     NzPaginationModule,
     NzSelectModule,
     AutoCompleteComponent,
-    RouterLink
+    RouterLink,
+    ReportsComponent
   ],
   exports:[
     // ExpenseComponent,
