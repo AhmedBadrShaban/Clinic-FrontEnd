@@ -1,0 +1,59 @@
+<div style="display: flex;justify-content: space-around;">
+  <div class="navClass">
+    <div class="buttnAdd" (click)="goToForm()">
+
+      <button (click)="openDialog()" class="btn btn-info" style="width: fit-content; height: 37px;">Add new Contributor</button>
+
+    </div>
+    <div class="searchInput" >
+      <div class="col-6">
+        <input  class="form-control h-100 bg-light" id="material-search"
+                placeholder="search" type="search"
+                nz-input
+                [(ngModel)]="searchValue"
+                [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="onChange($event)"
+                [nzAutocomplete]="MaterialAuto"
+        />
+        <nz-autocomplete [nzDataSource]="filteredData" #MaterialAuto></nz-autocomplete>
+      </div>
+      <button class="btn btn-sm btn-info mx-2" (click)="search()">Search</button>
+      <a  class="text-decoration-underline" style="color: white;" (click)="clearSearch()">Clear</a>
+    </div>
+  </div>
+</div>
+
+<nz-table
+  class="mx-auto"
+  style="width: 55%; margin-top: 3%"
+  #dynamicTable
+  [nzData]="cont"
+  [nzTableLayout]="'auto'"
+  [nzBordered]="true"
+  [nzOuterBordered]="true"
+  [nzSimple]="false"
+  [nzPaginationType]="paginationType"
+  [nzPaginationPosition]="position"
+  [nzFrontPagination]="true"
+  [nzShowPagination]="true"
+  [nzSize]="size"
+>
+  <thead>
+  <tr style="font-size: 18px">
+    <th [nzAlign]="'center'">Name</th>
+    <th [nzAlign]="'center'">Action</th>
+  </tr>
+  </thead>
+  <tbody style="background-color: #f2f2f2">
+  <ng-container *ngFor="let data of dynamicTable.data">
+    <tr  style="cursor: pointer; font-size: 16px">
+      <td [nzAlign]="'center'">{{ data.name  }}</td>
+      <td [nzAlign]="'center'"
+          (click)="removeService(data.id)"
+      >
+        <img src="../../../../assets/7347206.png" alt="delete" height="30" width="30"/></td>
+    </tr>
+  </ng-container>
+  </tbody>
+</nz-table>
+

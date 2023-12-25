@@ -10,7 +10,7 @@
     align-content: center;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    gap: 40px 25px;
+    gap: 30px 18px;
     position: absolute;
     grid-template-areas:
     ". . . ."
@@ -23,7 +23,7 @@
     border-radius: 10px;
     background: rgba(111, 45, 189, 0.68);
     color: white;
-    font-size: 39px;
+    font-size: 34px;
     font-weight: 500;
     height: 105px;
     justify-content: center;

@@ -31,7 +31,7 @@ export class MaterialsComponent implements OnInit {
    {
     this.getAllMaterials();
     this.matServices.listOfData$.subscribe((data:any)=>{
-       this.materials =data;
+       this.materials = data;
       console.log( "Updated Data recived : " ,this.materials);
       this.autoComplete();
 
@@ -63,10 +63,7 @@ export class MaterialsComponent implements OnInit {
     this.searchValue=null;
   }
   openDialog(){
-
     this.dialogRef.open(AddNewMatrialComponent);
-
-
   }
   removeService(id: string){}
 

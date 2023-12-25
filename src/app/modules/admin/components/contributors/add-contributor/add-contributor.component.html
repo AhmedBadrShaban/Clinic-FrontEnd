@@ -1,0 +1,49 @@
+<div
+  class="border rounded container shadow"
+  style="width: 600px; background-color: #f8f8f8; border: none"
+>
+  <form [formGroup]="ContributorFrm" (ngSubmit)="onSubmit()">
+    <div class="row m-2 justify-content-between">
+      <div class="d-flex align-items-center">
+        <label class="form-label w-100">Name</label>
+      </div>
+      <input
+        type="text"
+        formControlName="userName"
+        placeholder="Name"
+        id="name"
+        class="form-control shadow"
+      />
+    </div>
+    <div class="row m-2 mt-3 justify-content-between">
+      <div class="d-flex align-items-center">
+        <!-- <i class="bi bi-currency-pound me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+        <label class="form-label w-100">password</label>
+      </div>
+      <input
+        type="text"
+        formControlName="password"
+        placeholder="password"
+        id="password"
+        class="form-control shadow"
+      />
+    </div>
+
+    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
+      <button
+        type="submit"
+        style="
+          width: 180px;
+          height: 40px;
+          background-color: green;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+        "
+        [disabled]="(ContributorFrm.invalid || ContributorFrm.errors)"
+      >
+        Add Contributor
+      </button>
+    </div>
+  </form>
+</div>

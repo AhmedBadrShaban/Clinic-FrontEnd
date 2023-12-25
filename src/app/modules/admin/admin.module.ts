@@ -30,6 +30,8 @@ import { AdminComponent } from './admin.component';
 import { ReceptionistModule } from '../receptionist/receptionist.module';
 import { BlblComponent } from './components/admin-home/blbl/blbl.component';
 import {ReportsComponent} from "../../shared/components/reports/reports.component";
+import { ContributorsComponent } from './components/contributors/contributors.component';
+import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,8 @@ import {ReportsComponent} from "../../shared/components/reports/reports.componen
       MaterialsComponent,
       AddNewMatrialComponent,
       BlblComponent,
-
+      ContributorsComponent,
+      AddContributorComponent,
    ],
 
 imports: [
