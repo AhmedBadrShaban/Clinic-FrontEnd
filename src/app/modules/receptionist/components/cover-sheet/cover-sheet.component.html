@@ -10,14 +10,52 @@
     </div>
 </div>
 
+<div id="report-Section" class="report-Section">
+    <div style="width: 80%">
+    <div class="grid-container">
+      <div class="grid-item" style=" width: 510px">
+        <div>User Name : <span style="font-family: 'Candara', sans-serif;"> {{'Ahmed '}}</span></div>
+        <!--{{listOfData[0].user}}-->
+      </div>
+      <div class="grid-item"><div> Date : <span > {{'20-20-2020 '}}</span></div></div>
+      <!--{{listOfData[0].date}}-->
+    </div>
+
+    <div class="grid-container second-row">
+      <div class="grid-item"><div>Expenses : <span> {{1580}}</span></div></div>
+      <!--{{listOfData[0].expenses}}-->
+      <div class="grid-item"><div>Net : <span> {{1580}}</span></div></div>
+      <!--{{listOfData[0].net}}-->
+      <div class="grid-item"><div>Profit : <span > {{1580}}</span></div></div>
+      <!--{{listOfData[0].profit}}-->
+    </div>
+
+  </div>
+  <div style="width: 80%">
+
+<!--    *ngFor="let d of listOfData[0].laserRead"-->
+    <div class="grid-container">
+      <div class="grid-item" style=" width: 379px">
+        <div> {{"beginning of Room 215 is 1815"}} </div>
+      </div>
+      <div class="grid-item" style=" width: 379px">
+        <div> {{"End of Room 215 is 1915"}} </div>
+      </div>
+      <!--{{listOfData[0].date}}-->
+    </div>
+  </div>
+</div>
+
+
 
 <button class="mt-3 justify-content-center" type="submit"
-        style="margin-bottom: 30px;margin-left: 43%; width: 130px; height: 30px; background-color: green; color: #fff; border: none; border-radius: 4px;">
+        style="margin-bottom: 30px;margin-left: 43%; width: 130px; height: 30px; background-color: green; color: #fff; border: none; border-radius: 4px;"
+        (click)="generatePDF()">
         Print
     </button>
 
-<!-- 
-    <nz-table 
+<!--
+    <nz-table
 class="mx-auto"  style="width:90%"
 #dynamicTable
 [nzScroll]="{ x: scrollX, y: scrollY }"
@@ -41,7 +79,7 @@ class="mx-auto"  style="width:90%"
     <th [nzAlign]="'center'">Expense</th>
     <th [nzAlign]="'center'">Net</th>
   </tr> -->
- 
+
 <!-- <tbody style="background-color: #F2F2F2;">
      <tr >
       <th [nzAlign]="'center'">Date</th>
@@ -54,7 +92,7 @@ class="mx-auto"  style="width:90%"
     <tr>
         <th [nzAlign]="'center'">Profit</th>
         <td [nzAlign]="'center'" style="font-size: 12px;">{{ listOfData.profit }}</td>
-      
+
     </tr>
     <tr>
         <th [nzAlign]="'center'">Expense</th>
@@ -62,15 +100,15 @@ class="mx-auto"  style="width:90%"
     </tr>
     <tr>
         <th [nzAlign]="'center'">Net</th>
-       
+
         <td  [nzAlign]="'center'">{{  listOfData.profit }}</td>
     </tr>
-   
+
       <!-- <br> -->
-      
-      
+
+
     <!-- <div style="color: #31263E; height: 20px;"></div> -->
-   
-<!-- </tbody> 
+
+<!-- </tbody>
 </nz-table> -->
 

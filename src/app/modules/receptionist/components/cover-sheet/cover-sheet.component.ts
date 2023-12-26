@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
 import { CoverSheet } from 'src/app/modules/receptionist/models/cover-sheet';
 import { Expense } from 'src/app/modules/receptionist/models/expense';
 import { CoverSheetService } from '../../services/cover-sheet/cover-sheet.service';
 import { DatePipe } from '@angular/common';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 type TableScroll = 'unset' | 'scroll' | 'fixed';
+
+
 interface Setting {
  bordered: boolean;
  loading: boolean;
@@ -42,6 +46,7 @@ export class CoverSheetComponent implements OnInit {
   scrollY: string | null = null;
   settingValue: Setting;
 
+  @ViewChild('report-Section', { static: false }) myDiv: ElementRef;
 
   constructor(
     private CoverSheetService:CoverSheetService  ,  private datePipe: DatePipe){
@@ -89,5 +94,25 @@ export class CoverSheetComponent implements OnInit {
     })
 
   }
+
+    generatePDF() {
+        let data = document.getElementById('report-Section');
+        if (data != null) {
+            const logoImage = new Image();
+            logoImage.src = '../../../../../assets/logo.png';
+            html2canvas(data).then((canvas) => {
+                const contentDataURL = canvas.toDataURL('image/jpeg', 1.0);
+                let pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = pdf.internal.pageSize.getWidth();
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                pdf.addImage(logoImage, 'PNG', 12, 13, 30, 30);
+                pdf.addImage(contentDataURL, 'JPEG', 0, 50, imgWidth, imgHeight);
+                pdf.save('Filename.pdf');
+            });
+        }
+    }
+
+
+
 
 }

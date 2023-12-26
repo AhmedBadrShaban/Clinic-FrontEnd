@@ -1,0 +1,41 @@
+.report-Section{
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  flex-direction: column;
+  align-items: center;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 50%;
+  margin: 20px;
+}
+
+.grid-item {
+  border: 1px solid #dddddd;
+  width: 250px;
+  padding: 21px;
+  font-weight: 500;
+  text-align: left;
+}
+
+/* Style the form elements */
+.grid-item form {
+  display: grid;
+  gap: 8px;
+}
+
+.grid-item label {
+  font-weight: bold;
+}
+
+.grid-item input,
+.grid-item select {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+span{font-family: Courier, monospace; font-weight: 450; font-size: 17px}
