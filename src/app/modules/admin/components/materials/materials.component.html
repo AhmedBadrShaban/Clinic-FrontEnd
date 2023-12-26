@@ -22,42 +22,88 @@
       </div>
   </div>
 </div>
-
-<nz-table
-  class="mx-auto"
-  style="width: 55%; margin-top: 3%"
-  #dynamicTable
-  [nzData]="materials"
-  [nzTableLayout]="'auto'"
-  [nzBordered]="true"
-  [nzOuterBordered]="true"
-  [nzSimple]="false"
-  [nzPaginationType]="paginationType"
-  [nzPaginationPosition]="position"
-  [nzFrontPagination]="true"
-  [nzShowPagination]="true"
-  [nzSize]="size"
->
-  <thead>
-  <tr style="font-size: 18px">
-    <th [nzAlign]="'center'">Name</th>
-    <th [nzAlign]="'center'">Quantity</th>
-    <th [nzAlign]="'center'">Price Per Item</th>
-    <th [nzAlign]="'center'">Action</th>
-  </tr>
-  </thead>
-  <tbody style="background-color: #f2f2f2">
-  <ng-container *ngFor="let data of dynamicTable.data">
-    <tr  style="cursor: pointer; font-size: 16px">
-      <td [nzAlign]="'center'">{{ data.materialName  }}</td>
-      <td [nzAlign]="'center'">{{ data.quantity  }}</td>
-      <td [nzAlign]="'center'">{{ data.cost  }}</td>
-      <td [nzAlign]="'center'"
-          (click)="removeService(data.materialId)"
+<div>
+  <nz-tabset nzCentered>
+    <nz-tab nzTitle="Materials">
+      <nz-table
+              class="mx-auto"
+              style="width: 55%; margin-top: 3%"
+              #dynamicTable
+              [nzData]="materials"
+              [nzTableLayout]="'auto'"
+              [nzBordered]="true"
+              [nzOuterBordered]="true"
+              [nzSimple]="false"
+              [nzPaginationType]="paginationType"
+              [nzPaginationPosition]="position"
+              [nzFrontPagination]="true"
+              [nzShowPagination]="true"
+              [nzSize]="size"
       >
-        <img src="../../../../assets/7347206.png" alt="delete" height="30" width="30"/></td>
-    </tr>
-  </ng-container>
-  </tbody>
-</nz-table>
+        <thead>
+        <tr style="font-size: 18px">
+          <th [nzAlign]="'center'">Name</th>
+          <th [nzAlign]="'center'">Quantity</th>
+          <th [nzAlign]="'center'">Price Per Item</th>
+          <th [nzAlign]="'center'">Action</th>
+        </tr>
+        </thead>
+        <tbody style="background-color: #f2f2f2">
+        <ng-container *ngFor="let data of materials">
+          <tr  style="cursor: pointer; font-size: 16px">
+            <td [nzAlign]="'center'">{{ data.materialName  }}</td>
+            <td [nzAlign]="'center'">{{ data.quantity  }}</td>
+            <td [nzAlign]="'center'">{{ data.cost  }}</td>
+            <td [nzAlign]="'center'"
+                (click)="removeService(data.materialId)"
+            >
+              <img src="../../../../assets/7347206.png" alt="delete" height="30" width="30"/></td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </nz-table>
+
+    </nz-tab>
+    <nz-tab nzTitle="Products">
+
+      <nz-table
+              class="mx-auto"
+              style="width: 55%; margin-top: 3%"
+              #dynamicTable
+              [nzData]="products"
+              [nzTableLayout]="'auto'"
+              [nzBordered]="true"
+              [nzOuterBordered]="true"
+              [nzSimple]="false"
+              [nzPaginationType]="paginationType"
+              [nzPaginationPosition]="position"
+              [nzFrontPagination]="true"
+              [nzShowPagination]="true"
+              [nzSize]="size"
+      >
+        <thead>
+        <tr style="font-size: 18px">
+          <th [nzAlign]="'center'"> Material Name</th>
+          <th [nzAlign]="'center'">Sold Quantity</th>
+          <th [nzAlign]="'center'">Total Cost</th>
+          <th [nzAlign]="'center'">Remaining Quantity</th>
+        </tr>
+        </thead>
+        <tbody style="background-color: #f2f2f2">
+        <ng-container *ngFor="let p of products">
+          <tr  style="cursor: pointer; font-size: 16px">
+            <td [nzAlign]="'center'">{{ p.materialName  }}</td>
+            <td [nzAlign]="'center'">{{ p.soldQuantity  }}</td>
+            <td [nzAlign]="'center'">{{ p.totalCost  }}</td>
+            <td [nzAlign]="'center'">{{ p.remainingQuantity  }}</td>
+
+          </tr>
+        </ng-container>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+
+  </nz-tabset>
+</div>
+
 

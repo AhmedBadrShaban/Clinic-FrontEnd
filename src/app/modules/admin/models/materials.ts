@@ -5,3 +5,10 @@ export interface Materials {
   cost: number;
 }
 
+export interface product{
+  materialName : string;
+  soldQuantity : number;
+  totalCost : number;
+  remainingQuantity : number;
+}
+

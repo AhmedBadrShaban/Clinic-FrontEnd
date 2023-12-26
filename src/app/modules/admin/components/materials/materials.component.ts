@@ -1,6 +1,6 @@
 import { Component, OnInit,ViewEncapsulation } from '@angular/core';
 import {MaterialsService} from "../../services/materials/materials.service";
-import {Materials} from "../../models/materials";
+import {Materials, product} from "../../models/materials";
 import {NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize} from "ng-zorro-antd/table";
 import { MatDialog } from '@angular/material/dialog';
 import { AddNewMatrialComponent } from './add-new-matrial/add-new-matrial.component';
@@ -18,6 +18,7 @@ export class MaterialsComponent implements OnInit {
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
   materials: Materials [];
+  products: product[] = []
    AllDataToSearchIn:any[];
    filteredData:  any[] = [];
   searchValue?:any;
@@ -36,6 +37,8 @@ export class MaterialsComponent implements OnInit {
       this.autoComplete();
 
     })
+
+     this.products = this.matServices.getProducts();
   }
   getAllMaterials(){
     this.matServices.getAllMaterials().subscribe((data)=>{

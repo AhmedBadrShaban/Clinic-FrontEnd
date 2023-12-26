@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { Materials } from '../../models/materials';
+import {Materials, product} from '../../models/materials';
 
 
 
@@ -29,5 +29,26 @@ export class MaterialsService {
   listOfData$ = this.listOfDataSubject.asObservable();
   updateData(data: any[]){
     this.listOfDataSubject.next(data);
+  }
+
+  getProducts() : product[]{
+    return [{
+      materialName : 'golves',
+      soldQuantity : 2 ,
+      totalCost : 10,
+      remainingQuantity : 200
+    },
+      {
+        materialName : 'golves',
+        soldQuantity : 2 ,
+        totalCost : 10,
+        remainingQuantity : 200
+      },
+      {
+        materialName : 'golves',
+        soldQuantity : 2 ,
+        totalCost : 10,
+        remainingQuantity : 200
+      }]
   }
 }

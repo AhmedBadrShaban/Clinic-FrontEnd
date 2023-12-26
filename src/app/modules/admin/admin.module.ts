@@ -32,6 +32,7 @@ import { BlblComponent } from './components/admin-home/blbl/blbl.component';
 import {ReportsComponent} from "../../shared/components/reports/reports.component";
 import { ContributorsComponent } from './components/contributors/contributors.component';
 import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
+import {NzTabsModule} from "ng-zorro-antd/tabs";
 
 @NgModule({
   declarations: [
@@ -55,20 +56,21 @@ import { AddContributorComponent } from './components/contributors/add-contribut
       AddContributorComponent,
    ],
 
-imports: [
-  CommonModule,
-  AdminRoutingModule,
-  AdminNavBarComponent,
-  SharedModule,
-  ReactiveFormsModule,
-  FormsModule,
-  RouterLink,
-  NzTableModule,
-  NzBadgeModule,
-  NzDropDownModule,
-  NzAutocompleteModule,
-  ReceptionistModule,
-  ReportsComponent
- ]
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        AdminNavBarComponent,
+        SharedModule,
+        ReactiveFormsModule,
+        FormsModule,
+        RouterLink,
+        NzTableModule,
+        NzBadgeModule,
+        NzDropDownModule,
+        NzAutocompleteModule,
+        ReceptionistModule,
+        ReportsComponent,
+        NzTabsModule
+    ]
 })
 export class AdminModule { }
