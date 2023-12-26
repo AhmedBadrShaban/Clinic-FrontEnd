@@ -17,7 +17,7 @@ export class AddNewPackageComponent implements OnInit {
   ServiceData: any;
   constructor(private fb: FormBuilder,private packageService:PackageService , private serviceService:ServiceService  ,public dialogRef: MatDialogRef<AddNewPackageComponent>) {
     this.newpackageFm = fb.group({
-      packageName: ['', [Validators.required, Validators.pattern('[A-Za-z ]{3,}')]],
+      packageName: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       validatedDays: [null, [Validators.required, Validators.min(1)]],
       packageCost: [null, [Validators.required, Validators.min(1)]],
       numberOfPoints: [null],
@@ -30,7 +30,7 @@ export class AddNewPackageComponent implements OnInit {
 
   }
   getAllAvaillableServices(){
-    this.serviceService.getAllServices().subscribe((data=>{
+    this.serviceService.getAvaillableService().subscribe((data=>{
       this.ServiceData = data;
       console.log('All Services: ', this.ServiceData);
     }))

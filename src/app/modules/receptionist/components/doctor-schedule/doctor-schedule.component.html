@@ -55,7 +55,10 @@
             <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.date }}</td>
             <td  [nzAlign]="'center'">{{ data.startTime }}</td>
             <td [nzAlign]="'center'">{{ data.endTime }}</td>
-            <td colspan="2" [nzAlign]="'center'" *ngIf="data.confirmed"><a (click)="changeConfirmStatus(data.schedulerId , data)" class="btn btn-success">Confirmed</a></td>
+            <td colspan="2" [nzAlign]="'center'" *ngIf="data.confirmed && isAdmin"><a (click)="changeConfirmStatus(data.schedulerId , data)" class="btn btn-success" 
+              >Confirmed</a></td>
+              <td colspan="2" [nzAlign]="'center'" *ngIf="data.confirmed && !isAdmin"><a class="btn btn-success" 
+                >Confirmed </a></td>
             <td colspan="2" [nzAlign]="'center'" *ngIf="!data.confirmed"><a (click)="changeConfirmStatus(data.schedulerId ,data)" class="btn btn-warning small-font">NotConfirmed</a></td>
             <td  [nzRight]="fixedColumn" [nzAlign]="'center'">
               <a  class="btn btn-info" (click)="openDialog({

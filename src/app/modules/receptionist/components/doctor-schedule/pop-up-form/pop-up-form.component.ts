@@ -15,12 +15,18 @@ export class PopUpFormComponent implements OnInit {
    formData: scheduleData;
    doctors:string[];
    disableEndPulse:boolean = false;
+   disableStartPulses:boolean = false;
    isAdmin:boolean = false;
-   rooms:string[];
+   rooms: any [];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, public dialogRef: MatDialogRef<PopUpFormComponent>, private DoctorScheduleService: DoctorScheduleServiceService ,private scheduleDataService:ReservationfmService ,private roomsService:RoomsService , private loogedIn:AuthService ) {
     this.formData = data;
+    if(this.formData.startPulses){
+      this.disableStartPulses = true;
+
+    }
     console.log("received data is: ", this.formData);
+    
   }
 
   ngOnInit(): void {
@@ -103,6 +109,7 @@ export class PopUpFormComponent implements OnInit {
   getAllRoomsNames(){
     this.roomsService.allRooms().subscribe((data:any)=>{
       this.rooms =data;
+      console.log('Rooms ', this.rooms);
       })
 
   }
@@ -119,5 +126,16 @@ export class PopUpFormComponent implements OnInit {
   formatTime(time: string): string {
     // Add ':00' to the time string to make it in the format 'hh:mm:00'
     return `${time}:00`;
+  }
+  isLaserRoom(name: any): boolean {
+    if(name){
+      for (const room of this.rooms) {
+        if (room.roomName === name && room.laser) {
+          return true;
+        }
+      }
+      return false;
+    }
+   return false;
   }
 }

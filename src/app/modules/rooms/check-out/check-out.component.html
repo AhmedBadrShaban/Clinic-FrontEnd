@@ -61,7 +61,7 @@
                       </a>
                     </div>
                     <div class="col-md-2 mx-3 d-flex justify-content-center" 
-                     *ngIf="paymentsMethods.points.length > 0 && paymentsMethods.points[0] > 0 "
+                     *ngIf="paymentsMethods.points.length > 0 && paymentsMethods.points[0] > 0 && service.price &&  service.pulses "
                       >
                       <a
                         (click)="showPoints(i)"
@@ -173,6 +173,7 @@
                              Done
                           </a>
                           <a class="btn btn-success mx-2" 
+                          *ngIf="service.price &&  service.pulses"
                            (click)="payUsingRemainPoints(service)"
                            [ngClass]="{ 'disabled-link': !showPointsButton }">
                            Remain Points</a>

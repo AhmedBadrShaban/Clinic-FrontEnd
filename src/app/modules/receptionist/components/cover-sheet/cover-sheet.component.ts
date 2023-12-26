@@ -3,6 +3,7 @@ import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTabl
 import { CoverSheet } from 'src/app/modules/receptionist/models/cover-sheet';
 import { Expense } from 'src/app/modules/receptionist/models/expense';
 import { CoverSheetService } from '../../services/cover-sheet/cover-sheet.service';
+import { DatePipe } from '@angular/common';
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 interface Setting {
  bordered: boolean;
@@ -32,7 +33,7 @@ interface Setting {
 })
 export class CoverSheetComponent implements OnInit {
   selectedDate: any | undefined;
-  listOfData: readonly CoverSheet[] =[];
+  listOfData:  CoverSheet[] =[];
   displayData: readonly CoverSheet[] = [];
   allChecked = false;
   indeterminate = false;
@@ -43,7 +44,7 @@ export class CoverSheetComponent implements OnInit {
 
 
   constructor(
-    private CoverSheetService:CoverSheetService ){
+    private CoverSheetService:CoverSheetService  ,  private datePipe: DatePipe){
     this.selectedDate = new Date();
     this.settingValue ={
       bordered: true,
@@ -69,11 +70,24 @@ export class CoverSheetComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.CoverSheetService.getAllSheets().subscribe((data:any)=>{
+    const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
+
+    this.CoverSheetService.getAllSheets(formattedDate).subscribe((data:any)=>{
       // console.log(data);
       this.listOfData =data;
       console.log( "data recived : " ,this.listOfData);
     })
+  }
+
+  onDateChange(event: any) {
+    this.selectedDate = event.value;
+    const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
+    this.CoverSheetService.getAllSheets(formattedDate).subscribe((data:any)=>{
+      // console.log(data);
+      this.listOfData =data;
+      console.log( "New recived Sheet : " ,this.listOfData);
+    })
+
   }
 
 }

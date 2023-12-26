@@ -1,6 +1,6 @@
 import { CompletedService, PointsService } from './../../receptionist/models/payment';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RoomsService } from '../../Services/rooms/rooms.service';
 import { MatDialog } from '@angular/material/dialog';
  import { PaymentComponent } from './payment/payment.component';
@@ -9,7 +9,7 @@ import { NormalPayment, Payments } from '../../receptionist/models/payment';
 
 @Component({
   selector: 'app-check-out',
-  templateUrl: './check-out.component.html',
+  templateUrl: './check-out.component.html',  
   styleUrls: ['./check-out.component.css']
 })
 export class CheckOutComponent implements OnInit {
@@ -39,21 +39,31 @@ export class CheckOutComponent implements OnInit {
   showPointsButton:boolean = false;
   showRemainCash:boolean =false;
 
-  constructor(private route: ActivatedRoute , private checkOutService:RoomsService , private payment:PaymentService  ) {}
+  constructor(private route: ActivatedRoute ,private router:Router, private checkOutService:RoomsService , private payment:PaymentService  ) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
        this.id = +params['id'];
       console.log('ID:', this.id);
-      this.checkOutService.checkOutReservation(this.id).subscribe((data)=>{
-        this.completedServices = data.map((service: CompletedService) => ({
-          ...service,
-          Paid: false // Default value for the 'Paid' property
-        }));
-        console.log('completedServices  : ', this.completedServices);
-      });
+      this.checkOutService.checkOutReservation(this.id).subscribe({
+        next:(data)=>{
+          this.completedServices = data.map((service: CompletedService) => ({
+            ...service,
+            Paid: false // Default value for the 'Paid' property
+          }));
+          console.log('completedServices  : ', this.completedServices);
+          this.availablePaymentsMethods();
+        },
+        error:(err)=>{
+            alert(err.error.text)
+            this.navigateToRooms();
+            }
+      })
     });
 
+
+  }
+  availablePaymentsMethods(){
     this.payment.AvaillableMethods(this.id).subscribe((data)=>{
       if(data.normal){
         this.paymentsMethods.normal = data.normal;
@@ -63,19 +73,21 @@ export class CheckOutComponent implements OnInit {
       if(this.paymentsMethods.points.length>0){
         this.TotalPoints = this.paymentsMethods.points[0];
       }
-      console.log('Data :>> ',  this.paymentsMethods);
+      console.log('Methods :>> ',  this.paymentsMethods);
     })
-
   }
-
 
   CompletePayment()
   {
     const done = this.areAllServicesPaid();
     if(done){
+      if(this.paymentsMethods.points.length===0){
+        this.paymentsMethods.points.push(0);
+      }
       this.payment.completePayment(this.id ,this.paymentsMethods ).subscribe({
         next:(res:any)=>{
           alert(res.message)
+          this.navigateToRooms();
         } , 
         error:(err)=>{
           alert(err.error.message);
@@ -89,30 +101,41 @@ export class CheckOutComponent implements OnInit {
   
   submitNormalPayment(s:CompletedService)
   {
-    
     this.normalPayment.serviceName =s.serviceName;
     const overAllCost = s.totalCost;
     const overAllPulses = s.pulses;
     let paid =this.normalPayment.cash + this.normalPayment.vodafoneCash + this.normalPayment.visa + this.normalPayment.credit + this.normalPayment.instaPay + this.normalPayment.debit ;
     this.normalPayment.totalCost = paid;
-    this.normalPayment.pulses = paid / s.price;
-    if(!this.showRemainCash){
+    if(s.price){
+      this.normalPayment.pulses = paid / s.price;
+    }
+     console.log('In overAllCost > paid + this.usedPoints * s.price :>> ' );
+     console.log('overAllCost :>> ', overAllCost);   
+     console.log('paid :>> ', paid);       
+    console.log('usedPoints :>> ', this.usedPoints);   
+    if(!this.showRemainCash  ){
       this.usedPoints = 0;
     }
-    else if( overAllCost > paid + this.usedPoints * s.price )
-     {
-      if(this.paymentsMethods.points[0] > s.totalCost - paid +  this.usedPoints * s.price )
+    if( overAllCost > paid + this.usedPoints * s.price )
+    {
+      console.log(' paid + this.usedPoints * s.price  ',  paid + this.usedPoints * s.price );
+
+      if(this.paymentsMethods.points[0] > overAllCost - paid +  this.usedPoints * s.price )
       {
-        
+        console.log('In Show Points' );
+
         this.showPointsButton =true;
 
         return
        }
+
       else{
+        console.log('In Have No Points and Payment is less than' );
+
         alert("Total Payments is Less Than Total Cost")
         return;
-      }
-     }
+        }
+    }
     else if (overAllCost < paid +  this.usedPoints * s.price)
      {
        alert("Total Payments Value is More Than the Total Cost !! ")
@@ -247,6 +270,11 @@ export class CheckOutComponent implements OnInit {
     this.selectedCardIndex = index;
     this.selectedMethod=2;
 
+  }
+  navigateToRooms() {
+     const roomsIndex = this.router.url.indexOf('rooms');
+     const commonParentPath = this.router.url.substring(0, roomsIndex);
+     this.router.navigate([commonParentPath, 'rooms']);
   }
  
 }

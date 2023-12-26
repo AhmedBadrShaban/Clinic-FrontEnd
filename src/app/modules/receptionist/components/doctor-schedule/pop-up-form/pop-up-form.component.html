@@ -15,7 +15,7 @@
         <select class="form-select" [(ngModel)]="formData.roomName" name="room">
           <option *ngIf="formData.roomName" selected>{{formData.roomName}}</option>
           <option *ngIf="!formData.roomName" selected disabled>Select Room</option>
-          <option *ngFor="let room of rooms" [ngValue]="room">{{ room }}</option>
+          <option *ngFor="let room of rooms" [ngValue]="room.roomName">{{ room.roomName}}</option>
 
         </select>
       </div>
@@ -49,14 +49,13 @@
       <div class="col-5">
         <div class="cs-form smaller-mat-form-field w-100">
           <label class="form-label w-100 text-center" for="startPulses">Pulses Start</label>
-          <input  [disabled]="!formData.new && !isAdmin" type="number" id="startPulses" class="form-control"  value="0" [(ngModel)]="formData.startPulses" name="startPulses" />
+          <input  [disabled]=" !isLaserRoom(formData.roomName)  || !formData.new && !isAdmin &&  disableStartPulses" type="number" id="startPulses" class="form-control"  value="0" [(ngModel)]="formData.startPulses" name="startPulses" />
         </div>
       </div>
       <div class="col-5">
         <div class="cs-form smaller-mat-form-field w-100">
           <label class="form-label w-100 text-center" for="endPulses">Pulses End</label>
-          <input  [disabled]="disableEndPulse && !isAdmin" type="number" id="endPulses" class="form-control"  value="0"  [(ngModel)]="formData.endPulses" name="endPulses" />
-
+          <input  [disabled]=" !isLaserRoom(formData.roomName) || disableEndPulse && !isAdmin" type="number" id="endPulses" class="form-control"  value="0"  [(ngModel)]="formData.endPulses" name="endPulses" />
         </div>
       </div>
     </div>

@@ -46,7 +46,6 @@
     <th [nzAlign]="'center'">Cost</th>
     <th [nzAlign]="'center'">Points</th>
     <th [nzAlign]="'center'">Valid Dayes</th>
-    <th [nzAlign]="'center'">Status</th>
     <th [nzAlign]="'center'"></th>
   </tr>
   </thead>
@@ -76,10 +75,7 @@
         Not Active
          </a>
       </td>
-      <td [nzAlign]="'center'"
-          (click)="removeService(data.packageId)"
-      >
-        <img src="../../../../assets/7347206.png" height="30" width="30"/></td>
+ 
     </tr>
     <tr  *ngIf="data.services.length > 0" [nzExpand]="!data.expand">
       <nz-table

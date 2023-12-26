@@ -24,7 +24,7 @@ export class RoomsComponent implements OnInit {
     this.selectedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
   }
   ngOnInit(): void {
-    this.allReservation.allRooms().subscribe((rooms)=>{
+    this.allReservation.allRoomsV2().subscribe((rooms)=>{
       this.roomsNames=rooms;
     })
     this.allReservation.rooms$.subscribe((data:any)=>{

@@ -48,7 +48,7 @@ export class AddNewRoomComponent implements OnInit {
     })
   }
   updateRooms(){
-    this.roomService.allRooms().subscribe((data)=>{
+    this.roomService.allRoomsV2().subscribe((data)=>{
       this.roomService.updatedRooms(data);
     })
   }

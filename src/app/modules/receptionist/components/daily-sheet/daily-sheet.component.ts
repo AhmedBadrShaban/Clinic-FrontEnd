@@ -1,4 +1,4 @@
- import { DailySheet } from 'src/app/modules/receptionist/models/daily-sheet';
+ import { DailySheet, DailySheetStatus } from 'src/app/modules/receptionist/models/daily-sheet';
 import { DailysheetService } from './../../services/dailySheet-service/dailysheet.service';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
@@ -32,12 +32,13 @@ interface Setting {
   styleUrls: ['./daily-sheet.component.css']
 })
 export class DailySheetComponent {
-  allRooms:string [];
+  allRooms:any [];
   allDoctors:string[];
   selectedRoom: string;
   selectedDoctor: any;
   selectedDate: any;
   dailyInfo: readonly DailySheet[] =[];
+  dailySheetStatus: DailySheetStatus;
   displayData: readonly DailySheet[] = [];
   allChecked = false;
   indeterminate = false;
@@ -70,9 +71,8 @@ export class DailySheetComponent {
       paginationType: 'default' as NzTablePaginationType,
       tableScroll: 'unset' as TableScroll,
       tableLayout: 'auto' as NzTableLayout,
-      position: 'both' as NzTablePaginationPosition
+      position: 'bottom' as NzTablePaginationPosition
     };
-
    }
 
   ngOnInit(): void {
@@ -81,6 +81,7 @@ export class DailySheetComponent {
     this.dailySheetService.filterDailySheet( undefined , this.selectedDate ).subscribe((data:any)=>{
       // console.log(data);
       this.dailyInfo = data[0].dailySheets;
+      this.dailySheetStatus = data[1];
       console.log( "daily sheet recived : " ,this.dailyInfo);
     })
     this.roomsService.allRooms().subscribe((rooms)=>{
@@ -99,6 +100,7 @@ export class DailySheetComponent {
       this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
           console.log(data);
           this.dailyInfo = data[0].dailySheets;
+          this.dailySheetStatus = data[1];
           console.log( "Search result is  : " ,this.dailyInfo);
         })
     }
@@ -108,6 +110,8 @@ export class DailySheetComponent {
       this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
           console.log(data);
           this.dailyInfo = data[0].dailySheets;
+          this.dailySheetStatus = data[1];
+
           console.log( "Search result is  : " ,this.dailyInfo);
         })
     }
@@ -119,6 +123,7 @@ export class DailySheetComponent {
       this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
           console.log(data);
           this.dailyInfo = data[0].dailySheets;
+          this.dailySheetStatus = data[1];
           console.log( "Search result is : " ,this.dailyInfo);
         })
     }
@@ -134,6 +139,7 @@ export class DailySheetComponent {
       this.dailySheetService.filterDailySheet().subscribe((data: any) => {
           console.log(data);
           this.dailyInfo = data[0].dailySheets;
+          this.dailySheetStatus = data[1];
           console.log("Search result is : ", this.dailyInfo);
       });
   }

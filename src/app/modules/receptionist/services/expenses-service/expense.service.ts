@@ -11,20 +11,20 @@ export class ExpenseService {
   private baseUrl:string="http://localhost:8080/";
   constructor(private http :HttpClient , private loggedIn:AuthService) { }
   getAllExpensesTypes():Observable<any>{
-    if(this.loggedIn.userType=='admin'){
+    if(this.loggedIn.userType=='ROLE_ADMIN'){
        return this.http.get<any>(`${this.baseUrl}admin/get-expenses-type`)
     }
     return this.http.get<any>(`${this.baseUrl}receptionist/get-normal-expenses-type`)
   }
   getAllExpenses():Observable<any>{
-    if(this.loggedIn.userType=='admin'){
+    if(this.loggedIn.userType=='ROLE_ADMIN'){
     return this.http.get<any>(`${this.baseUrl}admin/expenses`);
     }
     return this.http.get<any>(`${this.baseUrl}receptionist/receptionist-expenses`);
 
   }
   addNewExpense(data:any){
-    if(this.loggedIn.userType=='admin'){
+    if(this.loggedIn.userType=='ROLE_ADMIN'){
     return this.http.post(`${this.baseUrl}admin/expenses` , data);
     }
     return this.http.post(`${this.baseUrl}receptionist/expenses` , data);
@@ -35,7 +35,7 @@ export class ExpenseService {
   }
   filterByDate(date:any): Observable<any> {
     console.log("filtling by date of :" ,date);
-    if(this.loggedIn.userType=='admin'){
+    if(this.loggedIn.userType=='ROLE_ADMIN'){
     return this.http.get<any>(`${this.baseUrl}admin/filter-add-reciptionist-expenses-by-date?date=${date}`);
     }
     return this.http.get<any>(`${this.baseUrl}receptionist/filter-expenses?date=${date}`);

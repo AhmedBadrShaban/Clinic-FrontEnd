@@ -86,5 +86,5 @@ export class PackagesComponent {
     this.dialogRef.open(AddNewPackageComponent);
   }
 
-  removeService(id:string){}
+ 
 }

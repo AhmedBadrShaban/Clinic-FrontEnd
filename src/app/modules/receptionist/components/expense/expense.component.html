@@ -34,7 +34,8 @@
      >
       <thead>
         <tr *ngIf="settingValue.header"  style="cursor: pointer;">
-           <th [nzAlign]="'center'">Name</th>
+          <th *ngIf="userType == 'ROLE_ADMIN' " [nzAlign]="'center'">User Name</th>
+          <th [nzAlign]="'center'">Expense Type</th>
           <th [nzAlign]="'center'">Amount</th>
           <th [nzAlign]="'center'">Image</th>
           <th [nzAlign]="'center'">Note</th>
@@ -44,6 +45,7 @@
       <tbody style="background-color: #F2F2F2;">
         <ng-container *ngFor="let data of dynamicTable.data">
           <tr >
+            <td *ngIf="userType == 'ROLE_ADMIN' "  [nzAlign]="'center'" [nzAlign]="'center'">{{ data.name }}</td>
             <td [nzAlign]="'center'" [nzAlign]="'center'">{{ data.type }}</td>
             <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.amount }}</td>
             <td  [nzAlign]="'center'">{{ data.image }}</td>

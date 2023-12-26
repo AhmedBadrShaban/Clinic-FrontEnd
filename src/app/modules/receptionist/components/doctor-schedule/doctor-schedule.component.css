@@ -2,3 +2,8 @@
   margin-right: 8px;
   margin-bottom: 12px;
 }
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5; /* Optionally reduce opacity for a visual cue */
+}

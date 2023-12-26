@@ -36,7 +36,7 @@ ngOnInit(): void {
 getAllServices(){
   this.servService.getAllServices().subscribe((data)=>{
     this.services = data;
-    console.log('services :>> ', this.services);
+    console.log('services :>> ', this.services);  
     this.autoComplete();
   })
 }

@@ -17,13 +17,22 @@ export class RoomsService {
   allRooms():Observable<any>{
     if(sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST')
     {
+      return this.http.get<any>(`${this.baseUrl}receptionist/rooms-object-to-specific-clinic`);
+    }
+    else
+    {
+      return this.http.get<any>(`${this.baseUrl}admin/rooms`);
+    }
+  }
+  allRoomsV2():Observable<any>{
+    if(sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST')
+    {
       return this.http.get<any>(`${this.baseUrl}receptionist/rooms-names-to-specific-clinic`);
     }
     else
     {
       return this.http.get<any>(`${this.baseUrl}admin/rooms/name`);
     }
-
   }
   addRoom(data:any){
     return this.http.post(`${this.baseUrl}admin/rooms` , data);

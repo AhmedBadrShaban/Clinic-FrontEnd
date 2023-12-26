@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopUpFormComponent } from './pop-up-form/pop-up-form.component';
 import {scheduleData} from '../../models/doctor.schedule.model'
 import { ReservationfmService } from '../../services/Reservation_Form/reservationfm.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
@@ -47,6 +48,7 @@ export class DoctorScheduleComponent implements OnInit {
   scrollX: string | null = null;
   scrollY: string | null = null;
   settingValue: Setting;
+  isAdmin:boolean = false;
 
   openDialog(dataa:any){
     this.dialogRef.open(PopUpFormComponent , {
@@ -55,7 +57,7 @@ export class DoctorScheduleComponent implements OnInit {
     // console.log("sended data is : " , dataa )
   }
 
-  constructor(private dialogRef : MatDialog , private datePipe: DatePipe,  private DoctorScheduleService:DoctorScheduleServiceService){
+  constructor(private dialogRef : MatDialog , private datePipe: DatePipe,  private DoctorScheduleService:DoctorScheduleServiceService ,  private loogedIn:AuthService){
     this.selectedDate = new Date();
     this.settingValue ={
       bordered: true,
@@ -81,6 +83,10 @@ export class DoctorScheduleComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    if(this.loogedIn.userType === 'ROLE_ADMIN')
+    {
+      this.isAdmin = true;
+    }
     this.getAllSchedules();
       // Subscribe to the Observable to update listOfData when changes occur
   this.DoctorScheduleService.listOfData$.subscribe((data: readonly any[]) => {

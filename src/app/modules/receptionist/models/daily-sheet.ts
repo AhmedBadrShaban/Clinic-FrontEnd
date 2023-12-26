@@ -4,7 +4,6 @@ export interface DailySheet {
     doctorName:string;
     roomName:string;
     paymentType: string;
-    pulses: number;
     cash: number;
     visa: number;
     credit:number;
@@ -12,11 +11,15 @@ export interface DailySheet {
     instaPay: number;
     vodafoneCash: number;
     totalMoney: number;
-    startPulse:number;
-    endPulse:number;
-    status:boolean;
+    pulses: number;
     date:number;
     service:string;
     whatSheWillDo:string;
-
+}
+export interface DailySheetStatus{
+  pulses: number;
+  balance:number;
+  startPulse:number;
+  endPulse:number;
+  status:boolean;
 }

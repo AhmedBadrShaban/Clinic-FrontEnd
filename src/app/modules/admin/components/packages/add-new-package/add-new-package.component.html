@@ -48,7 +48,7 @@
                             </div>
                             <select class="form-select shadow" id="select-options" formControlName="serviceName" style="margin-left: -31px;">
                                 <option value="">Select Service</option>
-                                <option *ngFor="let serviceData of ServiceData" [value]="serviceData.serviceName">{{ serviceData.serviceName }}</option>
+                                <option *ngFor="let serviceData of ServiceData" [value]="serviceData">{{ serviceData}}</option>
                             </select>
                         </div>
                         <div class="col-6">

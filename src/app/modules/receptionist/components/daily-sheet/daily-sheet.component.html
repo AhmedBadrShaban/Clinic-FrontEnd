@@ -4,7 +4,7 @@
             <mat-label>Room</mat-label>
             <mat-select [(ngModel)]="selectedRoom"  (ngModelChange)="onRoomChange()">
                 <mat-option   [disabled]="true">Choose Rooms</mat-option>
-                <mat-option *ngFor="let room of allRooms" [value]="room">{{room}}</mat-option>
+                <mat-option *ngFor="let room of allRooms" [value]="room.roomName">{{room.roomName}}</mat-option>
              </mat-select>
         </mat-form-field>
     </div>
@@ -31,6 +31,45 @@
   </div>
 </div>
 
+  <div
+  class="my-3" 
+  style="display: flex;
+  width: 100%;
+  justify-content: space-around;"
+  *ngIf="dailySheetStatus"
+  >
+      <div >
+        <h2>
+          Start Pulse : <span style="color: black;" >{{dailySheetStatus.startPulse}}</span>
+        </h2>
+      </div>
+      <div>
+        <h2>
+          End Pulse : <span style="color: black;" >{{dailySheetStatus.endPulse}}</span>
+        </h2>
+      </div>
+      <div>
+        <h2>
+          Pulses : <span style="color: black;"  >{{dailySheetStatus.pulses}}</span>
+        </h2>
+      </div>
+      <div>
+        <h2>
+          Balance : <span style="color: black;"  >{{dailySheetStatus.balance}}</span>
+        </h2>
+      </div>
+      <div *ngIf="dailySheetStatus.status" >
+      <h2>
+        Status : <span style="color: white;" class=" bg-success badge">OK</span>
+      </h2>
+      </div>
+      <div *ngIf="!dailySheetStatus.status" >
+        <h2>
+          Status : <span style="color: white;" class=" bg-danger badge">Not OK</span>
+        </h2>
+      </div>
+  </div>
+  
 <nz-table
 class="mx-auto"  style="width:90%"
 #dynamicTable

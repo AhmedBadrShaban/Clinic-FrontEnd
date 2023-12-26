@@ -13,6 +13,9 @@ export class ServiceService {
   getAllServices():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}admin/patientservice`)
   }
+  getAvaillableService():Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}receptionist/services-names`)
+  }
   search(searchVal:any):Observable<any>{
     return this.http.get<any>(`${this.baseUrl}admin/service-search?searchString=${searchVal}`)
   }

@@ -24,6 +24,7 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
     const info = changes['info'] && changes['info'].currentValue;
     if (info) {
        this.initForm(info);
+
     }
   }
 
@@ -36,34 +37,37 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
       note: this.info.note,
       date:this.info.date,
       lastReservation: this.info.lastReservation,
-      knowUsThrough: this.info.knowUsThrough
+      knowUsThrough: this.info.knowUsThrough,
+      debit: null
     });
-
     this.oldInfo = { ...this.formData.value };
   }
   UpdateInfo() {
     console.log('Updated info', this.formData.value);
     this.patientService.updatePatient(this.oldInfo.primaryPhone , this.formData.value).subscribe({
       next: (data) => {
-        alert('Updated Successfullly')
-        this.oldInfo = this.formData.value;
+        alert(data.message)
+         this.oldInfo = this.formData.value;
        },
       error: (err) => {
-        console.log("error in Updating: ", err);
-      }
+        alert(err.error.message)
+       }
     })
    }
    updateDepit(){
-     this.patientService.updatePatientDepit(this.oldInfo.primaryPhone , this.info.debit).subscribe({
-      next: (data) => {
-        console.log('Updated Debit');
-        // alert(data.message)
-        },
-      error: (err) => {
-        console.log('error :>> ', err);
-       }
-    })
-
+    const debitControl = this.formData.get('debit')?.value;
+    if(confirm("are U Sure You Want To Update Depit by : " + debitControl)) {
+      this.patientService.updatePatientDepit(this.oldInfo.primaryPhone , debitControl).subscribe({
+        next: (data) => {
+           alert(data.message)
+           location.reload();
+  
+          },
+        error: (err) => {
+          alert(err.error.message)
+        }
+      })
+    }
    }
   cancel() {
     this.formData.setValue(this.oldInfo);
