@@ -8,6 +8,24 @@
     margin: 5%;
     padding: 5%;
 
-    .Slot{
-    }
+    /* .Slot{
+    } */
+}
+
+/* time-slots.component.css */
+.slot {
+  width: 20px;
+  height:20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 2px;
+  text-align: center;
+}
+
+.available {
+  background-color: #c3e6cb; /* Green for available slots */
+}
+
+.unavailable {
+  background-color: #f5c6cb; /* Red for unavailable slots */
 }

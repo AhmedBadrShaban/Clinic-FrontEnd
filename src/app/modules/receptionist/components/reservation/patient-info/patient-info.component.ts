@@ -68,6 +68,7 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
         }
       })
     }
+
    }
   cancel() {
     this.formData.setValue(this.oldInfo);

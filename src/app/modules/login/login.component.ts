@@ -45,6 +45,10 @@ export class LoginComponent implements OnInit {
           else if( userAuthority==='ROLE_DOCTOR'){
             this.router.navigateByUrl('doctor')
           }
+          else if(userAuthority==='ROLE_CONTRIBUTOR'){
+            console.log('navigating Contributer :>> ');
+            this.router.navigateByUrl('contributer')
+          }
         },
         error => {
           // Handle login error

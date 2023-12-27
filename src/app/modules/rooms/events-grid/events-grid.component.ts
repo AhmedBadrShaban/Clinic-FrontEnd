@@ -3,6 +3,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import { reservation} from "../../receptionist/models/event-reservation.model";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogEventComponent} from "./dialog-event/dialog-event.component";
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-events-grid',
@@ -14,7 +15,7 @@ export class EventsGridComponent implements OnInit{
   @Input() date:any;
   @Input() eventsPerRoom :reservation [] = [];
 
-  constructor(public dialog: MatDialog , private roomsService:RoomsService) {
+  constructor(public dialog: MatDialog , private roomsService:RoomsService , private datePipe :DatePipe) {
     console.log('roomName :>> ', this.roomName);
   }
 
@@ -34,5 +35,13 @@ export class EventsGridComponent implements OnInit{
         console.log('The dialog was closed');
     });
   }
+  formatTimeTo12Hour(time: string): string {
+     if (!time) {
+      return '';
+    }
+    const timeAsDate = new Date(`1970-01-01T${time}`);
 
+     return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
+  }
+  
 }

@@ -83,7 +83,7 @@ export class PackagesComponent {
   goToForm(){}
   openDialog(){
 
-    this.dialogRef.open(AddNewPackageComponent);
+    this.dialogRef.open(AddNewPackageComponent );
   }
 
  

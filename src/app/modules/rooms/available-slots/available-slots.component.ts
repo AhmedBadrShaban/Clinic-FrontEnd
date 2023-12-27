@@ -1,40 +1,61 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {reservation} from "../../receptionist/models/event-reservation.model";
-
+interface TimeSlot {
+  startTime: string;
+  endTime: string;
+}
 @Component({
   selector: 'app-available-slots',
   templateUrl: './available-slots.component.html',
   styleUrls: ['./available-slots.component.css']
 })
 export class AvailableSlotsComponent implements OnInit{
-  @Input() eventsPerDayTO :reservation [] ;
-  slots : {
-    startTimeHour : number,
-    StartTimeMin : number,
-    EndTimeHour : number,
-    EndTimeMin : number,
-  } [] = [];
+  reservedSlots:TimeSlot[] = [
+    {
+      startTime: '12:38:00',
+      endTime: '13:38:00'
+    },
+    {
+      startTime: '14:20:00',
+      endTime: '15:38:00'
+    },
+    {
+      startTime: '04:33:00',
+      endTime: '06:35:00'
+    }
+  ];
   constructor() { //assume the events are sorted
   }
-
-    ngOnInit(): void {
-    // console.log(this.eventsPerDayTO)
-    //     for(let i = 0 ; i < this.eventsPerDayTO.length - 1 ; ++i){
-    //         let startNowHours = this.eventsPerDayTO[i + 1].StartTimeHour;
-    //         let startNowMin = this.eventsPerDayTO[i + 1].StartTimeMin;
-    //         let EndNowMin = this.eventsPerDayTO[i].EndTimeMin;
-    //         let EndNowHour = this.eventsPerDayTO[i].EndTimeHour;
-    //         if(startNowHours > EndNowHour && (startNowHours - EndNowHour >= 0 && startNowMin - EndNowMin >= 0)){
-    //             this.slots.push(
-    //                 {
-    //                     startTimeHour : EndNowHour,
-    //                     StartTimeMin : EndNowMin,
-    //                     EndTimeHour : startNowHours,
-    //                     EndTimeMin : startNowMin,
-    //                 }
-    //             )
-    //         }
-    //     }
-    //     console.log("HIIIIIII" , this.eventsPerDayTO[0 + 1])
+  ngOnInit() {
+    console.log('data :>> ', this.generateAdjustedTimeSlots(this.reservedSlots));
     }
-}
+
+    generateAdjustedTimeSlots(inputArray: TimeSlot[]): TimeSlot[] {
+      const adjustedTimeSlots: TimeSlot[] = [];
+  
+      // Sort the input array based on startTime
+      const sortedInputArray = inputArray.sort((a, b) => {
+        return a.startTime.localeCompare(b.startTime);
+      });
+  
+      // Generate adjusted time slots
+      for (let i = 0; i < sortedInputArray.length - 1; i++) {
+        const currentSlot = sortedInputArray[i];
+        const nextSlot = sortedInputArray[i + 1];
+  
+        adjustedTimeSlots.push({
+          startTime: i === 0 ? '00:00:00' : currentSlot.endTime,
+          endTime: nextSlot.startTime,
+        });
+      }
+  
+       const lastSlot = sortedInputArray[sortedInputArray.length - 1];
+      adjustedTimeSlots.push({
+        startTime: lastSlot.endTime,
+        endTime: '23:59:59',
+      });
+  
+      return adjustedTimeSlots;
+    }
+  }
+

@@ -36,6 +36,7 @@
         <span class="badge btn" [ngClass]="{
           ' btn-primary': data.status === 'IN_PROGRESS',
           ' btn-success': data.status === 'CONFIRMED',
+          ' btn-dark': data.status === 'COMPLETED',
           ' btn-warning': data.status === 'WAITING',
           ' btn-danger': data.status === 'CANCELLED',
           ' btn-info': data.status === 'TO_DOCTOR',

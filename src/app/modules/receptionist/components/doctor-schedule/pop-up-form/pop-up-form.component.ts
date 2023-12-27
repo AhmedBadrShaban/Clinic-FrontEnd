@@ -17,7 +17,7 @@ export class PopUpFormComponent implements OnInit {
    disableEndPulse:boolean = false;
    disableStartPulses:boolean = false;
    isAdmin:boolean = false;
-   rooms: any [];
+   rooms: any []=[];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, public dialogRef: MatDialogRef<PopUpFormComponent>, private DoctorScheduleService: DoctorScheduleServiceService ,private scheduleDataService:ReservationfmService ,private roomsService:RoomsService , private loogedIn:AuthService ) {
     this.formData = data;
@@ -124,8 +124,7 @@ export class PopUpFormComponent implements OnInit {
     return inputDate;
   }
   formatTime(time: string): string {
-    // Add ':00' to the time string to make it in the format 'hh:mm:00'
-    return `${time}:00`;
+     return `${time}:00`;
   }
   isLaserRoom(name: any): boolean {
     if(name){

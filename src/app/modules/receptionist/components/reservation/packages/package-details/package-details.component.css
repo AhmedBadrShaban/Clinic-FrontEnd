@@ -1,0 +1,47 @@
+.Content{
+  width: 590px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+tr,th,td{
+  padding: 15px;
+  border-collapse: collapse;
+}
+
+td{
+  text-align: center;
+}
+.Header{
+  padding: 6%;
+  font-size: 30px;
+  border-bottom: 2px solid #6F2DBD ;
+  text-align: center;
+}
+.buttons-container {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: white; /* Set the desired background color */
+  padding: 10px;
+  border-top: 1px solid #ccc; /* Add a border at the top for separation */
+  display: flex;
+  justify-content: space-around; /* Adjust as needed */
+  z-index: 1000; /* Adjust the z-index to ensure it appears above other elements */
+}
+
+.header-Service{
+  display: flex;
+  display: flex;
+  width: 100%;
+  border: #701c8e 1px solid;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: row;
+  border-radius: 44px;
+  padding: 0%;
+  margin: 5px;
+  gap: 54px;
+}

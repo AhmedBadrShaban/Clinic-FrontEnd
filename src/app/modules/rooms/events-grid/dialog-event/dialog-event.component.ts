@@ -23,7 +23,7 @@ export class DialogEventComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
     @Inject(MAT_DIALOG_DATA) public data: reservation, private roomsService:RoomsService ,
-   private router : Router
+   private router : Router , private datePipe:DatePipe
   ) {}
   ngOnInit(): void {
 
@@ -39,8 +39,6 @@ export class DialogEventComponent implements OnInit {
       error:(err)=>{
         alert(err.error.message);
       }
-
-
     })
   }
 
@@ -69,4 +67,12 @@ export class DialogEventComponent implements OnInit {
     this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
     this.close();
   }
+  formatTimeTo12Hour(time: string): string {
+    if (!time) {
+     return '';
+   }
+   const timeAsDate = new Date(`1970-01-01T${time}`);
+
+    return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
+ }
 }

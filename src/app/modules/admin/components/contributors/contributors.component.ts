@@ -28,7 +28,7 @@ export class ContributorsComponent {
     this.tableLayout='auto' as NzTableLayout;
     this.position= 'bottom' as NzTablePaginationPosition;
 
-    this.cont = this.conService.getData()
+    // this.cont = this.conService.getData()
   }
 
   goToForm(){}

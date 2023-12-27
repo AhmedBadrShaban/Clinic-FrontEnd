@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+ import { Component, Input, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DoctorsService} from "../../../services/doctors/doctors.service";
 import {Receptionist} from "../../../models/receptionist";
@@ -21,11 +21,14 @@ export class ReceptionistProfileComponent implements OnInit{
     this.route.params.subscribe(params => {
       this.receptionistId = params['id'];
       console.log('receptionistId :>> ', this.receptionistId);
-      this.recpService.getReciptionist(this.receptionistId).subscribe((data)=>{
-        this.receptionistData= data;
-        console.log('data :>> ', data);
-      })
+      this.receptionistInfo();
     });
+}
+receptionistInfo(){
+  this.recpService.getReciptionist(this.receptionistId).subscribe((data)=>{
+    this.receptionistData= data;
+    console.log('data :>> ', data);
+  })
 }
   switchStatus(id: any) {
     this.recpService.changeStatus(id).subscribe({
@@ -36,5 +39,24 @@ export class ReceptionistProfileComponent implements OnInit{
         console.log('err :>> ', err.error.message);
       },
     });
+  }
+
+  update() {
+    delete this.receptionistData.receptionistId;
+    delete this.receptionistData.isActive;
+    if (this.receptionistData.password === "") {
+      delete this.receptionistData.password;
+    }    console.log('Updated Recep Data', this.receptionistData);
+    this.recpService
+      .updateProfile(this.receptionistId, this.receptionistData)
+      .subscribe({
+        next: (data: any) => {
+          alert(data.message);
+          this.receptionistInfo();
+        },
+        error: (err) => {
+          alert(err.error.message);
+        },
+      });
   }
 }

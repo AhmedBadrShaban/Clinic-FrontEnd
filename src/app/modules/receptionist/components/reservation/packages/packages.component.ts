@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
 import { patientPackages } from 'src/app/modules/receptionist/models/patient-packages';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PackageDetailsComponent } from './package-details/package-details.component';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 
@@ -17,10 +19,10 @@ export class PackagesComponent implements OnInit {
   tableLayout: NzTableLayout;
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
-  packages:patientPackages[];
+   packages:patientPackages[];
   @Input() phoneNumber:any;
 
-  constructor(private reservationservice: ReservationsService){
+  constructor(private reservationservice: ReservationsService , private dialogRef : MatDialog){
     this.size= 'small' as NzTableSize,
       this.paginationType= 'default' as NzTablePaginationType,
       this.tableScroll='unset' as TableScroll,
@@ -50,5 +52,9 @@ ngOnInit(){
   })
   }
  }
+ openDialog(id:string){
+
+  this.dialogRef.open(PackageDetailsComponent , {data:id});
+}
 
 }

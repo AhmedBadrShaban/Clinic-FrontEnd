@@ -18,6 +18,7 @@ CANCELLED
     'grid-item-toDoctor' : e.status === 'TO_DOCTOR',
     'grid-item-done' : e.status === 'DONE',
     'grid-item-cancelled' : e.status === 'CANCELLED',
+    'grid-item-completed' : e.status === 'COMPLETED',
      }"
            (click)="openDialog(e)"
       >
@@ -27,11 +28,27 @@ CANCELLED
         <div>
           Doctor Name : {{e.doctorName}}
         </div>
-        <div>
-           From [ {{e.reservationStart.slice(0,5)}}] - To [ {{e.reservationEnd.slice(0,5)}} ]
+        <div> 
+            <i class="bi bi-alarm"></i>
+             {{ formatTimeTo12Hour(e.reservationStart) }}
+             - 
+              {{ formatTimeTo12Hour(e.reservationEnd)}}
         </div>
-        <div class="badge bg-secondary">
-          {{ e.status }}
+        
+        <div style="color: black;" class="badge  bg-body-secondary bg-opacity-25">
+          <i 
+          [ngClass]="{
+            'bi bi-cart' : e.status === 'IN_PROGRESS',
+            'bi bi-check' : e.status === 'CONFIRMED',
+            'bi bi-hourglass-bottom' : e.status === 'WAITING',
+            'bi bi-journal-medical' : e.status === 'TO_DOCTOR',
+            'bi bi-cash-coin' : e.status === 'DONE',
+            'bi bi-x-circle' : e.status === 'CANCELLED',
+            'bi bi-check2-circle' : e.status === 'COMPLETED',
+             }"
+            >
+          </i>
+           {{ e.status }}
         </div>
 
       </div>

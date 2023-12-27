@@ -1,11 +1,7 @@
-<div
-  class="border rounded container shadow"
-  style="width: 600px; background-color: #f8f8f8; border: none"
->
+<div class="border rounded container shadow" style="width: 600px; background-color: #f8f8f8; border: none">
   <form [formGroup]="newMaterialFm" (ngSubmit)="submit()">
-    <div class="row m-2 justify-content-between">
+     <div class="row m-2 justify-content-between">
       <div class="d-flex align-items-center">
-        <!-- <i class="bi bi-screwdriver me-2 fs-4" style="margin-bottom: 7px;"></i> -->
         <label class="form-label w-100">Tool Name</label>
       </div>
       <input
@@ -15,10 +11,16 @@
         id="name"
         class="form-control shadow"
       />
+       <div *ngIf="newMaterialFm.get('materialName')!.hasError('required') && newMaterialFm.get('materialName')!.touched">
+        Tool Name is required.
+      </div>
+      <div *ngIf="newMaterialFm.get('materialName')!.hasError('pattern') && newMaterialFm.get('materialName')!.touched">
+        Tool Name should contain only letters, numbers, and spaces.
+      </div>
     </div>
-    <div class="row m-2 mt-3 justify-content-between">
+
+     <div class="row m-2 mt-3 justify-content-between">
       <div class="d-flex align-items-center">
-        <!-- <i class="bi bi-currency-pound me-2 fs-4" style="margin-bottom: 7px;"></i> -->
         <label class="form-label w-100">Tool Price</label>
       </div>
       <input
@@ -28,20 +30,25 @@
         id="Tool Price"
         class="form-control shadow"
       />
+       <div *ngIf="newMaterialFm.get('cost')!.hasError('required') && newMaterialFm.get('cost')!.touched">
+        Tool Price is required.
+      </div>
     </div>
 
-    <div class="row m-2 mt-3 justify-content-between">
+     <div class="row m-2 mt-3 justify-content-between">
       <div class="d-flex align-items-center">
-        <!-- <i class="bi bi-1-circle me-2 fs-4" style="margin-bottom: 7px;"></i> -->
         <label class="form-label w-100">Quantity</label>
       </div>
       <input
         type="number"
         formControlName="quantity"
-        placeholder="quantity"
+        placeholder="Quantity"
         id="quantity"
         class="form-control shadow"
       />
+       <div *ngIf="newMaterialFm.get('quantity')!.hasError('required') && newMaterialFm.get('quantity')!.touched">
+        Quantity is required.
+      </div>
     </div>
 
     <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">

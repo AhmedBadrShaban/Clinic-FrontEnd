@@ -1,5 +1,5 @@
 export interface patientPackages {
-  packageId:number;
+  reservedId:string;
   packageName: string;
   packageCost: string;
   clinicName:string;

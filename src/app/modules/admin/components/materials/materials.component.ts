@@ -35,10 +35,11 @@ export class MaterialsComponent implements OnInit {
        this.materials = data;
       console.log( "Updated Data recived : " ,this.materials);
       this.autoComplete();
-
     })
 
-     this.products = this.matServices.getProducts();
+     this.matServices.productsReport().subscribe((data)=>{
+      this.products = data;
+     })
   }
   getAllMaterials(){
     this.matServices.getAllMaterials().subscribe((data)=>{

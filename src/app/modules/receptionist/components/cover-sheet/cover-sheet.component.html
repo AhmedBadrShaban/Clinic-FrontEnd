@@ -1,58 +1,100 @@
-<div class="filter" style="height: 80px;color:white; font-size: large; font-size: 25px;padding: 30px;  background-color: #31263E; border-radius: 30px; margin-top: 20px;">
-    Cover Sheet
-    <div class="h-70" style="margin-left: 73%; margin-top: -4%;">
-        <mat-form-field>
-        <mat-label>Choose a date</mat-label>
-        <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)">
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
+<div
+  class="filter"
+  style="
+    height: 80px;
+    color: white;
+    font-size: large;
+    font-size: 25px;
+    padding: 30px;
+    background-color: #31263e;
+    border-radius: 30px;
+    margin-top: 20px;
+  "
+>
+  Cover Sheet
+  <div class="h-70" style="margin-left: 73%; margin-top: -4%">
+    <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input
+        matInput
+        [(ngModel)]="selectedDate"
+        [matDatepicker]="picker"
+        (dateChange)="onDateChange($event)"
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
 </div>
 
-<div id="report-Section" class="report-Section">
-    <div style="width: 80%">
+<div *ngIf="listOfData" id="report-Section" class="report-Section">
+  <div style="width: 80%">
     <div class="grid-container">
-      <div class="grid-item" style=" width: 510px">
-        <div>User Name : <span style="font-family: 'Candara', sans-serif;"> {{'Ahmed '}}</span></div>
-        <!--{{listOfData[0].user}}-->
+      <div class="grid-item" style="width: 510px">
+        <div>
+          User Name :
+          <span style="font-family: 'Candara', sans-serif">
+            {{ listOfData.user }}
+          </span>
+        </div>
       </div>
-      <div class="grid-item"><div> Date : <span > {{'20-20-2020 '}}</span></div></div>
-      <!--{{listOfData[0].date}}-->
+      <div class="grid-item">
+        <div>
+          Date : <span> {{ listOfData.date }} </span>
+        </div>
+      </div>
     </div>
 
     <div class="grid-container second-row">
-      <div class="grid-item"><div>Expenses : <span> {{1580}}</span></div></div>
-      <!--{{listOfData[0].expenses}}-->
-      <div class="grid-item"><div>Net : <span> {{1580}}</span></div></div>
-      <!--{{listOfData[0].net}}-->
-      <div class="grid-item"><div>Profit : <span > {{1580}}</span></div></div>
-      <!--{{listOfData[0].profit}}-->
+      <div class="grid-item">
+        <div>
+          Expenses : <span> {{ listOfData.expenses }} </span>
+        </div>
+      </div>
+      <div class="grid-item">
+        <div>
+          Net : <span> {{ listOfData.net }} </span>
+        </div>
+      </div>
+      <div class="grid-item">
+        <div>
+          Profit : <span> {{ listOfData.profit }} </span>
+        </div>
+      </div>
     </div>
-
   </div>
   <div style="width: 80%">
-
-<!--    *ngFor="let d of listOfData[0].laserRead"-->
-    <div class="grid-container">
-      <div class="grid-item" style=" width: 379px">
-        <div> {{"beginning of Room 215 is 1815"}} </div>
+    <div class="grid-container" *ngFor="let d of listOfData.laserRead">
+      <div class="grid-item" style="width: 379px">
+        <div>{{ "beginning of Room 215 is 1815" }}</div>
       </div>
-      <div class="grid-item" style=" width: 379px">
-        <div> {{"End of Room 215 is 1915"}} </div>
+      <div class="grid-item" style="width: 379px">
+        <div>{{ "End of Room 215 is 1915" }}</div>
       </div>
-      <!--{{listOfData[0].date}}-->
     </div>
   </div>
 </div>
 
-
-
-<button class="mt-3 justify-content-center" type="submit"
-        style="margin-bottom: 30px;margin-left: 43%; width: 130px; height: 30px; background-color: green; color: #fff; border: none; border-radius: 4px;"
-        (click)="generatePDF()">
-        Print
-    </button>
+<button
+  class="mt-3 justify-content-center"
+  type="submit"
+  style="
+    margin-bottom: 30px;
+    margin-left: 43%;
+    width: 130px;
+    height: 30px;
+    background-color: green;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+  "
+  (click)="generatePDF()"
+>
+  Print
+</button>
 
 <!--
     <nz-table
@@ -106,9 +148,7 @@ class="mx-auto"  style="width:90%"
 
       <!-- <br> -->
 
-
-    <!-- <div style="color: #31263E; height: 20px;"></div> -->
+<!-- <div style="color: #31263E; height: 20px;"></div> -->
 
 <!-- </tbody>
 </nz-table> -->
-

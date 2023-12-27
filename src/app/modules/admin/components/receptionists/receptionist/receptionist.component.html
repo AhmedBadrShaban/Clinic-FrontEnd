@@ -14,17 +14,32 @@
           <div class="small font-italic text-muted mb-2">{{receptionistData?.username}}</div>
           <div class="small font-italic text-muted mb-2">{{receptionistData?.email}}</div>
 
-          <!-- Profile picture help block-->
           <div class="small font-italic text-muted mb-2">status</div>
-          <button ng class="btn btn-primary" type="button"   *ngIf="receptionistData?.isActive== 'false' " (click)="switchStatus(receptionistData?.username)">Suspended</button>
-          <button ng class="btn btn-primary" type="button"   *ngIf="receptionistData?.isActive == 'true' "  (click)="switchStatus(receptionistData?.username)">Active</button>
+          <button
+            ng
+            class="btn btn-primary"
+            type="button"
+            *ngIf="receptionistData?.isActive == false"
+            (click)="switchStatus(receptionistData.userName)"
+          >
+            Suspended
+          </button>
+          <button
+            ng
+            class="btn btn-primary"
+            type="button"
+            *ngIf="receptionistData?.isActive == true"
+            (click)="switchStatus(receptionistData.userName)"
+          >
+            Active
+          </button>
         </div>
       </div>
     </div>
     <div class="col-xl-8">
       <!-- Account details card-->
-      <div class="card mb-4">
-        <div class="card-header">Account Details</div>
+      <div *ngIf="receptionistData" class="card mb-4">
+        <div  class="card-header">Account Details</div>
         <div class="card-body">
           <form>
             <div class="row m-2 mt-4 justify-content-between">
@@ -34,57 +49,71 @@
                     <!-- <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                     <label class="form-label w-100">Name</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData?.name}}" />
+                  <input type="text" class="form-control shadow"
+                  name="name"
+                  [(ngModel)]="receptionistData.name"
+                  value="{{receptionistData.name}}" />
 
                 </div>
 
               </div>
-
-              <div class="col-5">
-                <div class="row">
-                  <div class="d-flex align-items-center">
-                    <!-- <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px;"></i> -->
-                    <label class="form-label w-100">Password</label>
-                  </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData?.password}}" />
-                </div>
-              </div>
-
-            </div>
-            <div class="row m-2 mt-4 justify-content-between">
               <div class="col-5">
                 <div class="row">
                   <div class="d-flex align-items-center">
                     <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
                     <label class="form-label w-100">phoneNumber</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData?.phoneNumber}}" />
+                  <input type="text" class="form-control shadow"
+                  name="phoneNumber"
+                  [(ngModel)]="receptionistData.phoneNumber"
+                   value="{{receptionistData?.phoneNumber}}" />
 
                 </div>
 
               </div>
-
-              <div class="col-5">
-                <div class="row">
-                  <div class="d-flex align-items-center">
-                    <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
-                    <label class="form-label w-100">NationalId</label>
-                  </div>
-                  <input type="text" value="{{receptionistData?.nationalId}}" class="form-control shadow" />
-
-                </div>
-
-              </div>
+          
 
             </div>
             <div class="row m-2 mt-4 justify-content-between">
               <div class="col-5">
                 <div class="row">
                   <div class="d-flex align-items-center">
-                    <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
-                    <label class="form-label w-100">Address</label>
+                    <!-- <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px;"></i> -->
+                    <label class="form-label w-100">Change Password </label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData?.address}}" />
+                  <input type="password" class="form-control shadow" 
+                  name="password"
+                  [(ngModel)]="receptionistData.password"
+                  value="{{receptionistData.password}}" />
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="row">
+                  <div class="d-flex align-items-center">
+                    <!-- <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px;"></i> -->
+                    <label class="form-label w-100">Email</label>
+                  </div>
+                  <input
+                    type="text"
+                    name="email"
+                    class="form-control shadow"
+                    [(ngModel)]="receptionistData.email"
+                    value="{{ receptionistData.email }}"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row m-2 mt-4 justify-content-between">
+              <div class="col-5">
+                <div class="row">
+                  <div class="d-flex align-items-center">
+                    <!-- <i class="bi bi-globe me-2 fs-4" style="margin-bottom: 5px;"></i> -->
+                    <label class="form-label w-100">NationalId</label>
+                  </div>
+                  <input type="text" value="{{receptionistData.nationalId}}" 
+                  [(ngModel)]="receptionistData.nationalId"
+                  name="nationalId"
+                  class="form-control shadow" />
 
                 </div>
 
@@ -93,25 +122,52 @@
               <div class="col-5">
                 <div class="row">
                   <div class="d-flex align-items-center">
-                     <label class="form-label w-100">Salary</label>
+                    <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
+                    <label class="form-label w-100">Address</label>
                   </div>
-                  <input type="text" class="form-control shadow" value="{{receptionistData?.salary}}" />
+                  <input type="text" class="form-control shadow" name="address" value="{{receptionistData.address}}" 
+                  [(ngModel)]="receptionistData.address"
+
+                  />
 
                 </div>
 
               </div>
-
             </div>
 
-            <div class="row m-2 mt-4 justify-content-between" *ngIf="editable">
-              <div class="d-flex align-items-center">
-                <!-- <i class="bi bi-telephone me-2 fs-4" style="margin-bottom: 7px;"></i> -->
-                <label class="form-label w-100">Password</label>
+            <div class="row m-2 mt-4 justify-content-between">
+              <div class="col-5">
+                <div class="row">
+                  <div class="d-flex align-items-center">
+                     <label class="form-label w-100">Salary</label>
+                  </div>
+                  <input type="text" class="form-control shadow"  name="salary"
+                  [(ngModel)]="receptionistData.salary"
+                  value="{{receptionistData.salary}}" />
+                </div>
               </div>
-              <input type="text" class="form-control shadow" value="{{receptionistData?.password}}" />
+              <div class="col-5">
+
+                <div class="row">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-bookmark-check me-2 fs-4" style="margin-bottom: 5px"></i>
+                    <label class="form-label w-100 mb-2">is Super</label>
+                  </div>
+        
+                  <input
+                  type="checkbox"
+                  name="isSuper"
+                  class="form-check-input shadow me-4"
+                  [(ngModel)]="receptionistData.superReceptionist"
+                 />
+                   Yes
+                </div>
+              </div>
+
+
             </div>
             <!-- Save changes button-->
-            <button class="btn btn" type="button"
+            <button class="btn btn" type="button" (click)="update()"
               style="background-color: #A379D5; margin-left: 41%; color: white;">Save changes</button>
           </form>
         </div>
