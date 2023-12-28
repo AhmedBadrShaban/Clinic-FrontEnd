@@ -22,9 +22,11 @@ export class DialogEventComponent implements OnInit {
   toggle2 = false;
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: reservation, private roomsService:RoomsService ,
+    @Inject(MAT_DIALOG_DATA) public data: any, private roomsService:RoomsService ,
    private router : Router , private datePipe:DatePipe
-  ) {}
+  ) {
+    console.log('data :>> ', data);
+  }
   ngOnInit(): void {
 
   }
@@ -33,6 +35,7 @@ export class DialogEventComponent implements OnInit {
       next:(response:any)=>{
         alert(response.message);
         this.UpdateAllReservations();
+        this.updateAvailableSlots();
         this.close();
 
       },
@@ -61,6 +64,14 @@ export class DialogEventComponent implements OnInit {
       this.roomsService.updateData(data);
       console.log( "data Updated : " ,data);
     })
+  }
+  updateAvailableSlots(){
+    this.roomsService.getAvalliableSlots( this.data.roomName ,this.data.reservationDate).subscribe((data=>{
+      console.log('updated :>> ', data);
+      this.roomsService.updateSlots(data);
+    }))
+
+
   }
   checkOut(id:number){
     console.log('id before navigating :>> ', id);

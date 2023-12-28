@@ -51,10 +51,22 @@ export class RoomsService {
   allClinics():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}admin/get-all-clinic-names`);
   }
+
+  getAvalliableSlots(roomName:any , date :any){
+    return this.http.get<any>(`${this.baseUrl}receptionist/get-reservation-slots?roomName=${roomName}&reservedAt=${date}`);
+  }
+
+
   private listOfRooms = new BehaviorSubject<readonly any[]> ([]);
 rooms$ = this.listOfRooms.asObservable();
 updatedRooms(data: any[]){
   this.listOfRooms.next(data);
+  }
+ private slots = new BehaviorSubject< any[]> ([]);
+updateSlots$ = this.slots.asObservable();
+updateSlots(data: any[]){
+  console.log('Sending New Slots :>> ');
+  this.slots.next(data);
   }
 private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);
 listOfData$ = this.listOfDataSubject.asObservable();

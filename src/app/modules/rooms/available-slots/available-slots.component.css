@@ -1,19 +1,22 @@
-.whole{
-    background-color: rgba(82, 196, 26, 0.75);
-    width: 80%;
-    height: 13%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 5%;
-    padding: 5%;
+div
+{
+  display: table; 
+ }
 
-    /* .Slot{
-    } */
+
+p {
+  text-align:center; 
+  vertical-align: middle;
+  display: table-cell;   
 }
+.small-font {
+  font-size: 8px;
+}
+.reserved-font{
+  font-size: 10px;
 
-/* time-slots.component.css */
-.slot {
+}
+ .slot {
   width: 20px;
   height:20px;
   border: 1px solid #ccc;
@@ -23,9 +26,11 @@
 }
 
 .available {
-  background-color: #c3e6cb; /* Green for available slots */
+  background-color: #c3e6cb;
+   /* Green for available slots */
 }
 
 .unavailable {
-  background-color: #f5c6cb; /* Red for unavailable slots */
-}
+  background-color: #6F2DBD;
+  color:white;
+ }

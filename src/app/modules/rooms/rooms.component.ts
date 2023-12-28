@@ -49,6 +49,11 @@ export class RoomsComponent implements OnInit {
       this.activeTabTitle = null;
     }
     console.log('tab Chenged to :>> ', this.activeTabTitle);
+    this.allReservation.getAvalliableSlots(this.activeTabTitle , this.selectedDate).subscribe((data=>{
+      console.log('Update after Tab Chenges :>> ');
+      this.allReservation.updateSlots(data);
+    }))
+
   }
   openDialog(dialogType:string , currentActiveRoom:any ,date?:any){
     if(dialogType == 'room'){
@@ -91,6 +96,10 @@ export class RoomsComponent implements OnInit {
     this.selectedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     console.log('selected date :>> ', this.selectedDate);
     this.getAllReservations();
+    this.allReservation.getAvalliableSlots(this.activeTabTitle , this.selectedDate).subscribe((data=>{
+      console.log('Update after Date Chenges :>> ');
+      this.allReservation.updateSlots(data);
+    }))
     // this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
     //   // console.log(data);
     //   this.listOfData =data;

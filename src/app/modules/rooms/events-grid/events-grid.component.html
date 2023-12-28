@@ -1,13 +1,4 @@
-<!--<app-events-bar></app-events-bar>-->
-
-<!-- 
-IN_PROGRESS,
-CONFIRMED,
-WAITING,,
-TO_DOCTOR,
-DONE
-CANCELLED
- -->
+<app-available-slots class="row w-100 mb-2" [roomName]="roomName" [reservedAt]="date"></app-available-slots>
 <div class="flex-all">
   <div class="grid-events" >
     <div *ngFor="let e of eventsPerRoom let i = index">
@@ -54,12 +45,14 @@ CANCELLED
       </div>
     </div>
   </div>
-  <div style="width: 20%; margin-left: 3%; align-content: center; border: #6F2DBD 1px solid; height: fit-content; text-align: center">
-    <h2>Available Slots</h2>
+   <!-- <div style="width: 20%; margin-left: 3%; align-content: center; border: #6F2DBD 1px solid; height: fit-content; text-align: center">
+    <h2>Available Slots</h2> -->
     <!-- <app-available-slots [eventsPerDayTO] = "eventsPerDay" style="display: flex; display: flex;
     flex-direction: column;
-    align-items: center;"> </app-available-slots> -->
-  </div>
+    align-items: center;"> </app-available-slots> 
+  </div> -->
+
 </div>
 
 
+ 

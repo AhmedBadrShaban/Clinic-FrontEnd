@@ -1,7 +1,6 @@
 .content{
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
   .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
     font-size: 25px;

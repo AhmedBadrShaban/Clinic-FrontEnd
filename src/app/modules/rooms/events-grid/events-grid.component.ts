@@ -28,9 +28,10 @@ export class EventsGridComponent implements OnInit{
     }
   openDialog( data : any){
     // const currentEvent = this.eventsPerDay?.[index];
+    data.roomName = this.roomName;
     const dialogRef = this.dialog.open(DialogEventComponent,{
        data: data
-    });
+     });
     dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
     });
