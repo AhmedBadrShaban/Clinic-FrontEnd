@@ -21,12 +21,11 @@ export class PopUpFormComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, public dialogRef: MatDialogRef<PopUpFormComponent>, private DoctorScheduleService: DoctorScheduleServiceService ,private scheduleDataService:ReservationfmService ,private roomsService:RoomsService , private loogedIn:AuthService ) {
     this.formData = data;
-    if(this.formData.startPulses){
+    if(this.formData.startPulses!=null){
       this.disableStartPulses = true;
-
     }
     console.log("received data is: ", this.formData);
-    
+
   }
 
   ngOnInit(): void {
