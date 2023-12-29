@@ -43,8 +43,12 @@ export class PopUpFormComponent implements OnInit {
   create() {
     delete (this.formData as any)['new'];
     console.log('formData :>> ', this.formData);
-    this.formData.startTime = this.formatTime(this.formData.startTime);
-    this.formData.endTime = this.formatTime(this.formData.endTime);
+    if( this.formData.startTime.length !== 8 ){
+          this.formData.startTime = this.formatTime(this.formData.startTime);
+    }
+    if( this.formData.endTime.length !== 8 ){
+      this.formData.endTime = this.formatTime(this.formData.endTime);
+    }
     this.DoctorScheduleService.newSchedule(this.formData).subscribe({
       next: (data:any) => {
         this.closeDialog();
@@ -53,7 +57,8 @@ export class PopUpFormComponent implements OnInit {
        },
       error: (err) => {
         alert(err.error.message)
-      }
+        this.closeDialog();
+        }
     });
   }
 
@@ -80,6 +85,7 @@ export class PopUpFormComponent implements OnInit {
       },
       error: (err) => {
         alert(err.error.message);
+        this.closeDialog();
        }
     });
   }

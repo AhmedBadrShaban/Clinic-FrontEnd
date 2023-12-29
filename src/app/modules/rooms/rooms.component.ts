@@ -83,6 +83,9 @@ export class RoomsComponent implements OnInit {
       }
     });
   }
+  sort(){
+    
+  }
   search(key:string){
     console.log("executing Search");
   // this.DoctorScheduleService.Search(key).subscribe((data:any)=>{

@@ -38,9 +38,9 @@ interface Setting {
 
 
 export class DoctorScheduleComponent implements OnInit {
-  selectedDate: Date;
-  listOfData: readonly scheduleData[] =[];
-  displayData: readonly scheduleData[] = [];
+  selectedDate: any | undefined;
+  listOfData:   scheduleData[] =[];
+  displayData:  scheduleData[] = [];
   searchValue:string;
   allChecked = false;
   indeterminate = false;
@@ -87,11 +87,17 @@ export class DoctorScheduleComponent implements OnInit {
     {
       this.isAdmin = true;
     }
-    this.getAllSchedules();
+    // this.getAllSchedules();
       // Subscribe to the Observable to update listOfData when changes occur
   this.DoctorScheduleService.listOfData$.subscribe((data: readonly any[]) => {
-    this.listOfData = data;
-  });
+    const formattedDate= this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
+    this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
+      // console.log(data);
+      this.listOfData =data;
+      this.listOfData.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+      console.log( "Search result is  : " ,this.listOfData);
+    })  });
     }
     getAllSchedules(){
       const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
@@ -121,6 +127,7 @@ export class DoctorScheduleComponent implements OnInit {
         this.listOfData =data;
         console.log( "Search result is  : " ,this.listOfData);
       })
+      this.selectedDate =null;
     }
     onDateChange(event: any) {
       this.selectedDate = event.value;
@@ -132,5 +139,14 @@ export class DoctorScheduleComponent implements OnInit {
       })
 
     }
+   
+    formatTimeTo12Hour(time: string): string {
+      if (!time) {
+       return '';
+     }
+     const timeAsDate = new Date(`1970-01-01T${time}`);
+
+      return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
+   }
 
 }

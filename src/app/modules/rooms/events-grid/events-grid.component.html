@@ -19,15 +19,15 @@
         <div>
           Doctor Name : {{e.doctorName}}
         </div>
-        <div> 
+        <div>
             <i class="bi bi-alarm"></i>
              {{ formatTimeTo12Hour(e.reservationStart) }}
-             - 
+             -
               {{ formatTimeTo12Hour(e.reservationEnd)}}
         </div>
-        
+
         <div style="color: black;" class="badge  bg-body-secondary bg-opacity-25">
-          <i 
+          <i
           [ngClass]="{
             'bi bi-cart' : e.status === 'IN_PROGRESS',
             'bi bi-check' : e.status === 'CONFIRMED',
@@ -49,10 +49,9 @@
     <h2>Available Slots</h2> -->
     <!-- <app-available-slots [eventsPerDayTO] = "eventsPerDay" style="display: flex; display: flex;
     flex-direction: column;
-    align-items: center;"> </app-available-slots> 
+    align-items: center;"> </app-available-slots>
   </div> -->
 
 </div>
 
 
- 

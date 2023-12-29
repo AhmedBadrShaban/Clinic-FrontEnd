@@ -67,15 +67,17 @@
     </div>
   </div>
   <div style="width: 80%">
-    <div class="grid-container" *ngFor="let d of listOfData.laserRead">
+    <div class="grid-container" *ngFor="let d of listOfData.laserRead; let i = index">
+      <ng-container *ngIf="i % 2 === 0">
       <div class="grid-item" style="width: 379px">
-        <div>{{ "beginning of Room 215 is 1815" }}</div>
+        <div>{{ listOfData.laserRead[i] }}</div>
       </div>
-      <div class="grid-item" style="width: 379px">
-        <div>{{ "End of Room 215 is 1915" }}</div>
+      <div class="grid-item" style="width: 379px" *ngIf="listOfData.laserRead[i + 1] !== undefined">
+        <div>{{ listOfData.laserRead[i + 1] }}</div>
       </div>
+      </ng-container>
     </div>
-  </div>
+
 </div>
 
 <button

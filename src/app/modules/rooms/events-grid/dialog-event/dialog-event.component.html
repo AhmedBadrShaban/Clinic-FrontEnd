@@ -6,8 +6,11 @@
   <div class="Content">
     <table class="Table">
       <tr>
-        <th scope="col"> Patient Name</th>
-        <td> {{data.patientName}}</td>
+        <th scope="col">
+          <i *ngIf="debit" class="bi bi-asterisk bg-danger"></i>
+           Patient Name</th>
+        <td>
+          {{data.patientName}}</td>
       </tr>
       <tr>
         <th>Patient Phone Number</th>
@@ -24,14 +27,14 @@
       </tr>
 
       <tr>
-        <div> 
-        
-          
+        <div>
+
+
       </div>
       <tr>
         <th> Reservation Time <i class="bi bi-alarm"></i> </th>
         <td>  {{ formatTimeTo12Hour(data.reservationStart) }}
-          - 
+          -
            {{ formatTimeTo12Hour(data.reservationEnd)}}</td>
       </tr>
 
@@ -74,7 +77,7 @@
       </table>
 
     </div>
-    
+
 
   </div>
  <div class="buttons-container"  *ngIf="data.status != 'COMPLETED'">

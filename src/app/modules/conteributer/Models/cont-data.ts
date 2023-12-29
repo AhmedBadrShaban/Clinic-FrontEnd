@@ -1,6 +1,6 @@
 export interface ContData {
   date: string;
-  profit: number;
-  expenses: number;
-  total: number;
+  totalProfit: number;
+  totalExpenses: number;
+  totalNet: number;
 }

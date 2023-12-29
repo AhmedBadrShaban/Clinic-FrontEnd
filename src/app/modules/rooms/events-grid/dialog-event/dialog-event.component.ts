@@ -8,6 +8,7 @@ import {reservation} from "../../../receptionist/models/event-reservation.model"
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { Router } from '@angular/router';
+import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 
 @Component({
   selector: 'app-dialog-event',
@@ -19,15 +20,20 @@ import { Router } from '@angular/router';
 })
 export class DialogEventComponent implements OnInit {
   toggle = false;
-  toggle2 = false;
+   debit=false;
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private roomsService:RoomsService ,
+    @Inject(MAT_DIALOG_DATA) public data: any, private roomsService:RoomsService ,  private patienDepit:PatientService,
    private router : Router , private datePipe:DatePipe
-  ) {
+  )
+  {
     console.log('data :>> ', data);
   }
   ngOnInit(): void {
+    this.patienDepit.checkDepit(this.data.patientPhone).subscribe((data)=>{
+      
+      this.debit = data;
+    })
 
   }
   chengeReservationStatus( id:number,status:string){
@@ -51,10 +57,6 @@ export class DialogEventComponent implements OnInit {
   }
   changeToogle(){
     this.toggle = !this.toggle;
-  }
-  changeToogle2(){
-    this.toggle2 = !this.toggle2;
-
   }
   close(){
     this.dialogRef.close();
