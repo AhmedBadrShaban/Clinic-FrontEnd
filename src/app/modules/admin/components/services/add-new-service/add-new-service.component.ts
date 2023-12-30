@@ -15,7 +15,7 @@ export class AddNewServiceComponent implements OnInit {
   allRooms:any;
   constructor(private fb: FormBuilder ,private serService:ServiceService,  private dialogRef:MatDialogRef<AddNewServiceComponent>) {
     this.newServiceFm = fb.group({
-      serviceName: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
+      serviceName: ['', [Validators.required, Validators.pattern('[A-Za-z0-9 ]*')]],
       costPerSession: ['', [Validators.required]],
       rooms: ['', [Validators.required]],
     });

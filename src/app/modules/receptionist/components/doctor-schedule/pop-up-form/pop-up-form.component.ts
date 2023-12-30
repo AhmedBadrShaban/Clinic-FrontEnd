@@ -17,16 +17,15 @@ export class PopUpFormComponent implements OnInit {
    disableEndPulse:boolean = false;
    disableStartPulses:boolean = false;
    isAdmin:boolean = false;
-   rooms: any [];
+   rooms: any []=[];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, public dialogRef: MatDialogRef<PopUpFormComponent>, private DoctorScheduleService: DoctorScheduleServiceService ,private scheduleDataService:ReservationfmService ,private roomsService:RoomsService , private loogedIn:AuthService ) {
     this.formData = data;
-    if(this.formData.startPulses){
+    if(this.formData.startPulses!=null){
       this.disableStartPulses = true;
-
     }
     console.log("received data is: ", this.formData);
-    
+
   }
 
   ngOnInit(): void {
@@ -44,8 +43,12 @@ export class PopUpFormComponent implements OnInit {
   create() {
     delete (this.formData as any)['new'];
     console.log('formData :>> ', this.formData);
-    this.formData.startTime = this.formatTime(this.formData.startTime);
-    this.formData.endTime = this.formatTime(this.formData.endTime);
+    if( this.formData.startTime.length !== 8 ){
+          this.formData.startTime = this.formatTime(this.formData.startTime);
+    }
+    if( this.formData.endTime.length !== 8 ){
+      this.formData.endTime = this.formatTime(this.formData.endTime);
+    }
     this.DoctorScheduleService.newSchedule(this.formData).subscribe({
       next: (data:any) => {
         this.closeDialog();
@@ -54,7 +57,8 @@ export class PopUpFormComponent implements OnInit {
        },
       error: (err) => {
         alert(err.error.message)
-      }
+        this.closeDialog();
+        }
     });
   }
 
@@ -81,6 +85,7 @@ export class PopUpFormComponent implements OnInit {
       },
       error: (err) => {
         alert(err.error.message);
+        this.closeDialog();
        }
     });
   }
@@ -124,8 +129,7 @@ export class PopUpFormComponent implements OnInit {
     return inputDate;
   }
   formatTime(time: string): string {
-    // Add ':00' to the time string to make it in the format 'hh:mm:00'
-    return `${time}:00`;
+     return `${time}:00`;
   }
   isLaserRoom(name: any): boolean {
     if(name){

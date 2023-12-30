@@ -1,0 +1,50 @@
+<div  class="Header w-100">
+  Package Information
+</div>
+<div  *ngIf="packDetails"  class="Content">
+  <table class="Table">
+    <tr>
+      <th scope="col"> Number of Points</th>
+      <td> {{packDetails.numberOfPoints}}</td>
+    </tr>
+    <tr>
+      <th> Clinic </th>
+      <td> {{packDetails.clinicName}} </td>
+    </tr>
+    <tr>
+      <th>Expire</th>
+      <td>{{packDetails.expire}}</td>
+    </tr>
+    <tr>
+      <th>Date Of Reservation</th>
+      <td>{{packDetails.reservedAt}}</td>
+    </tr>
+
+    <div class="header-Service"  *ngIf="servicePack">
+      Package Services
+    </div>
+    <div class="my-2">
+      <table  *ngIf="servicePack">
+        <thead>
+          <tr>
+            <th class="me-4">Service Name</th>
+            <th>Sessions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let service of packDetails.reservedService" >
+            <td class="me-4">{{service.serviceName}}</td>
+            <td>{{service.sessions}}</td>
+          </tr>
+        </tbody>
+   </table>
+    </div>
+      
+  </table>
+
+
+
+ <div class="buttons-container" >
+  <button  mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="closeDialog()">Close</button>
+</div>
+</div>

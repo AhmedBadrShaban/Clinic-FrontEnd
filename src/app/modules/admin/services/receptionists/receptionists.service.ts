@@ -19,6 +19,10 @@ getAllReciptianist():Observable<any>{
 getReciptionist(id:any):Observable<any>{
   return this.http.get<any>(`${this.baseUrl}admin/receptionist-profile?id=${id}`)
 }
+updateProfile(id: string, data: any) {
+   console.log('data :>> ', data);
+  return this.http.put(`${this.baseUrl}admin/update-receptionist-profile?id=${id}`, data);
+}
 search(searchVal:any):Observable<any>{
   console.log('searchVal :>> ', searchVal);
   return this.http.get<any>(`${this.baseUrl}admin/receptionist-search?searchString=${searchVal}`)

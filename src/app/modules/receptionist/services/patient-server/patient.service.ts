@@ -8,8 +8,7 @@ import { PatientInfo } from '../../models/patient-Info';
 })
 export class PatientService {
 
-  private mockBaseUrl:string="http://localhost:3000/";
-  private baseUrl:string="http://localhost:8080/";
+   private baseUrl:string="http://localhost:8080/";
 
   constructor(private http :HttpClient) { }
   // getAllPatient():Observable<any>{
@@ -24,6 +23,9 @@ export class PatientService {
   addNewPatient(patientData:any){
     console.log("data : " , patientData )
     return this.http.post(`${this.baseUrl}receptionist/patients` , patientData);
+  }
+  checkDepit(phone:string):Observable<boolean>{
+    return this.http.get<any>(`${this.baseUrl}receptionist/check-debit-for-patient?phone=${phone}`)
   }
   patientInfo(primaryPhone:any): Observable<any> {
     return this.http.get<any>(`http://localhost:8080/receptionist/patients-with-phone?phoneNumber=${primaryPhone}`);

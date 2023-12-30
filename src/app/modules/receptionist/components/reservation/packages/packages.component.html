@@ -26,7 +26,7 @@ class="mx-auto"  style="width:70%"
       <td  [nzAlign]="'center'">{{ data.packageName }}</td>
       <td  [nzAlign]="'center'">{{ data.clinicName }}</td>
       <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.date }}</td>
-        <td colspan="2" [nzAlign]="'center'"><a style="width:150px;cursor: default;"  class="btn btn-sm btn-primary  small-font">Details</a></td>
+        <td colspan="2" [nzAlign]="'center'"><a style="width:150px;cursor: default;" (click)="openDialog(data.reservedId)"  class="btn btn-sm btn-primary  small-font">Details</a></td>
      </tr>
   </ng-container>
 </tbody>

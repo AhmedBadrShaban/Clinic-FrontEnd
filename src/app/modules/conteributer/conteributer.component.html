@@ -1,5 +1,15 @@
 <app-nav-bar-cont></app-nav-bar-cont>
 <app-reports></app-reports>
+<div class="mx-auto my-2 d-flex justify-content-end overflow-hidden bg-body-secondary" style="width: 90%; height: 50px;">
+ <div class="h-100">
+      <mat-form-field>
+          <mat-label>Choose a date</mat-label>
+          <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+  </div>
+</div>
 <nz-table #nestedTable
           [nzData]="data"
           [nzPageSize]="10"
@@ -28,9 +38,9 @@
   <ng-container *ngFor="let data of dynamicTable.data">
     <tr  style="cursor: pointer; font-size: 16px">
       <td [nzAlign]="'center'">{{ data.date  }}</td>
-      <td [nzAlign]="'center'">{{ data.profit  }}</td>
-      <td [nzAlign]="'center'">{{ data.expenses  }}</td>
-      <td [nzAlign]="'center'">{{ data.total  }}</td>
+      <td [nzAlign]="'center'">{{ data.totalProfit  }}</td>
+      <td [nzAlign]="'center'">{{ data.totalExpenses  }}</td>
+      <td [nzAlign]="'center'">{{ data.totalNet  }}</td>
     </tr>
   </ng-container>
   </tbody>

@@ -25,30 +25,33 @@ export class MaterialsService {
   addProuduct(data:any){
     return this.http.post(`${this.baseUrl}receptionist/product` , data);
   }
+  productsReport():Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}admin/product-report`)
+  }
   private listOfDataSubject = new BehaviorSubject<readonly Materials[]> ([]);
   listOfData$ = this.listOfDataSubject.asObservable();
   updateData(data: any[]){
     this.listOfDataSubject.next(data);
   }
 
-  getProducts() : product[]{
-    return [{
-      materialName : 'golves',
-      soldQuantity : 2 ,
-      totalCost : 10,
-      remainingQuantity : 200
-    },
-      {
-        materialName : 'golves',
-        soldQuantity : 2 ,
-        totalCost : 10,
-        remainingQuantity : 200
-      },
-      {
-        materialName : 'golves',
-        soldQuantity : 2 ,
-        totalCost : 10,
-        remainingQuantity : 200
-      }]
-  }
+  // getProducts() : product[]{
+  //   return [{
+  //     materialName : 'golves',
+  //     soldQuantity : 2 ,
+  //     totalCost : 10,
+  //     remainingQuantity : 200
+  //   },
+  //     {
+  //       materialName : 'golves',
+  //       soldQuantity : 2 ,
+  //       totalCost : 10,
+  //       remainingQuantity : 200
+  //     },
+  //     {
+  //       materialName : 'golves',
+  //       soldQuantity : 2 ,
+  //       totalCost : 10,
+  //       remainingQuantity : 200
+  //     }]
+  // }
 }

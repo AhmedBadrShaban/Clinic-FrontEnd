@@ -20,13 +20,6 @@
       </mat-form-field>
     </div>
   </div>
-
-
-
-
-<!-- /////////////////////////////////////////////////// -->
-
-  <app-available-slots></app-available-slots>
   <nz-tabset nzCentered [(nzSelectedIndex)]="selectedTabIndex" (nzSelectedIndexChange)="onTabChange($event)">
     <nz-tab *ngFor="let room of roomsNames" [nzTitle]="room">
       <app-events-grid  [eventsPerRoom]="allReservations[room]" [roomName]="room" [date]="selectedDate" class="grid"></app-events-grid>

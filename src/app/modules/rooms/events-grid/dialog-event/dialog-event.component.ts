@@ -8,6 +8,7 @@ import {reservation} from "../../../receptionist/models/event-reservation.model"
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { Router } from '@angular/router';
+import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 
 @Component({
   selector: 'app-dialog-event',
@@ -19,13 +20,20 @@ import { Router } from '@angular/router';
 })
 export class DialogEventComponent implements OnInit {
   toggle = false;
-  toggle2 = false;
+   debit=false;
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: reservation, private roomsService:RoomsService ,
-   private router : Router
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: any, private roomsService:RoomsService ,  private patienDepit:PatientService,
+   private router : Router , private datePipe:DatePipe
+  )
+  {
+    console.log('data :>> ', data);
+  }
   ngOnInit(): void {
+    this.patienDepit.checkDepit(this.data.patientPhone).subscribe((data)=>{
+      
+      this.debit = data;
+    })
 
   }
   chengeReservationStatus( id:number,status:string){
@@ -33,14 +41,13 @@ export class DialogEventComponent implements OnInit {
       next:(response:any)=>{
         alert(response.message);
         this.UpdateAllReservations();
+        this.updateAvailableSlots();
         this.close();
 
       },
       error:(err)=>{
         alert(err.error.message);
       }
-
-
     })
   }
 
@@ -51,10 +58,6 @@ export class DialogEventComponent implements OnInit {
   changeToogle(){
     this.toggle = !this.toggle;
   }
-  changeToogle2(){
-    this.toggle2 = !this.toggle2;
-
-  }
   close(){
     this.dialogRef.close();
   }
@@ -64,9 +67,25 @@ export class DialogEventComponent implements OnInit {
       console.log( "data Updated : " ,data);
     })
   }
+  updateAvailableSlots(){
+    this.roomsService.getAvalliableSlots( this.data.roomName ,this.data.reservationDate).subscribe((data=>{
+      console.log('updated :>> ', data);
+      this.roomsService.updateSlots(data);
+    }))
+
+
+  }
   checkOut(id:number){
     console.log('id before navigating :>> ', id);
     this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
     this.close();
   }
+  formatTimeTo12Hour(time: string): string {
+    if (!time) {
+     return '';
+   }
+   const timeAsDate = new Date(`1970-01-01T${time}`);
+
+    return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
+ }
 }

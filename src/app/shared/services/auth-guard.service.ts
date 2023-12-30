@@ -19,6 +19,7 @@ export class AuthGuardService implements CanActivate {
 
       if (requiredRole && this.authService.userType !== requiredRole) {
         console.log('userType :>> ', this.authService.userType);
+        
          this.router.navigate(['/forbidden']);
         return false;
       }

@@ -1,51 +1,16 @@
 import { Injectable } from '@angular/core';
 import {ContData} from "../Models/cont-data";
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContServiceService {
 
-  constructor() { }
-
-  getData(): ContData []{
-    return [
-      {
-        date: '20-30-2003',
-        profit: 250,
-        expenses: 548,
-        total: 750
-      },
-      {
-        date: '20-30-2003',
-        profit: 250,
-        expenses: 548,
-        total: 750
-      },
-      {
-        date: '20-30-2003',
-        profit: 250,
-        expenses: 548,
-        total: 750
-      },
-      {
-        date: '20-30-2003',
-        profit: 250,
-        expenses: 548,
-        total: 750
-      },
-      {
-        date: '20-30-2003',
-        profit: 250,
-        expenses: 548,
-        total: 750
-      },
-      {
-        date: '20-30-2003',
-        profit: 250,
-        expenses: 548,
-        total: 750
-      }
-    ]
+  private baseUrl:string="http://localhost:8080/";
+  constructor(private http :HttpClient) { }
+   getMonthlyReport(year:any , month:any):Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}admin/monthly-report?year=${year}&month=${month}`);
   }
 }

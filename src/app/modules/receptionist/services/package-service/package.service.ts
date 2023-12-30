@@ -13,6 +13,9 @@ export class PackageService {
   getAllPackages():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/packages-names`);
   }
+  getPackageDetailsById(id:string):Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-details?id=${id}`);
+  }
   getAllReservedPackages():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages`);
   }

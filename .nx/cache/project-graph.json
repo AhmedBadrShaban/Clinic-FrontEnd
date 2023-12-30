@@ -4529,6 +4529,15 @@
         "hash": "sha512-u95svzDlTysU5xecFNTgfFG5RUWu1A9P0VzgpcIiGZA9iraHOdSzcxMxQ55DyeRaGCSxQi7LxXDI4rzq/MYfdg=="
       }
     },
+    "npm:@types/raf": {
+      "type": "npm",
+      "name": "npm:@types/raf",
+      "data": {
+        "version": "3.4.3",
+        "packageName": "@types/raf",
+        "hash": "sha512-c4YAvMedbPZ5tEyxzQdMoOhhJ4RD3rngZIdwC2/qDN3d7JpEhB6fiBRKVY1lg5B7Wk+uPBjn5f39j1/2MY1oOw=="
+      }
+    },
     "npm:@types/range-parser": {
       "type": "npm",
       "name": "npm:@types/range-parser",
@@ -5177,6 +5186,15 @@
         "hash": "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="
       }
     },
+    "npm:atob": {
+      "type": "npm",
+      "name": "npm:atob",
+      "data": {
+        "version": "2.1.2",
+        "packageName": "atob",
+        "hash": "sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg=="
+      }
+    },
     "npm:autoprefixer": {
       "type": "npm",
       "name": "npm:autoprefixer",
@@ -5337,6 +5355,15 @@
         "version": "1.0.2",
         "packageName": "balanced-match",
         "hash": "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="
+      }
+    },
+    "npm:base64-arraybuffer": {
+      "type": "npm",
+      "name": "npm:base64-arraybuffer",
+      "data": {
+        "version": "1.0.2",
+        "packageName": "base64-arraybuffer",
+        "hash": "sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ=="
       }
     },
     "npm:base64-js": {
@@ -5573,6 +5600,15 @@
         "hash": "sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ=="
       }
     },
+    "npm:btoa": {
+      "type": "npm",
+      "name": "npm:btoa",
+      "data": {
+        "version": "1.2.1",
+        "packageName": "btoa",
+        "hash": "sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g=="
+      }
+    },
     "npm:buffer": {
       "type": "npm",
       "name": "npm:buffer",
@@ -5733,6 +5769,15 @@
         "version": "1.0.30001546",
         "packageName": "caniuse-lite",
         "hash": "sha512-zvtSJwuQFpewSyRrI3AsftF6rM0X80mZkChIt1spBGEvRglCrjTniXvinc8JKRoqTwXAgvqTImaN9igfSMtUBw=="
+      }
+    },
+    "npm:canvg": {
+      "type": "npm",
+      "name": "npm:canvg",
+      "data": {
+        "version": "3.0.10",
+        "packageName": "canvg",
+        "hash": "sha512-qwR2FRNO9NlzTeKIPIKpnTY6fqwuYSequ8Ru8c0YkYU7U0oW+hLUvWadLvAu1Rl72OMNiFhoLu4f8eUjQ7l/+Q=="
       }
     },
     "npm:char-regex": {
@@ -6104,6 +6149,15 @@
         "hash": "sha512-1j20GZTsvKNkc4BY3NpMOM8tt///wY3FpIzozTOFO2ffuZcV61nojHXVKIy3WM+7ADCy5FVhdZYHYDdgTU0yJw=="
       }
     },
+    "npm:core-js": {
+      "type": "npm",
+      "name": "npm:core-js",
+      "data": {
+        "version": "3.34.0",
+        "packageName": "core-js",
+        "hash": "sha512-aDdvlDder8QmY91H88GzNi9EtQi2TjvQhpCX6B1v/dAZHU1AuLgHvRh54RiOerpEhEW46Tkf+vgAViB/CWC0ag=="
+      }
+    },
     "npm:core-js-compat": {
       "type": "npm",
       "name": "npm:core-js-compat",
@@ -6174,6 +6228,15 @@
         "version": "6.4.1",
         "packageName": "css-declaration-sorter",
         "hash": "sha512-rtdthzxKuyq6IzqX6jEcIzQF/YqccluefyCYheovBOLhFT/drQA9zj/UbRAa9J7C0o6EG6u3E6g+vKkay7/k3g=="
+      }
+    },
+    "npm:css-line-break": {
+      "type": "npm",
+      "name": "npm:css-line-break",
+      "data": {
+        "version": "2.1.0",
+        "packageName": "css-line-break",
+        "hash": "sha512-FHcKFCZcAha3LwfVBhCQbW2nCNbkZXn7KVUJcsT5/P8YmfsVja0FMPJr0B903j/E69HUphKiV9iQArX8SDYA4w=="
       }
     },
     "npm:css-loader": {
@@ -6606,6 +6669,15 @@
         "version": "5.0.3",
         "packageName": "domhandler",
         "hash": "sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w=="
+      }
+    },
+    "npm:dompurify": {
+      "type": "npm",
+      "name": "npm:dompurify",
+      "data": {
+        "version": "2.4.7",
+        "packageName": "dompurify",
+        "hash": "sha512-kxxKlPEDa6Nc5WJi+qRgPbOAbgTpSULL+vI3NUXsZMlkJxTqYI9wg5ZTay2sFrdZRWHPWNi+EdAhcJf81WtoMQ=="
       }
     },
     "npm:domutils": {
@@ -7400,6 +7472,15 @@
         "hash": "sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA=="
       }
     },
+    "npm:fflate": {
+      "type": "npm",
+      "name": "npm:fflate",
+      "data": {
+        "version": "0.4.8",
+        "packageName": "fflate",
+        "hash": "sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA=="
+      }
+    },
     "npm:figures": {
       "type": "npm",
       "name": "npm:figures",
@@ -7884,6 +7965,15 @@
         "version": "2.0.2",
         "packageName": "html-escaper",
         "hash": "sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg=="
+      }
+    },
+    "npm:html2canvas": {
+      "type": "npm",
+      "name": "npm:html2canvas",
+      "data": {
+        "version": "1.4.1",
+        "packageName": "html2canvas",
+        "hash": "sha512-fPU6BHNpsyIhr8yyMpTLLxAbkaK8ArIBcmZIRiBLiDhjeqvXolaEmDGmELFuX9I4xDcaKKcJl+TKZLqruBbmWA=="
       }
     },
     "npm:htmlparser2": {
@@ -8856,6 +8946,15 @@
         "version": "1.3.1",
         "packageName": "jsonparse",
         "hash": "sha512-POQXvpdL69+CluYsillJ7SUhKvytYjW9vG/GKpnf+xP8UWgYEM/RaMzHHofbALDiKbbP1W8UEYmgGl39WkPZsg=="
+      }
+    },
+    "npm:jspdf": {
+      "type": "npm",
+      "name": "npm:jspdf",
+      "data": {
+        "version": "2.5.1",
+        "packageName": "jspdf",
+        "hash": "sha512-hXObxz7ZqoyhxET78+XR34Xu2qFGrJJ2I2bE5w4SM8eFaFEkW2xcGRVUss360fYelwRSid/jT078kbNvmoW0QA=="
       }
     },
     "npm:karma": {
@@ -10010,6 +10109,15 @@
         "hash": "sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw=="
       }
     },
+    "npm:performance-now": {
+      "type": "npm",
+      "name": "npm:performance-now",
+      "data": {
+        "version": "2.1.0",
+        "packageName": "performance-now",
+        "hash": "sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow=="
+      }
+    },
     "npm:picocolors": {
       "type": "npm",
       "name": "npm:picocolors",
@@ -10550,6 +10658,15 @@
         "hash": "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="
       }
     },
+    "npm:raf": {
+      "type": "npm",
+      "name": "npm:raf",
+      "data": {
+        "version": "3.4.1",
+        "packageName": "raf",
+        "hash": "sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA=="
+      }
+    },
     "npm:randombytes": {
       "type": "npm",
       "name": "npm:randombytes",
@@ -10755,6 +10872,15 @@
         "version": "1.3.0",
         "packageName": "rfdc",
         "hash": "sha512-V2hovdzFbOi77/WajaSMXk2OLm+xNIeQdMMuB7icj7bk6zi2F8GGAxigcnDFpJHbNyNcgyJDiP+8nOrY5cZGrA=="
+      }
+    },
+    "npm:rgbcolor": {
+      "type": "npm",
+      "name": "npm:rgbcolor",
+      "data": {
+        "version": "1.0.1",
+        "packageName": "rgbcolor",
+        "hash": "sha512-9aZLIrhRaD97sgVhtJOW6ckOEh6/GnvQtdVNfdZ6s67+3/XwLS9lBcQYzEEhYVeUowN7pRzMLsyGhK2i/xvWbw=="
       }
     },
     "npm:rimraf": {
@@ -11189,6 +11315,15 @@
         "hash": "sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ=="
       }
     },
+    "npm:stackblur-canvas": {
+      "type": "npm",
+      "name": "npm:stackblur-canvas",
+      "data": {
+        "version": "2.6.0",
+        "packageName": "stackblur-canvas",
+        "hash": "sha512-8S1aIA+UoF6erJYnglGPug6MaHYGo1Ot7h5fuXx4fUPvcvQfcdw2o/ppCse63+eZf8PPidSu4v1JnmEVtEDnpg=="
+      }
+    },
     "npm:steno": {
       "type": "npm",
       "name": "npm:steno",
@@ -11324,6 +11459,15 @@
         "hash": "sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w=="
       }
     },
+    "npm:svg-pathdata": {
+      "type": "npm",
+      "name": "npm:svg-pathdata",
+      "data": {
+        "version": "6.0.3",
+        "packageName": "svg-pathdata",
+        "hash": "sha512-qsjeeq5YjBZ5eMdFuUa4ZosMLxgr5RZ+F+Y1OrDhuOCEInRMA3x74XdBtggJcj9kOeInz0WE+LgCPDkZFlBYJw=="
+      }
+    },
     "npm:svgo": {
       "type": "npm",
       "name": "npm:svgo",
@@ -11403,6 +11547,15 @@
         "version": "6.0.0",
         "packageName": "test-exclude",
         "hash": "sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w=="
+      }
+    },
+    "npm:text-segmentation": {
+      "type": "npm",
+      "name": "npm:text-segmentation",
+      "data": {
+        "version": "1.0.3",
+        "packageName": "text-segmentation",
+        "hash": "sha512-iOiPUo/BGnZ6+54OsWxZidGCsdU8YbE4PSpdPinp7DeMtUJNJBoJ/ouUSTJjHkh1KntHaltHl/gDs2FC4i5+Nw=="
       }
     },
     "npm:text-table": {
@@ -11736,6 +11889,15 @@
         "version": "1.0.1",
         "packageName": "utils-merge",
         "hash": "sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA=="
+      }
+    },
+    "npm:utrie": {
+      "type": "npm",
+      "name": "npm:utrie",
+      "data": {
+        "version": "1.0.2",
+        "packageName": "utrie",
+        "hash": "sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw=="
       }
     },
     "npm:uuid": {
@@ -12146,6 +12308,16 @@
       {
         "source": "Clinic-Front",
         "target": "npm:bootstrap-icons",
+        "type": "static"
+      },
+      {
+        "source": "Clinic-Front",
+        "target": "npm:html2canvas",
+        "type": "static"
+      },
+      {
+        "source": "Clinic-Front",
+        "target": "npm:jspdf",
         "type": "static"
       },
       {
@@ -21818,6 +21990,48 @@
         "type": "static"
       }
     ],
+    "npm:canvg": [
+      {
+        "source": "npm:canvg",
+        "target": "npm:@babel/runtime",
+        "type": "static"
+      },
+      {
+        "source": "npm:canvg",
+        "target": "npm:@types/raf",
+        "type": "static"
+      },
+      {
+        "source": "npm:canvg",
+        "target": "npm:core-js",
+        "type": "static"
+      },
+      {
+        "source": "npm:canvg",
+        "target": "npm:raf",
+        "type": "static"
+      },
+      {
+        "source": "npm:canvg",
+        "target": "npm:regenerator-runtime",
+        "type": "static"
+      },
+      {
+        "source": "npm:canvg",
+        "target": "npm:rgbcolor",
+        "type": "static"
+      },
+      {
+        "source": "npm:canvg",
+        "target": "npm:stackblur-canvas",
+        "type": "static"
+      },
+      {
+        "source": "npm:canvg",
+        "target": "npm:svg-pathdata",
+        "type": "static"
+      }
+    ],
     "npm:chalk": [
       {
         "source": "npm:chalk",
@@ -22219,6 +22433,13 @@
       {
         "source": "npm:css-declaration-sorter",
         "target": "npm:postcss",
+        "type": "static"
+      }
+    ],
+    "npm:css-line-break": [
+      {
+        "source": "npm:css-line-break",
+        "target": "npm:utrie",
         "type": "static"
       }
     ],
@@ -24188,6 +24409,18 @@
         "type": "static"
       }
     ],
+    "npm:html2canvas": [
+      {
+        "source": "npm:html2canvas",
+        "target": "npm:css-line-break",
+        "type": "static"
+      },
+      {
+        "source": "npm:html2canvas",
+        "target": "npm:text-segmentation",
+        "type": "static"
+      }
+    ],
     "npm:htmlparser2": [
       {
         "source": "npm:htmlparser2",
@@ -25937,6 +26170,48 @@
       {
         "source": "npm:jsonfile",
         "target": "npm:graceful-fs",
+        "type": "static"
+      }
+    ],
+    "npm:jspdf": [
+      {
+        "source": "npm:jspdf",
+        "target": "npm:@babel/runtime",
+        "type": "static"
+      },
+      {
+        "source": "npm:jspdf",
+        "target": "npm:atob",
+        "type": "static"
+      },
+      {
+        "source": "npm:jspdf",
+        "target": "npm:btoa",
+        "type": "static"
+      },
+      {
+        "source": "npm:jspdf",
+        "target": "npm:fflate",
+        "type": "static"
+      },
+      {
+        "source": "npm:jspdf",
+        "target": "npm:canvg",
+        "type": "static"
+      },
+      {
+        "source": "npm:jspdf",
+        "target": "npm:core-js",
+        "type": "static"
+      },
+      {
+        "source": "npm:jspdf",
+        "target": "npm:dompurify",
+        "type": "static"
+      },
+      {
+        "source": "npm:jspdf",
+        "target": "npm:html2canvas",
         "type": "static"
       }
     ],
@@ -28309,6 +28584,13 @@
         "type": "static"
       }
     ],
+    "npm:raf": [
+      {
+        "source": "npm:raf",
+        "target": "npm:performance-now",
+        "type": "static"
+      }
+    ],
     "npm:randombytes": [
       {
         "source": "npm:randombytes",
@@ -29427,6 +29709,13 @@
         "type": "static"
       }
     ],
+    "npm:text-segmentation": [
+      {
+        "source": "npm:text-segmentation",
+        "target": "npm:utrie",
+        "type": "static"
+      }
+    ],
     "npm:tmp": [
       {
         "source": "npm:tmp",
@@ -29741,6 +30030,13 @@
       {
         "source": "npm:url-parse",
         "target": "npm:requires-port",
+        "type": "static"
+      }
+    ],
+    "npm:utrie": [
+      {
+        "source": "npm:utrie",
+        "target": "npm:base64-arraybuffer",
         "type": "static"
       }
     ],

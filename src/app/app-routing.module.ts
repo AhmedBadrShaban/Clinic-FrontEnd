@@ -27,7 +27,7 @@ const routes:Routes = [
 { path: 'forbidden', component: ForbiddenComponent },
   { path: 'contributer', loadChildren: () => import('./modules/conteributer/conteributer.module').then(m => m.ConteributerModule), 
   canActivate: [AuthGuardService],
-  data: { requiredRole: 'ROLE_CONTRIBUTER'} 
+  data: { requiredRole:  'ROLE_CONTRIBUTOR'} 
 },
   {path: '**' , component: NotFoundComponent}
 ]

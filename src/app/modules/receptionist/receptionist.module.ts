@@ -45,6 +45,7 @@ import { AddProductComponent } from './components/package/add-product/add-produc
 import { SendPointsComponent } from './components/reservation/points/send-points/send-points.component';
 import { RoomsComponent } from '../rooms/rooms.component';
 import { AfterWorkComponent } from './components/reservation/after-work/after-work.component';
+import { PackageDetailsComponent } from './components/reservation/packages/package-details/package-details.component';
  
 
 @NgModule({
@@ -72,6 +73,7 @@ import { AfterWorkComponent } from './components/reservation/after-work/after-wo
    AddProductComponent,
    SendPointsComponent,
    AfterWorkComponent,
+   PackageDetailsComponent,
   ],
   imports: [
   CommonModule,

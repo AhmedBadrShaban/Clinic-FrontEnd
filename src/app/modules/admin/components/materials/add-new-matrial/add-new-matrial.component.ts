@@ -16,7 +16,7 @@ export class AddNewMatrialComponent implements OnInit {
   flag:boolean=true;
   constructor(private fb: FormBuilder , private materialService:MaterialsService,  public dialogRef: MatDialogRef<AddNewMatrialComponent>) {
     this.newMaterialFm = fb.group({
-      materialName: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
+      materialName: ['', [Validators.required, Validators.pattern('[A-Za-z0-9 ]*')]],
       quantity: ['', [Validators.required]],
       cost: ['', [Validators.required]],
 

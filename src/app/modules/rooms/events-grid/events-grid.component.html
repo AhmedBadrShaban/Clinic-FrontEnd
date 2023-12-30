@@ -1,13 +1,4 @@
-<!--<app-events-bar></app-events-bar>-->
-
-<!-- 
-IN_PROGRESS,
-CONFIRMED,
-WAITING,,
-TO_DOCTOR,
-DONE
-CANCELLED
- -->
+<app-available-slots class="row w-100 mb-2" [roomName]="roomName" [reservedAt]="date"></app-available-slots>
 <div class="flex-all">
   <div class="grid-events" >
     <div *ngFor="let e of eventsPerRoom let i = index">
@@ -18,6 +9,7 @@ CANCELLED
     'grid-item-toDoctor' : e.status === 'TO_DOCTOR',
     'grid-item-done' : e.status === 'DONE',
     'grid-item-cancelled' : e.status === 'CANCELLED',
+    'grid-item-completed' : e.status === 'COMPLETED',
      }"
            (click)="openDialog(e)"
       >
@@ -28,21 +20,38 @@ CANCELLED
           Doctor Name : {{e.doctorName}}
         </div>
         <div>
-           From [ {{e.reservationStart.slice(0,5)}}] - To [ {{e.reservationEnd.slice(0,5)}} ]
+            <i class="bi bi-alarm"></i>
+             {{ formatTimeTo12Hour(e.reservationStart) }}
+             -
+              {{ formatTimeTo12Hour(e.reservationEnd)}}
         </div>
-        <div class="badge bg-secondary">
-          {{ e.status }}
+
+        <div style="color: black;" class="badge  bg-body-secondary bg-opacity-25">
+          <i
+          [ngClass]="{
+            'bi bi-cart' : e.status === 'IN_PROGRESS',
+            'bi bi-check' : e.status === 'CONFIRMED',
+            'bi bi-hourglass-bottom' : e.status === 'WAITING',
+            'bi bi-journal-medical' : e.status === 'TO_DOCTOR',
+            'bi bi-cash-coin' : e.status === 'DONE',
+            'bi bi-x-circle' : e.status === 'CANCELLED',
+            'bi bi-check2-circle' : e.status === 'COMPLETED',
+             }"
+            >
+          </i>
+           {{ e.status }}
         </div>
 
       </div>
     </div>
   </div>
-  <div style="width: 20%; margin-left: 3%; align-content: center; border: #6F2DBD 1px solid; height: fit-content; text-align: center">
-    <h2>Available Slots</h2>
+   <!-- <div style="width: 20%; margin-left: 3%; align-content: center; border: #6F2DBD 1px solid; height: fit-content; text-align: center">
+    <h2>Available Slots</h2> -->
     <!-- <app-available-slots [eventsPerDayTO] = "eventsPerDay" style="display: flex; display: flex;
     flex-direction: column;
-    align-items: center;"> </app-available-slots> -->
-  </div>
+    align-items: center;"> </app-available-slots>
+  </div> -->
+
 </div>
 
 

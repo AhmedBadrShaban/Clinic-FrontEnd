@@ -37,7 +37,7 @@ interface Setting {
 })
 export class CoverSheetComponent implements OnInit {
   selectedDate: any | undefined;
-  listOfData:  CoverSheet[] =[];
+  listOfData:  CoverSheet;
   displayData: readonly CoverSheet[] = [];
   allChecked = false;
   indeterminate = false;
@@ -71,17 +71,17 @@ export class CoverSheetComponent implements OnInit {
       tableLayout: 'auto' as NzTableLayout,
       position: 'both' as NzTablePaginationPosition
     };
+    const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
+      this.CoverSheetService.getAllSheets(formattedDate).subscribe((data:any)=>{
+       this.listOfData =data;
+      console.log( "data recived : " ,this.listOfData);
+    })
 
    }
 
   ngOnInit(): void {
-    const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
 
-    this.CoverSheetService.getAllSheets(formattedDate).subscribe((data:any)=>{
-      // console.log(data);
-      this.listOfData =data;
-      console.log( "data recived : " ,this.listOfData);
-    })
+  
   }
 
   onDateChange(event: any) {

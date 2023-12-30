@@ -46,6 +46,7 @@ export class ReservationFmComponent implements OnInit {
       next:(responed:any)=>{
         alert(responed.message)
          this.UpdateAllReservations();
+         this.updateAvailableSlots();
         this.closeDialog();
 
      },
@@ -107,6 +108,12 @@ export class ReservationFmComponent implements OnInit {
       this.roomService.updateData(data);
       console.log( "data Updated : " ,data);
     })
+  }
+  updateAvailableSlots(){
+    this.roomService.getAvalliableSlots(this.roomName , this.date).subscribe((data=>{
+      console.log('updated :>> ', data);
+      this.roomService.updateSlots(data);
+    }))
   }
 
 

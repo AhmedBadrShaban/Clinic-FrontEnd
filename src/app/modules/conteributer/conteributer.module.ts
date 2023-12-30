@@ -5,7 +5,10 @@ import { ConteributerRoutingModule } from './conteributer-routing.module';
 import { ConteributerComponent } from './conteributer.component';
 import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
 import {NzTableModule} from "ng-zorro-antd/table";
-import {ReactiveFormsModule} from "@angular/forms";
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { NavBarContComponent } from './Components/nav-bar-cont/nav-bar-cont.component';
 
 
@@ -20,7 +23,8 @@ import { NavBarContComponent } from './Components/nav-bar-cont/nav-bar-cont.comp
         SharedModule,
         NzAutocompleteModule,
         NzTableModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatFormFieldModule,MatInputModule,MatDatepickerModule,FormsModule
     ]
  })
 export class ConteributerModule { }

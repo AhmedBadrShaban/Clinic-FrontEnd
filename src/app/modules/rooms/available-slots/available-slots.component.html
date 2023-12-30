@@ -1,5 +1,33 @@
-<div *ngFor="let slot of slots" class="whole">
+<!-- <div *ngFor="let slot of slots" class="whole">
   <div class="Slot">
     From[{{slot.startTimeHour}}:{{slot.StartTimeMin}}] - To[{{slot.EndTimeHour}}:{{slot.EndTimeMin}}]
   </div>
-</div>
+</div> -->
+    <div *ngIf="!dataLoaded">
+      <!-- Loading or placeholder content can go here -->
+      Loading...
+    </div>
+    <div *ngIf="dataLoaded"  class="d-flex w-100" style="height: 100px;">
+    <ng-container  *ngFor="let slot of mergedArray">
+      <div  
+      class="col-1"
+      [ngClass]="{
+        'available': slot.available,
+        'unavailable' :!slot.available,
+        'reserved-font' :!slot.available,
+        'small-font': slot.width !== undefined && slot.width < 8
+         }"
+      [style.width.%]="slot.width"
+             
+      id="slots-container">
+      <p class="mx-auto">
+        {{ formatTimeTo12Hour(slot.startTime) }}
+        - 
+         {{ formatTimeTo12Hour(slot.endTime)}}
+      </p>
+      </div>
+
+    </ng-container>
+    
+  </div>
+ 

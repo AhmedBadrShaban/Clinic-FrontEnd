@@ -2,10 +2,10 @@
   class="border rounded container shadow"
   style="width: 600px; background-color: #f8f8f8; border: none"
 >
-  <form [formGroup]="ContributorFrm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="ContributorFrm" (ngSubmit)="submit()">
     <div class="row m-2 justify-content-between">
       <div class="d-flex align-items-center">
-        <label class="form-label w-100">Name</label>
+        <label class="form-label w-100">User Name</label>
       </div>
       <input
         type="text"
