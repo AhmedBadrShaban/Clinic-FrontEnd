@@ -1,6 +1,10 @@
 .bg{
   background-color: #FBDA61;
-  background-image: linear-gradient(45deg, #FBDA61 0%, #FF5ACD 100%);
+  background-image: url("../../../assets/bck2.PNG") ;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh; /* 100% of the viewport height */
 }
 .header {
   background-color: rgba(111, 45, 189, 0.7);
