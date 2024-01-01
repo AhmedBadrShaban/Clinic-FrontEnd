@@ -30,7 +30,7 @@
           <label for="file-upload" class="file-upload-label px-2" style="width: 555px;color: rgb(173, 169, 169);">
             <span *ngIf="flag" style="color: black;">{{ selectedFileName}}</span>
             <span *ngIf="!flag">Reciept</span>
-            <input id="file-input" type="file" (change)="onFileSelected($event)" formControlName="image"
+            <input id="file-upload" type="file" (change)="onFileSelected($event)" formControlName="image"
               style="display: none;">
             <i class="fas fa-cloud-upload-alt" onclick="document.getElementById('file-input').click()"></i>
           </label><br>
@@ -45,4 +45,3 @@
       </form>
     </div>
 
- 
