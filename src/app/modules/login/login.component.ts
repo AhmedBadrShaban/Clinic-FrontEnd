@@ -1,3 +1,4 @@
+import { NonNullAssert } from '@angular/compiler';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Route, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -15,8 +16,10 @@ export class LoginComponent implements OnInit {
     }
     ngOnInit(): void {
       console.log("loggedin user type"  ,this.authService.userType);
+
       if(this.authService.isLogged){
-        this.router.navigate([this.authService.userType])
+        const mappedUserType = this.mapUserRoleToString(this.authService.userType);
+        this.router.navigate([mappedUserType])
       }
 
     }
@@ -57,29 +60,19 @@ export class LoginComponent implements OnInit {
         // alert("welcome " + user.name );
       }
 
-      test(c:number){
-          this.authService.isLogged=true;
-           sessionStorage.setItem('isLogged', 'true');
-           if(c==2){
-            this.authService.userType= 'ROLE_RECEPTIONIST';
-            sessionStorage.setItem('userType',  this.authService.userType);
-            this.router.navigateByUrl('receptionist')
-          }
-          else if(c==1){
-            this.authService.userType= 'ROLE_ADMIN';
-            sessionStorage.setItem('userType',  this.authService.userType);
-            this.router.navigateByUrl('admin')
-          }
-          else if( c==3){
-            this.authService.userType= 'ROLE_DOCTOR';
-            sessionStorage.setItem('userType',  this.authService.userType);
-             this.router.navigateByUrl('doctor')
-          }
-          else if( c==4){
-            this.authService.userType= 'ROLE_CONTRIBUTER';
-            sessionStorage.setItem('userType',  this.authService.userType);
-             this.router.navigateByUrl('contributer')
-          }
+      private mapUserRoleToString(userRole: string|null): string {
+        switch (userRole) {
+          case 'ROLE_RECEPTIONIST':
+            return 'receptionist';
+          case 'ROLE_ADMIN':
+            return 'admin';
+          case 'ROLE_DOCTOR':
+            return 'doctor';
+          case 'ROLE_CONTRIBUTOR':
+            return 'contributor';
+          default:
+            return '';
+        }
       }
 
 

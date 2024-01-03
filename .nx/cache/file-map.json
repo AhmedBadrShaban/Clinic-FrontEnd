@@ -52,7 +52,7 @@
         },
         {
           "file": ".nx/cache/file-map.json",
-          "hash": "10525640614605558239"
+          "hash": "11253027084668678889"
         },
         {
           "file": ".nx/cache/lockfile.hash",
@@ -64,7 +64,7 @@
         },
         {
           "file": ".nx/cache/project-graph.json",
-          "hash": "1226713931277153696"
+          "hash": "14256748725945938344"
         },
         {
           "file": ".vscode/extensions.json",
@@ -88,7 +88,11 @@
         },
         {
           "file": "angular.json",
-          "hash": "15044224947614865160"
+          "hash": "12426912813726345741"
+        },
+        {
+          "file": "dist.zip",
+          "hash": "2560090303442588753"
         },
         {
           "file": "package-lock.json",
@@ -1126,11 +1130,11 @@
         },
         {
           "file": "src/app/modules/login/login.component.css",
-          "hash": "5880749781250973376"
+          "hash": "6621446093735518564"
         },
         {
           "file": "src/app/modules/login/login.component.html",
-          "hash": "13170692929066308212"
+          "hash": "8159494287569773845"
         },
         {
           "file": "src/app/modules/login/login.component.spec.ts",
@@ -1189,7 +1193,7 @@
         },
         {
           "file": "src/app/modules/receptionist/components/cover-sheet/cover-sheet.component.ts",
-          "hash": "9020757649196483562",
+          "hash": "8710700569560625288",
           "deps": [
             "npm:@angular/core",
             "npm:ng-zorro-antd",
@@ -1277,7 +1281,7 @@
         },
         {
           "file": "src/app/modules/receptionist/components/expense/add-expense/add-expense.component.html",
-          "hash": "12300539235617702378"
+          "hash": "13570922951268738559"
         },
         {
           "file": "src/app/modules/receptionist/components/expense/add-expense/add-expense.component.spec.ts",
@@ -1288,7 +1292,7 @@
         },
         {
           "file": "src/app/modules/receptionist/components/expense/add-expense/add-expense.component.ts",
-          "hash": "15342689582824566317",
+          "hash": "17430247980053636798",
           "deps": [
             "npm:@angular/core",
             "npm:@angular/forms",
@@ -2327,6 +2331,10 @@
         {
           "file": "src/assets/7347206.png",
           "hash": "8690739801219639128"
+        },
+        {
+          "file": "src/assets/bck2.PNG",
+          "hash": "9957381566438906792"
         },
         {
           "file": "src/assets/doctor.png",
