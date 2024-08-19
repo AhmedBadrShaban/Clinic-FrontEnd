@@ -12,6 +12,7 @@ export class RoomsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/get-rooms-with-all-reservation?date=${date}`);
   }
   getRoomReservation(roomName:any , date:any):Observable<any>{
+      console.log("t1");
       return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation?roomName=${roomName}&date=${date}`);
     }
   allRooms():Observable<any>{

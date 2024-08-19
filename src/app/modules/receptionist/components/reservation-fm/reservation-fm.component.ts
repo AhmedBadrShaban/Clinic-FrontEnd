@@ -33,6 +33,7 @@ export class ReservationFmComponent implements OnInit {
       reservationDate: this.datePipe.transform(data.date, 'yyyy-MM-dd'),
       start: ['', [Validators.required]],
       end: ['', [Validators.required]],
+      note: ['', [Validators.required]],
       reservedAt:[data.date],
       service: fb.array([this.fb.control('')]),
     });
