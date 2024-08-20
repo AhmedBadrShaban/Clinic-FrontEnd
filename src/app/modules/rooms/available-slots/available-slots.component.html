@@ -7,9 +7,9 @@
       <!-- Loading or placeholder content can go here -->
       Loading...
     </div>
-    <div *ngIf="dataLoaded"  class="d-flex w-100" style="height: 100px;">
+    <div *ngIf="dataLoaded"  class="d-flex w-100" style="height: 100px; overflow-x:scroll">
     <ng-container  *ngFor="let slot of mergedArray">
-      <div  
+      <div
       class="col-1"
       [ngClass]="{
         'available': slot.available,
@@ -18,16 +18,15 @@
         'small-font': slot.width !== undefined && slot.width < 8
          }"
       [style.width.%]="slot.width"
-             
+
       id="slots-container">
       <p class="mx-auto">
         {{ formatTimeTo12Hour(slot.startTime) }}
-        - 
+        -
          {{ formatTimeTo12Hour(slot.endTime)}}
       </p>
       </div>
 
     </ng-container>
-    
+
   </div>
- 

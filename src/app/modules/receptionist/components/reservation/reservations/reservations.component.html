@@ -17,7 +17,9 @@
     <tr>
       <th [nzAlign]="'center'">Doctor</th>
       <th [nzAlign]="'center'">Services</th>
-       <th [nzAlign]="'center'">Date</th>
+      <th [nzAlign]="'center'">Date</th>
+      <th [nzAlign]="'center'">Time</th>
+      <th [nzAlign]="'center'">Note</th>
       <th [nzAlign]="'center'">Status</th>
     </tr>
   </thead>
@@ -31,8 +33,10 @@
             <ng-container *ngIf="!last"> - </ng-container>
            </span>
          </td>
-        <td [nzAlign]="'center'" style="font-size: 12px">{{data.date}}</td>
-        <td [nzAlign]="'center'">
+         <td [nzAlign]="'center'" style="font-size: 12px">{{data.date}}</td>
+         <td [nzAlign]="'center'" style="font-size: 12px">{{data.time}}</td>
+         <td [nzAlign]="'center'" style="font-size: 12px">{{data.note}}</td>
+         <td [nzAlign]="'center'">
         <span class="badge btn" [ngClass]="{
           ' btn-primary': data.status === 'IN_PROGRESS',
           ' btn-success': data.status === 'CONFIRMED',

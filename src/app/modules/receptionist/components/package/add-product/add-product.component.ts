@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormControl, FormGroup, FormArray } from '@ang
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialsService } from 'src/app/modules/admin/services/materials/materials.service';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
+import { ReservationsService } from '../../../services/reservations-services/reservations.service';
 
 @Component({
   selector: 'app-add-product',
@@ -11,13 +12,15 @@ import { PatientService } from 'src/app/modules/receptionist/services/patient-se
 })
 export class AddProductComponent implements OnInit {
   addProductFm: FormGroup;
-  patientPhone:any=""
   selectedProduct:any;
-  AllNumbers:any[]=[];
-  filteredNumbers: string[] = [];
+  patientNumber: any;
+  allPatientsNamesAndNumbers: any[] = [];
+  AllDataToSearchIn: any[] = [];
+  filteredData: any[] = [];
   AllProducts:any[]=[];
   filteredProducts:string[]=[];
-  constructor(private dialogRef: MatDialogRef<AddProductComponent> ,private fb: FormBuilder,  private patientservice: PatientService, private productservice: MaterialsService) {
+  searchValue?: any;
+  constructor(private dialogRef: MatDialogRef<AddProductComponent> ,private fb: FormBuilder,private namesAndNumbers :ReservationsService, private patientservice: PatientService, private productservice: MaterialsService) {
     this.addProductFm = fb.group({
       patientPhone: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
       cash: null,
@@ -30,11 +33,20 @@ export class AddProductComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    this.patientservice.getAllPatientsNumbers().subscribe((numbers: any) => {
-      this.AllNumbers = numbers;
-      console.log('patientNumbers :>> ', this.AllNumbers);
-      this.filteredNumbers = this.AllNumbers;
+
+    this.namesAndNumbers.getPatientsNamesAndPhones().subscribe((data: any) => {
+      this.allPatientsNamesAndNumbers = data;
+       if (Array.isArray(this.allPatientsNamesAndNumbers)) {
+        this.AllDataToSearchIn = this.allPatientsNamesAndNumbers;
+        this.filteredData = this.AllDataToSearchIn;
+      }
     });
+
+    // this.patientservice.getAllPatientsNumbers().subscribe((numbers: any) => {
+    //   this.AllNumbers = numbers;
+    //   console.log('patientNumbers :>> ', this.AllNumbers);
+    //   this.filteredNumbers = this.AllNumbers;
+    // });
 
     this.productservice.getAllMaterials().subscribe((data: any) => {
       this.AllProducts = data;
@@ -58,6 +70,7 @@ export class AddProductComponent implements OnInit {
       alert("Total Payments Value is More Than the Total Cost !! ")
       return;
     }
+    userModel.patientPhone = this.searchValue;
     this.productservice.addProuduct(userModel).subscribe(
       {
       next: (data:any) => {
@@ -73,8 +86,12 @@ export class AddProductComponent implements OnInit {
 
 
   onChange(value: string): void {
-
-    this.filteredNumbers = this.AllNumbers.filter(AllNumbers => AllNumbers.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredData = this.AllDataToSearchIn.filter(
+      (AllDataToSearchIn) =>
+        AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
+    );
+  this.searchValue = this.extractPhoneNumberFromSearchResult(this.filteredData[0]);
+  console.log('search Value :>> ', this.searchValue);
   }
 
 
@@ -131,6 +148,14 @@ export class AddProductComponent implements OnInit {
   }
   closeDialog() {
     this.dialogRef.close(AddProductComponent);
+  }
+  extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
+    const parts = selectedRecord.split('-');
+    if (parts.length === 2) {
+      console.log('Number is Fn.. :>> ', parts[1]);
+      return parts[1];
+    }
+    return selectedRecord;
   }
 
 

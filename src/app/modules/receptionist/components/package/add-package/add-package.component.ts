@@ -1,3 +1,4 @@
+import { ReservationsService } from './../../../services/reservations-services/reservations.service';
 import { Component, ViewEncapsulation ,Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
@@ -22,20 +23,31 @@ export class AddPackageComponent {
     instaPay:null,
     vodafoneCash:null,
    };
-  AllNumbers:any[];
-  filteredNumbers: string[] = [];
+   allPatientsNamesAndNumbers: any[] = [];
+  AllDataToSearchIn: any[] = [];
+  filteredData: any[] = [];
   AllPackages:any[];
+  searchValue?: any;
+  patientNumber: any;
   filteredPackages:string[]=[];
-  constructor(private dialogRef: MatDialogRef<AddPackageComponent> ,  private patientservice: PatientService, private packageservice: PackageService) {
+  constructor(private dialogRef: MatDialogRef<AddPackageComponent> ,private namesAndNumbers : ReservationsService , private patientservice: PatientService, private packageservice: PackageService) {
 
   }
 
   ngOnInit(): void {
-    this.patientservice.getAllPatientsNumbers().subscribe((numbers: any) => {
-      this.AllNumbers = numbers;
-      console.log('patientNumbers :>> ', this.AllNumbers);
-      this.filteredNumbers = this.AllNumbers;
+
+    this.namesAndNumbers.getPatientsNamesAndPhones().subscribe((data: any) => {
+      this.allPatientsNamesAndNumbers = data;
+       if (Array.isArray(this.allPatientsNamesAndNumbers)) {
+        this.AllDataToSearchIn = this.allPatientsNamesAndNumbers;
+        this.filteredData = this.AllDataToSearchIn;
+      }
     });
+    // this.patientservice.getAllPatientsNumbers().subscribe((numbers: any) => {
+    //   this.AllNumbers = numbers;
+    //   console.log('patientNumbers :>> ', this.AllNumbers);
+    //   this.filteredNumbers = this.AllNumbers;
+    // });
 
     this.packageservice.getAllPackages().subscribe((data: any) => {
       this.AllPackages = data;
@@ -46,7 +58,8 @@ export class AddPackageComponent {
 
 
   submit() {
-    console.log('Form Data:', this.formData);
+     console.log('Form Data:', this.formData);
+
     console.log('sum of Payments is :>> ',this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit );
     if(this.formData.packageCost > this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit)
     {
@@ -58,9 +71,7 @@ export class AddPackageComponent {
       alert("Total Payments Value is More Than the Package Cost !! ")
       return;
     }
-    {
-
-    }
+    this.formData.patientPhone = this.searchValue;
     this.packageservice.reservePackage(this.formData).subscribe(
       {
       next: (data) => {
@@ -77,7 +88,12 @@ export class AddPackageComponent {
 
 
   onChange(value: string): void {
-    this.filteredNumbers = this.AllNumbers.filter(AllNumbers => AllNumbers.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredData = this.AllDataToSearchIn.filter(
+      (AllDataToSearchIn) =>
+        AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
+    );
+    this.searchValue = this.extractPhoneNumberFromSearchResult(this.filteredData[0]);
+    console.log('search Value :>> ', this.searchValue);
   }
   onChange2(value: string): void {
     this.filteredPackages = this.AllPackages.map(pkg => pkg.packageName)
@@ -95,5 +111,13 @@ export class AddPackageComponent {
      this.packageservice.updateListOfData(data);
       console.log( "data Updated : " ,data);
     })
+  }
+  extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
+    const parts = selectedRecord.split('-');
+    if (parts.length === 2) {
+      console.log('Number is Fn.. :>> ', parts[1]);
+      return parts[1];
+    }
+    return selectedRecord;
   }
 }
