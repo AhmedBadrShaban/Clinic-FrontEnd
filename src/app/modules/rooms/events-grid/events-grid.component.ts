@@ -46,5 +46,8 @@ export class EventsGridComponent implements OnInit{
 
      return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
   }
+  getServicesString(allServices:any[]): string {
+    return allServices.join(', ');
+  }
 
 }

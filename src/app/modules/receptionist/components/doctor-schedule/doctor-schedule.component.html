@@ -54,7 +54,7 @@
             <td [nzLeft]="fixedColumn" [nzAlign]="'center'">{{ data.doctorName }}</td>
             <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.date }}</td>
             <td  [nzAlign]="'center'">{{ formatTimeTo12Hour(data.startTime) }}</td>
-            <td [nzAlign]="'center'">{{ formatTimeTo12Hour(data.startTime)}}</td>
+            <td [nzAlign]="'center'">{{ formatTimeTo12Hour(data.endTime)}}</td>
             <td colspan="2" [nzAlign]="'center'" *ngIf="data.confirmed && isAdmin"><a (click)="changeConfirmStatus(data.schedulerId , data)" class="btn btn-success"
               >Confirmed</a></td>
               <td colspan="2" [nzAlign]="'center'" *ngIf="data.confirmed && !isAdmin"><a class="btn btn-success"

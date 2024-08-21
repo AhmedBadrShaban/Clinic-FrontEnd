@@ -37,7 +37,7 @@
       formControlName="doctorName"
       nz-input
       [(ngModel)]="doctorName"
-       (ngModelChange)="onChange($event)"
+       (ngModelChange)="onChange2($event)"
       [nzAutocomplete]="doctor"
     />
     <nz-autocomplete [nzDataSource]="FilterdNames" #doctor></nz-autocomplete>

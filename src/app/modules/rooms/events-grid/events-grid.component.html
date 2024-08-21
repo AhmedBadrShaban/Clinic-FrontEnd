@@ -14,11 +14,18 @@
            (click)="openDialog(e)"
       >
         <div>
-          Patient Name : {{e.patientName}}
+          Name : {{e.patientName}}
+        </div>
+        <div>
+         Number : {{e.patientPhone}}
         </div>
         <div>
           Doctor Name : {{e.doctorName}}
         </div>
+       <!-- <div>
+        Services :{{ getServicesString(e.services)}}
+       </div> -->
+        
         <div>
             <i class="bi bi-alarm"></i>
              {{ formatTimeTo12Hour(e.reservationStart) }}

@@ -22,7 +22,9 @@ export class ReservationFmComponent implements OnInit {
   AllNames:any[]=[];
   FilterdNames: string[] = [];
   AllServices:any[]=[];
-    constructor( @Inject(MAT_DIALOG_DATA) public data: any ,private fb: FormBuilder, private datePipe:DatePipe  ,private reservationService:ReservationfmService , private patientService:PatientService ,private roomService:RoomsService , public dialogRef: MatDialogRef<ReservationFmComponent>) {
+    constructor( @Inject(MAT_DIALOG_DATA) public data: any ,private fb: FormBuilder, private datePipe:DatePipe
+    ,private reservationService:ReservationfmService , private patientService:PatientService ,private roomService:RoomsService
+     , public dialogRef: MatDialogRef<ReservationFmComponent>) {
     this.roomName=data.activeRoom;
     console.log('recived room Name :>> ', this.roomName);
     console.log('recived reservation date :>> ',  this.datePipe.transform(data.date, 'yyyy-MM-dd'),);

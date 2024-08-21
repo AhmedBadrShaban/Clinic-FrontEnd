@@ -23,7 +23,7 @@ export class DialogEventComponent implements OnInit {
    debit=false;
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public reservation: any, private roomsService:RoomsService ,  private patienDepit:PatientService,public dialog: MatDialog ,
+    @Inject(MAT_DIALOG_DATA) public reservation: any={}, private roomsService:RoomsService ,  private patienDepit:PatientService,public dialog: MatDialog ,
    private router : Router , private datePipe:DatePipe
   )
   {
@@ -63,7 +63,7 @@ export class DialogEventComponent implements OnInit {
   }
   openDialog(){
     console.log('currentActiveRoom :>> ', this.reservation.roomName);
-
+    this.close();
     this.dialog.open(UpdateReservationComponent ,  {data:this.reservation} );
     }
 

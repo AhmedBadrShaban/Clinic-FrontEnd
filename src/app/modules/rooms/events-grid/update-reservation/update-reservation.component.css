@@ -1,0 +1,25 @@
+.hr-container {
+  position: relative;
+  text-align: center;
+  margin: 30px 0;
+}
+
+.bi-hr {
+  border: none;
+  border-top: 1px solid #000; /* Adjust the color and style of the line */
+  margin: 0;
+}
+
+.hr-text {
+  position: absolute;
+  top: -12px; /* Adjust this value to vertically center the text */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff; /* Same as the background color of the page */
+  padding: 0 10px; /* Optional: add padding around the text */
+}
+.Header{
+  padding: 6%;
+  font-size: 30px;
+  border-bottom: 2px solid #6F2DBD ;
+}
