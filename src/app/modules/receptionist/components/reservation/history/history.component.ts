@@ -3,6 +3,7 @@ import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTabl
 import {PatientHistory} from "../../../models/patient-history";
 import {ReservationsService} from "../../../services/reservations-services/reservations.service";
 import { PatientService } from '../../../services/patient-server/patient.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 
@@ -12,6 +13,7 @@ type TableScroll = 'unset' | 'scroll' | 'fixed';
   styleUrls: ['./history.component.css']
 })
 export class HistoryComponent implements OnInit {
+  userType:any;
   size: NzTableSize;
   tableScroll: TableScroll;
   tableLayout: NzTableLayout;
@@ -21,13 +23,14 @@ export class HistoryComponent implements OnInit {
   @Input() phoneNumber:any;
 
   @Input() editable : boolean = false;
-  constructor(private reservationservice: ReservationsService ) {
+  constructor(private reservationservice: ReservationsService ,  private loggedIn:AuthService) {
     // this.history = reservationservice.getPatientHistory("010");
       this.size= 'small' as NzTableSize,
       this.paginationType= 'default' as NzTablePaginationType,
       this.tableScroll='unset' as TableScroll,
       this.tableLayout='auto' as NzTableLayout,
       this.position= 'bottom' as NzTablePaginationPosition
+      this.userType = loggedIn.userType;
    }
   ngOnInit(){
     console.log('Recived History phoneNumber :>> ', this.phoneNumber);

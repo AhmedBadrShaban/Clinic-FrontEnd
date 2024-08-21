@@ -24,6 +24,9 @@
       <th [nzAlign]="'center'">Spot</th>
       <th [nzAlign]="'center'">Clinic</th>
       <th [nzAlign]="'center'">Note</th>
+      <th *ngIf="userType=='ROLE_ADMIN'" [nzAlign]="'center'">Action</th>
+      
+
     </tr>
   </thead>
   <tbody style="background-color: #f2f2f2">
@@ -38,6 +41,8 @@
         <td [nzAlign]="'center'">{{ data.spot }}</td>
         <td [nzAlign]="'center'">{{ data.clinic }}</td>
         <td [nzAlign]="'center'">{{ data.note }}</td>
+        <td *ngIf="userType=='ROLE_ADMIN'" [nzAlign]="'center'"><a class="mx-2 btn btn-outline-dark">Edit</a> </td>
+        
       </tr>
     </ng-container>
   </tbody>

@@ -75,7 +75,7 @@ export class PopUpFormComponent implements OnInit {
     else if( this.formData.endTime.length !== 8){
       this.formData.endTime = this.formatTime(this.formData.endTime);
     }
-    console.log('formData :>> ', this.formData);
+    console.log('Edited Data :>> ', this.formData);
     this.DoctorScheduleService.editSchedule(this.formData).subscribe({
       next: (data) => {
         this.closeDialog();
