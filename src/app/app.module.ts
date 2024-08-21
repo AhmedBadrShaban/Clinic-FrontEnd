@@ -41,6 +41,8 @@ import { AuthInterceptor } from './shared/services/auth.interceptor';
 import { CheckOutComponent } from './modules/rooms/check-out/check-out.component';
 import { PaymentComponent } from './modules/rooms/check-out/payment/payment.component';
 import {ReportsComponent} from "./shared/components/reports/reports.component";
+import { UpdateReservationComponent } from './modules/rooms/events-grid/update-reservation/update-reservation.component';
+
 
 
 @NgModule({
@@ -55,13 +57,14 @@ import {ReportsComponent} from "./shared/components/reports/reports.component";
     NotFoundComponent,
     ForbiddenComponent,
     CheckOutComponent,
-    PaymentComponent
+    PaymentComponent,
+    UpdateReservationComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NzTableModule, NzDividerModule, NzLayoutModule, NzButtonModule, NzDatePickerModule, NzFormModule,
+    NzTableModule, NzDividerModule, NzLayoutModule, NzButtonModule, NzDatePickerModule, NzFormModule ,
     FormsModule,
     DatePipe,
     ReactiveFormsModule,

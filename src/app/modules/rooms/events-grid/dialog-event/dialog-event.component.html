@@ -10,53 +10,54 @@
           <i *ngIf="debit" class="bi bi-asterisk bg-danger"></i>
            Patient Name</th>
         <td>
-          {{data.patientName}}</td>
+          {{reservation.patientName}}</td>
       </tr>
+
       <tr>
         <th>Patient Phone Number</th>
-        <td>{{data.patientPhone}}</td>
+        <td>{{reservation.patientPhone}}</td>
       </tr>
+
       <tr>
         <th> Doctor Name </th>
-        <td> {{data.doctorName}} </td>
+        <td> {{reservation.doctorName}} </td>
+      </tr>
+
+      <tr>
+        <th>Patient Note  </th>
+      <td>{{reservation.note}}</td>
       </tr>
 
       <tr>
         <th>Date Of Reservation</th>
-        <td>{{data.reservationDate | date: 'dd/MM/yyyy'}}</td>
+        <td>{{reservation.reservationDate | date: 'dd/MM/yyyy'}}</td>
       </tr>
-
-      <tr>
-        <div>
-
-
-      </div>
       <tr>
         <th> Reservation Time <i class="bi bi-alarm"></i> </th>
-        <td>  {{ formatTimeTo12Hour(data.reservationStart) }}
+        <td>  {{ formatTimeTo12Hour(reservation.reservationStart) }}
           -
-           {{ formatTimeTo12Hour(data.reservationEnd)}}</td>
+           {{ formatTimeTo12Hour(reservation.reservationEnd)}}</td>
       </tr>
 
       <tr>
         <th>Status</th>
         <td [ngClass]="{
-          'inprogress': data.status === 'IN_PROGRESS',
-          'confirmed': data.status === 'CONFIRMED',
-          'waiting': data.status === 'WAITING',
-          'to-doctor': data.status === 'TO_DOCTOR',
-          'done': data.status === 'DONE',
-          'cancelled': data.status === 'CANCELED'
+          'inprogress': reservation.status === 'IN_PROGRESS',
+          'confirmed': reservation.status === 'CONFIRMED',
+          'waiting': reservation.status === 'WAITING',
+          'to-doctor': reservation.status === 'TO_DOCTOR',
+          'done': reservation.status === 'DONE',
+          'cancelled': reservation.status === 'CANCELED'
         }">
-          {{ data.status }}</td>
+          {{ reservation.status }}</td>
       </tr>
     </table>
 
     <div (click)="changeToogle()"   class="header-Service">
-      <h3 class="m-auto" *ngIf="!toggle && data.status != 'DONE'">Show Reserved Services</h3>
-      <h3 class="m-auto"  *ngIf="toggle  && data.status != 'DONE'">Hide Reserved Services</h3>
-      <h3 class="m-auto"  *ngIf="!toggle && data.status === 'DONE'">Show Completed Services</h3>
-      <h3  class="m-auto" *ngIf="toggle  && data.status === 'DONE'">Hide Completed Services</h3>
+      <h3 class="m-auto" *ngIf="!toggle && reservation.status != 'DONE'">Show Reserved Services</h3>
+      <h3 class="m-auto"  *ngIf="toggle  && reservation.status != 'DONE'">Hide Reserved Services</h3>
+      <h3 class="m-auto"  *ngIf="!toggle && reservation.status === 'DONE'">Show Completed Services</h3>
+      <h3  class="m-auto" *ngIf="toggle  && reservation.status === 'DONE'">Hide Completed Services</h3>
          <img *ngIf="!toggle"  class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40"/>
         <img *ngIf="toggle"   class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40" style="transform: rotate(180deg);"/>
     </div>
@@ -69,7 +70,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let service of data.services; let i = index" >
+          <tr *ngFor="let service of reservation.services; let i = index" >
             <td>{{ i + 1 }}</td>
             <td>{{ service }}</td>
           </tr>
@@ -80,12 +81,12 @@
 
 
   </div>
- <div class="buttons-container"  *ngIf="data.status != 'COMPLETED'">
-  <button *ngIf="data.status == 'IN_PROGRESS' || data.status == 'WAITING' " mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'CONFIRMED')">Confirm Reservation</button>
-   <!-- <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'WAITING')">Waiting Reservation</button> -->
-   <button *ngIf="data.status == 'CONFIRMED'" mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
-   <button *ngIf="data.status == 'DONE'" mat-raised-button style="background-color:blue  !important; margin-right: 2px;  color: white; font-size:12px"  (click)="checkOut(data.reservationId)">GO TO CHECKOUT</button>
-   <button *ngIf="data.status != 'DONE'" mat-raised-button style="background-color: red !important; margin-right: 2px;  color: white; font-size:12px" (click)="chengeReservationStatus(data.reservationId , 'CANCELED')">Cancel Reservation</button>
+ <div class="buttons-container"  *ngIf="reservation.status != 'COMPLETED'">
+  <button *ngIf="reservation.status == 'IN_PROGRESS' || reservation.status == 'WAITING' " mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'CONFIRMED')">Confirm Reservation</button>
+   <button *ngIf="reservation.status != 'DONE'" mat-raised-button style="background-color:#33b249 !important;  margin-right: 2px; color: white; font-size:12px" (click)="openDialog()">Edit Reservation</button>
+   <button *ngIf="reservation.status == 'CONFIRMED'" mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
+   <button *ngIf="reservation.status == 'DONE'" mat-raised-button style="background-color:blue  !important; margin-right: 2px;  color: white; font-size:12px"  (click)="checkOut(reservation.reservationId)">GO TO CHECKOUT</button>
+   <button *ngIf="reservation.status != 'DONE'" mat-raised-button style="background-color: red !important; margin-right: 2px;  color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'CANCELED')">Cancel Reservation</button>
   </div>
 
 </div>

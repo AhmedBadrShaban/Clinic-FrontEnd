@@ -1,14 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
-import {reservation} from "../../../receptionist/models/event-reservation.model";
 import {DatePipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { Router } from '@angular/router';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
+import { UpdateReservationComponent } from '../update-reservation/update-reservation.component';
 
 @Component({
   selector: 'app-dialog-event',
@@ -23,15 +23,15 @@ export class DialogEventComponent implements OnInit {
    debit=false;
   constructor(
     public dialogRef: MatDialogRef<DialogEventComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private roomsService:RoomsService ,  private patienDepit:PatientService,
+    @Inject(MAT_DIALOG_DATA) public reservation: any, private roomsService:RoomsService ,  private patienDepit:PatientService,public dialog: MatDialog ,
    private router : Router , private datePipe:DatePipe
   )
   {
-    console.log('data :>> ', data);
+    console.log(' Recived data :>> ', reservation);
   }
   ngOnInit(): void {
-    this.patienDepit.checkDepit(this.data.patientPhone).subscribe((data)=>{
-      
+    this.patienDepit.checkDepit(this.reservation.patientPhone).subscribe((data)=>{
+
       this.debit = data;
     })
 
@@ -61,14 +61,20 @@ export class DialogEventComponent implements OnInit {
   close(){
     this.dialogRef.close();
   }
+  openDialog(){
+    console.log('currentActiveRoom :>> ', this.reservation.roomName);
+
+    this.dialog.open(UpdateReservationComponent ,  {data:this.reservation} );
+    }
+
   UpdateAllReservations(){
-    this.roomsService.getAllReservations(this.data.reservationDate).subscribe((data:any)=>{
+    this.roomsService.getAllReservations(this.reservation.reservationDate).subscribe((data:any)=>{
       this.roomsService.updateData(data);
       console.log( "data Updated : " ,data);
     })
   }
   updateAvailableSlots(){
-    this.roomsService.getAvalliableSlots( this.data.roomName ,this.data.reservationDate).subscribe((data=>{
+    this.roomsService.getAvalliableSlots( this.reservation.roomName ,this.reservation.reservationDate).subscribe((data=>{
       console.log('updated :>> ', data);
       this.roomsService.updateSlots(data);
     }))

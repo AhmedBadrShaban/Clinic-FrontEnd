@@ -87,7 +87,7 @@ td{
   font-weight:bold;
 }
 .waiting{
-  color:yellow;
+  color:orangered;
   font-weight:bold;
 }
 .done{
@@ -99,7 +99,7 @@ td{
   font-weight:bold;
 }
 .modal-content {
-  max-height: calc(100vh - 120px);  
+  max-height: calc(100vh - 120px);
    position: relative;
 }
 
