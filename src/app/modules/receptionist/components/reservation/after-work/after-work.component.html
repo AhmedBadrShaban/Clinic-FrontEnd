@@ -1,4 +1,8 @@
 <div class="body">
+  <div *ngIf="userType=='ROLE_ADMIN'" class="Header text-center">
+    Edit History
+  </div>
+
   <div class="carts-reservation" [formGroup]="doneServicesForm">
     <form [formGroup]="doneServicesForm" style="width: 87%;">
       <div formArrayName="dataList">
@@ -30,14 +34,22 @@
               <label>Notes:</label>
               <input type="text" formControlName="note" class="form-control">
             </div>
-            <div>
+            <div  *ngIf="userType!='ROLE_ADMIN'">
               <button class="btn btn-danger" style="margin-top: 30%" (click)="onCancel(i)"> Cancel</button>
             </div>
           </div>
         </div>
-        <div class="Confirm">
+        <div *ngIf="userType!='ROLE_ADMIN'" class="Confirm">
           <button [disabled]="dataListControls.length == 0 || doneServicesForm.invalid" class="btn btn-success"
             style="width: 70%" (click)="onSubmit()"> Confirm </button>
+        </div>
+        <div  class=" d-flex justify-content-center my-4" *ngIf="userType=='ROLE_ADMIN'">
+          <div>
+            <button [disabled]="dataListControls.length == 0 || doneServicesForm.invalid" class="btn btn-secondary" (click)="updateHistory()"> Update History </button>
+          </div>
+          <div>
+            <button class="mx-2 btn btn-danger"  (click)="cancelUpdate()"> Cancel</button>
+          </div>
         </div>
       </div>
     </form>

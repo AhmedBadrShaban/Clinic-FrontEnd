@@ -25,13 +25,13 @@
       <th [nzAlign]="'center'">Clinic</th>
       <th [nzAlign]="'center'">Note</th>
       <th *ngIf="userType=='ROLE_ADMIN'" [nzAlign]="'center'">Action</th>
-      
+
 
     </tr>
   </thead>
   <tbody style="background-color: #f2f2f2">
     <ng-container *ngFor="let data of dynamicTable.data">
-      <tr  style="cursor: pointer; font-size: 16px" (click)="openModal(data.patient_id)">
+      <tr  style="cursor: pointer; font-size: 16px">
         <td [nzAlign]="'center'">{{ data.date  }}</td>
         <td [nzAlign]="'center'">{{ data.service }}</td>
         <td [nzAlign]="'center'">{{data.doctorName}}</td>
@@ -41,8 +41,23 @@
         <td [nzAlign]="'center'">{{ data.spot }}</td>
         <td [nzAlign]="'center'">{{ data.clinic }}</td>
         <td [nzAlign]="'center'">{{ data.note }}</td>
-        <td *ngIf="userType=='ROLE_ADMIN'" [nzAlign]="'center'"><a class="mx-2 btn btn-outline-dark">Edit</a> </td>
-        
+        <td *ngIf="userType=='ROLE_ADMIN'" [nzAlign]="'center'"><a class="mx-2 btn btn-outline-dark"
+          (click)="openDialog({
+             historyId:data.historyId,
+             service:data.service,
+             pulse:data.pulse,
+             fluence1:data.fluence1,
+             fluence2:data.fluence2,
+             date:data.date,
+             spot:data.spot,
+             note:data.note,
+             doctorName:data.doctorName,
+             clinic:data.clinic,
+             phoneNumber:this.phoneNumber
+          })"
+
+          >Edit</a> </td>
+
       </tr>
     </ng-container>
   </tbody>

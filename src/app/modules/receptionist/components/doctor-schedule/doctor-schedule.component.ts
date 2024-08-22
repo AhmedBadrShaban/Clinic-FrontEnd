@@ -139,7 +139,7 @@ export class DoctorScheduleComponent implements OnInit {
       })
 
     }
-   
+
     formatTimeTo12Hour(time: string): string {
       if (!time) {
        return '';
@@ -147,6 +147,18 @@ export class DoctorScheduleComponent implements OnInit {
      const timeAsDate = new Date(`1970-01-01T${time}`);
 
       return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
+   }
+
+   deleteSchedule(id:number){
+    this.DoctorScheduleService.deleteSchedule(id).subscribe( {
+      next: (data) => {
+        alert(data.message);
+        this.getAllSchedules();
+      },
+      error: (err) => {
+        alert(err.error.message);
+        }
+    });
    }
 
 }

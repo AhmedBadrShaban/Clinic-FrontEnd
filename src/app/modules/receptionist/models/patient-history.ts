@@ -1,5 +1,5 @@
 export interface PatientHistory {
-  room_reservation_id:number;
+  historyId:number;
   patient_id: string;
   date: string;
   service: String;
@@ -7,9 +7,6 @@ export interface PatientHistory {
   fluence1: number;
   fluence2: number;
   spot: string;
-  doctor:{
-    doctorName:string
-  }
   doctorName: string;
   clinic: string;
   note: string;

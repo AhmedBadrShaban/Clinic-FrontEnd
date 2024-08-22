@@ -61,7 +61,7 @@
                 >Confirmed </a></td>
             <td colspan="2" [nzAlign]="'center'" *ngIf="!data.confirmed"><a (click)="changeConfirmStatus(data.schedulerId ,data)" class="btn btn-warning small-font">NotConfirmed</a></td>
             <td  [nzRight]="fixedColumn" [nzAlign]="'center'">
-              <a  class="btn btn-info" (click)="openDialog({
+              <a  class="btn btn-info me-2" (click)="openDialog({
                 new:false,
                 schedulerId:data.schedulerId,
                 roomName:data.roomName,
@@ -72,6 +72,10 @@
                 startPulses:data.startPulses,
                 endPulses:data.endPulses
               })">Edit</a>
+
+              <a *ngIf="isAdmin" class=" mx-2 btn btn-danger" (click)="deleteSchedule(data.schedulerId)">
+                delete
+              </a>
             </td>
           </tr>
         </ng-container>

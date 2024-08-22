@@ -20,6 +20,10 @@ export class DoctorScheduleServiceService {
   editSchedule(updatedData: any): Observable<any> {
     return this.http.put(`${this.baseUrl}receptionist/DoctorScheduler`, updatedData);
   }
+  deleteSchedule(id:number){
+    console.log('delete ID :>> ',  id);
+    return this.http.delete<any>(`${this.baseUrl}admin/delete-doctor-scheduler-by-id?schedulerId=${id}`);
+  }
   Search(key:string): Observable<any> {
     const url = 'http://localhost:8080/receptionist/DoctorScheduler/search';
 
