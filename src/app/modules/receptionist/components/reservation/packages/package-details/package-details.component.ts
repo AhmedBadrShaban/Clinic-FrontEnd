@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReservedPackage } from 'src/app/modules/receptionist/models/package';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
- 
+import { UpdatePackageComponent } from './update-package/update-package.component';
+
 @Component({
   selector: 'app-package-details',
   templateUrl: './package-details.component.html',
@@ -12,8 +13,8 @@ export class PackageDetailsComponent implements OnInit {
   packID:string;
   packDetails: ReservedPackage;
   servicePack:boolean=false;
-   constructor(private dialogRef: MatDialogRef<PackageDetailsComponent> , @Inject(MAT_DIALOG_DATA) public id: string , private packService:PackageService){
-    
+   constructor(private dialogRef: MatDialogRef<PackageDetailsComponent> , @Inject(MAT_DIALOG_DATA) public id: string , private packService:PackageService , private updatePackage:MatDialog ){
+
      this.packID = id;
     console.log('packID :>> ', this.packID);
     this.packService.getPackageDetailsById(this.packID).subscribe((data)=>{
@@ -26,9 +27,14 @@ export class PackageDetailsComponent implements OnInit {
     })
   }
   ngOnInit(): void {
-      
+
   }
-  closeDialog() {
+  openUpdatePackage()
+  {
+    this.closeDialog();
+    this.updatePackage.open(UpdatePackageComponent , {data:this.packDetails});
+  }
+ closeDialog() {
     this.dialogRef.close();
   }
 

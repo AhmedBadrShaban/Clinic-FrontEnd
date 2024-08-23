@@ -25,7 +25,7 @@ export class ReservationsService {
   }
   updateHistory(id:number , updatedData:any){
     console.log('Updated History:>> ', updatedData);
-    return this.http.post<any>(`${this.baseUrl}admin/update-patient-history?historyId=${id}` , updatedData );
+    return this.http.put<any>(`${this.baseUrl}admin/update-patient-history?historyId=${id}` , updatedData );
   }
   getPackages(phone:any):Observable<any>{
     console.log('phone before Packages:>> ', phone);

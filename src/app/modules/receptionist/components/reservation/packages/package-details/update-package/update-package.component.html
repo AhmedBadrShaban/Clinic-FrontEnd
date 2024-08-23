@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="Header text-center">
+    Update Package
+  </div>
+
+  <div class="row">
+    <form [formGroup]="formData" (ngSubmit)="update()" role="form">
+      <div class="row m-2 mt-3 justify-content-between">
+        <div class="form-group col-6">
+          <label for="points" class="form-label w-100">Number Of Points</label><br>
+          <input  class="form-control" type="number" id="points"   formControlName="numberOfPoints"/>
+        </div>
+        <div class="form-group col-6">
+          <label class="form-label w-100">Expire Date:</label>
+          <input class="form-control" type="date" formControlName="expire"/>
+        </div>
+      </div>
+      <div class="Content">
+        <div class="my-1">
+          <div formArrayName="reservedService">
+            <div *ngFor="let service of reservedServices.controls; let i = index" [formGroupName]="i">
+              <div class="row  m-2 mt-3">
+                <div class="form-group col-6">
+                  <label class="form-label w-100">Service Name</label>
+                  <input  class="form-control" formControlName="serviceName"/>
+                </div>
+                <div class="form-group col-6">
+                  <label class="form-label w-100">Sessions</label>
+                  <input class="form-control" formControlName="sessions" type="number"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row m-2 mt-3 justify-content-between">
+        <div class="col-12">
+          <label for="expense" class="form-label w-100">Enter The Expense :</label>
+          <input  class="form-control" type="number" id="expense"   formControlName="expense"/>
+
+          <div *ngIf="formData.get('expense')?.invalid && (formData.get('expense')?.touched || formData.get('expense')?.dirty)">
+            <small class="text-danger">Expense is required and must be a number.</small>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex m-2 mt-3 justify-content-center">
+        <div>
+             <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+        <div>
+          <a (click)="closeDialog()" class="btn btn-danger mx-2">Cancel</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
