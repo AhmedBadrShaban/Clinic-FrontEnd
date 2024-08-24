@@ -16,6 +16,10 @@ export class PackageService {
   getPackageDetailsById(id:string):Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-details?id=${id}`);
   }
+  updatePatientPackage(id:any , data:any){
+    return this.http.put<any>(`${this.baseUrl}receptionist/update-reserved-package?id=${id}` , data);
+
+  }
   getAllReservedPackages():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages`);
   }
@@ -29,7 +33,7 @@ export class PackageService {
     console.log("data before making request: " , reservationData )
     return this.http.post(`${this.baseUrl}receptionist/reservepackage`, reservationData);
    }
- 
+
   editPackage(packageId: number, updatedData: any): Observable<any> {
     return this.http.put(`${this.baseUrl}packages/${packageId}`, updatedData);
   }

@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
 
 @Component({
   selector: 'app-update-package',
@@ -10,20 +11,21 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 export class UpdatePackageComponent {
   allServices:any[]=[];
   formData: FormGroup;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any , public dialogRef: MatDialogRef<UpdatePackageComponent> , private fb: FormBuilder) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any , public dialogRef: MatDialogRef<UpdatePackageComponent> ,
+   private fb: FormBuilder ,private pkgApi:PackageService) {
     this.formData = this.fb.group({
       numberOfPoints:[{ value:this.data.numberOfPoints, disabled: this.data.numberOfPoints==0 }],
       expire:[this.data.expire],
       reservedId:[this.data.reservedId],
-      expense: [ null, [Validators.required, Validators.pattern('^[0-9]+$')]], 
-      reservedService: this.fb.array([]) 
+      expense: [ null, [Validators.required, Validators.pattern('^[0-9]+$')]],
+      reservedService: this.fb.array([])
     });
     this.setReservedServices(this.data.reservedService);
    }
 
   ngOnInit(): void {
     console.log('Before Package Update: :>> ', this.data);
-    
+
    }
    get reservedServices(): FormArray {
     return this.formData.get('reservedService') as FormArray;
@@ -40,33 +42,33 @@ export class UpdatePackageComponent {
   }
   update(): void {
     if (this.formData.valid) {
-        // this.formData.value.services = selectedServices; 
+        // this.formData.value.services = selectedServices;
        console.log('After Package Update:', this.formData.value);
      } else {
         alert('Form is invalid Try Again!');
      }
-    // this.reservationService.updateReservation(this.data.reservationId ,this.formData.value).subscribe({
-    //   next:(responed:any)=>{
-    //     alert(responed.message)
-    //      this.UpdateAllReservations();
-    //      this.updateAvailableSlots();
-    //     this.closeDialog();
+    this.pkgApi.updatePatientPackage(this.data.reservedId,this.formData.value).subscribe({
+      next:(responed:any)=>{
+        alert(responed.message)
+        //  this.UpdateAllReservations();
+        //  this.updateAvailableSlots();
+        this.closeDialog();
 
-    //  },
-    //  error: (err) => {
-    //    alert(err.error.message);
-    //   }
-    // })
+     },
+     error: (err) => {
+       alert(err.error.message);
+      }
+    })
   }
 
-  
+
   // UpdateAllReservations(){
   //   this.roomService.getAllReservations(this.data.reservationDate).subscribe((data:any)=>{
   //     this.roomService.updateData(data);
   //     console.log( "data Updated : " ,data);
   //   })
   // }
- 
+
   closeDialog() {
     this.dialogRef.close();
   }
