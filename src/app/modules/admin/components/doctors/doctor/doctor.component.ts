@@ -46,7 +46,7 @@ export class DoctorComponent {
 
   update() {
     this.doctorData = { ...this.doctorData, nationalID: this.doctorData.nationalId };
-    delete this.doctorData.nationalId;
+    delete this.doctorData.nationalID;
     delete this.doctorData.doctorId;
     delete this.doctorData.isActive;
     if (this.doctorData.password === "") {

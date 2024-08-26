@@ -11,13 +11,17 @@ import { PackageService } from 'src/app/modules/receptionist/services/package-se
 export class UpdatePackageComponent {
   allServices:any[]=[];
   formData: FormGroup;
+  minDate: string;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any , public dialogRef: MatDialogRef<UpdatePackageComponent> ,
    private fb: FormBuilder ,private pkgApi:PackageService) {
     this.formData = this.fb.group({
       numberOfPoints:[{ value:this.data.numberOfPoints, disabled: this.data.numberOfPoints==0 }],
       expire:[this.data.expire],
+      packageName:[this.data.packageName],
+      reservedAt:[this.data.reservedAt],
       reservedId:[this.data.reservedId],
-      expense: [ null, [Validators.required, Validators.pattern('^[0-9]+$')]],
+      clinicName:[this.data.clinicName],
+      amountOfExpense: [ null, [Validators.required, Validators.pattern('^[0-9]+$')]],
       reservedService: this.fb.array([])
     });
     this.setReservedServices(this.data.reservedService);
@@ -25,6 +29,12 @@ export class UpdatePackageComponent {
 
   ngOnInit(): void {
     console.log('Before Package Update: :>> ', this.data);
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const dd = String(today.getDate()).padStart(2, '0');
+
+    this.minDate = `${yyyy}-${mm}-${dd}`;
 
    }
    get reservedServices(): FormArray {
@@ -36,16 +46,24 @@ export class UpdatePackageComponent {
       serviceName: [{ value: service.serviceName, disabled: true } , Validators.required],
       sessions: [service.sessions, Validators.required]
     }));
-
     const serviceFormArray = this.fb.array(serviceFGs);
     this.formData.setControl('reservedService', serviceFormArray);
   }
+
+  getMaxSessions(i:number): number {
+
+    console.log('Current Service:>> ',this.data.reservedService[i]);
+    console.log('Current Max Sessions :>> ', this.data.reservedService[i].sessions);
+    return this.data.reservedService[i].sessions;
+ }
+
   update(): void {
     if (this.formData.valid) {
         // this.formData.value.services = selectedServices;
        console.log('After Package Update:', this.formData.value);
      } else {
-        alert('Form is invalid Try Again!');
+        alert('Please Enter The Expense!');
+        return;
      }
     this.pkgApi.updatePatientPackage(this.data.reservedId,this.formData.value).subscribe({
       next:(responed:any)=>{

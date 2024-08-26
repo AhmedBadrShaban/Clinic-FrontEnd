@@ -12,7 +12,8 @@
         </div>
         <div class="form-group col-6">
           <label class="form-label w-100">Expire Date:</label>
-          <input class="form-control" type="date" formControlName="expire"/>
+          <input class="form-control" type="date" formControlName="expire"   [min]="minDate"
+          />
         </div>
       </div>
       <div class="Content">
@@ -26,7 +27,8 @@
                 </div>
                 <div class="form-group col-6">
                   <label class="form-label w-100">Sessions</label>
-                  <input class="form-control" formControlName="sessions" type="number"/>
+                  <input class="form-control" formControlName="sessions" type="number" [min]="0"  [max]="getMaxSessions(i)"
+                  />
                 </div>
               </div>
             </div>
@@ -36,9 +38,9 @@
       <div class="row m-2 mt-3 justify-content-between">
         <div class="col-12">
           <label for="expense" class="form-label w-100">Enter The Expense :</label>
-          <input  class="form-control" type="number" id="expense"   formControlName="expense"/>
+          <input  class="form-control" type="number" id="expense"   formControlName="amountOfExpense"/>
 
-          <div *ngIf="formData.get('expense')?.invalid && (formData.get('expense')?.touched || formData.get('expense')?.dirty)">
+          <div *ngIf="formData.get('amountOfExpense')?.invalid && (formData.get('amountOfExpense')?.touched || formData.get('amountOfExpense')?.dirty)">
             <small class="text-danger">Expense is required and must be a number.</small>
           </div>
         </div>
