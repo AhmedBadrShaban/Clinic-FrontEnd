@@ -29,20 +29,20 @@ ngOnInit(): void {
   this.getAllServices();
   this.servService.listOfData$.subscribe((data:any)=>{
     this.services =data;
-   console.log( "Updated Data recived : " ,this.services);
+   //console.log( "Updated Data recived : " ,this.services);
    this.autoComplete();
  })
  }
 getAllServices(){
   this.servService.getAllServices().subscribe((data)=>{
     this.services = data;
-    console.log('services :>> ', this.services);  
+    //console.log('services :>> ', this.services);
     this.autoComplete();
   })
 }
   // removeService(id:string){
   //   this.servService.removeServise(id);
-  //   console.log("The service was removed!");
+  //   //console.log("The service was removed!");
   // }
   switchStatus(id: any){
     this.servService.changeStatus(id).subscribe({
@@ -51,7 +51,8 @@ getAllServices(){
        this.getAllServices();
       },
       error:(err)=>{
-        console.log('err :>> ', err.error.message);
+        alert(err.error.message);
+        //console.log('err :>> ', err.error.message);
       }
     })
     }
@@ -59,7 +60,7 @@ getAllServices(){
       this.servService.search(this.searchValue).subscribe((data:any)=>{
         this.services= [];
         this.services=data;
-        console.log( "search recived : " ,this.services);
+        //console.log( "search recived : " ,this.services);
      })
     }
     clearSearch(){
@@ -75,7 +76,7 @@ getAllServices(){
   autoComplete(){
     this.AllDataToSearchIn =  this.services.map(services => `${services.serviceName}`);
     this.filteredData=this.AllDataToSearchIn;
-    console.log(this.filteredData);
+    //console.log(this.filteredData);
   }
   onChange(value: string): void {
     this.filteredData = this.AllDataToSearchIn.filter(AllDataToSearchIn => AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1);

@@ -28,7 +28,7 @@ export class UpdatePackageComponent {
    }
 
   ngOnInit(): void {
-    console.log('Before Package Update: :>> ', this.data);
+    //console.log('Before Package Update: :>> ', this.data);
     const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -52,15 +52,15 @@ export class UpdatePackageComponent {
 
   getMaxSessions(i:number): number {
 
-    console.log('Current Service:>> ',this.data.reservedService[i]);
-    console.log('Current Max Sessions :>> ', this.data.reservedService[i].sessions);
+    //console.log('Current Service:>> ',this.data.reservedService[i]);
+    //console.log('Current Max Sessions :>> ', this.data.reservedService[i].sessions);
     return this.data.reservedService[i].sessions;
  }
 
   update(): void {
     if (this.formData.valid) {
         // this.formData.value.services = selectedServices;
-       console.log('After Package Update:', this.formData.value);
+       //console.log('After Package Update:', this.formData.value);
      } else {
         alert('Please Enter The Expense!');
         return;
@@ -83,7 +83,7 @@ export class UpdatePackageComponent {
   // UpdateAllReservations(){
   //   this.roomService.getAllReservations(this.data.reservationDate).subscribe((data:any)=>{
   //     this.roomService.updateData(data);
-  //     console.log( "data Updated : " ,data);
+  //     //console.log( "data Updated : " ,data);
   //   })
   // }
 

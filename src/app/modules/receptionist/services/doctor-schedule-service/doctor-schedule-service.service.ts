@@ -21,7 +21,7 @@ export class DoctorScheduleServiceService {
     return this.http.put(`${this.baseUrl}receptionist/DoctorScheduler`, updatedData);
   }
   deleteSchedule(id:number){
-    console.log('delete ID :>> ',  id);
+    //console.log('delete ID :>> ',  id);
     return this.http.delete<any>(`${this.baseUrl}admin/delete-doctor-scheduler-by-id?schedulerId=${id}`);
   }
   Search(key:string): Observable<any> {
@@ -33,7 +33,7 @@ export class DoctorScheduleServiceService {
 }
 filterByDate(date:any): Observable<any> {
   const url = 'http://localhost:8080/receptionist/DoctorSchedulerbyDate';
-  console.log("filtling by date of :" ,date);
+  //console.log("filtling by date of :" ,date);
 
   let queryParams = new HttpParams().append("date",date);
 

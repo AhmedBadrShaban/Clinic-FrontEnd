@@ -18,19 +18,19 @@ export class SendPointsComponent implements OnInit {
    };
   constructor(@Inject(MAT_DIALOG_DATA) public data:any , private dialogRef: MatDialogRef<SendPointsComponent> ,  private patientservice: PatientService){
     this.formData.senderPhone = data;
-    console.log('phonnnnne :>> ', data);
+    //console.log('phonnnnne :>> ', data);
   }
 
   ngOnInit(): void {
 
     this.patientservice.getAllPatientsNumbers().subscribe((numbers: any) => {
       this.AllNumbers = numbers;
-      console.log('patientNumbers :>> ', this.AllNumbers);
+      //console.log('patientNumbers :>> ', this.AllNumbers);
       this.filteredNumbers = this.AllNumbers;
     });
   }
   submit() {
-    console.log('Form Data:', this.formData);
+    //console.log('Form Data:', this.formData);
     if(this.formData.receiverPhone === this.formData.senderPhone){
       alert("Sender and Recever are the Same Patient !!")
       return;
@@ -50,7 +50,7 @@ export class SendPointsComponent implements OnInit {
   updatePointHistory(){
     this.patientservice.updatePointsHistory(this.formData.senderPhone).subscribe((data)=>{
       this.patientservice.updateListOfData(data);
-      console.log( "History Updated : " ,data);
+      //console.log( "History Updated : " ,data);
     })
   }
   updateTotalPoints(){

@@ -27,7 +27,7 @@ export class DialogEventComponent implements OnInit {
    private router : Router , private datePipe:DatePipe
   )
   {
-    console.log(' Recived data :>> ', reservation);
+    //console.log(' Recived data :>> ', reservation);
   }
   ngOnInit(): void {
     this.patienDepit.checkDepit(this.reservation.patientPhone).subscribe((data)=>{
@@ -62,7 +62,7 @@ export class DialogEventComponent implements OnInit {
     this.dialogRef.close();
   }
   openDialog(){
-    console.log('currentActiveRoom :>> ', this.reservation.roomName);
+    //console.log('currentActiveRoom :>> ', this.reservation.roomName);
     this.close();
     this.dialog.open(UpdateReservationComponent ,  {data:this.reservation} );
     }
@@ -70,19 +70,19 @@ export class DialogEventComponent implements OnInit {
   UpdateAllReservations(){
     this.roomsService.getAllReservations(this.reservation.reservationDate).subscribe((data:any)=>{
       this.roomsService.updateData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
   updateAvailableSlots(){
     this.roomsService.getAvalliableSlots( this.reservation.roomName ,this.reservation.reservationDate).subscribe((data=>{
-      console.log('updated :>> ', data);
+      //console.log('updated :>> ', data);
       this.roomsService.updateSlots(data);
     }))
 
 
   }
   checkOut(id:number){
-    console.log('id before navigating :>> ', id);
+    //console.log('id before navigating :>> ', id);
     this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
     this.close();
   }

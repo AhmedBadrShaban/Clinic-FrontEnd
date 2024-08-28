@@ -79,7 +79,7 @@ export class PackageComponent implements OnInit {
    getAllReserved(){
     this.PackageService.getAllReservedPackages().subscribe((data:any)=>{
       this.listOfData =data;
-     console.log( "data recived : " ,this.listOfData);
+     //console.log( "data recived : " ,this.listOfData);
    })
    }
 
@@ -95,14 +95,14 @@ export class PackageComponent implements OnInit {
     this.selectedDate = event.value;
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     this.PackageService.filterByDate(formattedDate).subscribe((data:any)=>{
-      // console.log(data);
+      // //console.log(data);
       this.listOfData =data;
-      console.log( "Search result is  : " ,this.listOfData);
+      //console.log( "Search result is  : " ,this.listOfData);
     })
 
   }
   clearFilter() {
-    console.log('Clearing Filters ');
+    //console.log('Clearing Filters ');
 
      this.selectedDate = null;
 
@@ -115,7 +115,7 @@ export class PackageComponent implements OnInit {
       next: (data) => {
         },
       error: (err) => {
-        console.log("error in changing confirmation status: ", err);
+        //console.log("error in changing confirmation status: ", err);
       }
     });
   }

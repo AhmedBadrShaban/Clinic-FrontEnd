@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
- 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,7 +34,7 @@ export class ExpenseService {
     return this.http.post(`${this.baseUrl}admin/add-expense-type` , data);
   }
   filterByDate(date:any): Observable<any> {
-    console.log("filtling by date of :" ,date);
+    //console.log("filtling by date of :" ,date);
     if(this.loggedIn.userType=='ROLE_ADMIN'){
     return this.http.get<any>(`${this.baseUrl}admin/filter-add-reciptionist-expenses-by-date?date=${date}`);
     }

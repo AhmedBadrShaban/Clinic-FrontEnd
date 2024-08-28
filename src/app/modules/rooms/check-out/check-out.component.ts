@@ -44,14 +44,14 @@ export class CheckOutComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
        this.id = +params['id'];
-      console.log('ID:', this.id);
+      //console.log('ID:', this.id);
       this.checkOutService.checkOutReservation(this.id).subscribe({
         next:(data)=>{
           this.completedServices = data.map((service: CompletedService) => ({
             ...service,
             Paid: false // Default value for the 'Paid' property
           }));
-          console.log('completedServices  : ', this.completedServices);
+          //console.log('completedServices  : ', this.completedServices);
           this.availablePaymentsMethods();
         },
         error:(err)=>{
@@ -73,7 +73,7 @@ export class CheckOutComponent implements OnInit {
       if(this.paymentsMethods.points.length>0){
         this.TotalPoints = this.paymentsMethods.points[0];
       }
-      console.log('Methods :>> ',  this.paymentsMethods);
+      //console.log('Methods :>> ',  this.paymentsMethods);
     })
   }
 
@@ -109,20 +109,20 @@ export class CheckOutComponent implements OnInit {
     if(s.price){
       this.normalPayment.pulses = paid / s.price;
     }
-     console.log('In overAllCost > paid + this.usedPoints * s.price :>> ' );
-     console.log('overAllCost :>> ', overAllCost);
-     console.log('paid :>> ', paid);
-    console.log('usedPoints :>> ', this.usedPoints);
+     //console.log('In overAllCost > paid + this.usedPoints * s.price :>> ' );
+     //console.log('overAllCost :>> ', overAllCost);
+     //console.log('paid :>> ', paid);
+    //console.log('usedPoints :>> ', this.usedPoints);
     if(!this.showRemainCash  ){
       this.usedPoints = 0;
     }
     if( overAllCost > paid + this.usedPoints * s.price )
     {
-      console.log(' paid + this.usedPoints * s.price  ',  paid + this.usedPoints * s.price );
+      //console.log(' paid + this.usedPoints * s.price  ',  paid + this.usedPoints * s.price );
 
       if(this.paymentsMethods.points[0] > overAllCost - paid +  this.usedPoints * s.price )
       {
-        console.log('In Show Points' );
+        //console.log('In Show Points' );
 
         this.showPointsButton =true;
 
@@ -130,7 +130,7 @@ export class CheckOutComponent implements OnInit {
        }
 
       else{
-        console.log('In Have No Points and Payment is less than' );
+        //console.log('In Have No Points and Payment is less than' );
 
         alert("Total Payments is Less Than Total Cost")
         return;
@@ -145,13 +145,13 @@ export class CheckOutComponent implements OnInit {
     this.paymentsMethods.normal.push(this.normalPayment);
     this.updatePaidStatus(s.serviceName , true);
     this.reset();
-    console.log( 'Now Current Payment' ,this.paymentsMethods)
+    //console.log( 'Now Current Payment' ,this.paymentsMethods)
     this.selectedCardIndex +=1;
 
   }
   payUsingRemainPoints(s:CompletedService){
     const paid =this.normalPayment.cash + this.normalPayment.vodafoneCash + this.normalPayment.visa + this.normalPayment.credit + this.normalPayment.instaPay + this.normalPayment.debit;
-    console.log('paid :>> ', paid);
+    //console.log('paid :>> ', paid);
     if(!this.showRemainCash){
       this.usedPoints = 0;
     }
@@ -160,17 +160,17 @@ export class CheckOutComponent implements OnInit {
       numberOfPulses: (s.totalCost -paid)/s.price - this.usedPoints
     };
     this.paymentsMethods.points[0] -=  pointService.numberOfPulses;
-    console.log('pointService become :>> ', this.paymentsMethods.points[0]);
+    //console.log('pointService become :>> ', this.paymentsMethods.points[0]);
     this.paymentsMethods.normal.push(this.normalPayment);
     this.paymentsMethods.pointsService.push(pointService);
     this.updatePaidStatus(s.serviceName , true);
-    console.log( 'Now Current Payment' ,this.paymentsMethods);
+    //console.log( 'Now Current Payment' ,this.paymentsMethods);
     this.reset();
     this.selectedCardIndex +=1;
   }
   PayUsingPoints(s:CompletedService){
-    console.log('s.totalCost  :>> ', s.totalCost );
-    console.log('first.usedPoints  :>> ', this.usedPoints );
+    //console.log('s.totalCost  :>> ', s.totalCost );
+    //console.log('first.usedPoints  :>> ', this.usedPoints );
     if(this.usedPoints<0  || this.usedPoints > this.paymentsMethods.points[0]){
       alert("Not allowed Value")
       return;
@@ -183,12 +183,12 @@ export class CheckOutComponent implements OnInit {
       serviceName:s.serviceName,
       numberOfPulses:this.usedPoints,
     };
-    console.log('Created pointsServie :>> ',pointService  );
-    console.log('CurrentPaymentMethods :>> ', this.paymentsMethods);
+    //console.log('Created pointsServie :>> ',pointService  );
+    //console.log('CurrentPaymentMethods :>> ', this.paymentsMethods);
     this.paymentsMethods.points[0] -=  this.usedPoints;
-    console.log('C usedPoints:>> ', this.usedPoints);
+    //console.log('C usedPoints:>> ', this.usedPoints);
 
-    console.log('CurrentPaymentMethods After decreasing usedPoints :>> ', this.paymentsMethods);
+    //console.log('CurrentPaymentMethods After decreasing usedPoints :>> ', this.paymentsMethods);
 
      this.paymentsMethods.pointsService.push(pointService);
      if(s.pulses !== this.usedPoints){
@@ -197,7 +197,7 @@ export class CheckOutComponent implements OnInit {
      }
     this.updatePaidStatus(s.serviceName , true);
     this.reset();
-    console.log( 'Now Current Payment' ,this.paymentsMethods);
+    //console.log( 'Now Current Payment' ,this.paymentsMethods);
     this.selectedCardIndex +=1;
   }
 
@@ -220,7 +220,7 @@ export class CheckOutComponent implements OnInit {
 
     this.updatePaidStatus(s.serviceName , true);
     this.reset();
-    console.log( 'Now Current Payment' ,this.paymentsMethods);
+    //console.log( 'Now Current Payment' ,this.paymentsMethods);
     this.selectedCardIndex +=1;
   }
 
@@ -229,7 +229,7 @@ export class CheckOutComponent implements OnInit {
 
     if (serviceIndex !== -1) {
       this.completedServices[serviceIndex].Paid = paid;
-      console.log(`Paid status updated for ${serviceName}: ${paid}`);
+      //console.log(`Paid status updated for ${serviceName}: ${paid}`);
     } else {
       console.warn(`Service with serviceName ${serviceName} not found.`);
     }
@@ -249,7 +249,7 @@ export class CheckOutComponent implements OnInit {
     this.showPointsButton = false;
     this.showRemainCash =false;
     this.TotalPoints = this.paymentsMethods.points[0];
-    console.log(' TotalPoints  :>> ',   this.TotalPoints );
+    //console.log(' TotalPoints  :>> ',   this.TotalPoints );
     this.usedPoints=0;
   }
   clear(){

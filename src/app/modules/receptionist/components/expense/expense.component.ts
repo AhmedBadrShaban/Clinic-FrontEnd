@@ -85,16 +85,16 @@ export class ExpenseComponent implements OnInit {
   getAllExpenses(){
   this.ExpenseService.getAllExpenses().subscribe((data:any)=>{
     this.listOfData =data;
-   console.log( "data recived : " ,this.listOfData);
+   //console.log( "data recived : " ,this.listOfData);
  })
 }
   onDateChange(event: any) {
     this.selectedDate = event.value;
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     this.ExpenseService.filterByDate(formattedDate).subscribe((data:any)=>{
-      // console.log(data);
+      // //console.log(data);
       this.listOfData =data;
-      console.log( "Search result is  : " ,this.listOfData);
+      //console.log( "Search result is  : " ,this.listOfData);
     })
   }
   clearFilter(){

@@ -52,7 +52,7 @@ export class DailySheetComponent {
 
 
   constructor(private dailySheetService:DailysheetService , private roomsService:RoomsService ,private datePipe:DatePipe ){
-    this.selectedDate = new Date(); 
+    this.selectedDate = new Date();
     this.settingValue ={
       bordered: true,
       loading: false,
@@ -79,56 +79,56 @@ export class DailySheetComponent {
     this.selectedDate= this.datePipe.transform(this.selectedDate , 'yyyy-MM-dd');
 
     this.dailySheetService.filterDailySheet( undefined , this.selectedDate ).subscribe((data:any)=>{
-      // console.log(data);
+      // ////console.log(data);
       this.dailyInfo = data[0].dailySheets;
       this.dailySheetStatus = data[1];
-      console.log( "daily sheet recived : " ,this.dailyInfo);
+      //console.log( "daily sheet recived : " ,this.dailyInfo);
     })
     this.roomsService.allRooms().subscribe((rooms)=>{
       this.allRooms =rooms;
-      console.log('rooms :>> ', this.allRooms);
+      //console.log('rooms :>> ', this.allRooms);
     })
     this.dailySheetService.getAllDoctorsNames().subscribe((data:any)=>{
       this.allDoctors =data;
-      console.log('AllNames of Doctors:>> ', this.allDoctors);
+      //console.log('AllNames of Doctors:>> ', this.allDoctors);
      })
   }
 
     onRoomChange(){
-      // console.log("executing Room Filtering");
-      console.log("selected room before filtring is : " , this.selectedRoom)
+      // //console.log("executing Room Filtering");
+      //console.log("selected room before filtring is : " , this.selectedRoom)
       this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
-          console.log(data);
+          //console.log(data);
           this.dailyInfo = data[0].dailySheets;
           this.dailySheetStatus = data[1];
-          console.log( "Search result is  : " ,this.dailyInfo);
+          //console.log( "Search result is  : " ,this.dailyInfo);
         })
     }
     onDoctorChange(){
-      // console.log("executing Doctor Filtering");
-      console.log("selected Doctor before filtring is : " , this.selectedDoctor)
+      // //console.log("executing Doctor Filtering");
+      //console.log("selected Doctor before filtring is : " , this.selectedDoctor)
       this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
-          console.log(data);
+          //console.log(data);
           this.dailyInfo = data[0].dailySheets;
           this.dailySheetStatus = data[1];
 
-          console.log( "Search result is  : " ,this.dailyInfo);
+          //console.log( "Search result is  : " ,this.dailyInfo);
         })
     }
      onDateChange(event: any){
       const formattedDate = event.value;
       this.selectedDate= this.datePipe.transform(formattedDate, 'yyyy-MM-dd');
-      console.log("executing Date Filtering");
-      console.log("selected Date before filtring is : " ,this.selectedDate)
+      //console.log("executing Date Filtering");
+      //console.log("selected Date before filtring is : " ,this.selectedDate)
       this.dailySheetService.filterDailySheet(this.selectedRoom , this.selectedDate , this.selectedDoctor).subscribe((data:any)=>{
-          console.log(data);
+          //console.log(data);
           this.dailyInfo = data[0].dailySheets;
           this.dailySheetStatus = data[1];
-          console.log( "Search result is : " ,this.dailyInfo);
+          //console.log( "Search result is : " ,this.dailyInfo);
         })
     }
     clearFilter() {
-      console.log('Clearing Filters ');
+      //console.log('Clearing Filters ');
 
       // Reset the selectedRoom and selectedReciptianist to their default values
       this.selectedDate = null;
@@ -137,10 +137,10 @@ export class DailySheetComponent {
 
       // Call the filterDailySheet method
       this.dailySheetService.filterDailySheet().subscribe((data: any) => {
-          console.log(data);
+          //console.log(data);
           this.dailyInfo = data[0].dailySheets;
           this.dailySheetStatus = data[1];
-          console.log("Search result is : ", this.dailyInfo);
+          //console.log("Search result is : ", this.dailyInfo);
       });
   }
 

@@ -33,27 +33,27 @@ export class UpdateReservationComponent {
       note: [this.data.note],
       services:[this.data.services]
     });
-    console.log('recived reservation date :>> ',  this.datePipe.transform(data.reservationDate, 'yyyy-MM-dd'),);
+    //console.log('recived reservation date :>> ',  this.datePipe.transform(data.reservationDate, 'yyyy-MM-dd'),);
    }
 
   ngOnInit(): void {
 
-    console.log('Recived Data :>> ', this.data);
+    //console.log('Recived Data :>> ', this.data);
     this.doctorName = this.data.doctorName;
-    console.log('doctor Name :>> ', this.doctorName);
+    //console.log('doctor Name :>> ', this.doctorName);
     this.reservationService.getAllDoctorsNames().subscribe((data:any)=>{
       this.AllNames =data;
-      console.log('AllNames of Doctors:>> ', this.AllNames);
+      //console.log('AllNames of Doctors:>> ', this.AllNames);
       this.FilterdNames = this.AllNames;
     })
     this.reservationService.getAllServicesNamesToRoom(this.data.roomName).subscribe((data:any)=>{
       this.allServices=data;
       this.allServices.forEach(service => {
         this.selectedServices[service] = this.data.services.includes(service);
-        console.log('serviceName :>> ', service);
+        //console.log('serviceName :>> ', service);
       });
-      console.log('AllServices', this.allServices);
-      console.log('SelectedServices', this.selectedServices);
+      //console.log('AllServices', this.allServices);
+      //console.log('SelectedServices', this.selectedServices);
      })
   }
 
@@ -63,8 +63,8 @@ export class UpdateReservationComponent {
   update(): void {
     if (this.formData.valid) {
       const selectedServices = Object.keys(this.selectedServices).filter(service => this.selectedServices[service]);
-       this.formData.value.services = selectedServices; 
-       console.log('Form Data:', this.formData.value);
+       this.formData.value.services = selectedServices;
+       //console.log('Form Data:', this.formData.value);
      } else {
        console.error('Form is invalid');
     }
@@ -90,7 +90,7 @@ export class UpdateReservationComponent {
 
   onCheckboxChange(service: string, event: any): void {
     this.selectedServices[service] = event.target.checked;
-    console.log(this.selectedServices); // Optional: Log selected services
+    //console.log(this.selectedServices); // Optional: Log selected services
   }
   formatTime(time: string): string {
     // Add ':00' to the time string to make it in the format 'hh:mm:00'
@@ -99,12 +99,12 @@ export class UpdateReservationComponent {
   UpdateAllReservations(){
     this.roomService.getAllReservations(this.data.reservationDate).subscribe((data:any)=>{
       this.roomService.updateData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
   updateAvailableSlots(){
     this.roomService.getAvalliableSlots(this.data.roomName , this.data.reservationDate).subscribe((data=>{
-      console.log('updated :>> ', data);
+      //console.log('updated :>> ', data);
       this.roomService.updateSlots(data);
     }))
   }

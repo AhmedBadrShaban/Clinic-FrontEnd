@@ -22,19 +22,19 @@ export class AvailableSlotsComponent implements OnInit{
    mergedArray: TimeSlot[] = [];
     reservedSlots:TimeSlot[] = [];
   constructor(private datePipe:DatePipe , private roomServ:RoomsService) {
- 
+
   }
   ngOnInit() {
-    console.log('in Available slots :>> ');
+    //console.log('in Available slots :>> ');
     this.roomServ.updateSlots$.subscribe((data)=>{
-      console.log('Waiting Dtaaaa :>> ');
+      //console.log('Waiting Dtaaaa :>> ');
       this.reservedSlots = data;
       if(data.length>0){
         this.formateSlots();
         this.dataLoaded = true;
-        console.log('Updated Slots Recived :>>' , this.reservedSlots  );
+        //console.log('Updated Slots Recived :>>' , this.reservedSlots  );
        }
-       else 
+       else
        {
         this.mergedArray =[
           {
@@ -56,7 +56,7 @@ export class AvailableSlotsComponent implements OnInit{
     ...slot,
     available: false,
     // width: calculateWidth(slot.startTime, slot.endTime)
-  })); 
+  }));
   this.generateTimeSlots(this.reservedSlots);
  }
 
@@ -67,7 +67,7 @@ export class AvailableSlotsComponent implements OnInit{
         return a.startTime.localeCompare(b.startTime);
       });
 
-      console.log('sortedInputArray :>> ', sortedInputArray);
+      //console.log('sortedInputArray :>> ', sortedInputArray);
 
       if (sortedInputArray.length > 0 && sortedInputArray[0].startTime > '00:00:00') {
         availableTimeSlots.push({
@@ -77,12 +77,12 @@ export class AvailableSlotsComponent implements OnInit{
           width: calculateWidth('00:00:00', sortedInputArray[0].startTime)
         });
       }
-      
+
 
       for (let i = 0; i < sortedInputArray.length - 1; i++) {
         const currentSlot = sortedInputArray[i];
         const nextSlot = sortedInputArray[i + 1];
-      
+
         availableTimeSlots.push({
           startTime: currentSlot.endTime,
           endTime: nextSlot.startTime,
@@ -90,7 +90,7 @@ export class AvailableSlotsComponent implements OnInit{
           width: calculateWidth(currentSlot.endTime, nextSlot.startTime)
         });
       }
-      
+
 
        const lastSlot = sortedInputArray[sortedInputArray.length - 1];
        availableTimeSlots.push({
@@ -99,11 +99,11 @@ export class AvailableSlotsComponent implements OnInit{
         available:true,
         width: calculateWidth(lastSlot.endTime, '23:59:59')
       });
-      console.log('adjustedTimeSlots :>> ', availableTimeSlots);
+      //console.log('adjustedTimeSlots :>> ', availableTimeSlots);
       this.mergedArray=[];
       this.mergedArray.push(...this.reservedSlots, ...availableTimeSlots)
       this.mergedArray.sort((a, b) => a.startTime.localeCompare(b.startTime));
-      console.log('Final Slots :>> ', this.mergedArray);
+      //console.log('Final Slots :>> ', this.mergedArray);
     }
 
     formatTimeTo12Hour(time: string): string {
@@ -111,7 +111,7 @@ export class AvailableSlotsComponent implements OnInit{
        return '';
      }
      const timeAsDate = new Date(`1970-01-01T${time}`);
- 
+
       return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
    }
 
@@ -130,14 +130,14 @@ export class AvailableSlotsComponent implements OnInit{
   function calculateDurationInHours(startTime: string, endTime: string): number {
     const startParts = startTime.split(':');
     const endParts = endTime.split(':');
-  
+
     const startHours = parseInt(startParts[0]);
     const startMinutes = parseInt(startParts[1]);
-  
+
     const endHours = parseInt(endParts[0]);
     const endMinutes = parseInt(endParts[1]);
-  
+
     const durationInMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
-  
+
     return durationInMinutes / 60;
   }

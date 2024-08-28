@@ -17,11 +17,11 @@ export class MainPageComponent {
   getAllReservations(){
     this.reservationsServ.getAllDoctorReservation().subscribe((data)=>{
       this.reservations = data;
-      console.log('Your Reservations is :>> ', this.reservations);
+      //console.log('Your Reservations is :>> ', this.reservations);
     })
   }
   openReservation(phoneNumber: any , id:any) {
-    console.log("Sending");
+    //console.log("Sending");
     this.router.navigate(['doctor' ,'reservation'], { queryParams: { phoneNumber: phoneNumber  , id:id} });
   }
   formatTimeTo12Hour(time: string): string {

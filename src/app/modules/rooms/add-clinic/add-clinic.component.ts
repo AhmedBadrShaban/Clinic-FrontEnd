@@ -18,7 +18,7 @@ export class AddClinicComponent {
   }
   submit() {
     let userModel=this.newClinicFm.value;
-    console.log(userModel);
+    //console.log(userModel);
     this.roomService.addClinic(userModel).subscribe({
       next:(responed:any)=>{
          alert(responed.message);

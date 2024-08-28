@@ -25,12 +25,12 @@ export class PackageService {
   }
   filterByDate(date:any): Observable<any> {
     const url = 'http://localhost:8080/receptionist/reserved-package-filter';
-    console.log("filtling by date of :" ,date);
+    //console.log("filtling by date of :" ,date);
     let queryParams = new HttpParams().append("date",date);
     return this.http.get<any>(url,{params:queryParams});
   }
   reservePackage(reservationData:any){
-    console.log("data before making request: " , reservationData )
+    //console.log("data before making request: " , reservationData )
     return this.http.post(`${this.baseUrl}receptionist/reservepackage`, reservationData);
    }
 

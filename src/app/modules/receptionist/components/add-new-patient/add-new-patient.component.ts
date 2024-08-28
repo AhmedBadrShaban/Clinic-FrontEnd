@@ -58,7 +58,7 @@ export class AddNewPatientComponent implements OnInit {
             }
         },
       error: (err) => {
-        console.log('err :>> ', err);
+        //console.log('err :>> ', err);
         alert(err.error.message);
       }
 

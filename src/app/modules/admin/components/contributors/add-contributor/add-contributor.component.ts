@@ -19,7 +19,7 @@ export class AddContributorComponent {
   constructor(public dialogRef: MatDialogRef<AddContributorComponent> , private contrServ:ContributorsService) {
     console.log((this.ContributorFrm))
   }
- 
+
   submit() {
     let userModel=this.ContributorFrm.value as any;
     console.log(userModel);
@@ -36,6 +36,6 @@ export class AddContributorComponent {
 
     })
 
-    console.log(userModel);
+    // console.log(userModel);
   }
 }

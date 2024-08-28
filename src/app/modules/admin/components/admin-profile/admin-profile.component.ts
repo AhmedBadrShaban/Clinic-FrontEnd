@@ -17,7 +17,7 @@ export class AdminProfileComponent {
     this.route.params.subscribe(data=>
       this.adminData = adminservice.getAdminById(data['id'])
     )
-    console.log('doctor info',this.adminData);
+    // console.log('doctor info',this.adminData);
   }
   // constructor(private router: Router, private route: ActivatedRoute, private adminService: AdminService) { }
 

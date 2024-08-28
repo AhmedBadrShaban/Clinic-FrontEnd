@@ -26,17 +26,17 @@ getDoctorProfile():Observable<any>{
   return this.http.get<any>(`${this.baseUrl}doctor/doctor-profile`)
 }
 search(searchVal:any):Observable<any>{
-  console.log('searchVal :>> ', searchVal);
+  //console.log('searchVal :>> ', searchVal);
   return this.http.get<any>(`${this.baseUrl}admin/doctor-search?searchString=${searchVal}`)
 }
 // removeServise(id: string){}
 changeStatus(userName: any){
-  console.log('userName before Sending Api :>> ', userName);
+  //console.log('userName before Sending Api :>> ', userName);
   return this.http.patch<any>(`${this.baseUrl}api/auth/update-user-status?username=${userName}` , userName)
 }
 updateProfile(id: string, data: any) {
   const params = new HttpParams().set('id', id);
-  console.log('data :>> ', data);
+  //console.log('data :>> ', data);
   return this.http.put(`${this.baseUrl}admin/update-doctor-profile`, data , { params });
 }
 private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);

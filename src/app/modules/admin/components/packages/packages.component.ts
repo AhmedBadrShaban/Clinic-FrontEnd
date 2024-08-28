@@ -31,7 +31,7 @@ export class PackagesComponent {
     this.getAllPackages();
     this.pckService.listOfData$.subscribe((data:any)=>{
       this.packages =data;
-     console.log( "Updated Data recived : " ,this.packages);
+     //console.log( "Updated Data recived : " ,this.packages);
      this.autoComplete();
    })
    }
@@ -43,7 +43,7 @@ export class PackagesComponent {
         ...pkg,
         expand: pkg.services && pkg.services.length > 0
       }));
-      console.log('services :>> ', this.packages);
+      //console.log('services :>> ', this.packages);
     })
   }
 
@@ -54,7 +54,7 @@ export class PackagesComponent {
          this.getAllPackages();
         },
         error:(err)=>{
-          console.log('err :>> ', err.error.message);
+          //console.log('err :>> ', err.error.message);
         }
       })
       }
@@ -65,7 +65,7 @@ export class PackagesComponent {
             ...pkg,
             expand: pkg.services && pkg.services.length > 0
           }));
-          console.log( "search recived : " ,this.packages);
+          //console.log( "search recived : " ,this.packages);
        })
       }
       clearSearch(){
@@ -75,7 +75,7 @@ export class PackagesComponent {
     autoComplete(){
       this.AllDataToSearchIn =  this.packages.map(packages => `${packages.packageName}`);
       this.filteredData=this.AllDataToSearchIn;
-      console.log(this.filteredData);
+      //console.log(this.filteredData);
     }
     onChange(value: string): void {
       this.filteredData = this.AllDataToSearchIn.filter(AllDataToSearchIn => AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1);
@@ -86,5 +86,5 @@ export class PackagesComponent {
     this.dialogRef.open(AddNewPackageComponent );
   }
 
- 
+
 }

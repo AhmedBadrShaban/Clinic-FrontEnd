@@ -20,14 +20,14 @@ export class ReceptionistProfileComponent implements OnInit{
     // Subscribe to route params and query params
     this.route.params.subscribe(params => {
       this.receptionistId = params['id'];
-      console.log('receptionistId :>> ', this.receptionistId);
+      //console.log('receptionistId :>> ', this.receptionistId);
       this.receptionistInfo();
     });
 }
 receptionistInfo(){
   this.recpService.getReciptionist(this.receptionistId).subscribe((data)=>{
     this.receptionistData= data;
-    console.log('data :>> ', data);
+    //console.log('data :>> ', data);
   })
 }
   switchStatus(id: any) {
@@ -36,7 +36,7 @@ receptionistInfo(){
         alert(responed.message);
        },
       error: (err) => {
-        console.log('err :>> ', err.error.message);
+        //console.log('err :>> ', err.error.message);
       },
     });
   }
@@ -46,7 +46,7 @@ receptionistInfo(){
     delete this.receptionistData.isActive;
     if (this.receptionistData.password === "") {
       delete this.receptionistData.password;
-    }    console.log('Updated Recep Data', this.receptionistData);
+    }    //console.log('Updated Recep Data', this.receptionistData);
     this.recpService
       .updateProfile(this.receptionistId, this.receptionistData)
       .subscribe({

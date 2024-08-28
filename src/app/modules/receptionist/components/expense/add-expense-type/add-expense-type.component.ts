@@ -22,7 +22,7 @@ export class AddExpenseTypeComponent implements OnInit {
   }
   submit() {
     let userModel=this.expensetypeFm.value;
-    console.log( "form data before sending request",userModel);
+    //console.log( "form data before sending request",userModel);
     this.expenseService.addNewExpenseType(userModel).subscribe({
       next:(data:any)=>{
         alert(data.message);

@@ -17,13 +17,13 @@ export class EventsGridComponent implements OnInit{
   @Input() eventsPerRoom :reservation [] = [];
 
   constructor(public dialog: MatDialog , private roomsService:RoomsService , private datePipe :DatePipe ) {
-    console.log('roomName :>> ', this.roomName);
+    //console.log('roomName :>> ', this.roomName);
   }
 
   ngOnInit(): void {
     // this.roomsService.getRoomReservation(this.roomName , this.date).subscribe((data)=>{
     //   // this.eventsPerRoom=data;
-    //    console.log("recived reservations of this room in date : " , this.date , "is: " , data )
+    //    //console.log("recived reservations of this room in date : " , this.date , "is: " , data )
     // })
 
     }
@@ -34,7 +34,7 @@ export class EventsGridComponent implements OnInit{
        data: data
      });
     dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
+        //console.log('The dialog was closed');
     });
   }
 

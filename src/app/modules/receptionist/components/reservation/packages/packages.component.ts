@@ -30,10 +30,10 @@ export class PackagesComponent implements OnInit {
       this.position= 'bottom' as NzTablePaginationPosition
   }
 ngOnInit(){
-  console.log('packages ini :>> ' );
-  console.log('Recived packages phoneNumber :>> ', this.phoneNumber);
+  //console.log('packages ini :>> ' );
+  //console.log('Recived packages phoneNumber :>> ', this.phoneNumber);
   this.reservationservice.phone$.subscribe((data:any) => {
-    console.log('Updated packages phoneNumber :>> ', this.phoneNumber);
+    //console.log('Updated packages phoneNumber :>> ', this.phoneNumber);
     if(data!=0){
       this.phoneNumber = data;
       this.getPatientPackages();
@@ -48,7 +48,7 @@ ngOnInit(){
   if(this.phoneNumber){
   this.reservationservice.getPackages(this.phoneNumber).subscribe((data)=>{
     this.packages = data;
-    console.log(' Packages :>> ' , this.packages );
+    //console.log(' Packages :>> ' , this.packages );
   })
   }
  }

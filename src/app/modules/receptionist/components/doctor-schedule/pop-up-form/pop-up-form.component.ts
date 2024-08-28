@@ -24,7 +24,7 @@ export class PopUpFormComponent implements OnInit {
     if(this.formData.startPulses!=null){
       this.disableStartPulses = true;
     }
-    console.log("received data is: ", this.formData);
+    //console.log("received data is: ", this.formData);
 
   }
 
@@ -42,7 +42,7 @@ export class PopUpFormComponent implements OnInit {
 
   create() {
     delete (this.formData as any)['new'];
-    console.log('formData :>> ', this.formData);
+    //console.log('formData :>> ', this.formData);
     if( this.formData.startTime.length !== 8 ){
           this.formData.startTime = this.formatTime(this.formData.startTime);
     }
@@ -75,7 +75,7 @@ export class PopUpFormComponent implements OnInit {
     else if( this.formData.endTime.length !== 8){
       this.formData.endTime = this.formatTime(this.formData.endTime);
     }
-    console.log('Edited Data :>> ', this.formData);
+    //console.log('Edited Data :>> ', this.formData);
     this.DoctorScheduleService.editSchedule(this.formData).subscribe({
       next: (data) => {
         this.closeDialog();
@@ -94,7 +94,7 @@ export class PopUpFormComponent implements OnInit {
     this.DoctorScheduleService.getAllSchedules().subscribe((data:any)=>{
   // Update the parent component's listOfData
      this.DoctorScheduleService.updateListOfData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
 
@@ -103,7 +103,7 @@ export class PopUpFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.formData);
+    //console.log(this.formData);
   }
 
   getAllDoctorsNames(){
@@ -114,7 +114,7 @@ export class PopUpFormComponent implements OnInit {
   getAllRoomsNames(){
     this.roomsService.allRooms().subscribe((data:any)=>{
       this.rooms =data;
-      console.log('Rooms ', this.rooms);
+      //console.log('Rooms ', this.rooms);
       })
 
   }

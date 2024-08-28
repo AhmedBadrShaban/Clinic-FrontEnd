@@ -26,8 +26,8 @@ export class ReservationFmComponent implements OnInit {
     ,private reservationService:ReservationfmService , private patientService:PatientService ,private roomService:RoomsService
      , public dialogRef: MatDialogRef<ReservationFmComponent>) {
     this.roomName=data.activeRoom;
-    console.log('recived room Name :>> ', this.roomName);
-    console.log('recived reservation date :>> ',  this.datePipe.transform(data.date, 'yyyy-MM-dd'),);
+    //console.log('recived room Name :>> ', this.roomName);
+    //console.log('recived reservation date :>> ',  this.datePipe.transform(data.date, 'yyyy-MM-dd'),);
     this.date = data.date;
     this.reservationFm = fb.group({
       patientPhone: ['', [Validators.required, Validators.pattern('[A-Za-z]{3,}')]],
@@ -44,7 +44,7 @@ export class ReservationFmComponent implements OnInit {
     let userModel:ReservationRes=this.reservationFm.value as ReservationRes;
     userModel.start = this.formatTime(userModel.start);
     userModel.end = this.formatTime(userModel.end);
-    console.log(userModel);
+    //console.log(userModel);
     this.reservationService.addReservation(userModel , this.roomName).subscribe({
       next:(responed:any)=>{
         alert(responed.message)
@@ -64,23 +64,23 @@ export class ReservationFmComponent implements OnInit {
     })
 
 
-    console.log(userModel);
+    //console.log(userModel);
   }
 
   ngOnInit(): void {
     this.patientService.getAllPatientsNumbers().subscribe((numbers: any) => {
       this.AllNumbers = numbers;
-      console.log('patientNumbers :>> ', this.AllNumbers);
+      //console.log('patientNumbers :>> ', this.AllNumbers);
       this.filteredNumbers = this.AllNumbers;
     });
     this.reservationService.getAllDoctorsNames().subscribe((data:any)=>{
       this.AllNames =data;
-      console.log('AllNames of Doctors:>> ', this.AllNames);
+      //console.log('AllNames of Doctors:>> ', this.AllNames);
       this.FilterdNames = this.AllNames;
     })
     this.reservationService.getAllServicesNamesToRoom(this.roomName).subscribe((data:any)=>{
       this.AllServices=data;
-      console.log('AllServices', this.AllServices);
+      //console.log('AllServices', this.AllServices);
      })
   }
   onChange(value: string): void {
@@ -109,12 +109,12 @@ export class ReservationFmComponent implements OnInit {
   UpdateAllReservations(){
     this.roomService.getAllReservations(this.date).subscribe((data:any)=>{
       this.roomService.updateData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
   updateAvailableSlots(){
     this.roomService.getAvalliableSlots(this.roomName , this.date).subscribe((data=>{
-      console.log('updated :>> ', data);
+      //console.log('updated :>> ', data);
       this.roomService.updateSlots(data);
     }))
   }

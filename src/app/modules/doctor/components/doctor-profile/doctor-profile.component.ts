@@ -20,11 +20,11 @@ export class DoctorProfileComponent implements OnInit {
       this.docService.getDoctorProfile().subscribe((data)=>{
         this.doctorId = data.doctorId;
         this.doctorData=data;
-        console.log('doctorData :>> ', this.doctorData);
+        //console.log('doctorData :>> ', this.doctorData);
       })
   }
   submit(){
-    console.log('Updated doctorData :>> ', this.doctorData);
+    //console.log('Updated doctorData :>> ', this.doctorData);
        delete this.doctorData.doctorId;
        delete this.doctorData.doctor;
     if(this.validateNid(this.doctorData.nationalID) && this.validatePhoneNumber(this.doctorData.phoneNumber)){

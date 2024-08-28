@@ -32,10 +32,10 @@ export class PointsComponent implements OnInit {
       this.position= 'bottom' as NzTablePaginationPosition
   }
 ngOnInit(){
-  console.log('points History ini :>> ' );
-  console.log('Recived points History  phoneNumber :>> ', this.phoneNumber);
+  //console.log('points History ini :>> ' );
+  //console.log('Recived points History  phoneNumber :>> ', this.phoneNumber);
    this.reservationsService.phone$.subscribe((data:any) => {
-    console.log('Updated  points History phoneNumber :>> ', data);
+    //console.log('Updated  points History phoneNumber :>> ', data);
     if(data!=0 && this.phoneNumber){
       this.phoneNumber = data;
       this.getPointsHistory();
@@ -45,7 +45,7 @@ ngOnInit(){
     }
   });
   this.patientService.historyObservable$.subscribe((data)=>{
-    console.log('data historyObservable :>> ', data);
+    //console.log('data historyObservable :>> ', data);
     this.pointsHistory = data
     this.getTotalInAndOut()
   })
@@ -54,17 +54,17 @@ ngOnInit(){
   //   this.pointsHistory = data;
   // });
   // this.patientService.out$.subscribe((data:any) => {
-  //   console.log('object :>> ', data);
+  //   //console.log('object :>> ', data);
   //   this.totalOut += data;
   // });
  }
 
  getPointsHistory(){
-  console.log('phone Before API :>> ', this.phoneNumber);
+  //console.log('phone Before API :>> ', this.phoneNumber);
   if(this.phoneNumber){
   this.reservationsService.getPointsHistory(this.phoneNumber).subscribe((data)=>{
     this.pointsHistory =data;
-    console.log('recived Points History :>> ',  this.pointsHistory);
+    //console.log('recived Points History :>> ',  this.pointsHistory);
     this.getTotalInAndOut();
   })
   }

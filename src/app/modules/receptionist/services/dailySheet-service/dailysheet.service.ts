@@ -25,24 +25,24 @@ export class DailysheetService {
     let queryParams = new HttpParams();
     if(roomName)
     {
-      console.log("Filtling By room :" ,roomName);
+      //console.log("Filtling By room :" ,roomName);
       if(roomName!="Room"){
       queryParams =queryParams.append("roomName" , roomName);
       }
     }
     if(date)
     {
-      console.log("Filtling By date :" ,date);
+      //console.log("Filtling By date :" ,date);
       queryParams =queryParams.append("date" , date);
     }
     if(doctorName)
     {
-      console.log("Filtling By doctorName :" ,doctorName);
+      //console.log("Filtling By doctorName :" ,doctorName);
       if(doctorName!="Reciptianist"){
       queryParams =queryParams.append("doctorName" , doctorName);
       }
     }
-    console.log("all parameters before sending is : ", queryParams.toString() );
+    //console.log("all parameters before sending is : ", queryParams.toString() );
     return this.http.get<any>(url,{params:queryParams});
   }
 
@@ -50,19 +50,19 @@ export class DailysheetService {
   // filterDailySheetByRoom(roomName: string):Observable<any>{
   //   const url = 'http://localhost:8080/receptionist/filter-daily-sheet';
   //   let queryParams = new HttpParams().append("roomName" , roomName);
-  //   console.log("Filter by roomName : " , roomName);
+  //   //console.log("Filter by roomName : " , roomName);
   //   return this.http.get<any>(url,{params:queryParams});
   // }
   // filterDailySheetByDate(date: any):Observable<any>{
   //   const url = 'http://localhost:8080/receptionist/filter-daily-sheet';
   //   let queryParams = new HttpParams().append("date" , date);
-  //   console.log("Filter by Date : " , date);
+  //   //console.log("Filter by Date : " , date);
   //   return this.http.get<any>(url,{params:queryParams});
   // }
   // filterDailySheetByDoctor(doctor: string):Observable<any>{
   //   const url = 'http://localhost:8080/receptionist/filter-daily-sheet';
   //   let queryParams = new HttpParams().append("doctorName" , doctor);
-  //   console.log("Filter by doctor : " , doctor);
+  //   //console.log("Filter by doctor : " , doctor);
   //   return this.http.get<any>(url,{params:queryParams});
   // }
 }

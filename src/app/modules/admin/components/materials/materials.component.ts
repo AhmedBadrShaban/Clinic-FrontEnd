@@ -33,7 +33,7 @@ export class MaterialsComponent implements OnInit {
     this.getAllMaterials();
     this.matServices.listOfData$.subscribe((data:any)=>{
        this.materials = data;
-      console.log( "Updated Data recived : " ,this.materials);
+      //console.log( "Updated Data recived : " ,this.materials);
       this.autoComplete();
     })
 
@@ -44,7 +44,7 @@ export class MaterialsComponent implements OnInit {
   getAllMaterials(){
     this.matServices.getAllMaterials().subscribe((data)=>{
       this.materials = data;
-      console.log('materials :>> ', this.materials);
+      //console.log('materials :>> ', this.materials);
       this.autoComplete();
 
     })
@@ -52,14 +52,14 @@ export class MaterialsComponent implements OnInit {
   autoComplete(){
     this.AllDataToSearchIn =  this.materials.map(materials => `${materials.materialName}`);
     this.filteredData=this.AllDataToSearchIn;
-    console.log(this.filteredData);
+    //console.log(this.filteredData);
   }
   goToForm(){}
   search(){
     this.matServices.search(this.searchValue).subscribe((data:any)=>{
       this.materials= [];
       this.materials[0]=data;
-      console.log( "search recived : " ,this.materials);
+      //console.log( "search recived : " ,this.materials);
    })
   }
   clearSearch(){

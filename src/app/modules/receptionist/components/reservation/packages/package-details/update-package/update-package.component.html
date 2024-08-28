@@ -8,7 +8,7 @@
       <div class="row m-2 mt-3 justify-content-between">
         <div class="form-group col-6">
           <label for="points" class="form-label w-100">Number Of Points</label><br>
-          <input  class="form-control" type="number" id="points"   formControlName="numberOfPoints"/>
+          <input  class="form-control" type="number" id="points"   formControlName="numberOfPoints" [min]="0" [max]="data.numberOfPoints" />
         </div>
         <div class="form-group col-6">
           <label class="form-label w-100">Expire Date:</label>

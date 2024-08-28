@@ -11,15 +11,15 @@ export class AuthGuardService implements CanActivate {
   constructor(private authService: AuthService, private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    console.log( "applying Rout Guard : "  ,this.authService.isAauthenticated());
+    //console.log( "applying Rout Guard : "  ,this.authService.isAauthenticated());
     if (this.authService.isAauthenticated()) {
       // Check if the user has the required role to access the module
       const requiredRole = route.data['requiredRole'] as string;
-            console.log('requiredRole :>> ', requiredRole);
+            //console.log('requiredRole :>> ', requiredRole);
 
       if (requiredRole && this.authService.userType !== requiredRole) {
-        console.log('userType :>> ', this.authService.userType);
-        
+        //console.log('userType :>> ', this.authService.userType);
+
          this.router.navigate(['/forbidden']);
         return false;
       }

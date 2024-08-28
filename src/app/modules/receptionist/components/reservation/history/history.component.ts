@@ -34,9 +34,9 @@ export class HistoryComponent implements OnInit {
    }
   ngOnInit(){
 
-    console.log('Recived History phoneNumber :>> ', this.phoneNumber);
+    //console.log('Recived History phoneNumber :>> ', this.phoneNumber);
     this.reservationservice.phone$.subscribe((data:any) => {
-      console.log('Updated History phoneNumber :>> ', data);
+      //console.log('Updated History phoneNumber :>> ', data);
       if(data!=0){
         this.phoneNumber = data;
         this.getPatientHistory();
@@ -46,7 +46,7 @@ export class HistoryComponent implements OnInit {
       }
     });
     this.reservationservice.updateHistory$.subscribe((data:any)=>{
-      console.log('Updated History :>> ', data);
+      //console.log('Updated History :>> ', data);
       this.history = data;
     });
  }
@@ -55,7 +55,7 @@ export class HistoryComponent implements OnInit {
       if(this.phoneNumber){
         this.reservationservice.getHistory(this.phoneNumber).subscribe((data)=>{
           this.history = data;
-          console.log(' History :>> ' , this.history );
+          //console.log(' History :>> ' , this.history );
         })
       }
      }
@@ -63,6 +63,6 @@ export class HistoryComponent implements OnInit {
       this.dialogRef.open(AfterWorkComponent , {
         data:dataa,
       })
-      // console.log("sended data is : " , dataa )
+      // //console.log("sended data is : " , dataa )
     }
   }

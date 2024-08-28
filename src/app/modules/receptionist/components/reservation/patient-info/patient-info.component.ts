@@ -17,7 +17,7 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
   constructor(private fb: FormBuilder , private patientService:PatientService) {}
 
   ngOnInit(): void {
-    console.log('Recived phoneNumber :>> ', this.phoneNumber);
+    //console.log('Recived phoneNumber :>> ', this.phoneNumber);
     this.initForm(this.info);
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -43,7 +43,7 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
     this.oldInfo = { ...this.formData.value };
   }
   UpdateInfo() {
-    console.log('Updated info', this.formData.value);
+    //console.log('Updated info', this.formData.value);
     this.patientService.updatePatient(this.oldInfo.primaryPhone , this.formData.value).subscribe({
       next: (data) => {
         alert(data.message)
@@ -61,7 +61,7 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
         next: (data) => {
            alert(data.message)
            location.reload();
-  
+
           },
         error: (err) => {
           alert(err.error.message)
@@ -72,6 +72,6 @@ export class PatientInfoComponent implements OnInit, OnChanges  {
    }
   cancel() {
     this.formData.setValue(this.oldInfo);
-    console.log('Cancelled info', this.formData.value);
+    //console.log('Cancelled info', this.formData.value);
   }
 }

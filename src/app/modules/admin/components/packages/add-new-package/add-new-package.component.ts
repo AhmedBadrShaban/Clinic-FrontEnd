@@ -32,7 +32,7 @@ export class AddNewPackageComponent implements OnInit {
   getAllAvaillableServices(){
     this.serviceService.getAvaillableService().subscribe((data=>{
       this.ServiceData = data;
-      console.log('All Services: ', this.ServiceData);
+      //console.log('All Services: ', this.ServiceData);
     }))
   }
   get Services()
@@ -77,12 +77,12 @@ addService(event: any) {
 
     })
 
-    console.log(userModel);
+    //console.log(userModel);
   }
   UpdateAllPackages(){
     this.packageService.getAllPackages().subscribe((data:any)=>{
       this.packageService.updateData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
 

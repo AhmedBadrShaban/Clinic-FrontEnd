@@ -42,7 +42,7 @@ export class ReceptionistsComponent implements OnInit {
     this.getAllReciptianists();
     this.recService.listOfData$.subscribe((data: any) => {
       this.receptionists = data;
-      console.log('Updated Data recived : ', this.receptionists);
+      //console.log('Updated Data recived : ', this.receptionists);
       this.autoComplete();
     });
   }
@@ -50,7 +50,7 @@ export class ReceptionistsComponent implements OnInit {
     this.recService.getAllReciptianist().subscribe((data) => {
       this.receptionists = data;
       this.autoComplete();
-      console.log('Reciptianists :>> ', this.receptionists);
+      //console.log('Reciptianists :>> ', this.receptionists);
     });
   }
   switchStatus(id: any) {
@@ -60,7 +60,7 @@ export class ReceptionistsComponent implements OnInit {
         this.getAllReciptianists();
       },
       error: (err) => {
-        console.log('err :>> ', err.error.message);
+        //console.log('err :>> ', err.error.message);
       },
     });
   }
@@ -68,7 +68,7 @@ export class ReceptionistsComponent implements OnInit {
   search() {
     this.recService.search(this.searchValue).subscribe((data: any) => {
        this.receptionists=data;
-      console.log('search recived dtaa : ', data);
+      //console.log('search recived dtaa : ', data);
     });
   }
 
@@ -82,7 +82,7 @@ export class ReceptionistsComponent implements OnInit {
       (receptionists) => `${receptionists.name}`
     );
     this.filteredData = this.AllDataToSearchIn;
-    console.log(this.filteredData);
+    //console.log(this.filteredData);
   }
 
   onChange(value: string): void {

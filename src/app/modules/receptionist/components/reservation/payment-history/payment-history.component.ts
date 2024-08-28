@@ -34,7 +34,7 @@ export class PaymentHistoryComponent implements OnInit {
 
   settingValue: Setting;
   constructor(private reservationsService :ReservationsService){
-    console.log('payment History ini :>> ' );
+    //console.log('payment History ini :>> ' );
     this.settingValue ={
       bordered: true,
       loading: false,
@@ -56,9 +56,9 @@ export class PaymentHistoryComponent implements OnInit {
     };
   }
   ngOnInit(): void {
-    console.log('Recived paymentHistory phoneNumber :>> ', this.phoneNumber);
+    //console.log('Recived paymentHistory phoneNumber :>> ', this.phoneNumber);
     this.reservationsService.phone$.subscribe((data:any) => {
-      console.log('Updated  Reservations History phoneNumber :>> ', data);
+      //console.log('Updated  Reservations History phoneNumber :>> ', data);
       if(data!=0 && this.phoneNumber){
         this.phoneNumber = data;
         this.getPaymentHistory();
@@ -72,11 +72,11 @@ export class PaymentHistoryComponent implements OnInit {
   }
 
   getPaymentHistory(){
-    console.log('phone Before API :>> ', this.phoneNumber);
+    //console.log('phone Before API :>> ', this.phoneNumber);
     if(this.phoneNumber){
     this.reservationsService.getPaymentHistory(this.phoneNumber).subscribe((data)=>{
       this.paymentHistory =data;
-      console.log('recived paymentHistory  :>> ',  this.paymentHistory);
+      //console.log('recived paymentHistory  :>> ',  this.paymentHistory);
      })
     }
     }

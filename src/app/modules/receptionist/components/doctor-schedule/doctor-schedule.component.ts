@@ -54,7 +54,7 @@ export class DoctorScheduleComponent implements OnInit {
     this.dialogRef.open(PopUpFormComponent , {
       data:dataa
     })
-    // console.log("sended data is : " , dataa )
+    // //console.log("sended data is : " , dataa )
   }
 
   constructor(private dialogRef : MatDialog , private datePipe: DatePipe,  private DoctorScheduleService:DoctorScheduleServiceService ,  private loogedIn:AuthService){
@@ -92,20 +92,20 @@ export class DoctorScheduleComponent implements OnInit {
   this.DoctorScheduleService.listOfData$.subscribe((data: readonly any[]) => {
     const formattedDate= this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
-      // console.log(data);
+      // //console.log(data);
       this.listOfData =data;
       this.listOfData.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-      console.log( "Search result is  : " ,this.listOfData);
+      //console.log( "Search result is  : " ,this.listOfData);
     })  });
     }
     getAllSchedules(){
       const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
 
       this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
-        // console.log(data);
+        // //console.log(data);
         this.listOfData =data;
-        console.log( "data recived : " ,this.listOfData);
+        //console.log( "data recived : " ,this.listOfData);
       })
     }
     changeConfirmStatus(scheduleId: number , data:any) {
@@ -121,11 +121,11 @@ export class DoctorScheduleComponent implements OnInit {
       });
     }
     search(key:string){
-      console.log("executing Search");
+      //console.log("executing Search");
     this.DoctorScheduleService.Search(key).subscribe((data:any)=>{
-        // console.log(data);
+        // //console.log(data);
         this.listOfData =data;
-        console.log( "Search result is  : " ,this.listOfData);
+        //console.log( "Search result is  : " ,this.listOfData);
       })
       this.selectedDate =null;
     }
@@ -133,9 +133,9 @@ export class DoctorScheduleComponent implements OnInit {
       this.selectedDate = event.value;
       const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
       this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
-        // console.log(data);
+        // //console.log(data);
         this.listOfData =data;
-        console.log( "Search result is  : " ,this.listOfData);
+        //console.log( "Search result is  : " ,this.listOfData);
       })
 
     }

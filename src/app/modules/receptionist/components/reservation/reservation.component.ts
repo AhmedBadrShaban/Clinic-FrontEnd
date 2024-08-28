@@ -44,7 +44,7 @@ export class ReservationComponent implements OnInit {
     private dialogRef: MatDialog
   ) {
     this.userType = loggedIn.userType;
-    console.log('User Type in Reservation is :>> ', this.userType);
+    //console.log('User Type in Reservation is :>> ', this.userType);
   }
   ngOnInit(): void {
     if (this.userType != 'ROLE_DOCTOR') {
@@ -53,7 +53,7 @@ export class ReservationComponent implements OnInit {
          if (Array.isArray(this.allPatientsNamesAndNumbers)) {
           this.AllDataToSearchIn = this.allPatientsNamesAndNumbers;
           this.filteredData = this.AllDataToSearchIn;
-          console.log(this.filteredData);
+          //console.log(this.filteredData);
         if(this.filteredData.length>0){
             this.patientNumber = this.extractPhoneNumberFromSearchResult(
               this.allPatientsNamesAndNumbers[0]
@@ -61,19 +61,19 @@ export class ReservationComponent implements OnInit {
             this.searchValue =  this.allPatientsNamesAndNumbers[0];
             this.patientService.patientInfo(this.patientNumber).subscribe((data)=>{
               this.PatientInfo = data;
-              console.log('info :>> ', this.PatientInfo);
+              //console.log('info :>> ', this.PatientInfo);
             })
           }
         else
         {
-          console.log('there is no Patients in the system yet');
+          //console.log('there is no Patients in the system yet');
         }
         }
       });
       this.reservationsService.update$.subscribe((data:any)=>{
         this.AllDataToSearchIn = data;
           this.filteredData = this.AllDataToSearchIn;
-        console.log('Updated array recived : ', this.AllDataToSearchIn);
+        //console.log('Updated array recived : ', this.AllDataToSearchIn);
       })
     }
     else {
@@ -81,8 +81,8 @@ export class ReservationComponent implements OnInit {
         this.route.queryParams.subscribe((params) => {
           const phoneNumber = params['phoneNumber'];
           const reservationId = params['id'];
-          console.log('Phone Number Recived :', phoneNumber);
-          console.log('Reservation ID Recived :', reservationId);
+          //console.log('Phone Number Recived :', phoneNumber);
+          //console.log('Reservation ID Recived :', reservationId);
           this.patientNumber = phoneNumber;
           this.reservationID = reservationId;
         });
@@ -94,11 +94,11 @@ export class ReservationComponent implements OnInit {
   search() {
     this.patientNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
     if(this.patientNumber && this.searchValue){
-      console.log('searchValue :>> ', this.searchValue);
+      //console.log('searchValue :>> ', this.searchValue);
     this.reservationsService.updatePhoneNumber(this.patientNumber);
     this.patientService.searchPatients(this.patientNumber).subscribe((data: any) => {
       this.PatientInfo = data;
-      console.log('Searched Patient data: ', this.PatientInfo);
+      //console.log('Searched Patient data: ', this.PatientInfo);
        });
     }
 
@@ -113,7 +113,7 @@ export class ReservationComponent implements OnInit {
   extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
     const parts = selectedRecord.split('-');
     if (parts.length === 2) {
-      console.log('Number is Fn.. :>> ', parts[1]);
+      //console.log('Number is Fn.. :>> ', parts[1]);
       return parts[1];
     }
     return null;

@@ -29,7 +29,7 @@ export class AddExpenseComponent implements OnInit{
     this.expenseService.getAllExpensesTypes().subscribe((data)=>{
       this.types = data;
       this.types.push('other');
-      console.log('Recived types :>> ',this.types);
+      //console.log('Recived types :>> ',this.types);
     })
   }
   onFileSelected(event: any) {
@@ -48,10 +48,10 @@ export class AddExpenseComponent implements OnInit{
     this.selectedFileName = selectedFile ? selectedFile.name : undefined;
     this.expenseFm.get('file')?.setValue(selectedFile);
   }
-  
+
   submit() {
     let userModel:Expense=this.expenseFm.value as Expense;
-    console.log( "form data before sending request",userModel);
+    //console.log( "form data before sending request",userModel);
     this.expenseService.addNewExpense(userModel).subscribe({
       next:(data:any)=>{
         alert(data.message);
@@ -59,14 +59,14 @@ export class AddExpenseComponent implements OnInit{
         this.UpdateAllExpenses();
       },
       error:(err)=>{
-        console.log("error in editing: ", err);
+        //console.log("error in editing: ", err);
       }
     })
   }
   UpdateAllExpenses(){
     this.expenseService.getAllExpenses().subscribe((data:any)=>{
           this.expenseService.updateListOfData(data);
-          console.log( "data Updated : " ,data);
+          //console.log( "data Updated : " ,data);
         })
   }
   closeDialog() {

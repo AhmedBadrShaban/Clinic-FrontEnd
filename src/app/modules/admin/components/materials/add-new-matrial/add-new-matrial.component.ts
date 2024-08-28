@@ -28,7 +28,7 @@ export class AddNewMatrialComponent implements OnInit {
 
   submit() {
     let userModel:Materials=this.newMaterialFm.value as Materials;
-    console.log(userModel);
+    //console.log(userModel);
     this.materialService.addMaterial(userModel).subscribe({
       next:(responed:any)=>{
          alert(responed.message);
@@ -45,7 +45,7 @@ export class AddNewMatrialComponent implements OnInit {
   UpdateAllMaterials(){
     this.materialService.getAllMaterials().subscribe((data:any)=>{
       this.materialService.updateData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
 

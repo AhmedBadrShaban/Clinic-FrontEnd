@@ -34,7 +34,7 @@ export class DoctorsComponent implements OnInit {
     this.getAllDoctorsReports();
     this.docService.listOfData$.subscribe((data: any) => {
       this.doctors = data;
-      console.log('Updated Data recived : ', this.doctors);
+      //console.log('Updated Data recived : ', this.doctors);
       this.autoComplete();
     });
   }
@@ -42,16 +42,16 @@ export class DoctorsComponent implements OnInit {
     this.docService.DoctorsReport().subscribe((data) => {
       this.doctors = data;
       this.doctorsTemp=this.doctors;
-      console.log('AllDataToSearchIn :>> ', this.doctorsTemp);
+      //console.log('AllDataToSearchIn :>> ', this.doctorsTemp);
       this.autoComplete();
-      console.log('Doctors :>> ', this.doctors);
+      //console.log('Doctors :>> ', this.doctors);
     });
   }
   getAllDoctors() {
     this.docService.getAllDoctors().subscribe((data) => {
       this.doctors = data;
       this.autoComplete();
-      console.log('Doctors :>> ', this.doctors);
+      //console.log('Doctors :>> ', this.doctors);
     });
   }
   switchStatus(id: any) {
@@ -61,18 +61,18 @@ export class DoctorsComponent implements OnInit {
         this.getAllDoctorsReports();
       },
       error: (err) => {
-        console.log('err :>> ', err.error.message);
+        //console.log('err :>> ', err.error.message);
       },
     });
   }
 
   search() {
     this.doctors = this.doctorsTemp;
-    console.log('doctors :>> ', this.doctors);
+    //console.log('doctors :>> ', this.doctors);
     this.doctors = this.doctors.filter((doctor) =>
       doctor.doctorName.toLowerCase().includes(this.searchValue.toLowerCase())
     );
-    console.log('Search results:', this.doctors);
+    //console.log('Search results:', this.doctors);
   }
 
   clearSearch() {
@@ -85,7 +85,7 @@ export class DoctorsComponent implements OnInit {
       (doctors) => `${doctors.doctorName}`
     );
     this.filteredData = this.AllDataToSearchIn;
-    console.log(this.filteredData);
+    //console.log(this.filteredData);
   }
 
   onChange(value: string): void {

@@ -34,7 +34,7 @@ export class AddNewRoomComponent implements OnInit {
 
   submit() {
     let userModel=this.newRoomFm.value;
-    console.log(userModel);
+    //console.log(userModel);
     this.roomService.addRoom(userModel).subscribe({
       next:(responed:any)=>{
          alert(responed.message);

@@ -45,22 +45,22 @@ export class AddPackageComponent {
     });
     // this.patientservice.getAllPatientsNumbers().subscribe((numbers: any) => {
     //   this.AllNumbers = numbers;
-    //   console.log('patientNumbers :>> ', this.AllNumbers);
+    //   //console.log('patientNumbers :>> ', this.AllNumbers);
     //   this.filteredNumbers = this.AllNumbers;
     // });
 
     this.packageservice.getAllPackages().subscribe((data: any) => {
       this.AllPackages = data;
-      console.log('AllPackages :>> ', this.AllPackages);
+      //console.log('AllPackages :>> ', this.AllPackages);
       this.filteredPackages = this.AllPackages.map(pkg => pkg.packageName);
     });
   }
 
 
   submit() {
-     console.log('Form Data:', this.formData);
+     //console.log('Form Data:', this.formData);
 
-    console.log('sum of Payments is :>> ',this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit );
+    //console.log('sum of Payments is :>> ',this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit );
     if(this.formData.packageCost > this.formData.cash + this.formData.vodafoneCash + this.formData.visa + this.formData.credit + this.formData.instaPay + this.formData.debit)
     {
       alert("Total Payments Value is Less Than the Package Cost !! ")
@@ -80,7 +80,7 @@ export class AddPackageComponent {
         this.update()
         },
       error: (err) => {
-        console.log("error in Reserve a Package ", err);
+        //console.log("error in Reserve a Package ", err);
       }
      }
     );
@@ -93,14 +93,14 @@ export class AddPackageComponent {
         AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
     );
     this.searchValue = this.extractPhoneNumberFromSearchResult(this.filteredData[0]);
-    console.log('search Value :>> ', this.searchValue);
+    //console.log('search Value :>> ', this.searchValue);
   }
   onChange2(value: string): void {
     this.filteredPackages = this.AllPackages.map(pkg => pkg.packageName)
     .filter(packageName => packageName.toLowerCase().indexOf(value.toLowerCase()) !== -1);
     const selectedPackage = this.AllPackages.find(pkg => pkg.packageName === this.formData.packageName);
     this.formData.packageCost = selectedPackage ? selectedPackage.packageCost : '';
-    console.log('cost of selected Package :>> ', this.formData.packageCost);
+    //console.log('cost of selected Package :>> ', this.formData.packageCost);
   }
   closeDialog() {
     this.dialogRef.close(AddPackageComponent);
@@ -109,13 +109,13 @@ export class AddPackageComponent {
     this.packageservice.getAllReservedPackages().subscribe((data:any)=>{
   // Update the parent component's listOfData
      this.packageservice.updateListOfData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
   extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
     const parts = selectedRecord.split('-');
     if (parts.length === 2) {
-      console.log('Number is Fn.. :>> ', parts[1]);
+      //console.log('Number is Fn.. :>> ', parts[1]);
       return parts[1];
     }
     return selectedRecord;

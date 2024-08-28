@@ -28,10 +28,10 @@ export class ReservationsComponent implements OnInit  {
       this.position= 'bottom' as NzTablePaginationPosition
    }
   ngOnInit(){
-    console.log('rservations History ini :>> ' );
-    console.log('Recived rservations History  phoneNumber :>> ', this.phoneNumber);
+    //console.log('rservations History ini :>> ' );
+    //console.log('Recived rservations History  phoneNumber :>> ', this.phoneNumber);
     this.reservationsService.phone$.subscribe((data:any) => {
-      console.log('Updated  Reservations History phoneNumber :>> ', data);
+      //console.log('Updated  Reservations History phoneNumber :>> ', data);
       if(data!=0 && this.phoneNumber){
         this.phoneNumber = data;
         this.getReservations();
@@ -45,11 +45,11 @@ export class ReservationsComponent implements OnInit  {
     }
 
    getReservations(){
-    console.log('phone Before API :>> ', this.phoneNumber);
+    //console.log('phone Before API :>> ', this.phoneNumber);
     if(this.phoneNumber){
     this.reservationsService.getReservationsHistory(this.phoneNumber).subscribe((data)=>{
       this.reservations =data;
-      console.log('recived Reservations History :>> ',  this.reservations);
+      //console.log('recived Reservations History :>> ',  this.reservations);
      })
     }
     }

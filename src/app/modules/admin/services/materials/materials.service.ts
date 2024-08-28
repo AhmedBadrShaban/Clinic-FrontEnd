@@ -23,7 +23,7 @@ export class MaterialsService {
       return this.http.post(`${this.baseUrl}admin/add-material` , data);
   }
   addProuduct(data:any){
-    console.log('data :>> ', data);
+    //console.log('data :>> ', data);
     return this.http.post(`${this.baseUrl}receptionist/product` , data);
   }
   productsReport():Observable<any>{

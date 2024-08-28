@@ -24,7 +24,7 @@ export class AddNewServiceComponent implements OnInit {
   ngOnInit(): void {
     this.serService.getAllRooms().subscribe((data)=>{
       this.allRooms = data;
-      console.log('allRooms :>> ', this.allRooms);
+      //console.log('allRooms :>> ', this.allRooms);
     })
   }
 
@@ -38,15 +38,15 @@ export class AddNewServiceComponent implements OnInit {
          this.update();
       },
       error:(err)=>{
-        console.log('Error :>> ', err.error.message);
+        //console.log('Error :>> ', err.error.message);
       }
     })
-    console.log(userModel);
+    //console.log(userModel);
   }
   update(){
     this.serService.getAllServices().subscribe((data)=>{
       this.serService.updateData(data);
-      console.log( "Services Updated : " ,data);
+      //console.log( "Services Updated : " ,data);
 
     })
 

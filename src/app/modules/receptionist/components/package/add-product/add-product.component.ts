@@ -44,13 +44,13 @@ export class AddProductComponent implements OnInit {
 
     // this.patientservice.getAllPatientsNumbers().subscribe((numbers: any) => {
     //   this.AllNumbers = numbers;
-    //   console.log('patientNumbers :>> ', this.AllNumbers);
+    //   //console.log('patientNumbers :>> ', this.AllNumbers);
     //   this.filteredNumbers = this.AllNumbers;
     // });
 
     this.productservice.getAllMaterials().subscribe((data: any) => {
       this.AllProducts = data;
-      console.log('AllProuducts :>> ', this.AllProducts);
+      //console.log('AllProuducts :>> ', this.AllProducts);
       this.filteredProducts = this.AllProducts.map(pk => pk.materialName);
     });
   }
@@ -58,8 +58,8 @@ export class AddProductComponent implements OnInit {
 
   submit() {
     let userModel=this.addProductFm.value ;
-    console.log('Form Data:', userModel);
-    console.log('sum of Payments is :>> ',userModel.cash + userModel.vodafoneCash + userModel.visa + userModel.credit + userModel.instaPay );
+    //console.log('Form Data:', userModel);
+    //console.log('sum of Payments is :>> ',userModel.cash + userModel.vodafoneCash + userModel.visa + userModel.credit + userModel.instaPay );
     if(userModel.total > userModel.cash + userModel.vodafoneCash + userModel.visa + userModel.credit + userModel.instaPay)
     {
       alert("Total Payments Value is Less Than the Total Cost !! ")
@@ -91,7 +91,7 @@ export class AddProductComponent implements OnInit {
         AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
     );
   this.searchValue = this.extractPhoneNumberFromSearchResult(this.filteredData[0]);
-  console.log('search Value :>> ', this.searchValue);
+  //console.log('search Value :>> ', this.searchValue);
   }
 
 
@@ -152,7 +152,7 @@ export class AddProductComponent implements OnInit {
   extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
     const parts = selectedRecord.split('-');
     if (parts.length === 2) {
-      console.log('Number is Fn.. :>> ', parts[1]);
+      //console.log('Number is Fn.. :>> ', parts[1]);
       return parts[1];
     }
     return selectedRecord;

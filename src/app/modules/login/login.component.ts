@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
 
     }
     ngOnInit(): void {
-      console.log("loggedin user type"  ,this.authService.userType);
+      //console.log("loggedin user type"  ,this.authService.userType);
 
       if(this.authService.isLogged){
         const mappedUserType = this.mapUserRoleToString(this.authService.userType);
@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(credentials).subscribe(
         (data: any) => {
           // Handle successful login response
-          console.log('Login successful', data);
+          //console.log('Login successful', data);
           this.authService.isLogged=true;
           this.authService.userType=data.authority;
           this.authService.setToken( data.token);
@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
             this.router.navigateByUrl('doctor')
           }
           else if(userAuthority==='ROLE_CONTRIBUTOR'){
-            console.log('navigating Contributer :>> ');
+            //console.log('navigating Contributer :>> ');
             this.router.navigateByUrl('contributer')
           }
         },
@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
           // Handle login error
           alert(error.error.message);
         })
-        // alert("welcome " + user.name );
+        // alert("welcome " + this.username );
       }
 
       private mapUserRoleToString(userRole: string|null): string {

@@ -21,7 +21,7 @@ export class PatientService {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-phones`);
   }
   addNewPatient(patientData:any){
-    console.log("data : " , patientData )
+    //console.log("data : " , patientData )
     return this.http.post(`${this.baseUrl}receptionist/patients` , patientData);
   }
   checkDepit(phone:string):Observable<boolean>{
@@ -31,7 +31,7 @@ export class PatientService {
     return this.http.get<any>(`http://localhost:8080/receptionist/patients-with-phone?phoneNumber=${primaryPhone}`);
   }
   sendPoints(data:any){
-    console.log("data : " , data )
+    //console.log("data : " , data )
     return this.http.post(`${this.baseUrl}receptionist/convertPoints` , data);
   }
   updatePointsHistory(primaryPhone:any){
@@ -39,7 +39,7 @@ export class PatientService {
   }
   searchPatients(phoneNumber:any): Observable<any> {
     const url = 'http://localhost:8080/receptionist/patients-with-phone';
-    console.log("Searching by Number:" ,phoneNumber);
+    //console.log("Searching by Number:" ,phoneNumber);
     let queryParams = new HttpParams().append("phoneNumber",phoneNumber);
     return this.http.get<any>(url,{params:queryParams});
   }

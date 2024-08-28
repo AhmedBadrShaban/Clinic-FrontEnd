@@ -31,7 +31,7 @@ export class AfterWorkComponent implements OnInit {
 
   ngOnInit(): void {
     if(!this.data){
-      console.log('Received afterWork reservation ID :>> ', this.id);
+      ////console.log('Received afterWork reservation ID :>> ', this.id);
       this.reservationService.getAllServices(this.id).subscribe((data) => {
         this.reservationServices = data;
       for (const service of this.reservationServices) {
@@ -48,7 +48,7 @@ export class AfterWorkComponent implements OnInit {
     });
     }
     else{
-      console.log("received History Data is: ", this.data);
+      ////console.log("received History Data is: ", this.data);
       this.reservationServices[0] =this.data.service;
       for (const service of this.reservationServices) {
         this.editedForm = this.fb.group({
@@ -78,7 +78,7 @@ export class AfterWorkComponent implements OnInit {
 
   onSubmit() {
    const  afterWork = this.doneServicesForm.value.dataList;
-    console.log(this.doneServicesForm.value.dataList);
+    ////console.log(this.doneServicesForm.value.dataList);
     this.doctorService.completeReservation(this.id ,afterWork).subscribe({
       next: (data: any) => {
         alert(data.message);
@@ -90,7 +90,7 @@ export class AfterWorkComponent implements OnInit {
     })
 }
 updateHistory(){
-  console.log('Updated Data is  :>> ' , this.editedForm.value  );
+  ////console.log('Updated Data is  :>> ' , this.editedForm.value  );
   this.reservationsApi.updateHistory( this.editedForm.value.historyId ,  this.editedForm.value).subscribe({
  next: (data: any) => {
         alert(data.message);
@@ -109,7 +109,7 @@ UpdatePatientHistory(){
      this.reservationsApi.getHistory(this.data.phoneNumber).subscribe((data:any)=>{
   // Update the parent component's listOfData
      this.reservationsApi.updatePatientHistory(data);
-      console.log( "data Updated : " ,data);
+      ////console.log( "data Updated : " ,data);
     })
 }
 closeDialog() {

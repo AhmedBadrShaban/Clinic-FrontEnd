@@ -16,13 +16,13 @@ export class PackageDetailsComponent implements OnInit {
    constructor(private dialogRef: MatDialogRef<PackageDetailsComponent> , @Inject(MAT_DIALOG_DATA) public id: string , private packService:PackageService , private updatePackage:MatDialog ){
 
      this.packID = id;
-    console.log('packID :>> ', this.packID);
+    //console.log('packID :>> ', this.packID);
     this.packService.getPackageDetailsById(this.packID).subscribe((data)=>{
       this.packDetails =data;
       if(this.packDetails.reservedService.length>0){
         this.servicePack =true;
       }
-      console.log('object :>> ',  this.packDetails);
+      //console.log('object :>> ',  this.packDetails);
 
     })
   }

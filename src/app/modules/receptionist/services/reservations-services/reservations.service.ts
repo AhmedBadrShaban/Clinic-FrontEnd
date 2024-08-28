@@ -20,27 +20,27 @@ export class ReservationsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone?phoneNumber=${phoneNumber}`);
   }
   getHistory(phone:any):Observable<any>{
-    console.log('phone before History:>> ', phone);
+    //console.log('phone before History:>> ', phone);
     return this.http.get<any>(`${this.baseUrl}receptionist/patient-history?phone=${phone}`  );
   }
   updateHistory(id:number , updatedData:any){
-    console.log('Updated History:>> ', updatedData);
+    //console.log('Updated History:>> ', updatedData);
     return this.http.put<any>(`${this.baseUrl}admin/update-patient-history?historyId=${id}` , updatedData );
   }
   getPackages(phone:any):Observable<any>{
-    console.log('phone before Packages:>> ', phone);
+    //console.log('phone before Packages:>> ', phone);
     return this.http.get<any>(`${this.baseUrl}receptionist/packages-by-phone?phone=${phone}`);
   }
   getPointsHistory(phone:any):Observable<any>{
-    console.log('phone before Points History:>> ', phone);
+    //console.log('phone before Points History:>> ', phone);
     return this.http.get<any>(`${this.baseUrl}receptionist/point-histories?phone=${phone}`);
   }
   getReservationsHistory(phone:any):Observable<any>{
-    console.log('phone before Reservations History:>> ', phone);
+    //console.log('phone before Reservations History:>> ', phone);
     return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation-phone?phone=${phone}`);
   }
   getPaymentHistory(phone:any):Observable<any>{
-    console.log('phone before Payment History:>> ', phone);
+    //console.log('phone before Payment History:>> ', phone);
     return this.http.get<any>(`${this.baseUrl}receptionist/get-patient-daily-sheet?phone=${phone}`);
   }
 
@@ -51,7 +51,7 @@ export class ReservationsService {
 
   // getPatientPoints(phone : string):Observable<PatientPoints>{
   //   const url = 'http://localhost:8080/receptionist/point-histories';
-  //   console.log("Points History of patient with Number:" , phone);
+  //   //console.log("Points History of patient with Number:" , phone);
   //   let queryParams = new HttpParams().append("phone",phone);
   //   return this.http.get<any>(url,{params:queryParams});
   // }

@@ -29,7 +29,7 @@ export class RoomsComponent implements OnInit {
     })
     this.allReservation.rooms$.subscribe((data:any)=>{
       this.roomsNames=data;
-      console.log('Updated Rooms recived : ', this.roomsNames);
+      //console.log('Updated Rooms recived : ', this.roomsNames);
     })
     this.getAllReservations();
      this.allReservation.listOfData$.subscribe((data: any) => {
@@ -48,9 +48,9 @@ export class RoomsComponent implements OnInit {
     } else {
       this.activeTabTitle = null;
     }
-    console.log('tab Chenged to :>> ', this.activeTabTitle);
+    //console.log('tab Chenged to :>> ', this.activeTabTitle);
     this.allReservation.getAvalliableSlots(this.activeTabTitle , this.selectedDate).subscribe((data=>{
-      console.log('Update after Tab Chenges :>> ');
+      //console.log('Update after Tab Chenges :>> ');
       this.allReservation.updateSlots(data);
     }))
 
@@ -61,7 +61,7 @@ export class RoomsComponent implements OnInit {
     }
     else if(dialogType == 'reservation')
     {
-      console.log('currentActiveRoom :>> ', currentActiveRoom);
+      //console.log('currentActiveRoom :>> ', currentActiveRoom);
       const data ={
         activeRoom:currentActiveRoom,
         date : date
@@ -76,37 +76,37 @@ export class RoomsComponent implements OnInit {
     this.allReservation.getAllReservations(this.selectedDate).subscribe({
       next: (data) => {
         this.allReservations = data;
-         console.log( "Here is all Rooms Reservations",this.allReservations )
+         //console.log( "Here is all Rooms Reservations",this.allReservations )
         },
       error: (err) => {
-        console.log("error in posting: " + err);
+        //console.log("error in posting: " + err);
       }
     });
   }
   sort(){
-    
+
   }
   search(key:string){
-    console.log("executing Search");
+    //console.log("executing Search");
   // this.DoctorScheduleService.Search(key).subscribe((data:any)=>{
-  //     // console.log(data);
+  //     // //console.log(data);
   //     this.listOfData =data;
-  //     console.log( "Search result is  : " ,this.listOfData);
+  //     //console.log( "Search result is  : " ,this.listOfData);
   //   })
   }
   onDateChange(event: any) {
     this.selectedDate = event.value;
     this.selectedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
-    console.log('selected date :>> ', this.selectedDate);
+    //console.log('selected date :>> ', this.selectedDate);
     this.getAllReservations();
     this.allReservation.getAvalliableSlots(this.activeTabTitle , this.selectedDate).subscribe((data=>{
-      console.log('Update after Date Chenges :>> ');
+      //console.log('Update after Date Chenges :>> ');
       this.allReservation.updateSlots(data);
     }))
     // this.DoctorScheduleService.filterByDate(formattedDate).subscribe((data:any)=>{
-    //   // console.log(data);
+    //   // //console.log(data);
     //   this.listOfData =data;
-    //   console.log( "Search result is  : " ,this.listOfData);
+    //   //console.log( "Search result is  : " ,this.listOfData);
     // })
 
   }

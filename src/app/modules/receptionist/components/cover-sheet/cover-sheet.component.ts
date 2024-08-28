@@ -74,23 +74,23 @@ export class CoverSheetComponent implements OnInit {
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
       this.CoverSheetService.getAllSheets(formattedDate).subscribe((data:any)=>{
        this.listOfData =data;
-      console.log( "data recived : " ,this.listOfData);
+      //console.log( "data recived : " ,this.listOfData);
     })
 
    }
 
   ngOnInit(): void {
 
-  
+
   }
 
   onDateChange(event: any) {
     this.selectedDate = event.value;
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     this.CoverSheetService.getAllSheets(formattedDate).subscribe((data:any)=>{
-      // console.log(data);
+      // //console.log(data);
       this.listOfData =data;
-      console.log( "New recived Sheet : " ,this.listOfData);
+      //console.log( "New recived Sheet : " ,this.listOfData);
     })
 
   }

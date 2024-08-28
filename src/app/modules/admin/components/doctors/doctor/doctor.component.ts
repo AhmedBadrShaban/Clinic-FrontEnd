@@ -20,7 +20,7 @@ export class DoctorComponent {
     // Subscribe to route params and query params
     this.route.params.subscribe((params) => {
       this.doctorId = params['id'];
-      console.log('doctorId :>> ', this.doctorId);
+      //console.log('doctorId :>> ', this.doctorId);
       this.doctorInfo();
     });
   }
@@ -28,7 +28,7 @@ export class DoctorComponent {
   doctorInfo() {
     this.docService.getDoctor(this.doctorId).subscribe((data) => {
       this.doctorData = data;
-      console.log('data :>> ', data);
+      //console.log('data :>> ', data);
     });
   }
 
@@ -39,7 +39,7 @@ export class DoctorComponent {
         location.reload();
       },
       error: (err) => {
-        console.log('err :>> ', err.error.message);
+        //console.log('err :>> ', err.error.message);
       },
     });
   }
@@ -52,7 +52,7 @@ export class DoctorComponent {
     if (this.doctorData.password === "") {
       delete this.doctorData.password;
     }
-    console.log('Updated Doc Data', this.doctorData);
+    //console.log('Updated Doc Data', this.doctorData);
     this.docService
       .updateProfile(this.doctorId, this.doctorData)
       .subscribe({

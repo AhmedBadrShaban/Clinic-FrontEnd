@@ -42,7 +42,7 @@ export class AddNewDoctorComponent implements OnInit {
 
   submit() {
     let userModel:Doctors=this.newDoctorFm.value as Doctors;
-    console.log(userModel);
+    //console.log(userModel);
     this.doctorService.addDoctor(userModel).subscribe({
       next:(responed:any)=>{
          alert("User Added Successfully");
@@ -57,12 +57,12 @@ export class AddNewDoctorComponent implements OnInit {
 
     })
 
-    console.log(userModel);
+    //console.log(userModel);
   }
   updateAllDoctors(){
     this.doctorService.DoctorsReport().subscribe((data:any)=>{
       this.doctorService.updateData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
 

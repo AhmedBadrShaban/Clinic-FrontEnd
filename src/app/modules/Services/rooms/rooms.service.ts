@@ -12,7 +12,7 @@ export class RoomsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/get-rooms-with-all-reservation?date=${date}`);
   }
   getRoomReservation(roomName:any , date:any):Observable<any>{
-      console.log("t1");
+      //console.log("t1");
       return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation?roomName=${roomName}&date=${date}`);
     }
   allRooms():Observable<any>{
@@ -39,7 +39,7 @@ export class RoomsService {
     return this.http.post(`${this.baseUrl}admin/rooms` , data);
   }
   chengeReservationStatus(id:number , status:string){
-    console.log('chenging reservation status with id : ', id , "to status : " , status);
+    //console.log('chenging reservation status with id : ', id , "to status : " , status);
     return this.http.post(`${this.baseUrl}receptionist/roomreservationn?id=${id}&status=${status}` ,id);
 
   }
@@ -66,7 +66,7 @@ updatedRooms(data: any[]){
  private slots = new BehaviorSubject< any[]> ([]);
 updateSlots$ = this.slots.asObservable();
 updateSlots(data: any[]){
-  console.log('Sending New Slots :>> ');
+  //console.log('Sending New Slots :>> ');
   this.slots.next(data);
   }
 private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);

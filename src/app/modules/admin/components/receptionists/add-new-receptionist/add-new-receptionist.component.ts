@@ -54,12 +54,12 @@ export class AddNewReceptionistComponent implements OnInit {
       }
 
     })
-    console.log(userModel);
+    //console.log(userModel);
   }
   UpdateAllReciptianist(){
     this.reciptianistService.getAllReciptianist().subscribe((data:any)=>{
       this.reciptianistService.updateData(data);
-      console.log( "data Updated : " ,data);
+      //console.log( "data Updated : " ,data);
     })
   }
 
