@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PatientService } from '../../services/patient-server/patient.service';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { DatePipe } from '@angular/common';
+import { ReservationsService } from '../../services/reservations-services/reservations.service';
 @Component({
   selector: 'app-reservation-fm',
   templateUrl: './reservation-fm.component.html',
@@ -15,15 +16,17 @@ export class ReservationFmComponent implements OnInit {
   reservationFm: FormGroup;
   roomName:string;
   date:any;
-  patientphone:any;
+  patientNumber: any |null;
+  allPatientsNamesAndNumbers: any[] = [];
+  filteredData: any[] = [];
+  AllDataToSearchIn: any[] = [];
   doctorName:any;
   AllNumbers:any[]=[];
-  filteredNumbers: string[] = [];
   AllNames:any[]=[];
   FilterdNames: string[] = [];
   AllServices:any[]=[];
     constructor( @Inject(MAT_DIALOG_DATA) public data: any ,private fb: FormBuilder, private datePipe:DatePipe
-    ,private reservationService:ReservationfmService , private patientService:PatientService ,private roomService:RoomsService
+    ,private reservationService:ReservationfmService , private namesAndNumbers :ReservationsService ,private roomService:RoomsService
      , public dialogRef: MatDialogRef<ReservationFmComponent>) {
     this.roomName=data.activeRoom;
     //console.log('recived room Name :>> ', this.roomName);
@@ -40,11 +43,32 @@ export class ReservationFmComponent implements OnInit {
       service: fb.array([this.fb.control('')]),
     });
   }
+
+  ngOnInit(): void {
+    this.namesAndNumbers.getPatientsNamesAndPhones().subscribe((data: any) => {
+         this.allPatientsNamesAndNumbers = data;
+          if (Array.isArray(this.allPatientsNamesAndNumbers)) {
+           this.AllDataToSearchIn = this.allPatientsNamesAndNumbers;
+           this.filteredData = this.AllDataToSearchIn;
+         }
+       });
+       this.reservationService.getAllDoctorsNames().subscribe((data:any)=>{
+         this.AllNames =data;
+         //console.log('AllNames of Doctors:>> ', this.AllNames);
+         this.FilterdNames = this.AllNames;
+       })
+       this.reservationService.getAllServicesNamesToRoom(this.roomName).subscribe((data:any)=>{
+         this.AllServices=data;
+         //console.log('AllServices', this.AllServices);
+        })
+     }
+
   submit() {
     let userModel:ReservationRes=this.reservationFm.value as ReservationRes;
+    userModel.patientPhone =this.namesAndNumbers.extractPhoneNumberFromSearchResult(userModel.patientPhone);
     userModel.start = this.formatTime(userModel.start);
     userModel.end = this.formatTime(userModel.end);
-    //console.log(userModel);
+    console.log(userModel);
     this.reservationService.addReservation(userModel , this.roomName).subscribe({
       next:(responed:any)=>{
         alert(responed.message)
@@ -67,24 +91,13 @@ export class ReservationFmComponent implements OnInit {
     //console.log(userModel);
   }
 
-  ngOnInit(): void {
-    this.patientService.getAllPatientsNumbers().subscribe((numbers: any) => {
-      this.AllNumbers = numbers;
-      //console.log('patientNumbers :>> ', this.AllNumbers);
-      this.filteredNumbers = this.AllNumbers;
-    });
-    this.reservationService.getAllDoctorsNames().subscribe((data:any)=>{
-      this.AllNames =data;
-      //console.log('AllNames of Doctors:>> ', this.AllNames);
-      this.FilterdNames = this.AllNames;
-    })
-    this.reservationService.getAllServicesNamesToRoom(this.roomName).subscribe((data:any)=>{
-      this.AllServices=data;
-      //console.log('AllServices', this.AllServices);
-     })
-  }
+
   onChange(value: string): void {
-    this.filteredNumbers = this.AllNumbers.filter(AllNumbers => AllNumbers.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredData = this.AllDataToSearchIn.filter(
+      (AllDataToSearchIn) =>
+        AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
+    );
+    //console.log('search Value :>> ', this.searchValue);
   }
   onChange2(value: string): void {
     this.FilterdNames = this.AllNames.filter(AllNames => AllNames.toLowerCase().indexOf(value.toLowerCase()) !== -1);

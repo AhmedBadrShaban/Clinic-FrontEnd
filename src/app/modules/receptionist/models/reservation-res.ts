@@ -1,7 +1,7 @@
 import { Time } from "@angular/common";
 
 export interface ReservationRes {
-  patientPhone: string;
+  patientPhone: string | null;
   doctorName: string;
   start: any;
   end: any;

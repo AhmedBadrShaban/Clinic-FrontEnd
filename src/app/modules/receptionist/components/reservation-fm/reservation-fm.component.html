@@ -3,7 +3,24 @@
   style="width: 600px; background-color: #f8f8f8; margin-top: 10px"
 >
   <form [formGroup]="reservationFm" (ngSubmit)="submit()">
+
     <div class="row m-2 justify-content-between">
+      <label for="patient-number" class="form-label w-100">Patient Number</label
+      ><br />
+      <input
+        class="form-select"
+        id="patient-number"
+        placeholder="Type Patient's Phone Number"
+        formControlName="patientPhone"
+         (ngModelChange)="onChange($event)"
+        [nzAutocomplete]="PatientAuto"
+      />
+      <nz-autocomplete
+        [nzDataSource]="filteredData"
+        #PatientAuto
+      ></nz-autocomplete>
+    </div>
+    <!-- <div class="row m-2 justify-content-between">
       <div class="d-flex align-items-center">
         <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px"></i>
         <label for="patient-number" class="form-label w-100 ">Patient Number</label><br>
@@ -17,7 +34,7 @@
         [nzAutocomplete]="PatientAuto"
       />
       <nz-autocomplete [nzDataSource]="filteredNumbers" #PatientAuto></nz-autocomplete>
-    </div>
+    </div> -->
     <div class="row m-2 mt-3 justify-content-between">
       <div class="d-flex align-items-center">
         <img

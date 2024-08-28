@@ -83,7 +83,7 @@
   </div>
  <div class="buttons-container"  *ngIf="reservation.status != 'COMPLETED'">
   <button *ngIf="reservation.status == 'IN_PROGRESS' || reservation.status == 'WAITING' " mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'CONFIRMED')">Confirm Reservation</button>
-   <button *ngIf="reservation.status != 'DONE' &&reservation.status !=  'TO_DOCTOR'" mat-raised-button style="background-color:#33b249 !important;  margin-right: 2px; color: white; font-size:12px" (click)="openDialog()">Edit Reservation</button>
+   <button  mat-raised-button style="background-color:#33b249 !important;  margin-right: 2px; color: white; font-size:12px" (click)="openDialog()">Edit Reservation</button>
    <button *ngIf="reservation.status == 'CONFIRMED'" mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
    <button *ngIf="reservation.status == 'DONE'" mat-raised-button style="background-color:blue  !important; margin-right: 2px;  color: white; font-size:12px"  (click)="checkOut(reservation.reservationId)">GO TO CHECKOUT</button>
    <button *ngIf="reservation.status != 'DONE'" mat-raised-button style="background-color: red !important; margin-right: 2px;  color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'CANCELED')">Cancel Reservation</button>

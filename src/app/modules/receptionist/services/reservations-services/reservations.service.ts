@@ -44,8 +44,13 @@ export class ReservationsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/get-patient-daily-sheet?phone=${phone}`);
   }
 
-  modifyOnHistoryTable(id : string , date:PatientHistory){
-
+  extractPhoneNumberFromSearchResult(selectedRecord: any): string | null {
+    const parts = selectedRecord.split('-');
+    if (parts.length === 2) {
+      //console.log('Number is Fn.. :>> ', parts[1]);
+      return parts[1];
+    }
+    return selectedRecord;
   }
 
 

@@ -71,7 +71,7 @@ export class AddPackageComponent {
       alert("Total Payments Value is More Than the Package Cost !! ")
       return;
     }
-    this.formData.patientPhone = this.searchValue;
+    this.formData.patientPhone =this.namesAndNumbers.extractPhoneNumberFromSearchResult(this.formData.patientPhone);
     this.packageservice.reservePackage(this.formData).subscribe(
       {
       next: (data) => {

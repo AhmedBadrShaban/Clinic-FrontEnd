@@ -70,7 +70,7 @@ export class AddProductComponent implements OnInit {
       alert("Total Payments Value is More Than the Total Cost !! ")
       return;
     }
-    userModel.patientPhone = this.searchValue;
+    userModel.patientPhone =this.namesAndNumbers.extractPhoneNumberFromSearchResult(userModel.patientPhone);
     this.productservice.addProuduct(userModel).subscribe(
       {
       next: (data:any) => {
@@ -90,8 +90,7 @@ export class AddProductComponent implements OnInit {
       (AllDataToSearchIn) =>
         AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
     );
-  this.searchValue = this.extractPhoneNumberFromSearchResult(this.filteredData[0]);
-  //console.log('search Value :>> ', this.searchValue);
+   //console.log('search Value :>> ', this.searchValue);
   }
 
 
@@ -148,14 +147,6 @@ export class AddProductComponent implements OnInit {
   }
   closeDialog() {
     this.dialogRef.close(AddProductComponent);
-  }
-  extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
-    const parts = selectedRecord.split('-');
-    if (parts.length === 2) {
-      //console.log('Number is Fn.. :>> ', parts[1]);
-      return parts[1];
-    }
-    return selectedRecord;
   }
 
 

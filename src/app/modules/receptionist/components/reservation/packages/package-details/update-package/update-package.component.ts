@@ -1,3 +1,4 @@
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { Component, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -12,8 +13,10 @@ export class UpdatePackageComponent {
   allServices:any[]=[];
   formData: FormGroup;
   minDate: string;
+  userType:string | null;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any , public dialogRef: MatDialogRef<UpdatePackageComponent> ,
-   private fb: FormBuilder ,private pkgApi:PackageService) {
+   private fb: FormBuilder ,private pkgApi:PackageService ,private authService: AuthService) {
     this.formData = this.fb.group({
       numberOfPoints:[{ value:this.data.numberOfPoints, disabled: this.data.numberOfPoints==0 }],
       expire:[this.data.expire],
@@ -33,7 +36,7 @@ export class UpdatePackageComponent {
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
     const dd = String(today.getDate()).padStart(2, '0');
-
+    this.userType = this.authService.userType;
     this.minDate = `${yyyy}-${mm}-${dd}`;
 
    }
