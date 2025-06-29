@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';import {BasicReservationData}
   providedIn: 'root'
 })
 export class DoctorReservationsService {
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http:HttpClient) { }
 
   getAllDoctorReservation():Observable<any>{

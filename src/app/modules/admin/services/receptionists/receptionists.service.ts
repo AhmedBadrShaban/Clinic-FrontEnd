@@ -8,7 +8,7 @@ import {Receptionist} from "../../models/receptionist";
 })
 export class ReceptionistsService {
 
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http:HttpClient) { }
   addReciptianist(data:any){
     return this.http.post(`${this.baseUrl}api/auth/signup/receptionist` , data);

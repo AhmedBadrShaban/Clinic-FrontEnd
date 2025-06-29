@@ -7,11 +7,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class ReportsService {
 
 
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http:HttpClient) { }
   getMonthlyReports():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}admin/clinic-monthly-report`)
   }
 
- 
+
 }

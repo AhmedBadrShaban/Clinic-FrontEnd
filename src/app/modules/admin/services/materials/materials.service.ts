@@ -10,7 +10,7 @@ import {Materials, product} from '../../models/materials';
 })
 export class MaterialsService {
 
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http:HttpClient) { }
 
   getAllMaterials():Observable<any>{
