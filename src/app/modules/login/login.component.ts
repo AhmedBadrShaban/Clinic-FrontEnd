@@ -28,35 +28,40 @@ export class LoginComponent implements OnInit {
         username: this.username.nativeElement.value,
         password: this.password.nativeElement.value
       }
-      this.authService.login(credentials).subscribe(
-        (data: any) => {
-          // Handle successful login response
-          //console.log('Login successful', data);
-          this.authService.isLogged=true;
-          this.authService.userType=data.authority;
-          this.authService.setToken( data.token);
-          sessionStorage.setItem('isLogged', 'true');
-          sessionStorage.setItem('userType',  data.authority);
+           sessionStorage.setItem('isLogged', 'true');
+           this.authService.isLogged=true;
+           this.authService.userType= 'ROLE_RECEPTIONIST';
+      this.router.navigateByUrl('receptionist')
 
-          const userAuthority = data.authority;
-          if(userAuthority==='ROLE_RECEPTIONIST'){
-            this.router.navigateByUrl('receptionist')
-          }
-          else if(userAuthority==='ROLE_ADMIN'){
-            this.router.navigateByUrl('admin')
-          }
-          else if( userAuthority==='ROLE_DOCTOR'){
-            this.router.navigateByUrl('doctor')
-          }
-          else if(userAuthority==='ROLE_CONTRIBUTOR'){
-            //console.log('navigating Contributer :>> ');
-            this.router.navigateByUrl('contributer')
-          }
-        },
-        error => {
-          // Handle login error
-          alert(error.error.message);
-        })
+      // this.authService.login(credentials).subscribe(
+      //   (data: any) => {
+      //     // Handle successful login response
+      //     //console.log('Login successful', data);
+      //     this.authService.isLogged=true;
+      //     this.authService.userType=data.authority;
+      //     this.authService.setToken( data.token);
+      //     sessionStorage.setItem('isLogged', 'true');
+      //     sessionStorage.setItem('userType',  data.authority);
+
+      //     const userAuthority = data.authority;
+      //     if(userAuthority==='ROLE_RECEPTIONIST'){
+      //       this.router.navigateByUrl('receptionist')
+      //     }
+      //     else if(userAuthority==='ROLE_ADMIN'){
+      //       this.router.navigateByUrl('admin')
+      //     }
+      //     else if( userAuthority==='ROLE_DOCTOR'){
+      //       this.router.navigateByUrl('doctor')
+      //     }
+      //     else if(userAuthority==='ROLE_CONTRIBUTOR'){
+      //       //console.log('navigating Contributer :>> ');
+      //       this.router.navigateByUrl('contributer')
+      //     }
+      //   },
+      //   error => {
+      //     // Handle login error
+      //     alert(error.error.message);
+      //   })
         // alert("welcome " + this.username );
       }
 
