@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DailysheetService {
 
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http :HttpClient) { }
 
   getAllReciptianists():Observable<any>{
@@ -21,7 +21,7 @@ export class DailysheetService {
     return this.http.get<any>(`${this.baseUrl}receptionist/daily-sheet`);
   }
   filterDailySheet(roomName?: string , date?: any , doctorName?: string):Observable<any>{
-    const url = 'http://localhost:8080/receptionist/filter-daily-sheet';
+    const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
     let queryParams = new HttpParams();
     if(roomName)
     {
@@ -48,19 +48,19 @@ export class DailysheetService {
 
 
   // filterDailySheetByRoom(roomName: string):Observable<any>{
-  //   const url = 'http://localhost:8080/receptionist/filter-daily-sheet';
+  //   const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
   //   let queryParams = new HttpParams().append("roomName" , roomName);
   //   //console.log("Filter by roomName : " , roomName);
   //   return this.http.get<any>(url,{params:queryParams});
   // }
   // filterDailySheetByDate(date: any):Observable<any>{
-  //   const url = 'http://localhost:8080/receptionist/filter-daily-sheet';
+  //   const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
   //   let queryParams = new HttpParams().append("date" , date);
   //   //console.log("Filter by Date : " , date);
   //   return this.http.get<any>(url,{params:queryParams});
   // }
   // filterDailySheetByDoctor(doctor: string):Observable<any>{
-  //   const url = 'http://localhost:8080/receptionist/filter-daily-sheet';
+  //   const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
   //   let queryParams = new HttpParams().append("doctorName" , doctor);
   //   //console.log("Filter by doctor : " , doctor);
   //   return this.http.get<any>(url,{params:queryParams});

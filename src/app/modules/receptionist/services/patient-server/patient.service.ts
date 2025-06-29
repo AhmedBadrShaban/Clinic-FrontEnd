@@ -8,7 +8,7 @@ import { PatientInfo } from '../../models/patient-Info';
 })
 export class PatientService {
 
-   private baseUrl:string="http://localhost:8080/";
+   private baseUrl:string="http://192.168.1.6:8080/";
 
   constructor(private http :HttpClient) { }
   // getAllPatient():Observable<any>{
@@ -28,27 +28,27 @@ export class PatientService {
     return this.http.get<any>(`${this.baseUrl}receptionist/check-debit-for-patient?phone=${phone}`)
   }
   patientInfo(primaryPhone:any): Observable<any> {
-    return this.http.get<any>(`http://localhost:8080/receptionist/patients-with-phone?phoneNumber=${primaryPhone}`);
+    return this.http.get<any>(`http://192.168.1.6:8080/receptionist/patients-with-phone?phoneNumber=${primaryPhone}`);
   }
   sendPoints(data:any){
     //console.log("data : " , data )
     return this.http.post(`${this.baseUrl}receptionist/convertPoints` , data);
   }
   updatePointsHistory(primaryPhone:any){
-     return this.http.get<any>(`http://localhost:8080/receptionist/point-histories?phone=${primaryPhone}` );
+     return this.http.get<any>(`http://192.168.1.6:8080/receptionist/point-histories?phone=${primaryPhone}` );
   }
   searchPatients(phoneNumber:any): Observable<any> {
-    const url = 'http://localhost:8080/receptionist/patients-with-phone';
+    const url = 'http://192.168.1.6:8080/receptionist/patients-with-phone';
     //console.log("Searching by Number:" ,phoneNumber);
     let queryParams = new HttpParams().append("phoneNumber",phoneNumber);
     return this.http.get<any>(url,{params:queryParams});
   }
   updatePatient( primaryPhone:string, updatedData:PatientInfo){
-    const url = `http://localhost:8080/receptionist/update-patient?phone=${primaryPhone}`;
+    const url = `http://192.168.1.6:8080/receptionist/update-patient?phone=${primaryPhone}`;
     return this.http.put<any>(url, updatedData);
   }
   updatePatientDepit(primaryPhone:string, amount:any){
-    const url = `http://localhost:8080/receptionist/update-debit-for-patient?phone=${primaryPhone}&amount=${amount}`;
+    const url = `http://192.168.1.6:8080/receptionist/update-debit-for-patient?phone=${primaryPhone}&amount=${amount}`;
     return this.http.patch<any>(url , amount);
   }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation , HostListener } from '@angular/core';
 import { ReservationsService } from '../../services/reservations-services/reservations.service';
 import { PatientInfo } from '../../models/patient-Info';
 import { PatientPoints } from '../../models/patient-points';
@@ -14,6 +14,8 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   styleUrls: ['./reservation.component.css'],
 })
 export class ReservationComponent implements OnInit {
+
+  isVisible = false;
   patientData: any;
   selectedTab: string = 'patientInfoTab';
   patientNumber: any;
@@ -35,7 +37,6 @@ export class ReservationComponent implements OnInit {
     lastReservation: '',
   };
   userType: string | null;
-
   constructor(
     private reservationsService: ReservationsService,
     private patientService: PatientService,
@@ -45,6 +46,15 @@ export class ReservationComponent implements OnInit {
   ) {
     this.userType = loggedIn.userType;
     //console.log('User Type in Reservation is :>> ', this.userType);
+  }
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const rect = document.getElementById('animate')?.getBoundingClientRect();
+    if (rect && rect.top <= window.innerHeight && rect.bottom >= 0) {
+      this.isVisible = true;
+    } else {
+      this.isVisible = false;
+    }
   }
   ngOnInit(): void {
     if (this.userType != 'ROLE_DOCTOR') {
@@ -154,6 +164,5 @@ export class ReservationComponent implements OnInit {
       this.selectedTab = 'afterWorkTab';
     }
   }
-
 }
 

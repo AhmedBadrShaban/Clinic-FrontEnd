@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DoctorScheduleServiceService {
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http :HttpClient) { }
   getAllSchedules():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/DoctorScheduler` );
@@ -25,14 +25,14 @@ export class DoctorScheduleServiceService {
     return this.http.delete<any>(`${this.baseUrl}admin/delete-doctor-scheduler-by-id?schedulerId=${id}`);
   }
   Search(key:string): Observable<any> {
-    const url = 'http://localhost:8080/receptionist/DoctorScheduler/search';
+    const url = 'http://192.168.1.6:8080/receptionist/DoctorScheduler/search';
 
     let queryParams = new HttpParams().append("searchString",key);
 
     return this.http.get<any>(url,{params:queryParams});
 }
 filterByDate(date:any): Observable<any> {
-  const url = 'http://localhost:8080/receptionist/DoctorSchedulerbyDate';
+  const url = 'http://192.168.1.6:8080/receptionist/DoctorSchedulerbyDate';
   //console.log("filtling by date of :" ,date);
 
   let queryParams = new HttpParams().append("date",date);

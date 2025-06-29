@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class PackageService {
 
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http :HttpClient) { }
 
   getAllPackages():Observable<any>{
@@ -24,7 +24,7 @@ export class PackageService {
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages`);
   }
   filterByDate(date:any): Observable<any> {
-    const url = 'http://localhost:8080/receptionist/reserved-package-filter';
+    const url = 'http://192.168.1.6:8080/receptionist/reserved-package-filter';
     //console.log("filtling by date of :" ,date);
     let queryParams = new HttpParams().append("date",date);
     return this.http.get<any>(url,{params:queryParams});

@@ -7,7 +7,7 @@ import { UserService } from "./user.service";
   providedIn :'root'
 })
 export class AuthService{
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   isLogged: boolean = sessionStorage.getItem('isLogged') === 'true';
 
   private tokenKey = 'token';

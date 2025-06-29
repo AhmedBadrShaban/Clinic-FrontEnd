@@ -9,7 +9,7 @@ import {PatientPoints} from "../../models/patient-points";
   providedIn: 'root'
 })
 export class ReservationsService {
-  private baseUrl:string="http://localhost:8080/";
+  private baseUrl:string="http://192.168.1.6:8080/";
   constructor(private http :HttpClient) { }
 
 
@@ -55,7 +55,7 @@ export class ReservationsService {
 
 
   // getPatientPoints(phone : string):Observable<PatientPoints>{
-  //   const url = 'http://localhost:8080/receptionist/point-histories';
+  //   const url = 'http://192.168.1.6:8080/receptionist/point-histories';
   //   //console.log("Points History of patient with Number:" , phone);
   //   let queryParams = new HttpParams().append("phone",phone);
   //   return this.http.get<any>(url,{params:queryParams});
