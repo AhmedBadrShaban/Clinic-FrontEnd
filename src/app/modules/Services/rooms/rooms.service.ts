@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import{ HttpClient }from '@angular/common/http';
 import{ BehaviorSubject, Observable }from'rxjs';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoomsService {
-  private baseUrl:string="http://192.168.1.6:8080/";
-  constructor(private http :HttpClient) { }
+    private readonly baseUrl ;
+  constructor(private http :HttpClient ,private configService:ConfigService) {
+    this.baseUrl = this.configService.getBaseUrl();
+
+   }
   getAllReservations(date:any):Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/get-rooms-with-all-reservation?date=${date}`);
   }

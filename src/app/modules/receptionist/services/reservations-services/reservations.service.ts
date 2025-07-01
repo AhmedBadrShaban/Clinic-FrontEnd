@@ -4,13 +4,17 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {PatientHistory} from "../../models/patient-history";
 import {IdlePatients} from "../../models/idle-patients";
 import {PatientPoints} from "../../models/patient-points";
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationsService {
-  private baseUrl:string="http://192.168.1.6:8080/";
-  constructor(private http :HttpClient) { }
+    private readonly baseUrl ;
+  constructor(private http :HttpClient ,private configService:ConfigService ) { 
+    this.baseUrl = this.configService.getBaseUrl();
+
+  }
 
 
   getPatientsNamesAndPhones():Observable<any>{

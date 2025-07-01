@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ServiceService {
-  private baseUrl:string="http://192.168.1.6:8080/";
+    private readonly baseUrl ;
   constructor(private http:HttpClient) { }
 
   getAllServices():Observable<any>{

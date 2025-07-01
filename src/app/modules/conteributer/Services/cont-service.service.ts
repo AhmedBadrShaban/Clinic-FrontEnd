@@ -2,14 +2,18 @@ import { Injectable } from '@angular/core';
 import {ContData} from "../Models/cont-data";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContServiceService {
 
-  private baseUrl:string="http://192.168.1.6:8080/";
-  constructor(private http :HttpClient) { }
+    private readonly baseUrl ;
+  constructor(private http :HttpClient ,private configService:ConfigService ) { 
+    this.baseUrl = this.configService.getBaseUrl();
+
+  }
    getMonthlyReport(year:any , month:any):Observable<any>{
     return this.http.get<any>(`${this.baseUrl}admin/monthly-report?year=${year}&month=${month}`);
   }

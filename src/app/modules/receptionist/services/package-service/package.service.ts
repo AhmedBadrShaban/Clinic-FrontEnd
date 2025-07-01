@@ -1,14 +1,18 @@
 import{ HttpClient, HttpParams }from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PackageService {
 
-  private baseUrl:string="http://192.168.1.6:8080/";
-  constructor(private http :HttpClient) { }
+    private readonly baseUrl ;
+  constructor(private http :HttpClient ,private configService:ConfigService ) { 
+    this.baseUrl = this.configService.getBaseUrl();
+
+  }
 
   getAllPackages():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/packages-names`);

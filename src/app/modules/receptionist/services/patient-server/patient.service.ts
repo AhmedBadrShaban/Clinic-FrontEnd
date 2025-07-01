@@ -2,15 +2,19 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PatientInfo } from '../../models/patient-Info';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService {
 
-   private baseUrl:string="http://192.168.1.6:8080/";
+     private readonly baseUrl ;
 
-  constructor(private http :HttpClient) { }
+  constructor(private http :HttpClient ,private configService:ConfigService ) {
+    this.baseUrl = this.configService.getBaseUrl();
+
+   }
   // getAllPatient():Observable<any>{
   //   return this.http.get<any>(`${this.baseUrl}patients`);
   // }

@@ -2,17 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from "./user.service";
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn :'root'
 })
 export class AuthService{
-  private baseUrl:string="http://192.168.1.6:8080/";
+    private readonly baseUrl ;
   isLogged: boolean = sessionStorage.getItem('isLogged') === 'true';
 
   private tokenKey = 'token';
   userType: string | null = sessionStorage.getItem('userType');
-  constructor(private userService: UserService , private http: HttpClient) {}
+  constructor(private userService: UserService, private http: HttpClient, private configService: ConfigService) {
+    this.baseUrl = this.configService.getBaseUrl();
+  }
 
 
   login(credentials: { username: string, password: string }): Observable<any> {

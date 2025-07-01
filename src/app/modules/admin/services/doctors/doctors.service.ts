@@ -7,7 +7,7 @@ import {Doctors} from "../../models/doctors";
   providedIn: 'root'
 })
 export class DoctorsService {
-  private baseUrl:string="http://192.168.1.6:8080/";
+    private readonly baseUrl ;
   private token: string | null = sessionStorage.getItem('token');
   constructor(private http:HttpClient) { }
   addDoctor(data:any){

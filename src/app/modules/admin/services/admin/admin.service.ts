@@ -9,7 +9,7 @@ import { Admin,StatusOfAdmin } from '../../models/admin';
 export class AdminService {
 
   // private baseUrl:string="http://localhost:3000/";
-  // constructor(private http :HttpClient) { }
+  // constructor(private http :HttpClient ,private configService:ConfigService ) { }
   
   // getAdmin(adminId: number): Observable<any> {
   //   return this.http.get<any>(`${this.baseUrl}admins/${adminId}`);

@@ -2,14 +2,18 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExpenseService {
 
-  private baseUrl:string="http://192.168.1.6:8080/";
-  constructor(private http :HttpClient , private loggedIn:AuthService) { }
+    private readonly baseUrl ;
+  constructor(private http :HttpClient ,private configService:ConfigService  , private loggedIn:AuthService) { 
+    this.baseUrl = this.configService.getBaseUrl();
+
+  }
   getAllExpensesTypes():Observable<any>{
     if(this.loggedIn.userType=='ROLE_ADMIN'){
        return this.http.get<any>(`${this.baseUrl}admin/get-expenses-type`)
