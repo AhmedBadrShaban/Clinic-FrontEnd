@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {Doctors} from "../../models/doctors";
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,11 @@ import {Doctors} from "../../models/doctors";
 export class DoctorsService {
     private readonly baseUrl ;
   private token: string | null = sessionStorage.getItem('token');
-  constructor(private http:HttpClient) { }
+   constructor(private http:HttpClient , private configService:ConfigService) {
+     this.baseUrl = this.configService.getBaseUrl();
+
+    }
+
   addDoctor(data:any){
     return this.http.post(`${this.baseUrl}api/auth/signup/doctor` , data);
 }

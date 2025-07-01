@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {Receptionist} from "../../models/receptionist";
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,11 @@ import {Receptionist} from "../../models/receptionist";
 export class ReceptionistsService {
 
     private readonly baseUrl ;
-  constructor(private http:HttpClient) { }
+   constructor(private http:HttpClient , private configService:ConfigService) { 
+     this.baseUrl = this.configService.getBaseUrl();
+
+   }
+
   addReciptianist(data:any){
     return this.http.post(`${this.baseUrl}api/auth/signup/receptionist` , data);
 }

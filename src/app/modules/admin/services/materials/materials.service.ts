@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {Materials, product} from '../../models/materials';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 
 
@@ -11,7 +12,11 @@ import {Materials, product} from '../../models/materials';
 export class MaterialsService {
 
     private readonly baseUrl ;
-  constructor(private http:HttpClient) { }
+   constructor(private http:HttpClient , private configService:ConfigService) {
+     this.baseUrl = this.configService.getBaseUrl();
+
+    }
+
 
   getAllMaterials():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}admin/materials`)

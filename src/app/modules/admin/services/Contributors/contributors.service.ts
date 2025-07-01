@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Contributor} from "../../models/contributor";
 import { HttpClient } from '@angular/common/http';
+import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,11 @@ import { HttpClient } from '@angular/common/http';
 export class ContributorsService {
     private readonly baseUrl ;
   private token: string | null = sessionStorage.getItem('token');
-  constructor(private http:HttpClient) { }
+   constructor(private http:HttpClient , private configService:ConfigService) {
+     this.baseUrl = this.configService.getBaseUrl();
+
+    }
+
   addContributer(data:any){
     return this.http.post(`${this.baseUrl}api/auth/signup/contributor` , data);
 }
