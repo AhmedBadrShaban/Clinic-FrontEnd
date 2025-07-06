@@ -9,62 +9,71 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 })
 export class PatientService {
 
-     private readonly baseUrl ;
+  private readonly baseUrl: string;
 
-  constructor(private http :HttpClient ,private configService:ConfigService ) {
-    this.baseUrl = this.configService.getBaseUrl();
-
-   }
-  // getAllPatient():Observable<any>{
-  //   return this.http.get<any>(`${this.baseUrl}patients`);
-  // }
-  getAllIdlePatients():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/idlepatient`)
+  constructor(private http: HttpClient, private configService: ConfigService) {
+    this.baseUrl = this.configService.getBaseUrl(); // e.g., 'http://localhost:8080/'
   }
-  getAllPatientsNumbers():Observable<any>{
+
+  getAllIdlePatients(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}admin/idlepatient`);
+  }
+
+  getAllPatientsNumbers(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-phones`);
   }
-  addNewPatient(patientData:any){
-    //console.log("data : " , patientData )
-    return this.http.post(`${this.baseUrl}receptionist/patients` , patientData);
+
+  addNewPatient(patientData: any) {
+    return this.http.post(`${this.baseUrl}receptionist/patients`, patientData);
   }
-  checkDepit(phone:string):Observable<boolean>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/check-debit-for-patient?phone=${phone}`)
+
+  checkDepit(phone: string): Observable<boolean> {
+    const params = new HttpParams().set('phone', phone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/check-debit-for-patient`, { params });
   }
-  patientInfo(primaryPhone:any): Observable<any> {
-    return this.http.get<any>(`http://192.168.1.6:8080/receptionist/patients-with-phone?phoneNumber=${primaryPhone}`);
+
+  patientInfo(primaryPhone: any): Observable<any> {
+    const params = new HttpParams().set('phoneNumber', primaryPhone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone`, { params });
   }
-  sendPoints(data:any){
-    //console.log("data : " , data )
-    return this.http.post(`${this.baseUrl}receptionist/convertPoints` , data);
+
+  sendPoints(data: any) {
+    return this.http.post(`${this.baseUrl}receptionist/convertPoints`, data);
   }
-  updatePointsHistory(primaryPhone:any){
-     return this.http.get<any>(`http://192.168.1.6:8080/receptionist/point-histories?phone=${primaryPhone}` );
+
+  updatePointsHistory(primaryPhone: any): Observable<any> {
+    const params = new HttpParams().set('phone', primaryPhone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/point-histories`, { params });
   }
-  searchPatients(phoneNumber:any): Observable<any> {
-    const url = 'http://192.168.1.6:8080/receptionist/patients-with-phone';
-    //console.log("Searching by Number:" ,phoneNumber);
-    let queryParams = new HttpParams().append("phoneNumber",phoneNumber);
-    return this.http.get<any>(url,{params:queryParams});
+
+  searchPatients(phoneNumber: any): Observable<any> {
+    const params = new HttpParams().set('phoneNumber', phoneNumber);
+    return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone`, { params });
   }
-  updatePatient( primaryPhone:string, updatedData:PatientInfo){
-    const url = `http://192.168.1.6:8080/receptionist/update-patient?phone=${primaryPhone}`;
-    return this.http.put<any>(url, updatedData);
+
+  updatePatient(primaryPhone: string, updatedData: PatientInfo) {
+    const params = new HttpParams().set('phone', primaryPhone);
+    return this.http.put<any>(`${this.baseUrl}receptionist/update-patient`, updatedData, { params });
   }
-  updatePatientDepit(primaryPhone:string, amount:any){
-    const url = `http://192.168.1.6:8080/receptionist/update-debit-for-patient?phone=${primaryPhone}&amount=${amount}`;
-    return this.http.patch<any>(url , amount);
+
+  updatePatientDepit(primaryPhone: string, amount: any) {
+    const params = new HttpParams()
+      .set('phone', primaryPhone)
+      .set('amount', amount);
+    return this.http.patch<any>(`${this.baseUrl}receptionist/update-debit-for-patient`, amount, { params });
   }
 
   private listOfDataSubject = new BehaviorSubject<any>([]);
   private listOfDataSubject2 = new BehaviorSubject<any>([]);
-historyObservable$ = this.listOfDataSubject.asObservable();
-out$ = this.listOfDataSubject2.asObservable();
-updateListOfData(data:any) {
-  this.listOfDataSubject.next(data);
-}
-updateTotalOut(data:any){
-  this.listOfDataSubject2.next(data);
-}
 
+  historyObservable$ = this.listOfDataSubject.asObservable();
+  out$ = this.listOfDataSubject2.asObservable();
+
+  updateListOfData(data: any) {
+    this.listOfDataSubject.next(data);
+  }
+
+  updateTotalOut(data: any) {
+    this.listOfDataSubject2.next(data);
+  }
 }

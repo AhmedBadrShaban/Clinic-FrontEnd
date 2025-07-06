@@ -7,66 +7,41 @@ import { ConfigService } from 'src/app/shared/services/config.service';
   providedIn: 'root'
 })
 export class DailysheetService {
+  private readonly baseUrl: string;
 
-    private readonly baseUrl ;
-  constructor(private http :HttpClient ,private configService:ConfigService ) {
-    this.baseUrl = this.configService.getBaseUrl();
+  constructor(private http: HttpClient, private configService: ConfigService) {
+    this.baseUrl = this.configService.getBaseUrl(); // Should be general, like 'http://localhost:8080/'
+  }
 
-   }
-
-  getAllReciptianists():Observable<any>{
+  getAllReciptianists(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}reciptianists`);
   }
 
-  getAllDoctorsNames():Observable<any>{
+  getAllDoctorsNames(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}receptionist/doctors-names`);
   }
-  getAllDailyInfo():Observable<any>{
+
+  getAllDailyInfo(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}receptionist/daily-sheet`);
   }
-  filterDailySheet(roomName?: string , date?: any , doctorName?: string):Observable<any>{
-    const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
+
+  filterDailySheet(roomName?: string, date?: any, doctorName?: string): Observable<any> {
     let queryParams = new HttpParams();
-    if(roomName)
-    {
-      //console.log("Filtling By room :" ,roomName);
-      if(roomName!="Room"){
-      queryParams =queryParams.append("roomName" , roomName);
-      }
+
+    if (roomName && roomName !== 'Room') {
+      queryParams = queryParams.set('roomName', roomName);
     }
-    if(date)
-    {
-      //console.log("Filtling By date :" ,date);
-      queryParams =queryParams.append("date" , date);
+
+    if (date) {
+      queryParams = queryParams.set('date', date);
     }
-    if(doctorName)
-    {
-      //console.log("Filtling By doctorName :" ,doctorName);
-      if(doctorName!="Reciptianist"){
-      queryParams =queryParams.append("doctorName" , doctorName);
-      }
+
+    if (doctorName && doctorName !== 'Reciptianist') {
+      queryParams = queryParams.set('doctorName', doctorName);
     }
-    //console.log("all parameters before sending is : ", queryParams.toString() );
-    return this.http.get<any>(url,{params:queryParams});
+
+    return this.http.get<any>(`${this.baseUrl}receptionist/filter-daily-sheet`, {
+      params: queryParams
+    });
   }
-
-
-  // filterDailySheetByRoom(roomName: string):Observable<any>{
-  //   const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
-  //   let queryParams = new HttpParams().append("roomName" , roomName);
-  //   //console.log("Filter by roomName : " , roomName);
-  //   return this.http.get<any>(url,{params:queryParams});
-  // }
-  // filterDailySheetByDate(date: any):Observable<any>{
-  //   const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
-  //   let queryParams = new HttpParams().append("date" , date);
-  //   //console.log("Filter by Date : " , date);
-  //   return this.http.get<any>(url,{params:queryParams});
-  // }
-  // filterDailySheetByDoctor(doctor: string):Observable<any>{
-  //   const url = 'http://192.168.1.6:8080/receptionist/filter-daily-sheet';
-  //   let queryParams = new HttpParams().append("doctorName" , doctor);
-  //   //console.log("Filter by doctor : " , doctor);
-  //   return this.http.get<any>(url,{params:queryParams});
-  // }
 }

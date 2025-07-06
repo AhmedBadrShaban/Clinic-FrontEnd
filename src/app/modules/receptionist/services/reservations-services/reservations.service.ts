@@ -1,87 +1,87 @@
 import { Injectable } from '@angular/core';
-import{ HttpClient, HttpParams }from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {PatientHistory} from "../../models/patient-history";
-import {IdlePatients} from "../../models/idle-patients";
-import {PatientPoints} from "../../models/patient-points";
+import { PatientHistory } from "../../models/patient-history";
+import { IdlePatients } from "../../models/idle-patients";
+import { PatientPoints } from "../../models/patient-points";
 import { ConfigService } from 'src/app/shared/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationsService {
-    private readonly baseUrl ;
-  constructor(private http :HttpClient ,private configService:ConfigService ) { 
+  private readonly baseUrl: string;
+
+  constructor(private http: HttpClient, private configService: ConfigService) {
     this.baseUrl = this.configService.getBaseUrl();
-
   }
 
+  getPatientsNamesAndPhones(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones`);
+  }
 
-  getPatientsNamesAndPhones():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones` );
+  getPatientByNumber(phoneNumber: any): Observable<any> {
+    const params = new HttpParams().set('phoneNumber', phoneNumber);
+    return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone`, { params });
   }
-  getPatientByNumber(phoneNumber:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone?phoneNumber=${phoneNumber}`);
+
+  getHistory(phone: any): Observable<any> {
+    const params = new HttpParams().set('phone', phone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
   }
-  getHistory(phone:any):Observable<any>{
-    //console.log('phone before History:>> ', phone);
-    return this.http.get<any>(`${this.baseUrl}receptionist/patient-history?phone=${phone}`  );
+
+  updateHistory(id: number, updatedData: any): Observable<any> {
+    const params = new HttpParams().set('historyId', id.toString());
+    return this.http.put<any>(`${this.baseUrl}admin/update-patient-history`, updatedData, { params });
   }
-  updateHistory(id:number , updatedData:any){
-    //console.log('Updated History:>> ', updatedData);
-    return this.http.put<any>(`${this.baseUrl}admin/update-patient-history?historyId=${id}` , updatedData );
+
+  getPackages(phone: any): Observable<any> {
+    const params = new HttpParams().set('phone', phone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/packages-by-phone`, { params });
   }
-  getPackages(phone:any):Observable<any>{
-    //console.log('phone before Packages:>> ', phone);
-    return this.http.get<any>(`${this.baseUrl}receptionist/packages-by-phone?phone=${phone}`);
+
+  getPointsHistory(phone: any): Observable<any> {
+    const params = new HttpParams().set('phone', phone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/point-histories`, { params });
   }
-  getPointsHistory(phone:any):Observable<any>{
-    //console.log('phone before Points History:>> ', phone);
-    return this.http.get<any>(`${this.baseUrl}receptionist/point-histories?phone=${phone}`);
+
+  getReservationsHistory(phone: any): Observable<any> {
+    const params = new HttpParams().set('phone', phone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation-phone`, { params });
   }
-  getReservationsHistory(phone:any):Observable<any>{
-    //console.log('phone before Reservations History:>> ', phone);
-    return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation-phone?phone=${phone}`);
-  }
-  getPaymentHistory(phone:any):Observable<any>{
-    //console.log('phone before Payment History:>> ', phone);
-    return this.http.get<any>(`${this.baseUrl}receptionist/get-patient-daily-sheet?phone=${phone}`);
+
+  getPaymentHistory(phone: any): Observable<any> {
+    const params = new HttpParams().set('phone', phone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/get-patient-daily-sheet`, { params });
   }
 
   extractPhoneNumberFromSearchResult(selectedRecord: any): string | null {
     const parts = selectedRecord.split('-');
     if (parts.length === 2) {
-      //console.log('Number is Fn.. :>> ', parts[1]);
       return parts[1];
     }
     return selectedRecord;
   }
 
-
-  // getPatientPoints(phone : string):Observable<PatientPoints>{
-  //   const url = 'http://192.168.1.6:8080/receptionist/point-histories';
-  //   //console.log("Points History of patient with Number:" , phone);
-  //   let queryParams = new HttpParams().append("phone",phone);
-  //   return this.http.get<any>(url,{params:queryParams});
-  // }
-
-  sendPoints(fromPhoneNumber: string , toPhoneNumber: string , qty : number){
-
+  sendPoints(fromPhoneNumber: string, toPhoneNumber: string, qty: number) {
+    // This method is not implemented in the original code.
   }
+
   private phoneNumberChange = new BehaviorSubject<any>(0);
   phone$ = this.phoneNumberChange.asObservable();
-  updatePhoneNumber(data:any) {
+  updatePhoneNumber(data: any) {
     this.phoneNumberChange.next(data);
   }
-  private NewPatients= new BehaviorSubject<any>([]);
+
+  private NewPatients = new BehaviorSubject<any>([]);
   update$ = this.NewPatients.asObservable();
-  updatePatientsArray(data:any) {
+  updatePatientsArray(data: any) {
     this.NewPatients.next(data);
   }
-  private history= new BehaviorSubject<any>([]);
+
+  private history = new BehaviorSubject<any>([]);
   updateHistory$ = this.history.asObservable();
-  updatePatientHistory(data:any) {
+  updatePatientHistory(data: any) {
     this.history.next(data);
   }
-
 }
