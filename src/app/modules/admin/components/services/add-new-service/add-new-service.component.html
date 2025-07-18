@@ -10,8 +10,7 @@
             <label class="form-label w-100">Service Name</label>
           </div>
           <input type="text" formControlName="serviceName" placeholder="Name" id="Name" class="form-control shadow" />
-          <!-- Display validation message for Service Name -->
-          <div *ngIf="newServiceFm.get('serviceName')!.hasError('required') && newServiceFm.get('serviceName')!.touched">
+           <div *ngIf="newServiceFm.get('serviceName')!.hasError('required') && newServiceFm.get('serviceName')!.touched">
             Service Name is required.
           </div>
           <div *ngIf="newServiceFm.get('serviceName')!.hasError('pattern') && newServiceFm.get('serviceName')!.touched">
@@ -28,8 +27,7 @@
             <label class="form-label w-100">Cost Per Session</label>
           </div>
           <input type="number" formControlName="costPerSession" placeholder="cost" id="cost" class="form-control shadow" />
-          <!-- Display validation message for Cost Per Session -->
-          <div *ngIf="newServiceFm.get('costPerSession')!.hasError('required') && newServiceFm.get('costPerSession')!.touched">
+           <div *ngIf="newServiceFm.get('costPerSession')!.hasError('required') && newServiceFm.get('costPerSession')!.touched">
             Cost Per Session is required.
           </div>
         </div>
@@ -45,8 +43,7 @@
           <option [selected]="true" [disabled]="true">Choose Rooms</option>
           <option *ngFor="let room of allRooms" [value]="room">{{room}}</option>
         </select>
-        <!-- Display validation message for Room -->
-        <div *ngIf="newServiceFm.get('rooms')!.hasError('required') && newServiceFm.get('rooms')!.touched">
+         <div *ngIf="newServiceFm.get('rooms')!.hasError('required') && newServiceFm.get('rooms')!.touched">
           Room is required.
         </div>
       </div>

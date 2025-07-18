@@ -10,7 +10,7 @@ export class DoctorScheduleServiceService {
   private readonly baseUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
-    this.baseUrl = this.configService.getBaseUrl(); // example: http://localhost:8080/
+    this.baseUrl = this.configService.getBaseUrl();  
   }
 
   getAllSchedules(): Observable<any> {

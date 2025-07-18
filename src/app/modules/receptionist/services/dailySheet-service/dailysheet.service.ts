@@ -10,7 +10,7 @@ export class DailysheetService {
   private readonly baseUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
-    this.baseUrl = this.configService.getBaseUrl(); // Should be general, like 'http://localhost:8080/'
+    this.baseUrl = this.configService.getBaseUrl();  
   }
 
   getAllReciptianists(): Observable<any> {
