@@ -16,6 +16,7 @@ export class ReservationsService {
     this.baseUrl = this.configService.getBaseUrl();
   }
 
+  //Important Endpoint
   getPatientsNamesAndPhones(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones`);
   }
@@ -25,7 +26,17 @@ export class ReservationsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone`, { params });
   }
 
-  getHistory(phone: any): Observable<any> {
+  // 
+  // getHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
+  //   const params = new HttpParams()
+  //     .set('phone', phone)
+  //     .set('page', page.toString())
+  //     .set('size', size.toString());
+
+  //   return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
+  // }
+
+  getHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
     const params = new HttpParams().set('phone', phone);
     return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
   }

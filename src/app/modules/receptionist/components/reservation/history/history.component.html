@@ -9,9 +9,13 @@
   [nzSimple]="false"
   [nzPaginationType]="paginationType"
   [nzPaginationPosition]="position"
-  [nzFrontPagination]="true"
+  [nzFrontPagination]="false"
   [nzShowPagination]="true"
   [nzSize]="size"
+  [nzTotal]="totalItems"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="currentPage"
+  (nzPageIndexChange)="onPageChange($event)"
 >
   <thead>
     <tr style="font-size: 18px">
@@ -19,45 +23,46 @@
       <th [nzAlign]="'center'">Treatment Area</th>
       <th [nzAlign]="'center'">Doctor</th>
       <th [nzAlign]="'center'">Pulses</th>
-      <th [nzAlign]="'center'">Flunce 1</th>
-      <th [nzAlign]="'center'">Flunce 2</th>
+      <th [nzAlign]="'center'">Fluence 1</th>
+      <th [nzAlign]="'center'">Fluence 2</th>
       <th [nzAlign]="'center'">Spot</th>
       <th [nzAlign]="'center'">Clinic</th>
       <th [nzAlign]="'center'">Note</th>
-      <th *ngIf="userType=='ROLE_ADMIN'" [nzAlign]="'center'">Action</th>
-
-
+      <th *ngIf="userType === 'ROLE_ADMIN'" [nzAlign]="'center'">Action</th>
     </tr>
   </thead>
   <tbody style="background-color: #f2f2f2">
     <ng-container *ngFor="let data of dynamicTable.data">
-      <tr  style="cursor: pointer; font-size: 16px">
-        <td [nzAlign]="'center'">{{ data.date  }}</td>
+      <tr style="cursor: pointer; font-size: 16px">
+        <td [nzAlign]="'center'">{{ data.date }}</td>
         <td [nzAlign]="'center'">{{ data.service }}</td>
-        <td [nzAlign]="'center'">{{data.doctorName}}</td>
+        <td [nzAlign]="'center'">{{ data.doctorName }}</td>
         <td [nzAlign]="'center'">{{ data.pulse }}</td>
         <td [nzAlign]="'center'">{{ data.fluence1 }}</td>
         <td [nzAlign]="'center'">{{ data.fluence2 }}</td>
         <td [nzAlign]="'center'">{{ data.spot }}</td>
         <td [nzAlign]="'center'">{{ data.clinic }}</td>
         <td [nzAlign]="'center'">{{ data.note }}</td>
-        <td *ngIf="userType=='ROLE_ADMIN'" [nzAlign]="'center'"><a class="mx-2 btn btn-outline-dark"
-          (click)="openDialog({
-             historyId:data.historyId,
-             service:data.service,
-             pulse:data.pulse,
-             fluence1:data.fluence1,
-             fluence2:data.fluence2,
-             date:data.date,
-             spot:data.spot,
-             note:data.note,
-             doctorName:data.doctorName,
-             clinic:data.clinic,
-             phoneNumber:this.phoneNumber
-          })"
-
-          >Edit</a> </td>
-
+        <td *ngIf="userType === 'ROLE_ADMIN'" [nzAlign]="'center'">
+          <a
+            class="mx-2 btn btn-outline-dark"
+            (click)="openDialog({
+              historyId: data.historyId,
+              service: data.service,
+              pulse: data.pulse,
+              fluence1: data.fluence1,
+              fluence2: data.fluence2,
+              date: data.date,
+              spot: data.spot,
+              note: data.note,
+              doctorName: data.doctorName,
+              clinic: data.clinic,
+              phoneNumber: phoneNumber
+            })"
+          >
+            Edit
+          </a>
+        </td>
       </tr>
     </ng-container>
   </tbody>

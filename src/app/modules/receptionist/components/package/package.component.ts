@@ -79,7 +79,7 @@ export class PackageComponent implements OnInit {
    getAllReserved(){
     this.PackageService.getAllReservedPackages().subscribe((data:any)=>{
       this.listOfData =data;
-     //console.log( "data recived : " ,this.listOfData);
+     console.log( "Packages recived : " ,this.listOfData);
    })
    }
 
