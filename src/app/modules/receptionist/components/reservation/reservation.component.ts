@@ -97,17 +97,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.initializeSearchDebounce();
   }
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    const rect = document.getElementById('animate')?.getBoundingClientRect();
-    const newVisibility = rect ? (rect.top <= window.innerHeight && rect.bottom >= 0) : false;
-
-    if (this.isVisible !== newVisibility) {
-      this.isVisible = newVisibility;
-      this.cdr.markForCheck();
-    }
-  }
-
   ngOnInit(): void {
     this.initializeComponent();
   }
@@ -234,7 +223,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.searchPatient();
-    }, 100);
+    }, 1000);
   }
 
   private performSearch(searchTerm: any): void {
@@ -304,8 +293,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    this.selectedTab = 'patientInfoTab';
-    this.selectedTabIndex = 0;
+    this.selectTabByName('patientInfoTab');
     this.resetTabStates();
     this.patientNumber = phoneNumber;
     this.cdr.markForCheck();
@@ -350,6 +338,23 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
     return null;
   }
+
+  private selectTabByName(tabName: string): void {
+    this.selectedTab = tabName;
+
+    const receptionistTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+    const adminTabs = ['idlePatientsTab', ...receptionistTabs];
+
+    if (this.userType === 'ROLE_RECEPTIONIST') {
+      this.selectedTabIndex = receptionistTabs.indexOf(tabName);
+    } else if (this.userType === 'ROLE_ADMIN') {
+      this.selectedTabIndex = adminTabs.indexOf(tabName);
+    } else if (this.userType === 'ROLE_DOCTOR') {
+      this.selectedTab = 'afterWorkTab';
+      this.selectedTabIndex = 0;
+    }
+  }
+
 
   openDialog(): void {
     const dialogRef = this.dialogRef.open(AddNewPatientComponent, {
