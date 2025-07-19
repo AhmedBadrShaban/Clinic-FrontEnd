@@ -47,8 +47,8 @@ import { RoomsComponent } from '../rooms/rooms.component';
 import { AfterWorkComponent } from './components/reservation/after-work/after-work.component';
 import { PackageDetailsComponent } from './components/reservation/packages/package-details/package-details.component';
 import { UpdatePackageComponent } from './components/reservation/packages/package-details/update-package/update-package.component';
+import { MatTabsModule } from '@angular/material/tabs';
  
-
 @NgModule({
   declarations: [
     ReceptionistComponent,
@@ -82,6 +82,10 @@ import { UpdatePackageComponent } from './components/reservation/packages/packag
   ReceptionistRoutingModule,
   NavBarComponent,
   NzTableModule,NzDividerModule,NzLayoutModule,NzButtonModule,NzDatePickerModule,NzFormModule,NzAutocompleteModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule,
   FormsModule,
   ReactiveFormsModule,
   NzTabsModule,

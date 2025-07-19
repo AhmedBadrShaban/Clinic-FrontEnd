@@ -1,51 +1,48 @@
-<div  class="content">
+<div class="content">
   <!-- Search Section -->
   <div *ngIf="showSearchSection" class="search-container w-75 mx-auto mb-4">
     <div class="search-row d-flex justify-content-center align-items-center" style="min-height: 60px;">
       
       <!-- Search Input with Loading State -->
-    <div class="search-input-container position-relative w-50 mx-2">
-      <input
-        class="form-control h-100 bg-light search-input"
-        [class.is-loading]="isLoading"
-        id="patient-search"
-        placeholder="Search by name or phone number..."
-        type="search"
-        nz-input
-       [(ngModel)]="searchValue"
-       (ngModelChange)="onSearchValueChange($event)"
-        [nzAutocomplete]="PatientAuto"
-        [disabled]="isLoading"
-        autocomplete="off"
-      />
-      
-      <!-- Loading Spinner -->
-      <div *ngIf="isLoading" class="loading-spinner position-absolute">
-        <i class="fas fa-spinner fa-spin"></i>
+      <div class="search-input-container position-relative w-50 mx-2">
+        <input
+          class="form-control h-100 bg-light search-input"
+          [class.is-loading]="isLoading"
+          id="patient-search"
+          placeholder="Search by name or phone number..."
+          type="search"
+          [(ngModel)]="searchValue"
+          (ngModelChange)="onSearchValueChange($event)"
+          [matAutocomplete]="PatientAuto"
+          [disabled]="isLoading"
+          autocomplete="off"
+        />
+        
+        <!-- Loading Spinner -->
+        <div *ngIf="isLoading" class="loading-spinner position-absolute">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        
+        <!-- Search Icon -->
+        <div *ngIf="!isLoading" class="search-icon position-absolute">
+          <i class="bi bi-search text-muted"></i>
+        </div>
+        
+        <!-- Material Autocomplete -->
+        <mat-autocomplete 
+          #PatientAuto="matAutocomplete"
+          (optionSelected)="onPatientSelected($event)">
+          <mat-option 
+            *ngFor="let option of filteredData; trackBy: trackByFn" 
+            [value]="option">
+            <div class="autocomplete-item">
+              <i class="bi bi-person-fill me-2 text-primary"></i>
+                {{ option }}
+             </div>
+          </mat-option>
+        </mat-autocomplete>
       </div>
-      
-      <!-- Search Icon -->
-      <div *ngIf="!isLoading" class="search-icon position-absolute">
-        <i class="bi bi-search text-muted"></i>
-      </div>
-      
-      <!-- Autocomplete -->
-      <nz-autocomplete
-        [nzDataSource]="filteredData"
-        [nzBackfill]="true"
-        nzPlaceHolder="Type to search..."
-        (selectionChange)="onPatientSelected($event)"
-        #PatientAuto
-      >
-        <nz-auto-option *ngFor="let option of filteredData; trackBy: trackByFn" [nzValue]="option">
-          <div class="autocomplete-item">
-            <i class="bi bi-person-fill me-2 text-primary"></i>
-            <span [innerHTML]="highlightSearchTerm(option, searchValue)"></span>
-          </div>
-        </nz-auto-option>
-      </nz-autocomplete>
-    </div>
-          
+            
       <!-- Search Button -->
       <div class="mx-2">
         <button 
@@ -73,126 +70,87 @@
         </button>
       </div>
     </div>
-    
-    <!-- Search Results Info -->
-    <!-- <div *ngIf="searchValue && filteredData.length > 0" class="search-info mt-2 text-center">
-      <small class="text-muted">
-        Found {{ filteredData.length }} result(s)
-        <span *ngIf="filteredData.length >= 50"> (showing first 50)</span>
-      </small>
-    </div> -->
-    
-    <!-- No Results Message -->
-    <!-- <div *ngIf="searchValue && filteredData.length === 0 && !isLoading" class="no-results mt-2 text-center">
-      <small class="text-warning">
-        <i class="bi bi-exclamation-triangle me-2"></i>
-        No patients found matching "{{ searchValue }}"
-      </small>
-    </div> -->
   </div>
 
-  <!-- Patient Information Tabs -->
-  <div class="tabs-container">
-    <nz-tabset
-      nzCentered
-      nzType="card"
-      [nzAnimated]="{ inkBar: true, tabPane: false }"
-      (nzSelectedIndexChange)="onTabSelectChange($event)"
+   <div class="tabs-container">
+    <mat-tab-group 
+      [(selectedIndex)]="selectedTabIndex"
+      (selectedIndexChange)="onTabSelectChange($event)"
       class="patient-tabs"
-    > 
+      mat-align-tabs="center"
+      backgroundColor="accent"
+      color="primary">
+      
       <!-- Main Info Tab (Not for Doctor) -->
-      <ng-container *ngIf="userType !== 'ROLE_DOCTOR'">
-        <nz-tab nzTitle="Patient Info">
-          <ng-template nz-tab>
-            <div class="tab-content-wrapper">
-              <app-patient-info
-                [phoneNumber]="patientNumber"
-                [info]="PatientInfo"
-              ></app-patient-info>
-            </div>
-          </ng-template>
-        </nz-tab>
-      </ng-container>
+      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Patient Info">
+        <div class="tab-content-wrapper">
+          <app-patient-info
+            [phoneNumber]="patientNumber"
+            [info]="PatientInfo">
+          </app-patient-info>
+        </div>
+      </mat-tab>
       
       <!-- History Tab -->
-      <nz-tab nzTitle="Medical History">
-        <ng-template nz-tab>
-          <div class="tab-content-wrapper">
-            <app-history
-              [phoneNumber]="patientNumber"
-            ></app-history>
-          </div>
-        </ng-template>
-      </nz-tab>
+      <mat-tab label="History">
+        <div class="tab-content-wrapper">
+          <app-history
+            [phoneNumber]="patientNumber">
+          </app-history>
+        </div>
+      </mat-tab>
       
       <!-- Packages Tab (Not for Doctor) -->
-      <ng-container *ngIf="userType !== 'ROLE_DOCTOR'">
-        <nz-tab nzTitle="Packages">
-          <ng-template nz-tab>
-            <div class="tab-content-wrapper">
-              <app-packages
-                [phoneNumber]="patientNumber"
-              ></app-packages>
-            </div>
-          </ng-template>
-        </nz-tab>
-        
-        <!-- Points Tab -->
-        <nz-tab nzTitle="Points">
-          <ng-template nz-tab>
-            <div class="tab-content-wrapper">
-              <app-points
-                [phoneNumber]="patientNumber"
-              ></app-points>
-            </div>
-          </ng-template>
-        </nz-tab>
-        
-         <nz-tab nzTitle="Reservations">
-          <ng-template nz-tab>
-            <div class="tab-content-wrapper">
-              <app-reservations
-                [phoneNumber]="patientNumber"
-              ></app-reservations>
-            </div>
-          </ng-template>
-        </nz-tab>
-        
-        <!-- Payment History Tab -->
-        <nz-tab nzTitle="Payment History">
-          <ng-template nz-tab>
-            <div class="tab-content-wrapper">
-              <app-payment-history
-                [phoneNumber]="patientNumber"
-              ></app-payment-history>
-            </div>
-          </ng-template>
-        </nz-tab>
-      </ng-container>
+      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Packages">
+        <div class="tab-content-wrapper">
+          <app-packages
+            [phoneNumber]="patientNumber">
+          </app-packages>
+        </div>
+      </mat-tab>
       
-      <!-- Doctor: After Work Tab -->
-      <ng-container *ngIf="userType === 'ROLE_DOCTOR'">
-        <nz-tab nzTitle="Treatment Notes">
-          <ng-template nz-tab>
-            <div class="tab-content-wrapper">
-              <app-after-work
-                [phoneNumber]="patientNumber"
-                [id]="reservationID"
-              ></app-after-work>
-            </div>
-          </ng-template>
-        </nz-tab>
-      </ng-container>
-
-        <ng-container *ngIf="userType === 'ROLE_ADMIN'">
-        <nz-tab nzTitle="Idle Patients">
-          <ng-template nz-tab>
-            <div class="tab-content-wrapper">
-              <app-idle-patients></app-idle-patients>
-            </div>
-          </ng-template>
-        </nz-tab>
-      </ng-container>
-    </nz-tabset>
+      <!-- Points Tab (Not for Doctor) -->
+      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Points">
+        <div class="tab-content-wrapper">
+          <app-points
+            [phoneNumber]="patientNumber">
+          </app-points>
+        </div>
+      </mat-tab>
+      
+      <!-- Reservations Tab (Not for Doctor) -->
+      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Reservations">
+        <div class="tab-content-wrapper">
+          <app-reservations
+            [phoneNumber]="patientNumber">
+          </app-reservations>
+        </div>
+      </mat-tab>
+      
+      <!-- Payment History Tab (Not for Doctor) -->
+      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Payment History">
+        <div class="tab-content-wrapper">
+          <app-payment-history
+            [phoneNumber]="patientNumber">
+          </app-payment-history>
+        </div>
+      </mat-tab>
+      
+      <!-- Doctor: Treatment Notes Tab -->
+      <mat-tab *ngIf="userType === 'ROLE_DOCTOR'" label="After Work">
+        <div class="tab-content-wrapper">
+          <app-after-work
+            [phoneNumber]="patientNumber"
+            [id]="reservationID">
+          </app-after-work>
+        </div>
+      </mat-tab>
+      
+       <mat-tab *ngIf="userType === 'ROLE_ADMIN'" label="Idle Patients">
+        <div class="tab-content-wrapper">
+          <app-idle-patients></app-idle-patients>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>
