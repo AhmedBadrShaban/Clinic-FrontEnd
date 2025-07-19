@@ -179,6 +179,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
         if (phoneNumber !== this.patientNumber) {
           this.patientNumber = phoneNumber;
+          this.reservationsService.updatePhoneNumber(this.patientNumber);
+
           this.reservationID = reservationID;
           this.selectedTabIndex = 0; // Doctor only has one tab
           this.resetTabStates();
@@ -275,14 +277,9 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   searchPatient(): void {
     const phoneNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
-
+    
     // Simple tab selection - go to appropriate first patient tab
-    if (this.userType === 'ROLE_ADMIN') {
-      this.selectedTabIndex = 1; // Skip idle patients, go to patient info
-    } else {
       this.selectedTabIndex = 0; // First available tab
-    }
-
     if (!phoneNumber) {
       this.showMessage('No valid phone number found in search value', 'error');
       return;
@@ -291,6 +288,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.resetTabStates();
     this.patientNumber = phoneNumber;
+    this.reservationsService.updatePhoneNumber(this.patientNumber);
+
     this.cdr.markForCheck();
 
     this.loadPatientInfo(phoneNumber);
@@ -382,7 +381,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     }
 
     this.setTabLoading(tabName, true);
-    // this.reservationsService.updatePhoneNumber(this.patientNumber);
+    this.reservationsService.updatePhoneNumber(this.patientNumber);
 
     setTimeout(() => {
       this.setTabLoaded(tabName, true);

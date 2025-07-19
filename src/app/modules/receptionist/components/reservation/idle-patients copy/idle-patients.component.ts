@@ -1,8 +1,9 @@
+// idle-patients.component.ts
 import { IdlePatients } from '../../../../receptionist/models/idle-patients';
 import { Component, OnInit } from '@angular/core';
- import {NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize} from "ng-zorro-antd/table";
+import { MatTableDataSource } from '@angular/material/table';
+import { PageEvent } from '@angular/material/paginator';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
-import { ReservationsService } from 'src/app/modules/receptionist/services/reservations-services/reservations.service';
 
 @Component({
   selector: 'app-idle-patients',
@@ -10,38 +11,42 @@ import { ReservationsService } from 'src/app/modules/receptionist/services/reser
   styleUrls: ['./idle-patients.component.css']
 })
 export class IdlePatientsComponent implements OnInit {
-  idlePatients: IdlePatients[] = [];
-  totalIdlePatients = 0;
-  pageSize = 5;
-  pageIndex = 1;
+  tableColumns: Array<{ key: string, label: string, template?: any }> = [];
+  dataSource = new MatTableDataSource<IdlePatients>();
+  totalItems: number = 0;
+  pageSize: number = 5;
+  currentPage: number = 0; // Changed to 0-based indexing to match Material table
+  pageSizeOptions: number[] = [5, 10, 25, 50];
   loading = false;
-
-  size: NzTableSize = 'small';
-  tableLayout: NzTableLayout = 'auto';
-  position: NzTablePaginationPosition = 'bottom';
-  paginationType: NzTablePaginationType = 'default';
 
   constructor(private patientService: PatientService) { }
 
   ngOnInit(): void {
+    // Define table columns for idle patients
+    this.tableColumns = [
+      { key: 'patientName', label: 'Patient Name' },
+      { key: 'joinedAt', label: 'Joined At' },
+      { key: 'primaryPhone', label: 'Phone Number' }
+    ];
+
     this.loadPatients();
   }
 
   loadPatients(): void {
     this.loading = true;
-    this.patientService.getAllIdlePatients(this.pageIndex - 1, this.pageSize).subscribe({
+    this.patientService.getAllIdlePatients(this.currentPage, this.pageSize).subscribe({
       next: (data: any) => {
-        this.idlePatients = data.content;  
-        this.totalIdlePatients = data.totalElements;  
+        this.dataSource.data = [...data.data];
+        this.totalItems = data.totalItems;
         this.loading = false;
       },
       error: () => (this.loading = false),
     });
   }
 
-  onPageChange(newPage: number): void {
-    this.pageIndex = newPage;
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
     this.loadPatients();
   }
 }
-

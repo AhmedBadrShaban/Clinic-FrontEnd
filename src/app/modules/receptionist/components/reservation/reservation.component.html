@@ -94,8 +94,7 @@
       <!-- History Tab -->
       <mat-tab label="History">
         <div class="tab-content-wrapper">
-          <app-history
-            [phoneNumber]="patientNumber">
+          <app-history>
           </app-history>
         </div>
       </mat-tab>
@@ -103,8 +102,7 @@
       <!-- Packages Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Packages">
         <div class="tab-content-wrapper">
-          <app-packages
-            [phoneNumber]="patientNumber">
+          <app-packages>
           </app-packages>
         </div>
       </mat-tab>
@@ -112,8 +110,7 @@
       <!-- Points Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Points">
         <div class="tab-content-wrapper">
-          <app-points
-            [phoneNumber]="patientNumber">
+          <app-points>
           </app-points>
         </div>
       </mat-tab>
@@ -121,8 +118,7 @@
       <!-- Reservations Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Reservations">
         <div class="tab-content-wrapper">
-          <app-reservations
-            [phoneNumber]="patientNumber">
+          <app-reservations>
           </app-reservations>
         </div>
       </mat-tab>
@@ -130,8 +126,7 @@
       <!-- Payment History Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Payment History">
         <div class="tab-content-wrapper">
-          <app-payment-history
-            [phoneNumber]="patientNumber">
+          <app-payment-history>
           </app-payment-history>
         </div>
       </mat-tab>

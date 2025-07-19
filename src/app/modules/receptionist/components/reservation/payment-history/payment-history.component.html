@@ -1,49 +1,11 @@
-<nz-table
-class="mx-auto"  style="width:90%"
-#dynamicTable
- [nzData]="paymentHistory"
-[nzTableLayout]="settingValue.tableLayout"
-[nzBordered]="settingValue.bordered"
-[nzOuterBordered]	=true
-[nzSimple]="settingValue.simple"
-[nzLoading]="settingValue.loading"
-[nzPaginationType]="settingValue.paginationType"
-[nzPaginationPosition]="settingValue.position"
-[nzFrontPagination]="settingValue.pagination"
-[nzShowPagination]="settingValue.pagination"
-[nzSize]="settingValue.size"
->
-<thead>
-  <tr *ngIf="settingValue.header"  style="cursor: pointer;">
-    <th [nzAlign]="'center'">Patient</th>
-    <th [nzAlign]="'center'">Payment Type</th>
-    <th [nzAlign]="'center'">Service</th>
-    <th [nzAlign]="'center'">pulses</th>
-    <th [nzAlign]="'center'">cash</th>
-    <th [nzAlign]="'center'">Vcash</th>
-    <th [nzAlign]="'center'">visa</th>
-    <th [nzAlign]="'center'">Credit</th>
-    <th [nzAlign]="'center'">InstaPay</th>
-    <th [nzAlign]="'center'">debit</th>
-    <th [nzAlign]="'center'">total</th>
+<!-- payment-history.component.html -->
 
-  </tr>
-</thead>
-<tbody style="background-color: #F2F2F2;">
-  <ng-container *ngFor="let data of dynamicTable.data">
-    <tr >
-      <td [nzLeft]="false" [nzAlign]="'center'">{{ data.patientName }}</td>
-      <td [nzAlign]="'center'" [nzAlign]="'center'">{{ data.paymentType }}</td>
-      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.service }}</td>
-      <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.pulses}}</td>
-      <td  [nzAlign]="'center'">{{ data.cash }}</td>
-      <td  [nzAlign]="'center'">{{ data.vodafoneCash }}</td>
-      <td  [nzAlign]="'center'">{{ data.visa }}</td>
-      <td  [nzAlign]="'center'">{{ data.credit }}</td>
-      <td  [nzAlign]="'center'">{{ data.instaPay }}</td>
-      <td  [nzAlign]="'center'">{{ data.debit }}</td>
-      <td  [nzAlign]="'center'">{{ data.totalMoney }}</td>
-    </tr>
-  </ng-container>
-</tbody>
-</nz-table>
+<!-- Use the shared material table component -->
+<app-table
+  [data]="dataSource.data"
+  [columns]="tableColumns"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage + 1"
+  (onPageChange)="onPageChange($event)">
+</app-table>

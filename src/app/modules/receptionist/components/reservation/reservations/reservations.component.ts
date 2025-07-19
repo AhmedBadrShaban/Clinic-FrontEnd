@@ -1,68 +1,84 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
+// reservations.component.ts
+import { Component, Input, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { PageEvent } from '@angular/material/paginator';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
-
-type TableScroll = 'unset' | 'scroll' | 'fixed';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reservations',
   templateUrl: './reservations.component.html',
   styleUrls: ['./reservations.component.css']
 })
-export class ReservationsComponent implements OnInit  {
-  size: NzTableSize;
-  tableScroll: TableScroll;
-  tableLayout: NzTableLayout;
-  position: NzTablePaginationPosition;
-  paginationType: NzTablePaginationType;
- reservations:any[];
-  @Input() phoneNumber:any;
+export class ReservationsComponent implements OnInit, OnDestroy {
+  phoneNumber: any;
+  @ViewChild('servicesTemplate', { static: true }) servicesTemplate!: TemplateRef<any>;
+  @ViewChild('statusTemplate', { static: true }) statusTemplate!: TemplateRef<any>;
+
+  private sub = new Subscription();
+  tableColumns: Array<{ key: string, label: string, template?: TemplateRef<any> }> = [];
+  dataSource = new MatTableDataSource<any>();
   totalItems: number = 0;
   pageSize: number = 10;
-  currentPage: number = 1;
+  currentPage: number = 0; // Changed to 0-based indexing to match Material table
+  pageSizeOptions: number[] = [5, 10, 25, 50];
 
-  constructor(private reservationsService:ReservationsService) {
+  constructor(private reservationsService: ReservationsService) { }
 
-      this.size= 'small' as NzTableSize,
-      this.paginationType= 'default' as NzTablePaginationType,
-      this.tableScroll='unset' as TableScroll,
-      this.tableLayout='auto' as NzTableLayout,
-      this.position= 'bottom' as NzTablePaginationPosition
-   }
-  ngOnInit(){
-    //console.log('rservations History ini :>> ' );
-    //console.log('Recived rservations History  phoneNumber :>> ', this.phoneNumber);
-    this.reservationsService.phone$.subscribe((data:any) => {
-      //console.log('Updated  Reservations History phoneNumber :>> ', data);
-      if(data!=0 && this.phoneNumber){
-        this.phoneNumber = data;
-        this.getReservations(this.currentPage);
-      }
-      else if(this.phoneNumber){
-        this.getReservations(this.currentPage);
-      }
+  ngOnInit(): void {
+     console.log('in reservations tab   ')
+     this.tableColumns = [
+      { key: 'doctorName', label: 'Doctor' },
+      { key: 'service', label: 'Services', template: this.servicesTemplate },
+      { key: 'date', label: 'Date' },
+      { key: 'time', label: 'Time' },
+      { key: 'note', label: 'Note' },
+      { key: 'status', label: 'Status', template: this.statusTemplate }
+    ];
 
-    });
+     this.sub.add(
+      this.reservationsService.phone$.subscribe((data: any) => {
+          this.phoneNumber = data;
+          console.log('current Patient phone', this.phoneNumber)
+          if(this.phoneNumber){
+          this.getReservations(this.currentPage);
+          }
+      })
+    );
+  }
 
+  getReservations(page: number): void {
+    if (this.phoneNumber) {
+       this.reservationsService.getReservationsHistory(this.phoneNumber, page, this.pageSize)
+        .subscribe((data) => {
+          console.log('data', data)
+          this.dataSource.data = [...data.data];
+          console.log('reservations received', this.dataSource.data);
+          this.totalItems = data.totalItems;
+        });
     }
+  }
 
-  getReservations(page: number){
-    //console.log('phone Before API :>> ', this.phoneNumber);
-    if(this.phoneNumber){
-      const zeroBasedPage = page - 1;
-      console.log('page , size', page - 1, this.pageSize)
-      this.reservationsService.getReservationsHistory(this.phoneNumber, zeroBasedPage, this.pageSize).subscribe((data)=>{
-        this.reservations = [...data.data];
-        console.log('packages recived', this.reservations)
-        this.totalItems = data.totalItems;
-        this.currentPage = this.currentPage + 1;      
-          //console.log('recived Reservations History :>> ',  this.reservations);
-     })
-    }
-    }
-  onReservationsPageChange(newPage: number): void {
-    this.currentPage = newPage;
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
     this.getReservations(this.currentPage);
   }
 
+  getStatusClass(status: string): string {
+    const statusClasses: { [key: string]: string } = {
+      'IN_PROGRESS': 'btn-primary',
+      'CONFIRMED': 'btn-success',
+      'COMPLETED': 'btn-dark',
+      'WAITING': 'btn-warning',
+      'CANCELLED': 'btn-danger',
+      'TO_DOCTOR': 'btn-info',
+      'DONE': 'btn-secondary'
+    };
+    return statusClasses[status] || 'btn-secondary';
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 }
