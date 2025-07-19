@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {Package} from "../../models/package";
 import { ConfigService } from 'src/app/shared/services/config.service';
@@ -15,13 +15,23 @@ export class PackageService {
 
    }
 
+  getAllPackages(page: number = 0, size: number = 5): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
 
-  getAllPackages():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/packages`)
+    return this.http.get<any>(`${this.baseUrl}admin/packages`, { params });
   }
-  search(searchVal:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/package-search?searchString=${searchVal}`)
+
+  search(searchVal: string, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('searchString', searchVal)
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<any>(`${this.baseUrl}admin/package-search`, { params });
   }
+
   getAllRooms():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/rooms-names`);
   }

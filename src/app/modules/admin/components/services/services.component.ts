@@ -19,6 +19,9 @@ export class ServicesComponent implements OnInit {
   AllDataToSearchIn:any[];
   filteredData:  any[] = [];
   searchValue?:any;
+  pageIndex: number = 1;
+  pageSize: number = 5;
+  totalItems: number = 0;
    constructor(private servService : ServiceService,private dialogRef : MatDialog) {
     this.size= 'small' as NzTableSize,
       this.paginationType= 'default' as NzTablePaginationType,
@@ -26,20 +29,26 @@ export class ServicesComponent implements OnInit {
       this.position= 'bottom' as NzTablePaginationPosition
    }
 ngOnInit(): void {
-  this.getAllServices();
+  this.getAllServices(this.pageIndex);
   this.servService.listOfData$.subscribe((data:any)=>{
     this.services =data;
    //console.log( "Updated Data recived : " ,this.services);
    this.autoComplete();
  })
  }
-getAllServices(){
-  this.servService.getAllServices().subscribe((data)=>{
-    this.services = data;
-    //console.log('services :>> ', this.services);
-    this.autoComplete();
-  })
-}
+  getAllServices(page: number = 1): void {
+    const zeroBasedPage = page - 1;
+    this.servService.getAllServices(zeroBasedPage, this.pageSize).subscribe((res: any) => {
+      this.services = res.data; // assuming response is { data: [], totalItems: number }
+      this.totalItems = res.totalItems;
+      this.autoComplete();
+    });
+  }
+
+  onPageChange(newPage: number): void {
+    this.pageIndex = newPage;
+    this.getAllServices(this.pageIndex);
+  }
   // removeService(id:string){
   //   this.servService.removeServise(id);
   //   //console.log("The service was removed!");

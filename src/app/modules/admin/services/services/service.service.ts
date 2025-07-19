@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Service} from "../../models/service";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 
@@ -15,8 +15,11 @@ export class ServiceService {
     }
 
 
-  getAllServices():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/patientservice`)
+  getAllServices(page: number = 0, size: number = 5): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+      return this.http.get<any>(`${this.baseUrl}admin/patientservice`)
   }
   getAvaillableService():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/services-names`)

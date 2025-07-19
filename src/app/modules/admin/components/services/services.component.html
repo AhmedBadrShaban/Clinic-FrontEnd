@@ -33,7 +33,11 @@
   [nzSimple]="false"
   [nzPaginationType]="paginationType"
   [nzPaginationPosition]="position"
-  [nzFrontPagination]="true"
+  [nzFrontPagination]="false"
+  [nzTotal]="totalItems"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="pageIndex"
+  (nzPageIndexChange)="onPageChange($event)"
   [nzShowPagination]="true"
   [nzSize]="size"
 >
