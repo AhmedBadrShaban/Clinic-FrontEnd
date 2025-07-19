@@ -9,13 +9,13 @@ import {
 } from '@angular/core';
 import { ReservationsService } from '../../services/reservations-services/reservations.service';
 import { PatientInfo } from '../../models/patient-Info';
-import { PatientPoints } from '../../models/patient-points';
 import { AddNewPatientComponent } from '../add-new-patient/add-new-patient.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../services/patient-server/patient.service';
+import { NzAutocompleteOptionComponent } from 'ng-zorro-antd/auto-complete';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, Subscription, debounceTime, distinctUntilChanged, BehaviorSubject } from 'rxjs';
 
 interface PatientSearchItem {
   displayText: string;
@@ -23,9 +23,13 @@ interface PatientSearchItem {
   name: string;
 }
 
-const PATIENTS_KEY = 'patientsNamesAndPhones';
-const PATIENTS_TTL_MINUTES = 15;
-const SEARCH_DEBOUNCE_TIME = 300; // ms
+interface TabDataState {
+  loading: boolean;
+  loaded: boolean;
+  error: string | null;
+}
+
+const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 
 @Component({
@@ -36,22 +40,32 @@ const MAX_AUTOCOMPLETE_ITEMS = 50;
   styleUrls: ['./reservation.component.css'],
 })
 export class ReservationComponent implements OnInit, OnDestroy {
-  // UI State
   isVisible = false;
   selectedTab: string = 'patientInfoTab';
   isLoading = false;
   searchValue = '';
+  selectedTabIndex = 0;
 
-  // Patient Data
-  patientData: any;
+  private currentPatientSubject = new BehaviorSubject<PatientInfo | null>(null);
+  currentPatient$ = this.currentPatientSubject.asObservable();
+
   patientNumber: string | null = null;
   reservationID: string | null = null;
 
-  // Search Data
   private allPatientsData: PatientSearchItem[] = [];
   filteredData: string[] = [];
 
-  // Search optimization
+  tabDataStates: { [key: string]: TabDataState } = {
+    patientInfoTab: { loading: false, loaded: false, error: null },
+    historyTab: { loading: false, loaded: false, error: null },
+    packagesTab: { loading: false, loaded: false, error: null },
+    pointsTab: { loading: false, loaded: false, error: null },
+    reservationsTab: { loading: false, loaded: false, error: null },
+    paymentHistoryTab: { loading: false, loaded: false, error: null },
+    afterWorkTab: { loading: false, loaded: false, error: null },
+    idlePatientsTab: { loading: false, loaded: false, error: null }
+  };
+
   private searchSubject = new Subject<string>();
   private subscriptions = new Subscription();
 
@@ -74,6 +88,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private reservationsService: ReservationsService,
     private patientService: PatientService,
     private route: ActivatedRoute,
+    private router: Router,
     private loggedIn: AuthService,
     private dialogRef: MatDialog,
     private cdr: ChangeDetectorRef
@@ -94,24 +109,26 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.userType !== 'ROLE_DOCTOR') {
-      this.initializePatientData();
-      this.subscribeToUpdates();
-    } else {
-      this.initializeDoctorView();
-    }
+    this.initializeComponent();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.currentPatientSubject.complete();
+  }
+
+  private initializeComponent(): void {
+    if (this.userType === 'ROLE_DOCTOR') {
+      this.initializeDoctorView();
+    } else {
+      this.initializePatientData();
+      this.setInitialTab();
+    }
   }
 
   private initializeSearchDebounce(): void {
     const searchSubscription = this.searchSubject
-      .pipe(
-        debounceTime(SEARCH_DEBOUNCE_TIME),
-        distinctUntilChanged()
-      )
+      .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
       .subscribe((searchTerm: string) => {
         this.performSearch(searchTerm);
       });
@@ -120,50 +137,17 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private initializePatientData(): void {
-    const cachedData = this.getCachedPatientData();
-    if (cachedData &&cachedData?.length>0) {
-      this.allPatientsData = cachedData;
-      this.updateFilteredData('');
-      this.cdr.markForCheck();
-    } else {
-      this.loadPatientDataFromAPI();
-    }
+    this.loadPatientDataFromAPI(this.searchSubject);
   }
 
-  private getCachedPatientData(): PatientSearchItem[] | null {
-    try {
-      const cached = sessionStorage.getItem(PATIENTS_KEY);
-      const cachedTime = sessionStorage.getItem(PATIENTS_KEY + '_timestamp');
-
-      if (!cached || !cachedTime) return null;
-
-      const now = new Date().getTime();
-      const cacheAge = now - parseInt(cachedTime);
-      const isCacheValid = cacheAge < PATIENTS_TTL_MINUTES * 60 * 1000;
-
-      if (!isCacheValid) {
-        this.clearCache();
-        return null;
-      }
-
-      const rawData = JSON.parse(cached);
-      return this.transformPatientData(rawData);
-    } catch (error) {
-      console.warn('Error reading cached data:', error);
-      this.clearCache();
-      return null;
-    }
-  }
-
-  private loadPatientDataFromAPI(): void {
+  private loadPatientDataFromAPI(query:any): void {
     this.isLoading = true;
     this.cdr.markForCheck();
 
-    const subscription = this.reservationsService.getPatientsNamesAndPhones()
+    const subscription = this.reservationsService.getPatientsNamesAndPhonesAuto(query)
       .subscribe({
         next: (data: any) => {
           this.allPatientsData = this.transformPatientData(data);
-          this.cachePatientData(data);
           this.updateFilteredData('');
           this.isLoading = false;
           this.cdr.markForCheck();
@@ -182,17 +166,15 @@ export class ReservationComponent implements OnInit, OnDestroy {
     if (!Array.isArray(rawData)) return [];
 
     return rawData.map(item => {
-      // Assuming the API returns strings like "Name - PhoneNumber"
       if (typeof item === 'string') {
         const parts = item.split(' - ');
         return {
           displayText: item,
-          name: parts[0] || '',
-          phoneNumber: parts[1] || ''
+          name: parts[0]?.trim() || '',
+          phoneNumber: parts[1]?.trim() || ''
         };
       }
 
-      // Handle object format
       return {
         displayText: `${item.name} - ${item.phoneNumber}`,
         name: item.name || '',
@@ -201,39 +183,24 @@ export class ReservationComponent implements OnInit, OnDestroy {
     });
   }
 
-  private cachePatientData(data: any[]): void {
-    try {
-      sessionStorage.setItem(PATIENTS_KEY, JSON.stringify(data));
-      sessionStorage.setItem(PATIENTS_KEY + '_timestamp', new Date().getTime().toString());
-    } catch (error) {
-      console.warn('Error caching patient data:', error);
-    }
-  }
-
-  private clearCache(): void {
-    sessionStorage.removeItem(PATIENTS_KEY);
-    sessionStorage.removeItem(PATIENTS_KEY + '_timestamp');
-  }
-
-  private subscribeToUpdates(): void {
-    const updateSubscription = this.reservationsService.update$
-      .subscribe((data: any) => {
-        if (Array.isArray(data)) {
-          this.allPatientsData = this.transformPatientData(data);
-          this.cachePatientData(data);
-          this.updateFilteredData(this.searchValue);
-          this.cdr.markForCheck();
-        }
-      });
-
-    this.subscriptions.add(updateSubscription);
-  }
-
   private initializeDoctorView(): void {
     const paramsSubscription = this.route.params.subscribe(() => {
       this.route.queryParams.subscribe((params) => {
-        this.patientNumber = params['phoneNumber'] || null;
-        this.reservationID = params['id'] || null;
+        const phoneNumber = params['phoneNumber'] || null;
+        const reservationID = params['id'] || null;
+
+        if (phoneNumber !== this.patientNumber) {
+          this.patientNumber = phoneNumber;
+          this.reservationID = reservationID;
+          this.selectedTab = 'afterWorkTab';
+          this.selectedTabIndex = 0;
+          this.resetTabStates();
+
+          if (phoneNumber) {
+            this.loadPatientInfo(phoneNumber);
+          }
+        }
+
         this.cdr.markForCheck();
       });
     });
@@ -241,20 +208,72 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.subscriptions.add(paramsSubscription);
   }
 
-  // Public methods for template
-  onSearchValueChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const value = target?.value || '';
-    console.log('value ', value )
-    this.searchValue = value;
+  private setInitialTab(): void {
+    if (this.userType === 'ROLE_ADMIN') {
+      this.selectedTab = 'idlePatientsTab';
+      this.selectedTabIndex = 0;
+    } else {
+      this.selectedTab = 'patientInfoTab';
+      this.selectedTabIndex = 0;
+    }
+  }
+
+  private resetTabStates(): void {
+    Object.keys(this.tabDataStates).forEach(key => {
+      this.tabDataStates[key] = { loading: false, loaded: false, error: null };
+    });
+  }
+
+  onSearchValueChange(value: any): void {
     this.searchSubject.next(value);
+   }
+
+  onPatientSelected(option: NzAutocompleteOptionComponent): void {
+    const selectedValue = option.nzValue as string;
+    this.searchValue = selectedValue;
+
+    setTimeout(() => {
+      this.searchPatient();
+    }, 100);
   }
 
+  private performSearch(searchTerm: any): void {
+    if (!searchTerm.trim()) {
+      this.filteredData = [];
+      this.cdr.markForCheck();
+      return;
+    }
+    console.log('searching', searchTerm)
+    this.isLoading = true;
+    const subscription = this.reservationsService.getPatientsNamesAndPhonesAuto(searchTerm)
+      .subscribe({
+        next: (data: any) => {
+          this.allPatientsData = this.transformPatientData(data);
 
-  private performSearch(searchTerm: string): void {
-    this.updateFilteredData(searchTerm);
-    this.cdr.markForCheck();
+          const lowerSearchTerm = searchTerm.toLowerCase();
+          const filtered = this.allPatientsData
+            .filter(item =>
+              item.name.toLowerCase().includes(lowerSearchTerm) ||
+              item.phoneNumber.includes(searchTerm)
+            )
+            .slice(0, MAX_AUTOCOMPLETE_ITEMS)
+            .map(item => item.displayText);
+
+          this.filteredData = filtered;
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Error during search debounce:', error);
+          this.filteredData = [];
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
+
+    this.subscriptions.add(subscription);
   }
+
 
   private updateFilteredData(searchTerm: string): void {
     if (!searchTerm.trim()) {
@@ -280,21 +299,37 @@ export class ReservationComponent implements OnInit, OnDestroy {
     const phoneNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
 
     if (!phoneNumber) {
-      console.warn('No valid phone number found in search value');
+      this.showMessage('No valid phone number found in search value', 'error');
       return;
     }
 
+    this.isLoading = true;
+    this.selectedTab = 'patientInfoTab';
+    this.selectedTabIndex = 0;
+    this.resetTabStates();
     this.patientNumber = phoneNumber;
-    this.reservationsService.updatePhoneNumber(phoneNumber);
+    this.cdr.markForCheck();
+
+    this.loadPatientInfo(phoneNumber); // يحمل بيانات المريض المختار
+  }
+
+  private loadPatientInfo(phoneNumber: string): void {
+    this.setTabLoading('patientInfoTab', true);
 
     const searchSubscription = this.patientService.searchPatients(phoneNumber)
       .subscribe({
         next: (data: any) => {
           this.PatientInfo = data;
+          this.currentPatientSubject.next(data);
+          this.setTabLoaded('patientInfoTab', true);
+          this.isLoading = false;
           this.cdr.markForCheck();
         },
         error: (error) => {
           console.error('Error searching patient:', error);
+          this.setTabError('patientInfoTab', 'Failed to load patient information');
+          this.isLoading = false;
+          this.cdr.markForCheck();
         }
       });
 
@@ -302,18 +337,14 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
-    console.log('selectedRecord', selectedRecord)
     if (!selectedRecord) return null;
 
-    // Handle format "Name - PhoneNumber"
-    const parts = selectedRecord.split(' - ');
+    const parts = selectedRecord.split(/\s*-\s*/);
     if (parts.length === 2) {
       return parts[1].trim();
     }
 
-    // Handle direct phone number input
-    const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-    if (phoneRegex.test(selectedRecord.trim())) {
+    if (/^\d+$/.test(selectedRecord.trim())) {
       return selectedRecord.trim();
     }
 
@@ -323,14 +354,14 @@ export class ReservationComponent implements OnInit, OnDestroy {
   openDialog(): void {
     const dialogRef = this.dialogRef.open(AddNewPatientComponent, {
       width: '600px',
-      disableClose: true
+      disableClose: true,
+      panelClass: 'custom-dialog-container'
     });
 
     const dialogSubscription = dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Refresh patient data after adding new patient
-        this.clearCache();
-        this.loadPatientDataFromAPI();
+        this.loadPatientDataFromAPI(this.searchSubject);
+        this.showMessage('Patient added successfully!', 'success');
       }
     });
 
@@ -338,11 +369,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   onTabSelectChange(selectedIndex: number): void {
+    this.selectedTabIndex = selectedIndex;
+
     if (this.userType === 'ROLE_RECEPTIONIST') {
       const tabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
       this.selectedTab = tabs[selectedIndex] || 'patientInfoTab';
     } else if (this.userType === 'ROLE_ADMIN') {
-      // Handle admin tabs
       if (selectedIndex === 0) {
         this.selectedTab = 'idlePatientsTab';
       } else {
@@ -353,23 +385,65 @@ export class ReservationComponent implements OnInit, OnDestroy {
       this.selectedTab = 'afterWorkTab';
     }
 
+    if (this.patientNumber && this.selectedTab !== 'idlePatientsTab') {
+      this.loadTabData(this.selectedTab);
+    }
+
     this.cdr.markForCheck();
   }
-  // Template helper methods
+
+  private loadTabData(tabName: string): void {
+    if (!this.patientNumber || this.tabDataStates[tabName].loaded || this.tabDataStates[tabName].loading) {
+      return;
+    }
+
+    this.setTabLoading(tabName, true);
+
+    this.reservationsService.updatePhoneNumber(this.patientNumber);
+
+    setTimeout(() => {
+      this.setTabLoaded(tabName, true);
+      this.cdr.markForCheck();
+    }, 100);
+  }
+
+  private setTabLoading(tabName: string, loading: boolean): void {
+    this.tabDataStates[tabName].loading = loading;
+    if (loading) {
+      this.tabDataStates[tabName].error = null;
+    }
+  }
+
+  private setTabLoaded(tabName: string, loaded: boolean): void {
+    this.tabDataStates[tabName].loaded = loaded;
+    this.tabDataStates[tabName].loading = false;
+  }
+
+  private setTabError(tabName: string, error: string): void {
+    this.tabDataStates[tabName].error = error;
+    this.tabDataStates[tabName].loading = false;
+  }
+
+  private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+    console.log(`${type.toUpperCase()}: ${message}`);
+  }
+
   trackByFn(index: number, item: string): string {
     return item;
   }
+
   highlightSearchTerm(text: string, searchTerm: string): string {
     if (!searchTerm || !text) return text;
 
     const regex = new RegExp(`(${this.escapeRegExp(searchTerm)})`, 'gi');
     return text.replace(regex, '<span class="highlight">$1</span>');
   }
- 
+
   private escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
-   get hasPatientData(): boolean {
+
+  get hasPatientData(): boolean {
     return this.allPatientsData.length > 0;
   }
 
@@ -379,5 +453,17 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   get canAddNewPatient(): boolean {
     return this.userType === 'ROLE_ADMIN';
+  }
+
+  get currentTabState(): TabDataState {
+    return this.tabDataStates[this.selectedTab];
+  }
+
+  get hasSelectedPatient(): boolean {
+    return !!this.patientNumber;
+  }
+
+  get showPatientRequiredMessage(): boolean {
+    return !this.hasSelectedPatient && this.selectedTab !== 'idlePatientsTab';
   }
 }

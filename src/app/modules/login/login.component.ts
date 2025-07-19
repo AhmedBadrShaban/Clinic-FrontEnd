@@ -62,8 +62,7 @@ export class LoginComponent implements OnInit {
           // Handle login error
           alert(error.error.message);
         })
-        alert("welcome " + this.username );
-      }
+       }
 
       private mapUserRoleToString(userRole: string|null): string {
         switch (userRole) {

@@ -26,9 +26,9 @@ export class HistoryComponent implements OnInit {
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
 
- @Input() history: PatientHistory[] = [];
+  history: PatientHistory[] = [];
   totalItems: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 5;
   currentPage: number = 1;
 
   @Input() phoneNumber: any;
@@ -63,13 +63,17 @@ export class HistoryComponent implements OnInit {
 
   getPatientHistory(page: number): void {
     if (this.phoneNumber) {
+      console.log('calling history of patient ', this.phoneNumber )
       const zeroBasedPage = page - 1;
       console.log('page , size', page-1 , this.pageSize)
       this.reservationservice.getHistory(this.phoneNumber, zeroBasedPage, this.pageSize)
         .subscribe((res: any) => {
-          this.history = res;
-          this.totalItems =14;
-          this.currentPage =0 + 1;  
+          console.log('res', res)
+          this.history = [...res.data]; 
+          console.log('history recived' , this.history)
+          this.totalItems =res.totalItems;
+          this.currentPage = this.currentPage + 1;  
+        
         });
     }
   }

@@ -16,9 +16,13 @@ export class ReservationsService {
     this.baseUrl = this.configService.getBaseUrl();
   }
 
-  //Important Endpoint
-  getPatientsNamesAndPhones(): Observable<any> {
+   getPatientsNamesAndPhones(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones`);
+  }
+
+  getPatientsNamesAndPhonesAuto(phone:number): Observable<any> {
+    const params = new HttpParams().set('phoneNumber', phone);
+    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones-v2`, { params } );
   }
 
   getPatientByNumber(phoneNumber: any): Observable<any> {
@@ -27,27 +31,31 @@ export class ReservationsService {
   }
 
   // 
-  // getHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
-  //   const params = new HttpParams()
-  //     .set('phone', phone)
-  //     .set('page', page.toString())
-  //     .set('size', size.toString());
-
-  //   return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
-  // }
-
   getHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
-    const params = new HttpParams().set('phone', phone);
+    const params = new HttpParams()
+      .set('phone', phone)
+      .set('page', page.toString())
+      .set('size', size.toString());
+
     return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
   }
+
+  // getHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
+  //   const params = new HttpParams().set('phone', phone);
+  //   return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
+  // }
 
   updateHistory(id: number, updatedData: any): Observable<any> {
     const params = new HttpParams().set('historyId', id.toString());
     return this.http.put<any>(`${this.baseUrl}admin/update-patient-history`, updatedData, { params });
   }
 
-  getPackages(phone: any): Observable<any> {
-    const params = new HttpParams().set('phone', phone);
+  getPackages(phone: any, page: number = 0, size: number = 5): Observable<any> {
+    const params = new HttpParams()
+      .set('phone', phone)
+      .set('page', page.toString())
+      .set('size', size.toString());
+
     return this.http.get<any>(`${this.baseUrl}receptionist/packages-by-phone`, { params });
   }
 
