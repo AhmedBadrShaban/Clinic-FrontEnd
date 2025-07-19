@@ -64,15 +64,28 @@ export class ReservationsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/point-histories`, { params });
   }
 
-  getReservationsHistory(phone: any): Observable<any> {
-    const params = new HttpParams().set('phone', phone);
+  // getReservationsHistory(phone: any): Observable<any> {
+  //   const params = new HttpParams().set('phone', phone);
+  //   return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation-phone`, { params });
+  // }
+  getReservationsHistory(phone: string, page: number = 0, size: number = 5): Observable<any> {
+    const params = new HttpParams()
+      .set('phone', phone)
+      .set('page', page.toString())
+      .set('size', size.toString());
+
     return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation-phone`, { params });
   }
 
-  getPaymentHistory(phone: any): Observable<any> {
-    const params = new HttpParams().set('phone', phone);
+  getPaymentHistory(phone: string, page: number = 0, size: number = 5): Observable<any> {
+    const params = new HttpParams()
+      .set('phone', phone)
+      .set('page', page.toString())
+      .set('size', size.toString());
+
     return this.http.get<any>(`${this.baseUrl}receptionist/get-patient-daily-sheet`, { params });
   }
+
 
   extractPhoneNumberFromSearchResult(selectedRecord: any): string | null {
     const parts = selectedRecord.split('-');
