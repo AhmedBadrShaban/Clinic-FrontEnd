@@ -83,8 +83,7 @@ export class ReservationsService {
   }
 
   sendPoints(fromPhoneNumber: string, toPhoneNumber: string, qty: number) {
-    // This method is not implemented in the original code.
-  }
+   }
 
   private phoneNumberChange = new BehaviorSubject<any>(0);
   phone$ = this.phoneNumberChange.asObservable();
