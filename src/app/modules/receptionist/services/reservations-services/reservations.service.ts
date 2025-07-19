@@ -110,9 +110,4 @@ export class ReservationsService {
     this.NewPatients.next(data);
   }
 
-  private history = new BehaviorSubject<any>([]);
-  updateHistory$ = this.history.asObservable();
-  updatePatientHistory(data: any) {
-    this.history.next(data);
-  }
 }
