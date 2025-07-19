@@ -47,12 +47,17 @@ import { RoomsComponent } from '../rooms/rooms.component';
 import { AfterWorkComponent } from './components/reservation/after-work/after-work.component';
 import { PackageDetailsComponent } from './components/reservation/packages/package-details/package-details.component';
 import { UpdatePackageComponent } from './components/reservation/packages/package-details/update-package/update-package.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { TableComponent } from './shared/table/table.component';
  
-
 @NgModule({
   declarations: [
     ReceptionistComponent,
     ExpenseComponent,
+    TableComponent,
     AddNewPatientComponent,
    DoctorScheduleComponent,
    PopUpFormComponent,
@@ -76,18 +81,24 @@ import { UpdatePackageComponent } from './components/reservation/packages/packag
    AfterWorkComponent,
    PackageDetailsComponent,
    UpdatePackageComponent,
-  ],
+   ],
   imports: [
   CommonModule,
   ReceptionistRoutingModule,
   NavBarComponent,
   NzTableModule,NzDividerModule,NzLayoutModule,NzButtonModule,NzDatePickerModule,NzFormModule,NzAutocompleteModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule,
   FormsModule,
   ReactiveFormsModule,
   NzTabsModule,
   NzPaginationModule,
   NzSelectModule,
-  MatButtonModule,MatNativeDateModule,MatFormFieldModule,MatInputModule,MatSelectModule,MatDatepickerModule,MatDialogModule,MatAutocompleteModule,
+    MatButtonModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatDialogModule, MatAutocompleteModule, MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
   NavBarComponent
   ],
   exports:[

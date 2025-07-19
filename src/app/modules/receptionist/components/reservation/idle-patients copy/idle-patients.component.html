@@ -1,34 +1,10 @@
-<nz-table
-  class="mx-auto"
-  style="width: 75%"
-  [nzData]="idlePatients"
-  [nzTotal]="totalIdlePatients"
-  [nzPageSize]="pageSize"
-  [nzPageIndex]="pageIndex"
-  [nzLoading]="loading"
-  [nzTableLayout]="'auto'"
-  [nzBordered]="true"
-  [nzOuterBordered]="true"
-  [nzSimple]="false"
-  [nzShowPagination]="true"
-  [nzSize]="size"
-  (nzPageIndexChange)="onPageChange($event)"
->
-  <thead>
-    <tr style="font-size: 18px">
-      <th [nzAlign]="'center'">Patient Name</th>
-      <th [nzAlign]="'center'">Joined At</th>
-      <th [nzAlign]="'center'">Phone Number</th>
-    </tr>
-  </thead>
-  <tbody style="background-color: #f2f2f2">
-    <tr
-      *ngFor="let data of idlePatients"
-      style="cursor: pointer; font-size: 16px"
-    >
-      <td [nzAlign]="'center'">{{ data.patientName }}</td>
-      <td [nzAlign]="'center'">{{ data.joinedAt }}</td>
-      <td [nzAlign]="'center'">{{ data.primaryPhone }}</td>
-    </tr>
-  </tbody>
-</nz-table>
+<!-- idle-patients.component.html -->
+<!-- Use the shared material table component -->
+<app-table
+  [data]="dataSource.data"
+  [columns]="tableColumns"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage + 1"
+  (onPageChange)="onPageChange($event)">
+</app-table>

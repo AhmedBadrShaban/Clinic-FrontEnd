@@ -1,89 +1,75 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NzTableSize, NzTableLayout, NzTablePaginationPosition, NzTablePaginationType } from 'ng-zorro-antd/table';
+// payment-history.component.ts
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { PageEvent } from '@angular/material/paginator';
 import { DailySheet } from 'src/app/modules/receptionist/models/daily-sheet';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
-interface Setting {
-  bordered: boolean;
-  loading: boolean;
-  pagination: boolean;
-  sizeChanger: boolean;
-  title: boolean;
-  header: boolean;
-  footer: boolean;
-  expandable: boolean;
-  checkbox: boolean;
-  fixHeader: boolean;
-  noResult: boolean;
-  ellipsis: boolean;
-  simple: boolean;
-  size: NzTableSize;
-  tableLayout: NzTableLayout;
-  position: NzTablePaginationPosition;
-  paginationType: NzTablePaginationType;
- }
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-payment-history',
   templateUrl: './payment-history.component.html',
   styleUrls: ['./payment-history.component.css']
 })
-export class PaymentHistoryComponent implements OnInit {
- paymentHistory:DailySheet[];
-  @Input() phoneNumber:any;
+export class PaymentHistoryComponent implements OnInit, OnDestroy {
+  @Input() phoneNumber: any;
 
+  private sub = new Subscription();
+  tableColumns: Array<{ key: string, label: string, template?: any }> = [];
+  dataSource = new MatTableDataSource<DailySheet>();
   totalItems: number = 0;
   pageSize: number = 10;
-  currentPage: number = 1;
+  currentPage: number = 0; // Changed to 0-based indexing to match Material table
+  pageSizeOptions: number[] = [5, 10, 25, 50];
 
-  settingValue: Setting;
-  constructor(private reservationsService :ReservationsService){
-    //console.log('payment History ini :>> ' );
-    this.settingValue ={
-      bordered: true,
-      loading: false,
-      pagination: true,
-      sizeChanger: true,
-      title: false,
-      header: true,
-      footer: false,
-      expandable: false,
-      checkbox: false,
-      fixHeader: false,
-      noResult: false,
-      ellipsis: false,
-      simple: false,
-      size: 'small' as NzTableSize,
-      paginationType: 'default' as NzTablePaginationType,
-      tableLayout: 'auto' as NzTableLayout,
-      position: 'bottom' as NzTablePaginationPosition
-    };
-  }
+  constructor(private reservationsService: ReservationsService) { }
+
   ngOnInit(): void {
-    this.reservationsService.phone$.subscribe((data: any) => {
-      if (data != 0 && this.phoneNumber) {
+    // Define table columns for payment history
+    this.tableColumns = [
+      { key: 'patientName', label: 'Patient' },
+      { key: 'paymentType', label: 'Payment Type' },
+      { key: 'service', label: 'Service' },
+      { key: 'pulses', label: 'Pulses' },
+      { key: 'cash', label: 'Cash' },
+      { key: 'vodafoneCash', label: 'Vcash' },
+      { key: 'visa', label: 'Visa' },
+      { key: 'credit', label: 'Credit' },
+      { key: 'instaPay', label: 'InstaPay' },
+      { key: 'debit', label: 'Debit' },
+      { key: 'totalMoney', label: 'Total' }
+    ];
+
+     this.sub.add(
+      this.reservationsService.phone$.subscribe((data: any) => {
         this.phoneNumber = data;
-        this.getPaymentHistory(this.currentPage);
-      } else if (this.phoneNumber) {
-        this.getPaymentHistory(this.currentPage);
-      }
-    });
+        console.log('phone Recived', this.phoneNumber)
+        if (this.phoneNumber) {
+          this.getPaymentHistory(this.currentPage);
+        }
+      })
+    );
   }
 
   getPaymentHistory(page: number): void {
     if (this.phoneNumber) {
-      const zeroBasedPage = page - 1;
-      this.reservationsService.getPaymentHistory(this.phoneNumber, zeroBasedPage, this.pageSize).subscribe((data) => {
-        this.paymentHistory = data.data;
-        this.totalItems = data.totalItems;
-        this.currentPage = page;
-      });
+      console.log('page, size', page, this.pageSize);
+      this.reservationsService.getPaymentHistory(this.phoneNumber, page, this.pageSize)
+        .subscribe((data) => {
+          this.dataSource.data = [...data.data];
+          console.log('payment history received', this.dataSource.data);
+          this.totalItems = data.totalItems;
+        });
     }
   }
-  onPaymentPageChange(newPage: number): void {
-    this.currentPage = newPage;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
     this.getPaymentHistory(this.currentPage);
   }
 
-
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 }

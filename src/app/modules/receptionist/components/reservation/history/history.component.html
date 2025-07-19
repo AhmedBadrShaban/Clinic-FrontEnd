@@ -1,69 +1,28 @@
-<nz-table
-  class="mx-auto"
-  style="width: 80%"
-  #dynamicTable
-  [nzData]="history"
-  [nzTableLayout]="'auto'"
-  [nzBordered]="true"
-  [nzOuterBordered]="true"
-  [nzSimple]="false"
-  [nzPaginationType]="paginationType"
-  [nzPaginationPosition]="position"
-  [nzFrontPagination]="false"
-  [nzShowPagination]="true"
-  [nzSize]="size"
-  [nzTotal]="totalItems"
-  [nzPageSize]="pageSize"
-  [nzPageIndex]="currentPage"
-  (nzPageIndexChange)="onPageChange($event)"
->
-  <thead>
-    <tr style="font-size: 18px">
-      <th [nzAlign]="'center'">Date</th>
-      <th [nzAlign]="'center'">Treatment Area</th>
-      <th [nzAlign]="'center'">Doctor</th>
-      <th [nzAlign]="'center'">Pulses</th>
-      <th [nzAlign]="'center'">Fluence 1</th>
-      <th [nzAlign]="'center'">Fluence 2</th>
-      <th [nzAlign]="'center'">Spot</th>
-      <th [nzAlign]="'center'">Clinic</th>
-      <th [nzAlign]="'center'">Note</th>
-      <th *ngIf="userType === 'ROLE_ADMIN'" [nzAlign]="'center'">Action</th>
-    </tr>
-  </thead>
-  <tbody style="background-color: #f2f2f2">
-    <ng-container *ngFor="let data of dynamicTable.data">
-      <tr style="cursor: pointer; font-size: 16px">
-        <td [nzAlign]="'center'">{{ data.date }}</td>
-        <td [nzAlign]="'center'">{{ data.service }}</td>
-        <td [nzAlign]="'center'">{{ data.doctorName }}</td>
-        <td [nzAlign]="'center'">{{ data.pulse }}</td>
-        <td [nzAlign]="'center'">{{ data.fluence1 }}</td>
-        <td [nzAlign]="'center'">{{ data.fluence2 }}</td>
-        <td [nzAlign]="'center'">{{ data.spot }}</td>
-        <td [nzAlign]="'center'">{{ data.clinic }}</td>
-        <td [nzAlign]="'center'">{{ data.note }}</td>
-        <td *ngIf="userType === 'ROLE_ADMIN'" [nzAlign]="'center'">
-          <a
-            class="mx-2 btn btn-outline-dark"
-            (click)="openDialog({
-              historyId: data.historyId,
-              service: data.service,
-              pulse: data.pulse,
-              fluence1: data.fluence1,
-              fluence2: data.fluence2,
-              date: data.date,
-              spot: data.spot,
-              note: data.note,
-              doctorName: data.doctorName,
-              clinic: data.clinic,
-              phoneNumber: phoneNumber
-            })"
-          >
-            Edit
-          </a>
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>
-</nz-table>
+<!-- Step 1: Use the shared material table component -->
+<app-table
+  [data]="dataSource.data"
+  [columns]="tableColumns"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage + 1"
+  (onPageChange)="onPageChange($event)">
+</app-table>
+
+<!-- Step 2: Custom cell template for action column -->
+<ng-template #actionTemplate let-row>
+  <button mat-button color="primary" (click)="openDialog({
+    historyId: row.historyId,
+    service: row.service,
+    pulse: row.pulse,
+    fluence1: row.fluence1,
+    fluence2: row.fluence2,
+    date: row.date,
+    spot: row.spot,
+    note: row.note,
+    doctorName: row.doctorName,
+    clinic: row.clinic,
+    phoneNumber: phoneNumber
+  })">
+    Edit
+  </button>
+</ng-template>

@@ -1,16 +1,4 @@
-
-  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-    font-size: 25px;
-  }
-  .ant-tabs-tab-btn{
-    font-size: 25px;
-  }
-  .ant-tabs-nav-wrap ant-tabs-nav-wrap-ping-left{
-    display: none !important;
-  }
-  .ant-tabs {
-    width: 100%;
-  }
+ 
   
   /* styles.css */
 
@@ -145,65 +133,8 @@
   font-size: 14px;
   opacity: 0.7;
 }
-
-/* Search Results Info */
-.search-info {
-  padding: 8px 16px;
-  background: rgba(0, 123, 255, 0.1);
-  border-radius: 8px;
-  border-left: 4px solid #007bff;
-}
-
-.no-results {
-  padding: 8px 16px;
-  background: rgba(255, 193, 7, 0.1);
-  border-radius: 8px;
-  border-left: 4px solid #ffc107;
-}
-
-/* Tab Styles */
-.patient-tabs {
-  margin-top: 20px;
-}
-
-.patient-tabs .ant-tabs-nav {
-  margin-bottom: 30px;
-}
-
-.patient-tabs .ant-tabs-card .ant-tabs-tab {
-  border-radius: 12px 12px 0 0;
-  border: 2px solid #e9ecef;
-  background: #f8f9fa;
-  color: #6c757d;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  margin-right: 8px;
-}
-
-.patient-tabs .ant-tabs-card .ant-tabs-tab:hover {
-  background: #e9ecef;
-  color: #495057;
-}
-
-.patient-tabs .ant-tabs-card .ant-tabs-tab-active {
-  background: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-.patient-tabs .ant-tabs-card .ant-tabs-tab-active:hover {
-  background: #0056b3;
-  border-color: #0056b3;
-}
-
-.tab-content-wrapper {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e9ecef;
-  min-height: 400px;
-}
+ 
+  
 
 /* Highlight Search Terms */
 .highlight {
@@ -301,10 +232,7 @@
   will-change: transform;
 }
 
-/* Smooth Transitions */
-* {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
+ 
 
 /* Custom Scrollbar for Autocomplete */
 ::-webkit-scrollbar {

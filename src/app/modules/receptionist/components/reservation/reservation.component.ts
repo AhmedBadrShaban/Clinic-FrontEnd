@@ -1,9 +1,9 @@
+// TypeScript (reservation.component.ts)
 import {
   ChangeDetectorRef,
   Component,
   OnInit,
   ViewEncapsulation,
-  HostListener,
   OnDestroy,
   ChangeDetectionStrategy
 } from '@angular/core';
@@ -13,7 +13,7 @@ import { AddNewPatientComponent } from '../add-new-patient/add-new-patient.compo
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../services/patient-server/patient.service';
-import { NzAutocompleteOptionComponent } from 'ng-zorro-antd/auto-complete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Subject, Subscription, debounceTime, distinctUntilChanged, BehaviorSubject } from 'rxjs';
 
@@ -41,7 +41,6 @@ const MAX_AUTOCOMPLETE_ITEMS = 50;
 })
 export class ReservationComponent implements OnInit, OnDestroy {
   isVisible = false;
-  selectedTab: string = 'patientInfoTab';
   isLoading = false;
   searchValue = '';
   selectedTabIndex = 0;
@@ -129,7 +128,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.loadPatientDataFromAPI(this.searchSubject);
   }
 
-  private loadPatientDataFromAPI(query:any): void {
+  private loadPatientDataFromAPI(query: any): void {
     this.isLoading = true;
     this.cdr.markForCheck();
 
@@ -180,9 +179,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
         if (phoneNumber !== this.patientNumber) {
           this.patientNumber = phoneNumber;
+          this.reservationsService.updatePhoneNumber(this.patientNumber);
+
           this.reservationID = reservationID;
-          this.selectedTab = 'afterWorkTab';
-          this.selectedTabIndex = 0;
+          this.selectedTabIndex = 0; // Doctor only has one tab
           this.resetTabStates();
 
           if (phoneNumber) {
@@ -198,13 +198,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private setInitialTab(): void {
-    if (this.userType === 'ROLE_ADMIN') {
-      this.selectedTab = 'idlePatientsTab';
-      this.selectedTabIndex = 0;
-    } else {
-      this.selectedTab = 'patientInfoTab';
-      this.selectedTabIndex = 0;
-    }
+    this.selectedTabIndex = 0; // Always start with first tab
   }
 
   private resetTabStates(): void {
@@ -215,15 +209,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   onSearchValueChange(value: any): void {
     this.searchSubject.next(value);
-   }
+  }
 
-  onPatientSelected(option: NzAutocompleteOptionComponent): void {
-    const selectedValue = option.nzValue as string;
+  onPatientSelected(event: MatAutocompleteSelectedEvent): void {
+    const selectedValue = event.option.value as string;
     this.searchValue = selectedValue;
-
-    setTimeout(() => {
-      this.searchPatient();
-    }, 1000);
+    console.log('serachValue ', this.searchValue )
   }
 
   private performSearch(searchTerm: any): void {
@@ -232,13 +223,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
       this.cdr.markForCheck();
       return;
     }
-    console.log('searching', searchTerm)
+
     this.isLoading = true;
     const subscription = this.reservationsService.getPatientsNamesAndPhonesAuto(searchTerm)
       .subscribe({
         next: (data: any) => {
           this.allPatientsData = this.transformPatientData(data);
-
           const lowerSearchTerm = searchTerm.toLowerCase();
           const filtered = this.allPatientsData
             .filter(item =>
@@ -249,11 +239,13 @@ export class ReservationComponent implements OnInit, OnDestroy {
             .map(item => item.displayText);
 
           this.filteredData = filtered;
+          console.log('autocomplete', this.filteredData)
+
           this.isLoading = false;
           this.cdr.markForCheck();
         },
         error: (error) => {
-          console.error('Error during search debounce:', error);
+          console.error('Error during search:', error);
           this.filteredData = [];
           this.isLoading = false;
           this.cdr.markForCheck();
@@ -262,7 +254,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(subscription);
   }
-
 
   private updateFilteredData(searchTerm: string): void {
     if (!searchTerm.trim()) {
@@ -286,19 +277,22 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   searchPatient(): void {
     const phoneNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
-
+    
+    // Simple tab selection - go to appropriate first patient tab
+      this.selectedTabIndex = 0; // First available tab
     if (!phoneNumber) {
       this.showMessage('No valid phone number found in search value', 'error');
       return;
     }
 
     this.isLoading = true;
-    this.selectTabByName('patientInfoTab');
     this.resetTabStates();
     this.patientNumber = phoneNumber;
+    this.reservationsService.updatePhoneNumber(this.patientNumber);
+
     this.cdr.markForCheck();
 
-    this.loadPatientInfo(phoneNumber); // يحمل بيانات المريض المختار
+    this.loadPatientInfo(phoneNumber);
   }
 
   private loadPatientInfo(phoneNumber: string): void {
@@ -339,23 +333,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  private selectTabByName(tabName: string): void {
-    this.selectedTab = tabName;
-
-    const receptionistTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
-    const adminTabs = ['idlePatientsTab', ...receptionistTabs];
-
-    if (this.userType === 'ROLE_RECEPTIONIST') {
-      this.selectedTabIndex = receptionistTabs.indexOf(tabName);
-    } else if (this.userType === 'ROLE_ADMIN') {
-      this.selectedTabIndex = adminTabs.indexOf(tabName);
-    } else if (this.userType === 'ROLE_DOCTOR') {
-      this.selectedTab = 'afterWorkTab';
-      this.selectedTabIndex = 0;
-    }
-  }
-
-
   openDialog(): void {
     const dialogRef = this.dialogRef.open(AddNewPatientComponent, {
       width: '600px',
@@ -376,25 +353,26 @@ export class ReservationComponent implements OnInit, OnDestroy {
   onTabSelectChange(selectedIndex: number): void {
     this.selectedTabIndex = selectedIndex;
 
-    if (this.userType === 'ROLE_RECEPTIONIST') {
-      const tabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
-      this.selectedTab = tabs[selectedIndex] || 'patientInfoTab';
-    } else if (this.userType === 'ROLE_ADMIN') {
-      if (selectedIndex === 0) {
-        this.selectedTab = 'idlePatientsTab';
-      } else {
-        const tabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
-        this.selectedTab = tabs[selectedIndex - 1] || 'patientInfoTab';
-      }
-    } else if (this.userType === 'ROLE_DOCTOR') {
-      this.selectedTab = 'afterWorkTab';
-    }
+     const currentTabName = this.getCurrentTabName(selectedIndex);
 
-    if (this.patientNumber && this.selectedTab !== 'idlePatientsTab') {
-      this.loadTabData(this.selectedTab);
+    if (this.patientNumber && currentTabName !== 'idlePatientsTab') {
+      this.loadTabData(currentTabName);
     }
 
     this.cdr.markForCheck();
+  }
+
+  private getCurrentTabName(index: number): string {
+    // Get tab name based on actual tab order in template
+    if (this.userType === 'ROLE_DOCTOR') {
+      return 'afterWorkTab'; // Doctor only has one tab
+    } else if (this.userType === 'ROLE_ADMIN') {
+      const adminTabs = ['idlePatientsTab', 'patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+      return adminTabs[index] || 'idlePatientsTab';
+    } else {
+      const receptionistTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+      return receptionistTabs[index] || 'patientInfoTab';
+    }
   }
 
   private loadTabData(tabName: string): void {
@@ -403,7 +381,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
     }
 
     this.setTabLoading(tabName, true);
-
     this.reservationsService.updatePhoneNumber(this.patientNumber);
 
     setTimeout(() => {
@@ -437,18 +414,33 @@ export class ReservationComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  highlightSearchTerm(text: string, searchTerm: string): string {
-    if (!searchTerm || !text) return text;
 
-    const regex = new RegExp(`(${this.escapeRegExp(searchTerm)})`, 'gi');
-    return text.replace(regex, '<span class="highlight">$1</span>');
+
+   selectTab(index: number): void {
+    this.selectedTabIndex = index;
   }
 
-  private escapeRegExp(value: string): string {
-    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Helper method to select tab by name
+  selectTabByName(tabName: string): void {
+    const index = this.getTabIndexByName(tabName);
+    if (index !== -1) {
+      this.selectedTabIndex = index;
+    }
   }
 
-  get hasPatientData(): boolean {
+  private getTabIndexByName(tabName: string): number {
+    if (this.userType === 'ROLE_DOCTOR') {
+      return tabName === 'afterWorkTab' ? 0 : -1;
+    } else if (this.userType === 'ROLE_ADMIN') {
+      const adminTabs = ['idlePatientsTab', 'patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+      return adminTabs.indexOf(tabName);
+    } else {
+      const receptionistTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+      return receptionistTabs.indexOf(tabName);
+    }
+  }
+
+   get hasPatientData(): boolean {
     return this.allPatientsData.length > 0;
   }
 
@@ -460,15 +452,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     return this.userType === 'ROLE_ADMIN';
   }
 
-  get currentTabState(): TabDataState {
-    return this.tabDataStates[this.selectedTab];
-  }
-
   get hasSelectedPatient(): boolean {
     return !!this.patientNumber;
-  }
-
-  get showPatientRequiredMessage(): boolean {
-    return !this.hasSelectedPatient && this.selectedTab !== 'idlePatientsTab';
   }
 }

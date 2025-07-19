@@ -1,56 +1,35 @@
-<div style="margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;">
 
-    <div style="display: flex;
-                width: 100%;
-                justify-content: space-around;">
-        <div >
-            Total In : <span style="color: black;" class=" bg-info badge">{{totalIn}}</span>
-        </div>
-        <div>
-          Total out : <span style="color: black;" class=" bg-info badge">{{totalOut}}</span>
-        </div>
-        <div>
-          Remain : <span style="color: black;" class=" bg-info badge">{{remain}}</span>
-        </div>
+<!-- Step 1: Points summary section -->
+<div style="margin-bottom: 20px; display: flex; flex-direction: column; align-items: center;">
+  <div style="display: flex; width: 100%; justify-content: space-around;">
+    <div>
+      Total In : <span style="color: black;" class="bg-info badge">{{totalIn}}</span>
     </div>
-    <button class="btn btn-primary mt-3" (click)="openModal()">
-        Send Points
-    </button>
+    <div>
+      Total out : <span style="color: black;" class="bg-info badge">{{totalOut}}</span>
+    </div>
+    <div>
+      Remain : <span style="color: black;" class="bg-info badge">{{remain}}</span>
+    </div>
+  </div>
+  <button class="btn btn-primary mt-3" (click)="openModal()">
+    Send Points
+  </button>
 </div>
 
-<nz-table
-class="mx-auto"  style="width:80%"
-#dynamicTable
-[nzData]="pointsHistory"
-[nzTableLayout]= "'auto'"
-[nzBordered]=true
-[nzOuterBordered]	=true
-[nzSimple]=false
-[nzPaginationType]="paginationType"
-[nzPaginationPosition]="position"
-[nzFrontPagination]=true
-[nzShowPagination]=true
-[nzSize]="size"
->
-<thead>
-  <tr  >
-    <th [nzAlign]="'center'">Current</th>
-    <th [nzAlign]="'center'">Used</th>
-     <th [nzAlign]="'center'">Date</th>
-    <th [nzAlign]="'center'">Notes</th>
-  </tr>
-</thead>
-<tbody style="background-color: #F2F2F2;">
-  <ng-container *ngFor="let data of dynamicTable.data">
-    <tr style="cursor: pointer;" >
-      <td  [nzAlign]="'center'">{{ data.point_in }}</td>
-      <td  [nzAlign]="'center'">{{ data.point_out }}</td>
-      <td [nzAlign]="'center'">{{ data.date }}</td>
-       <td  [nzAlign]="'left'"  style="font-size: 12px; color: blueviolet; text-decoration: underline;" >{{data.note}}</td>
-     </tr>
-  </ng-container>
- </tbody>
-</nz-table>
+<!-- Step 2: Use the shared material table component -->
+<app-table
+  [data]="dataSource.data"
+  [columns]="tableColumns"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage + 1"
+  (onPageChange)="onPageChange($event)">
+</app-table>
+
+<!-- Step 3: Custom cell template for notes column -->
+<ng-template #noteTemplate let-row>
+  <span style="font-size: 12px; color: blueviolet; text-decoration: underline;">
+    {{ row.note }}
+  </span>
+</ng-template>

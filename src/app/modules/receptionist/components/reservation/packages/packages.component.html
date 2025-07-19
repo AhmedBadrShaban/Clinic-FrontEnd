@@ -1,46 +1,22 @@
-<nz-table
-  class="mx-auto"
-  style="width: 70%"
-  #dynamicTable
-  [nzData]="packages"
-  [nzTableLayout]="'auto'"
-  [nzBordered]="true"
-  [nzOuterBordered]="true"
-  [nzSimple]="false"
-  [nzPaginationType]="paginationType"
-  [nzPaginationPosition]="position"
-  [nzFrontPagination]="false"
-  [nzShowPagination]="true"
-  [nzSize]="size"
-  [nzTotal]="totalItems"
-  [nzPageSize]="pageSize"
-  [nzPageIndex]="currentPage"
-  (nzPageIndexChange)="onPackagesPageChange($event)"
->
-  <thead>
-    <tr>
-      <th [nzAlign]="'center'">Package</th>
-      <th [nzAlign]="'center'">Clinic</th>
-      <th [nzAlign]="'center'">Purchase Date</th>
-      <th [nzAlign]="'center'">Action</th>
-    </tr>
-  </thead>
-  <tbody style="background-color: #F2F2F2;">
-    <ng-container *ngFor="let data of dynamicTable.data">
-      <tr style="cursor: pointer;">
-        <td [nzAlign]="'center'">{{ data.packageName }}</td>
-        <td [nzAlign]="'center'">{{ data.clinicName }}</td>
-        <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.date }}</td>
-        <td [nzAlign]="'center'">
-          <a
-            style="width: 150px; cursor: default;"
-            (click)="openDialog(data.reservedId)"
-            class="btn btn-sm btn-primary small-font"
-          >
-            Details
-          </a>
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>
-</nz-table>
+<!-- packages.component.html -->
+
+<!-- Step 1: Use the shared material table component -->
+<app-table
+  [data]="dataSource.data"
+  [columns]="tableColumns"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage + 1"
+  (onPageChange)="onPageChange($event)">
+</app-table>
+
+<!-- Step 2: Custom cell template for action column -->
+<ng-template #actionTemplate let-row>
+  <button 
+    mat-button 
+    color="primary" 
+    (click)="openDialog(row.reservedId)"
+    style="width: 150px;">
+    Details
+  </button>
+</ng-template>
