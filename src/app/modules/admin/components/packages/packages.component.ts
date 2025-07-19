@@ -19,6 +19,9 @@ export class PackagesComponent {
   AllDataToSearchIn:any[];
   filteredData:  any[] = [];
   searchValue?:any;
+  pageIndex: number = 1;
+  pageSize: number = 5;
+  totalItems: number = 0;
 
   constructor(private pckService: PackageService,private dialogRef : MatDialog) {
       this.size= 'small' as NzTableSize;
@@ -28,25 +31,30 @@ export class PackagesComponent {
       // this.packages = pckService.getAllPackages();
   }
   ngOnInit(): void {
-    this.getAllPackages();
+    this.getAllPackages(this.pageIndex);
     this.pckService.listOfData$.subscribe((data:any)=>{
       this.packages =data;
      //console.log( "Updated Data recived : " ,this.packages);
      this.autoComplete();
    })
    }
-  getAllPackages(){
-    this.pckService.getAllPackages().subscribe((data)=>{
-      this.packages = data;
+  getAllPackages(page: number = 1): void {
+    const zeroBasedPage = page - 1;
+    this.pckService.getAllPackages(zeroBasedPage, this.pageSize).subscribe((res: any) => {
+      this.packages = res.data; // assuming backend returns { data: [...], totalItems: number }
+      this.totalItems = res.totalItems;
       this.autoComplete();
       this.packages = this.packages.map(pkg => ({
         ...pkg,
         expand: pkg.services && pkg.services.length > 0
       }));
-      //console.log('services :>> ', this.packages);
-    })
+    });
   }
 
+  onPageChange(newPage: number): void {
+    this.pageIndex = newPage;
+    this.getAllPackages(this.pageIndex);
+  }
     switchStatus(id: any){
       this.pckService.changeStatus(id).subscribe({
         next:(responed)=>{
@@ -58,16 +66,17 @@ export class PackagesComponent {
         }
       })
       }
-      search(){
-        this.pckService.search(this.searchValue).subscribe((data:any)=>{
-           this.packages=data;
-           this.packages = this.packages.map(pkg => ({
-            ...pkg,
-            expand: pkg.services && pkg.services.length > 0
-          }));
-          //console.log( "search recived : " ,this.packages);
-       })
-      }
+  search() {
+    this.pckService.search(this.searchValue, this.pageIndex - 1, this.pageSize).subscribe((res: any) => {
+      this.packages = res.content || res;  
+      this.totalItems = res.totalElements || this.packages.length;
+
+      this.packages = this.packages.map(pkg => ({
+        ...pkg,
+        expand: pkg.services && pkg.services.length > 0
+      }));
+    });
+  }
       clearSearch(){
         this.getAllPackages();
         this.searchValue=null;

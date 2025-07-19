@@ -15,8 +15,11 @@ export class PatientService {
     this.baseUrl = this.configService.getBaseUrl(); 
   }
 
-  getAllIdlePatients(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}admin/idlepatient`);
+  getAllIdlePatients(page: number = 0, size: number = 5): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<any>(`${this.baseUrl}admin/idlepatient` , {params});
   }
 
   getAllPatientsNumbers(): Observable<any> {

@@ -1,32 +1,34 @@
 <nz-table
-        class="mx-auto"
-        style="width: 75%"
-        #dynamicTable
-        [nzData]="idlePatients"
-        [nzTableLayout]="'auto'"
-        [nzBordered]="true"
-        [nzOuterBordered]="true"
-        [nzSimple]="false"
-        [nzPaginationType]="paginationType"
-        [nzPaginationPosition]="position"
-        [nzFrontPagination]="true"
-        [nzShowPagination]="true"
-        [nzSize]="size"
+  class="mx-auto"
+  style="width: 75%"
+  [nzData]="idlePatients"
+  [nzTotal]="totalIdlePatients"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="pageIndex"
+  [nzLoading]="loading"
+  [nzTableLayout]="'auto'"
+  [nzBordered]="true"
+  [nzOuterBordered]="true"
+  [nzSimple]="false"
+  [nzShowPagination]="true"
+  [nzSize]="size"
+  (nzPageIndexChange)="onPageChange($event)"
 >
-    <thead>
+  <thead>
     <tr style="font-size: 18px">
-        <th [nzAlign]="'center'">Patient Name</th>
-        <th [nzAlign]="'center'">Joined At</th>
-        <th [nzAlign]="'center'">Phone Number</th>
+      <th [nzAlign]="'center'">Patient Name</th>
+      <th [nzAlign]="'center'">Joined At</th>
+      <th [nzAlign]="'center'">Phone Number</th>
     </tr>
-    </thead>
-    <tbody style="background-color: #f2f2f2">
-    <ng-container *ngFor="let data of dynamicTable.data">
-        <tr  style="cursor: pointer; font-size: 16px">
-            <td [nzAlign]="'center'">{{ data.patientName  }}</td>
-            <td [nzAlign]="'center'">{{ data.joinedAt  }}</td>
-            <td [nzAlign]="'center'">{{ data.primaryPhone}}</td>
-        </tr>
-    </ng-container>
-    </tbody>
+  </thead>
+  <tbody style="background-color: #f2f2f2">
+    <tr
+      *ngFor="let data of idlePatients"
+      style="cursor: pointer; font-size: 16px"
+    >
+      <td [nzAlign]="'center'">{{ data.patientName }}</td>
+      <td [nzAlign]="'center'">{{ data.joinedAt }}</td>
+      <td [nzAlign]="'center'">{{ data.primaryPhone }}</td>
+    </tr>
+  </tbody>
 </nz-table>

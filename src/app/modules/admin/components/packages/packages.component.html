@@ -23,21 +23,18 @@
   </div>
 </div>
 
-<nz-table #nestedTable
-          [nzData]="packages"
-          [nzPageSize]="10"
-          class="mx-auto"
-          style="width: 55%; margin-top: 3%"
-          #dynamicTable
-          [nzTableLayout]="'auto'"
-          [nzBordered]="true"
-          [nzOuterBordered]="true"
-          [nzSimple]="false"
-          [nzPaginationType]="paginationType"
-          [nzPaginationPosition]="position"
-          [nzFrontPagination]="true"
-          [nzShowPagination]="true"
-          [nzSize]="size"
+<nz-table  #nestedTable
+  [nzData]="packages"
+  [nzTotal]="totalItems"
+  [nzPageIndex]="pageIndex"
+  [nzPageSize]="pageSize"
+  [nzFrontPagination]="false"
+  [nzShowPagination]="true"
+  [nzTableLayout]="'auto'"
+  [nzBordered]="true"
+  [nzOuterBordered]="true"
+  [nzSize]="size"
+  (nzPageIndexChange)="onPageChange($event)"
 >
   <thead>
   <tr>

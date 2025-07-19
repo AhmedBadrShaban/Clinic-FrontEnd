@@ -10,20 +10,38 @@ import { ReservationsService } from 'src/app/modules/receptionist/services/reser
   styleUrls: ['./idle-patients.component.css']
 })
 export class IdlePatientsComponent implements OnInit {
-  size: NzTableSize;
-  tableLayout: NzTableLayout;
-  position: NzTablePaginationPosition;
-  paginationType: NzTablePaginationType;
-  idlePatients: IdlePatients[] =[];
-  constructor(private patientService:PatientService, ) {
-    this.size= 'small' as NzTableSize,
-        this.paginationType= 'default' as NzTablePaginationType,
-        this.tableLayout='auto' as NzTableLayout,
-        this.position= 'bottom' as NzTablePaginationPosition
-   }
+  idlePatients: IdlePatients[] = [];
+  totalIdlePatients = 0;
+  pageSize = 5;
+  pageIndex = 1;
+  loading = false;
+
+  size: NzTableSize = 'small';
+  tableLayout: NzTableLayout = 'auto';
+  position: NzTablePaginationPosition = 'bottom';
+  paginationType: NzTablePaginationType = 'default';
+
+  constructor(private patientService: PatientService) { }
+
   ngOnInit(): void {
-    this.patientService.getAllIdlePatients().subscribe((data:any)=>{
-      this.idlePatients =data;
-    })
+    this.loadPatients();
+  }
+
+  loadPatients(): void {
+    this.loading = true;
+    this.patientService.getAllIdlePatients(this.pageIndex - 1, this.pageSize).subscribe({
+      next: (data: any) => {
+        this.idlePatients = data.content;  
+        this.totalIdlePatients = data.totalElements;  
+        this.loading = false;
+      },
+      error: () => (this.loading = false),
+    });
+  }
+
+  onPageChange(newPage: number): void {
+    this.pageIndex = newPage;
+    this.loadPatients();
   }
 }
+
