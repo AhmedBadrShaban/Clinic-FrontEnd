@@ -95,7 +95,7 @@ updateHistory(){
  next: (data: any) => {
         alert(data.message);
         this.closeDialog();
-        this.UpdatePatientHistory();
+        // this.UpdatePatientHistory();
         },
       error: (error: any) =>{
         alert(error.error.message);
@@ -105,13 +105,13 @@ updateHistory(){
 cancelUpdate(){
   this.closeDialog();
 }
-UpdatePatientHistory(){
-     this.reservationsApi.getHistory(this.data.phoneNumber).subscribe((data:any)=>{
-  // Update the parent component's listOfData
-     this.reservationsApi.updatePatientHistory(data);
-      ////console.log( "data Updated : " ,data);
-    })
-}
+// UpdatePatientHistory(){
+//      this.reservationsApi.getHistory(this.data.phoneNumber).subscribe((data:any)=>{
+//   // Update the parent component's listOfData
+//      this.reservationsApi.updatePatientHistory(data);
+//       ////console.log( "data Updated : " ,data);
+//     })
+// }
 closeDialog() {
   this.dialogRef.close();
 }

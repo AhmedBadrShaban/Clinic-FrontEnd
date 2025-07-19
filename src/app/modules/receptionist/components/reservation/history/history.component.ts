@@ -55,10 +55,6 @@ export class HistoryComponent implements OnInit {
         this.getPatientHistory(this.currentPage);
       }
     });
-
-    this.reservationservice.updateHistory$.subscribe((data: any) => {
-      this.history = data;
-    });
   }
 
   getPatientHistory(page: number): void {
