@@ -19,7 +19,10 @@ export class PackagesComponent implements OnInit {
   tableLayout: NzTableLayout;
   position: NzTablePaginationPosition;
   paginationType: NzTablePaginationType;
-   packages:patientPackages[];
+  packages:patientPackages[];
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
   @Input() phoneNumber:any;
 
   constructor(private reservationservice: ReservationsService , private dialogRef : MatDialog){
@@ -36,18 +39,23 @@ ngOnInit(){
     //console.log('Updated packages phoneNumber :>> ', this.phoneNumber);
     if(data!=0){
       this.phoneNumber = data;
-      this.getPatientPackages();
+      this.getPatientPackages(this.currentPage);
     }
     else{
-      this.getPatientPackages();
+      this.getPatientPackages(this.currentPage);
     }
   });
   }
 
- getPatientPackages(){
+  getPatientPackages(page: number){
   if(this.phoneNumber){
-  this.reservationservice.getPackages(this.phoneNumber).subscribe((data)=>{
-    this.packages = data;
+    const zeroBasedPage = page - 1;
+    console.log('page , size', page - 1, this.pageSize)
+    this.reservationservice.getPackages(this.phoneNumber, zeroBasedPage, this.pageSize).subscribe((data)=>{
+    this.packages = [...data.data];
+    console.log('packages recived', this.packages)
+    this.totalItems = data.totalItems;
+    this.currentPage = this.currentPage + 1;  
     //console.log(' Packages :>> ' , this.packages );
   })
   }
@@ -56,5 +64,8 @@ ngOnInit(){
 
   this.dialogRef.open(PackageDetailsComponent , {data:id});
 }
-
+  onPackagesPageChange(newPage: number): void {
+    this.currentPage = newPage;
+    this.getPatientPackages(this.currentPage);
+  }
 }

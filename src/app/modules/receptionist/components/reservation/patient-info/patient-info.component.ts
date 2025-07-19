@@ -10,7 +10,7 @@ import { PatientInfo } from 'src/app/modules/receptionist/models/patient-Info';
 })
 export class PatientInfoComponent implements OnInit, OnChanges  {
   @Input() info: PatientInfo;
-  @Input() phoneNumber: string;
+  @Input() phoneNumber: string|null;
   formData: FormGroup;
   oldInfo: PatientInfo;
 

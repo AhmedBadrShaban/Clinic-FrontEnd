@@ -1,29 +1,74 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation , HostListener } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  HostListener,
+  OnDestroy,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { ReservationsService } from '../../services/reservations-services/reservations.service';
 import { PatientInfo } from '../../models/patient-Info';
-import { PatientPoints } from '../../models/patient-points';
 import { AddNewPatientComponent } from '../add-new-patient/add-new-patient.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../services/patient-server/patient.service';
+import { NzAutocompleteOptionComponent } from 'ng-zorro-antd/auto-complete';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { Subject, Subscription, debounceTime, distinctUntilChanged, BehaviorSubject } from 'rxjs';
+
+interface PatientSearchItem {
+  displayText: string;
+  phoneNumber: string;
+  name: string;
+}
+
+interface TabDataState {
+  loading: boolean;
+  loaded: boolean;
+  error: string | null;
+}
+
+const SEARCH_DEBOUNCE_TIME = 300;
+const MAX_AUTOCOMPLETE_ITEMS = 50;
+
 @Component({
   selector: 'app-reservation',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.css'],
 })
-export class ReservationComponent implements OnInit {
-
+export class ReservationComponent implements OnInit, OnDestroy {
   isVisible = false;
-  patientData: any;
   selectedTab: string = 'patientInfoTab';
-  patientNumber: any;
-  reservationID:any;
-  allPatientsNamesAndNumbers: any[] = [];
-  AllDataToSearchIn: any[] = [];
-  filteredData: any[] = [];
-  searchValue?: any;
+  isLoading = false;
+  searchValue = '';
+  selectedTabIndex = 0;
+
+  private currentPatientSubject = new BehaviorSubject<PatientInfo | null>(null);
+  currentPatient$ = this.currentPatientSubject.asObservable();
+
+  patientNumber: string | null = null;
+  reservationID: string | null = null;
+
+  private allPatientsData: PatientSearchItem[] = [];
+  filteredData: string[] = [];
+
+  tabDataStates: { [key: string]: TabDataState } = {
+    patientInfoTab: { loading: false, loaded: false, error: null },
+    historyTab: { loading: false, loaded: false, error: null },
+    packagesTab: { loading: false, loaded: false, error: null },
+    pointsTab: { loading: false, loaded: false, error: null },
+    reservationsTab: { loading: false, loaded: false, error: null },
+    paymentHistoryTab: { loading: false, loaded: false, error: null },
+    afterWorkTab: { loading: false, loaded: false, error: null },
+    idlePatientsTab: { loading: false, loaded: false, error: null }
+  };
+
+  private searchSubject = new Subject<string>();
+  private subscriptions = new Subscription();
+
   PatientInfo: PatientInfo = {
     name: '',
     id: -1,
@@ -32,137 +77,393 @@ export class ReservationComponent implements OnInit {
     secondaryPhone: '',
     knowUsThrough: '',
     note: '',
-    debit:0,
+    debit: 0,
     date: '',
     lastReservation: '',
   };
+
   userType: string | null;
+
   constructor(
     private reservationsService: ReservationsService,
     private patientService: PatientService,
     private route: ActivatedRoute,
+    private router: Router,
     private loggedIn: AuthService,
-    private dialogRef: MatDialog
+    private dialogRef: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {
     this.userType = loggedIn.userType;
-    //console.log('User Type in Reservation is :>> ', this.userType);
+    this.initializeSearchDebounce();
   }
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const rect = document.getElementById('animate')?.getBoundingClientRect();
-    if (rect && rect.top <= window.innerHeight && rect.bottom >= 0) {
-      this.isVisible = true;
-    } else {
-      this.isVisible = false;
+    const newVisibility = rect ? (rect.top <= window.innerHeight && rect.bottom >= 0) : false;
+
+    if (this.isVisible !== newVisibility) {
+      this.isVisible = newVisibility;
+      this.cdr.markForCheck();
     }
   }
+
   ngOnInit(): void {
-    if (this.userType != 'ROLE_DOCTOR') {
-      this.reservationsService.getPatientsNamesAndPhones().subscribe((data: any) => {
-        this.allPatientsNamesAndNumbers = data;
-         if (Array.isArray(this.allPatientsNamesAndNumbers)) {
-          this.AllDataToSearchIn = this.allPatientsNamesAndNumbers;
-          this.filteredData = this.AllDataToSearchIn;
-          //console.log(this.filteredData);
-        if(this.filteredData.length>0){
-            this.patientNumber = this.extractPhoneNumberFromSearchResult(
-              this.allPatientsNamesAndNumbers[0]
-            );
-            this.searchValue =  this.allPatientsNamesAndNumbers[0];
-            this.patientService.patientInfo(this.patientNumber).subscribe((data)=>{
-              this.PatientInfo = data;
-              //console.log('info :>> ', this.PatientInfo);
-            })
-          }
-        else
-        {
-          //console.log('there is no Patients in the system yet');
-        }
+    this.initializeComponent();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    this.currentPatientSubject.complete();
+  }
+
+  private initializeComponent(): void {
+    if (this.userType === 'ROLE_DOCTOR') {
+      this.initializeDoctorView();
+    } else {
+      this.initializePatientData();
+      this.setInitialTab();
+    }
+  }
+
+  private initializeSearchDebounce(): void {
+    const searchSubscription = this.searchSubject
+      .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
+      .subscribe((searchTerm: string) => {
+        this.performSearch(searchTerm);
+      });
+
+    this.subscriptions.add(searchSubscription);
+  }
+
+  private initializePatientData(): void {
+    this.loadPatientDataFromAPI(this.searchSubject);
+  }
+
+  private loadPatientDataFromAPI(query:any): void {
+    this.isLoading = true;
+    this.cdr.markForCheck();
+
+    const subscription = this.reservationsService.getPatientsNamesAndPhonesAuto(query)
+      .subscribe({
+        next: (data: any) => {
+          this.allPatientsData = this.transformPatientData(data);
+          this.updateFilteredData('');
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Error loading patient data:', error);
+          this.isLoading = false;
+          this.cdr.markForCheck();
         }
       });
-      this.reservationsService.update$.subscribe((data:any)=>{
-        this.AllDataToSearchIn = data;
-          this.filteredData = this.AllDataToSearchIn;
-        //console.log('Updated array recived : ', this.AllDataToSearchIn);
-      })
-    }
-    else {
-      this.route.params.subscribe((params) => {
-        this.route.queryParams.subscribe((params) => {
-          const phoneNumber = params['phoneNumber'];
-          const reservationId = params['id'];
-          //console.log('Phone Number Recived :', phoneNumber);
-          //console.log('Reservation ID Recived :', reservationId);
+
+    this.subscriptions.add(subscription);
+  }
+
+  private transformPatientData(rawData: any[]): PatientSearchItem[] {
+    if (!Array.isArray(rawData)) return [];
+
+    return rawData.map(item => {
+      if (typeof item === 'string') {
+        const parts = item.split(' - ');
+        return {
+          displayText: item,
+          name: parts[0]?.trim() || '',
+          phoneNumber: parts[1]?.trim() || ''
+        };
+      }
+
+      return {
+        displayText: `${item.name} - ${item.phoneNumber}`,
+        name: item.name || '',
+        phoneNumber: item.phoneNumber || ''
+      };
+    });
+  }
+
+  private initializeDoctorView(): void {
+    const paramsSubscription = this.route.params.subscribe(() => {
+      this.route.queryParams.subscribe((params) => {
+        const phoneNumber = params['phoneNumber'] || null;
+        const reservationID = params['id'] || null;
+
+        if (phoneNumber !== this.patientNumber) {
           this.patientNumber = phoneNumber;
-          this.reservationID = reservationId;
-        });
+          this.reservationID = reservationID;
+          this.selectedTab = 'afterWorkTab';
+          this.selectedTabIndex = 0;
+          this.resetTabStates();
+
+          if (phoneNumber) {
+            this.loadPatientInfo(phoneNumber);
+          }
+        }
+
+        this.cdr.markForCheck();
       });
+    });
+
+    this.subscriptions.add(paramsSubscription);
+  }
+
+  private setInitialTab(): void {
+    if (this.userType === 'ROLE_ADMIN') {
+      this.selectedTab = 'idlePatientsTab';
+      this.selectedTabIndex = 0;
+    } else {
+      this.selectedTab = 'patientInfoTab';
+      this.selectedTabIndex = 0;
     }
   }
 
+  private resetTabStates(): void {
+    Object.keys(this.tabDataStates).forEach(key => {
+      this.tabDataStates[key] = { loading: false, loaded: false, error: null };
+    });
+  }
 
-  search() {
-    this.patientNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
-    if(this.patientNumber && this.searchValue){
-      //console.log('searchValue :>> ', this.searchValue);
-    this.reservationsService.updatePhoneNumber(this.patientNumber);
-    this.patientService.searchPatients(this.patientNumber).subscribe((data: any) => {
-      this.PatientInfo = data;
-      //console.log('Searched Patient data: ', this.PatientInfo);
-       });
+  onSearchValueChange(value: any): void {
+    this.searchSubject.next(value);
+   }
+
+  onPatientSelected(option: NzAutocompleteOptionComponent): void {
+    const selectedValue = option.nzValue as string;
+    this.searchValue = selectedValue;
+
+    setTimeout(() => {
+      this.searchPatient();
+    }, 100);
+  }
+
+  private performSearch(searchTerm: any): void {
+    if (!searchTerm.trim()) {
+      this.filteredData = [];
+      this.cdr.markForCheck();
+      return;
+    }
+    console.log('searching', searchTerm)
+    this.isLoading = true;
+    const subscription = this.reservationsService.getPatientsNamesAndPhonesAuto(searchTerm)
+      .subscribe({
+        next: (data: any) => {
+          this.allPatientsData = this.transformPatientData(data);
+
+          const lowerSearchTerm = searchTerm.toLowerCase();
+          const filtered = this.allPatientsData
+            .filter(item =>
+              item.name.toLowerCase().includes(lowerSearchTerm) ||
+              item.phoneNumber.includes(searchTerm)
+            )
+            .slice(0, MAX_AUTOCOMPLETE_ITEMS)
+            .map(item => item.displayText);
+
+          this.filteredData = filtered;
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Error during search debounce:', error);
+          this.filteredData = [];
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
+
+  private updateFilteredData(searchTerm: string): void {
+    if (!searchTerm.trim()) {
+      this.filteredData = this.allPatientsData
+        .slice(0, MAX_AUTOCOMPLETE_ITEMS)
+        .map(item => item.displayText);
+      return;
     }
 
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    const filtered = this.allPatientsData
+      .filter(item =>
+        item.name.toLowerCase().includes(lowerSearchTerm) ||
+        item.phoneNumber.includes(searchTerm)
+      )
+      .slice(0, MAX_AUTOCOMPLETE_ITEMS)
+      .map(item => item.displayText);
+
+    this.filteredData = filtered;
   }
 
-  onChange(value: string): void {
-    this.filteredData = this.AllDataToSearchIn.filter(
-      (AllDataToSearchIn) =>
-        AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
-    );
+  searchPatient(): void {
+    const phoneNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
+
+    if (!phoneNumber) {
+      this.showMessage('No valid phone number found in search value', 'error');
+      return;
+    }
+
+    this.isLoading = true;
+    this.selectedTab = 'patientInfoTab';
+    this.selectedTabIndex = 0;
+    this.resetTabStates();
+    this.patientNumber = phoneNumber;
+    this.cdr.markForCheck();
+
+    this.loadPatientInfo(phoneNumber); // يحمل بيانات المريض المختار
   }
-  extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
-    const parts = selectedRecord.split('-');
+
+  private loadPatientInfo(phoneNumber: string): void {
+    this.setTabLoading('patientInfoTab', true);
+
+    const searchSubscription = this.patientService.searchPatients(phoneNumber)
+      .subscribe({
+        next: (data: any) => {
+          this.PatientInfo = data;
+          this.currentPatientSubject.next(data);
+          this.setTabLoaded('patientInfoTab', true);
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          console.error('Error searching patient:', error);
+          this.setTabError('patientInfoTab', 'Failed to load patient information');
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
+
+    this.subscriptions.add(searchSubscription);
+  }
+
+  private extractPhoneNumberFromSearchResult(selectedRecord: string): string | null {
+    if (!selectedRecord) return null;
+
+    const parts = selectedRecord.split(/\s*-\s*/);
     if (parts.length === 2) {
-      //console.log('Number is Fn.. :>> ', parts[1]);
-      return parts[1];
+      return parts[1].trim();
     }
+
+    if (/^\d+$/.test(selectedRecord.trim())) {
+      return selectedRecord.trim();
+    }
+
     return null;
   }
-  openDialog() {
-    this.dialogRef.open(AddNewPatientComponent);
+
+  openDialog(): void {
+    const dialogRef = this.dialogRef.open(AddNewPatientComponent, {
+      width: '600px',
+      disableClose: true,
+      panelClass: 'custom-dialog-container'
+    });
+
+    const dialogSubscription = dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadPatientDataFromAPI(this.searchSubject);
+        this.showMessage('Patient added successfully!', 'success');
+      }
+    });
+
+    this.subscriptions.add(dialogSubscription);
   }
 
   onTabSelectChange(selectedIndex: number): void {
-    let i:number=0;
+    this.selectedTabIndex = selectedIndex;
+
     if (this.userType === 'ROLE_RECEPTIONIST') {
-      switch (selectedIndex) {
-        case i:
-          this.selectedTab = 'patientInfoTab';
-          break;
-        case i+1:
-          this.selectedTab = 'historyTab';
-          break;
-        case i+2:
-          this.selectedTab = 'packagesTab';
-          break;
-        case i+3:
-          this.selectedTab = 'pointsTab';
-          break;
-        case i+4:
-          this.selectedTab = 'reservationsTab';
-          break;
-        case i+5:
-          this.selectedTab = 'paymentHistoryTab';
-          break;
+      const tabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+      this.selectedTab = tabs[selectedIndex] || 'patientInfoTab';
+    } else if (this.userType === 'ROLE_ADMIN') {
+      if (selectedIndex === 0) {
+        this.selectedTab = 'idlePatientsTab';
+      } else {
+        const tabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+        this.selectedTab = tabs[selectedIndex - 1] || 'patientInfoTab';
       }
-    }
-    else if (this.userType === 'ROLE_ADMIN') {
-       i=i+1;
-       this.selectedTab = 'idlePatientsTab';
-    }
-    else if(this.userType === 'ROLE_ADMIN'){
+    } else if (this.userType === 'ROLE_DOCTOR') {
       this.selectedTab = 'afterWorkTab';
     }
+
+    if (this.patientNumber && this.selectedTab !== 'idlePatientsTab') {
+      this.loadTabData(this.selectedTab);
+    }
+
+    this.cdr.markForCheck();
+  }
+
+  private loadTabData(tabName: string): void {
+    if (!this.patientNumber || this.tabDataStates[tabName].loaded || this.tabDataStates[tabName].loading) {
+      return;
+    }
+
+    this.setTabLoading(tabName, true);
+
+    this.reservationsService.updatePhoneNumber(this.patientNumber);
+
+    setTimeout(() => {
+      this.setTabLoaded(tabName, true);
+      this.cdr.markForCheck();
+    }, 100);
+  }
+
+  private setTabLoading(tabName: string, loading: boolean): void {
+    this.tabDataStates[tabName].loading = loading;
+    if (loading) {
+      this.tabDataStates[tabName].error = null;
+    }
+  }
+
+  private setTabLoaded(tabName: string, loaded: boolean): void {
+    this.tabDataStates[tabName].loaded = loaded;
+    this.tabDataStates[tabName].loading = false;
+  }
+
+  private setTabError(tabName: string, error: string): void {
+    this.tabDataStates[tabName].error = error;
+    this.tabDataStates[tabName].loading = false;
+  }
+
+  private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+    console.log(`${type.toUpperCase()}: ${message}`);
+  }
+
+  trackByFn(index: number, item: string): string {
+    return item;
+  }
+
+  highlightSearchTerm(text: string, searchTerm: string): string {
+    if (!searchTerm || !text) return text;
+
+    const regex = new RegExp(`(${this.escapeRegExp(searchTerm)})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+  }
+
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  get hasPatientData(): boolean {
+    return this.allPatientsData.length > 0;
+  }
+
+  get showSearchSection(): boolean {
+    return this.userType !== 'ROLE_DOCTOR';
+  }
+
+  get canAddNewPatient(): boolean {
+    return this.userType === 'ROLE_ADMIN';
+  }
+
+  get currentTabState(): TabDataState {
+    return this.tabDataStates[this.selectedTab];
+  }
+
+  get hasSelectedPatient(): boolean {
+    return !!this.patientNumber;
+  }
+
+  get showPatientRequiredMessage(): boolean {
+    return !this.hasSelectedPatient && this.selectedTab !== 'idlePatientsTab';
   }
 }
-

@@ -12,7 +12,7 @@ export class PatientService {
   private readonly baseUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
-    this.baseUrl = this.configService.getBaseUrl(); // e.g., 'http://localhost:8080/'
+    this.baseUrl = this.configService.getBaseUrl(); 
   }
 
   getAllIdlePatients(): Observable<any> {
