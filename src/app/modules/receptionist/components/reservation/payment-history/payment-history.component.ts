@@ -32,6 +32,10 @@ export class PaymentHistoryComponent implements OnInit {
  paymentHistory:DailySheet[];
   @Input() phoneNumber:any;
 
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+
   settingValue: Setting;
   constructor(private reservationsService :ReservationsService){
     //console.log('payment History ini :>> ' );
@@ -56,30 +60,30 @@ export class PaymentHistoryComponent implements OnInit {
     };
   }
   ngOnInit(): void {
-    //console.log('Recived paymentHistory phoneNumber :>> ', this.phoneNumber);
-    this.reservationsService.phone$.subscribe((data:any) => {
-      //console.log('Updated  Reservations History phoneNumber :>> ', data);
-      if(data!=0 && this.phoneNumber){
+    this.reservationsService.phone$.subscribe((data: any) => {
+      if (data != 0 && this.phoneNumber) {
         this.phoneNumber = data;
-        this.getPaymentHistory();
+        this.getPaymentHistory(this.currentPage);
+      } else if (this.phoneNumber) {
+        this.getPaymentHistory(this.currentPage);
       }
-      else if(this.phoneNumber){
-        this.getPaymentHistory();
-      }
-
     });
-
   }
 
-  getPaymentHistory(){
-    //console.log('phone Before API :>> ', this.phoneNumber);
-    if(this.phoneNumber){
-    this.reservationsService.getPaymentHistory(this.phoneNumber).subscribe((data)=>{
-      this.paymentHistory =data;
-      //console.log('recived paymentHistory  :>> ',  this.paymentHistory);
-     })
+  getPaymentHistory(page: number): void {
+    if (this.phoneNumber) {
+      const zeroBasedPage = page - 1;
+      this.reservationsService.getPaymentHistory(this.phoneNumber, zeroBasedPage, this.pageSize).subscribe((data) => {
+        this.paymentHistory = data.data;
+        this.totalItems = data.totalItems;
+        this.currentPage = page;
+      });
     }
-    }
+  }
+  onPaymentPageChange(newPage: number): void {
+    this.currentPage = newPage;
+    this.getPaymentHistory(this.currentPage);
+  }
 
 
 }

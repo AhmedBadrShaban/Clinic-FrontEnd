@@ -17,7 +17,9 @@ export class ReservationsComponent implements OnInit  {
   paginationType: NzTablePaginationType;
  reservations:any[];
   @Input() phoneNumber:any;
-
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
 
   constructor(private reservationsService:ReservationsService) {
 
@@ -34,27 +36,33 @@ export class ReservationsComponent implements OnInit  {
       //console.log('Updated  Reservations History phoneNumber :>> ', data);
       if(data!=0 && this.phoneNumber){
         this.phoneNumber = data;
-        this.getReservations();
+        this.getReservations(this.currentPage);
       }
       else if(this.phoneNumber){
-        this.getReservations();
+        this.getReservations(this.currentPage);
       }
 
     });
 
     }
 
-   getReservations(){
+  getReservations(page: number){
     //console.log('phone Before API :>> ', this.phoneNumber);
     if(this.phoneNumber){
-    this.reservationsService.getReservationsHistory(this.phoneNumber).subscribe((data)=>{
-      this.reservations =data;
-      //console.log('recived Reservations History :>> ',  this.reservations);
+      const zeroBasedPage = page - 1;
+      console.log('page , size', page - 1, this.pageSize)
+      this.reservationsService.getReservationsHistory(this.phoneNumber, zeroBasedPage, this.pageSize).subscribe((data)=>{
+        this.reservations = [...data.data];
+        console.log('packages recived', this.reservations)
+        this.totalItems = data.totalItems;
+        this.currentPage = this.currentPage + 1;      
+          //console.log('recived Reservations History :>> ',  this.reservations);
      })
     }
     }
-
-
-
+  onReservationsPageChange(newPage: number): void {
+    this.currentPage = newPage;
+    this.getReservations(this.currentPage);
+  }
 
 }

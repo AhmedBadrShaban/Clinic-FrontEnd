@@ -75,12 +75,12 @@
     </div>
     
     <!-- Search Results Info -->
-    <div *ngIf="searchValue && filteredData.length > 0" class="search-info mt-2 text-center">
+    <!-- <div *ngIf="searchValue && filteredData.length > 0" class="search-info mt-2 text-center">
       <small class="text-muted">
         Found {{ filteredData.length }} result(s)
         <span *ngIf="filteredData.length >= 50"> (showing first 50)</span>
       </small>
-    </div>
+    </div> -->
     
     <!-- No Results Message -->
     <div *ngIf="searchValue && filteredData.length === 0 && !isLoading" class="no-results mt-2 text-center">
