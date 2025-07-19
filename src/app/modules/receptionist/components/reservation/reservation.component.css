@@ -145,6 +145,10 @@
   border-radius: 3px;
 }
 
+.tab-content-wrapper {
+  margin-top:2rem;
+    padding: 16px;
+  }
 /* Responsive Design */
 @media (max-width: 768px) {
   .search-container {
