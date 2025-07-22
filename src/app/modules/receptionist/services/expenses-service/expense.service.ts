@@ -41,13 +41,11 @@ export class ExpenseService {
     return this.http.post(`${this.baseUrl}admin/add-expense-type` , data);
   }
   filterByDate(date:any): Observable<any> {
-    //console.log("filtling by date of :" ,date);
     if(this.loggedIn.userType=='ROLE_ADMIN'){
     return this.http.get<any>(`${this.baseUrl}admin/filter-add-reciptionist-expenses-by-date?date=${date}`);
     }
     return this.http.get<any>(`${this.baseUrl}receptionist/filter-expenses-v2?date=${date}`);
   }
-
 
 private listOfDataSubject = new BehaviorSubject<readonly any[]>([]);
 listOfData$ = this.listOfDataSubject.asObservable();

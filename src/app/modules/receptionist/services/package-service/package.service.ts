@@ -28,13 +28,18 @@ export class PackageService {
     return this.http.put<any>(`${this.baseUrl}receptionist/update-reserved-package`, data, { params });
   }
 
-  getAllReservedPackages(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages`);
+  getAllReservedPackages(page:number =0 , size:number=20): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages-v2` , {params});
   }
 
   filterByDate(date: any): Observable<any> {
-    const url = `${this.baseUrl}receptionist/reserved-package-filter`;
+    const url = `${this.baseUrl}receptionist/reserved-package-filter-v2`;
     const queryParams = new HttpParams().set('date', date);
+    console.log("filtling by date of :", date);
+
     return this.http.get<any>(url, { params: queryParams });
   }
 
