@@ -1,112 +1,103 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { Expense } from 'src/app/modules/receptionist/models/expense';
-import { AddExpenseComponent } from './add-expense/add-expense.component';
-import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
-import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
-import { ExpenseService } from '../../services/expenses-service/expense.service';
+import { Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
- import { AddExpenseTypeComponent } from './add-expense-type/add-expense-type.component';
-import { AuthService } from 'src/app/shared/services/auth.service';
 
-type TableScroll = 'unset' | 'scroll' | 'fixed';
-interface Setting {
- bordered: boolean;
- loading: boolean;
- pagination: boolean;
- sizeChanger: boolean;
- title: boolean;
- header: boolean;
- footer: boolean;
- expandable: boolean;
- checkbox: boolean;
- fixHeader: boolean;
- noResult: boolean;
- ellipsis: boolean;
- simple: boolean;
- size: NzTableSize;
- tableScroll: TableScroll;
- tableLayout: NzTableLayout;
- position: NzTablePaginationPosition;
- paginationType: NzTablePaginationType;
-}
+import { Expense } from 'src/app/modules/receptionist/models/expense';
+import { ExpenseService } from '../../services/expenses-service/expense.service';
+import { AddExpenseComponent } from './add-expense/add-expense.component';
+import { AddExpenseTypeComponent } from './add-expense-type/add-expense-type.component';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { PageEvent } from '@angular/material/paginator';
+
 @Component({
   selector: 'app-expense',
   templateUrl: './expense.component.html',
   styleUrls: ['./expense.component.css']
 })
-export class ExpenseComponent implements OnInit {
-  userType:any;
-  selectedDate: any | undefined;
-  listOfData: readonly Expense[] =[];
-  displayData: readonly Expense[] = [];
-  allChecked = false;
-  indeterminate = false;
-  fixedColumn = false;
-  scrollX: string | null = null;
-  scrollY: string | null = null;
-  settingValue: Setting;
+export class ExpenseComponent implements OnInit, OnDestroy {
+  @ViewChild('imageTemplate', { static: true }) imageTemplate!: TemplateRef<any>;
 
+  userType: string | null = null;
+  selectedDate: Date | null = new Date();
 
+  tableColumns: Array<{ key: string, label: string, template?: TemplateRef<any> }> = [];
+  dataSource = new MatTableDataSource<Expense>();
+  totalItems = 0;
+  pageSize = 10;
+  currentPage = 0;
+  pageSizeOptions: number[] = [5, 10, 25, 50];
 
-  constructor(private dialogRef : MatDialog  ,
-    private ExpenseService:ExpenseService , private datePipe:DatePipe , private loggedIn:AuthService ){
-      this.userType = loggedIn.userType;
-    this.selectedDate = new Date();
-    this.settingValue ={
-      bordered: true,
-      loading: false,
-      pagination: true,
-      sizeChanger: true,
-      title: false,
-      header: true,
-      footer: false,
-      expandable: false,
-      checkbox: false,
-      fixHeader: false,
-      noResult: false,
-      ellipsis: false,
-      simple: false,
-      size: 'small' as NzTableSize,
-      paginationType: 'default' as NzTablePaginationType,
-      tableScroll: 'unset' as TableScroll,
-      tableLayout: 'auto' as NzTableLayout,
-      position: 'both' as NzTablePaginationPosition
-    };
-   }
+  private sub = new Subscription();
+
+  constructor(
+    private dialogRef: MatDialog,
+    private expenseService: ExpenseService,
+    private datePipe: DatePipe,
+    private authService: AuthService
+  ) {
+    this.userType = this.authService.userType;
+  }
 
   ngOnInit(): void {
-    this.getAllExpenses();
-    // Listing for any Updates in Data
-    this.ExpenseService.listOfData$.subscribe((data: readonly any[]) => {
-      this.listOfData = data;
+    this.setupColumns();
+    this.getAllExpenses(0);
+  }
+
+  setupColumns(): void {
+    this.tableColumns = [
+      ...(this.userType === 'ROLE_ADMIN' ? [{ key: 'date', label: 'Expense Date' }] : []),
+      { key: 'type', label: 'Expense Type' },
+      { key: 'amount', label: 'Amount' },
+      { key: 'image', label: 'Image', template: this.imageTemplate },
+      { key: 'note', label: 'Note' },
+      ...(this.userType === 'ROLE_ADMIN' ? [{ key: 'name', label: 'Receptionist Name' }] : [])
+    ];
+  }
+
+  getAllExpenses(page: number): void {
+    console.log('Fetching expenses - page:', page, 'pageSize:', this.pageSize);
+    this.expenseService.getAllExpenses(page, this.pageSize).subscribe((res: any) => {
+      console.log('Expenses response:', res);
+      this.dataSource.data = [...res.data];
+      this.totalItems = res.totalItems;
     });
   }
-  getAllExpenses(){
-  this.ExpenseService.getAllExpenses().subscribe((data:any)=>{
-    this.listOfData =data;
-   //console.log( "data recived : " ,this.listOfData);
- })
-}
-  onDateChange(event: any) {
+
+  onPageChange( event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.getAllExpenses(this.currentPage);
+  }
+
+  onDateChange(event: any): void {
     this.selectedDate = event.value;
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
-    this.ExpenseService.filterByDate(formattedDate).subscribe((data:any)=>{
-      // //console.log(data);
-      this.listOfData =data;
-      //console.log( "Search result is  : " ,this.listOfData);
-    })
-  }
-  clearFilter(){
-    this.selectedDate = null;
-    this.getAllExpenses();
-  }
-  openDialog(which:string){
-    if(which=='expense'){
-    this.dialogRef.open(AddExpenseComponent);
+    if (formattedDate) {
+      console.log('data filter', formattedDate)
+      this.expenseService.filterByDate(formattedDate).subscribe((res: any) => {
+        console.log('data', res)
+        this.dataSource.data = res.data;
+      });
     }
-    else if(which=='type'){
+  }
+
+  clearFilter(): void {
+    this.selectedDate = null;
+    this.currentPage=0;
+    this.getAllExpenses(0);
+  }
+
+  openDialog(which: 'expense' | 'type'): void {
+    if (which === 'expense') {
+      this.dialogRef.open(AddExpenseComponent);
+    } else if (which === 'type') {
       this.dialogRef.open(AddExpenseTypeComponent);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }
