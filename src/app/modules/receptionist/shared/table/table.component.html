@@ -1,5 +1,16 @@
-<div class="table-container mat-elevation-z8">   
-  <table mat-table [dataSource]="data" class="enhanced-mat-table" matSort>      
+<div class="table-container mat-elevation-z8">
+  
+ 
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && (!data || data.length === 0)">
+    <div class="empty-content">
+      <mat-icon class="empty-icon">inbox</mat-icon>
+      <h3 class="empty-title">{{ emptyTitle || 'No Data Available' }}</h3>
+      <p class="empty-message">{{ emptyMessage || 'There are no records to display at this time.' }}</p>
+    </div>
+  </div>
+   
+  <table mat-table [dataSource]="data" class="enhanced-mat-table" [class.table-loading]="isLoading" matSort *ngIf="!isLoading && data && data.length > 0">      
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
       <th mat-header-cell *matHeaderCellDef mat-sort-header class="enhanced-header" align="center">
         <span class="header-text">{{ column.label }}</span>
@@ -24,6 +35,7 @@
     [pageSize]="pageSize"
     [pageIndex]="currentPage - 1"
     [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange.emit($event)">
+    (page)="onPageChange.emit($event)"
+    *ngIf="!isLoading && data && data.length > 0">
   </mat-paginator>
 </div>

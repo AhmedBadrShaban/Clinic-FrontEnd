@@ -50,6 +50,8 @@ import { UpdatePackageComponent } from './components/reservation/packages/packag
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; // Add this
+import { MatIconModule } from '@angular/material/icon'; // Add this
 import { MatSortModule } from '@angular/material/sort';
 import { TableComponent } from './shared/table/table.component';
  
@@ -99,6 +101,8 @@ import { TableComponent } from './shared/table/table.component';
     MatButtonModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatDialogModule, MatAutocompleteModule, MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
   NavBarComponent
   ],
   exports:[

@@ -28,6 +28,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   pageSize: number = 5;
   currentPage: number = 0;
   pageSizeOptions: number[] = [5, 10, 25, 50];
+  loadingState=false;
 
    displayedColumns: string[] = [
     'date',
@@ -80,13 +81,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   getPatientHistory(page: number): void {
     if (this.phoneNumber) {
-      console.log('calling history of patient', this.phoneNumber);
+       console.log('calling history of patient', this.phoneNumber);
       console.log('page , size', page, this.pageSize);
       this.reservationservice.getHistory(this.phoneNumber, page, this.pageSize)
         .subscribe((res: any) => {
           console.log('res', res);
           this.dataSource.data = [...res.data];
-          console.log('history received', this.dataSource.data);
+           console.log('history received', this.dataSource.data);
           this.totalItems = res.totalItems;
         });
     }
