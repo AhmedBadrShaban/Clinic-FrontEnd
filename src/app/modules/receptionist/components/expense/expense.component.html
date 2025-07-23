@@ -16,42 +16,11 @@
       <button mat-button class="custom-gray-button" (click)="clearFilter()">Clear Filters</button>
   </div>
   </div>
-  <nz-table
-      class="mx-auto"  style="width:90%"
-      #dynamicTable
-      [nzScroll]="{ x: scrollX, y: scrollY }"
-      [nzData]="listOfData"
-      [nzTableLayout]="settingValue.tableLayout"
-      [nzBordered]="settingValue.bordered"
-      [nzOuterBordered]	=true
-      [nzSimple]="settingValue.simple"
-      [nzLoading]="settingValue.loading"
-      [nzPaginationType]="settingValue.paginationType"
-      [nzPaginationPosition]="settingValue.position"
-      [nzFrontPagination]="settingValue.pagination"
-      [nzShowPagination]="settingValue.pagination"
-      [nzSize]="settingValue.size"
-     >
-      <thead>
-        <tr *ngIf="settingValue.header"  style="cursor: pointer;">
-          <th *ngIf="userType == 'ROLE_ADMIN' " [nzAlign]="'center'">User Name</th>
-          <th [nzAlign]="'center'">Expense Type</th>
-          <th [nzAlign]="'center'">Amount</th>
-          <th [nzAlign]="'center'">Image</th>
-          <th [nzAlign]="'center'">Note</th>
-          <th *ngIf="userType=='Admin'" [nzAlign]="'center'">Reciptianist Name</th>
-        </tr>
-      </thead>
-      <tbody style="background-color: #F2F2F2;">
-        <ng-container *ngFor="let data of dynamicTable.data">
-          <tr >
-            <td *ngIf="userType == 'ROLE_ADMIN' "  [nzAlign]="'center'" [nzAlign]="'center'">{{ data.name }}</td>
-            <td [nzAlign]="'center'" [nzAlign]="'center'">{{ data.type }}</td>
-            <td [nzAlign]="'center'" style="font-size: 12px;">{{ data.amount }}</td>
-            <td  [nzAlign]="'center'">{{ data.image }}</td>
-            <td  [nzAlign]="'center'">{{ data.note }}</td>
-            <td *ngIf="userType=='Admin'"  [nzAlign]="'center'">{{ data.receptionistName }}</td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </nz-table>
+    <app-table
+ [data]="dataSource.data"
+  [columns]="tableColumns"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage + 1"
+  (onPageChange)="onPageChange($event)">
+</app-table>

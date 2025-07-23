@@ -4,6 +4,8 @@
   [totalItems]="totalItems"
   [pageSize]="pageSize"
   [currentPage]="currentPage + 1"
+  [emptyTitle]="'No History Found'"
+  [emptyMessage]="'This user have no history on the system yet.'"
   (onPageChange)="onPageChange($event)">
 </app-table>
 

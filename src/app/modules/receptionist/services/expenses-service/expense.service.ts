@@ -20,11 +20,14 @@ export class ExpenseService {
     }
     return this.http.get<any>(`${this.baseUrl}receptionist/get-normal-expenses-type`)
   }
-  getAllExpenses():Observable<any>{
+  getAllExpenses(page:number=0, pageSize: number=20):Observable<any>{
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', pageSize.toString());
     if(this.loggedIn.userType=='ROLE_ADMIN'){
-    return this.http.get<any>(`${this.baseUrl}admin/expenses`);
+    return this.http.get<any>(`${this.baseUrl}admin/expenses` , {params});
     }
-    return this.http.get<any>(`${this.baseUrl}receptionist/receptionist-expenses`);
+    return this.http.get<any>(`${this.baseUrl}receptionist/receptionist-expenses-v2`, { params });
 
   }
   addNewExpense(data:any){
@@ -38,13 +41,11 @@ export class ExpenseService {
     return this.http.post(`${this.baseUrl}admin/add-expense-type` , data);
   }
   filterByDate(date:any): Observable<any> {
-    //console.log("filtling by date of :" ,date);
     if(this.loggedIn.userType=='ROLE_ADMIN'){
     return this.http.get<any>(`${this.baseUrl}admin/filter-add-reciptionist-expenses-by-date?date=${date}`);
     }
-    return this.http.get<any>(`${this.baseUrl}receptionist/filter-expenses?date=${date}`);
+    return this.http.get<any>(`${this.baseUrl}receptionist/filter-expenses-v2?date=${date}`);
   }
-
 
 private listOfDataSubject = new BehaviorSubject<readonly any[]>([]);
 listOfData$ = this.listOfDataSubject.asObservable();

@@ -50,18 +50,20 @@ export class PointsComponent implements OnInit, OnDestroy {
       this.reservationsService.phone$.subscribe((data: any) => {
         this.phoneNumber = data;
         if (this.phoneNumber) {
-          this.getPointsHistory();
+          this.getPointsHistory(0);
           this.getTotalInAndOut();
 }
       })
     );
   }
 
-  getPointsHistory(): void {
-   
-      this.reservationsService.getPointsHistory(this.phoneNumber).subscribe((data) => {
-        this.dataSource.data = [...data];
-        this.totalItems = data.length;
+  getPointsHistory(page:number): void {
+    console.log('Fetching Point History - page:',page , 'pageSize:', this.pageSize);
+
+      this.reservationsService.getPointsHistory(this.phoneNumber , this.currentPage  ,this.pageSize).subscribe((data) => {
+        console.log('data recived', data)
+        this.dataSource.data = [...data.data];
+        this.totalItems = data.totalItems;
         this.getTotalInAndOut();
       });
   }
@@ -81,6 +83,8 @@ export class PointsComponent implements OnInit, OnDestroy {
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
+    console.log('pagination in progresss')
+    this.getPointsHistory(this.currentPage);
    }
 
   openModal(): void {

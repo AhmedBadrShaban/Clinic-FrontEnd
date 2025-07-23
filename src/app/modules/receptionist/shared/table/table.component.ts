@@ -14,6 +14,11 @@ export class TableComponent implements OnChanges {
   @Input() pageSize: number = 10;
   @Input() currentPage: number = 1;
 
+
+  @Input() isLoading: boolean = false; 
+  @Input() emptyTitle: string = 'No Data Available';  
+  @Input() emptyMessage: string = 'There are no records to display at this time.';
+
   @Output() onPageChange = new EventEmitter<PageEvent>();
 
   dataSource = new MatTableDataSource<any>([]);
