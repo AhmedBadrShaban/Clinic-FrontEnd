@@ -43,6 +43,10 @@ import { CheckOutComponent } from './modules/rooms/check-out/check-out.component
 import { PaymentComponent } from './modules/rooms/check-out/payment/payment.component';
 import {ReportsComponent} from "./shared/components/reports/reports.component";
 import { UpdateReservationComponent } from './modules/rooms/events-grid/update-reservation/update-reservation.component';
+import { MatIconModule } from "@angular/material/icon";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
 
 
 
@@ -65,7 +69,7 @@ import { UpdateReservationComponent } from './modules/rooms/events-grid/update-r
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NzTableModule, NzDividerModule, NzLayoutModule, NzButtonModule, NzDatePickerModule, NzFormModule ,NzAutocompleteModule,
+    NzTableModule, NzDividerModule, NzLayoutModule, NzButtonModule, NzDatePickerModule, NzFormModule, NzAutocompleteModule,
     FormsModule,
     DatePipe,
     ReactiveFormsModule,
@@ -80,8 +84,12 @@ import { UpdateReservationComponent } from './modules/rooms/events-grid/update-r
     NzSelectModule,
     AutoCompleteComponent,
     RouterLink,
-    ReportsComponent
-  ],
+    ReportsComponent,
+    MatIconModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatCardModule
+],
   exports:[
     // ExpenseComponent,
 

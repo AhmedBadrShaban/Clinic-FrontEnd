@@ -1,32 +1,129 @@
-<!-- <div *ngFor="let slot of slots" class="whole">
-  <div class="Slot">
-    From[{{slot.startTimeHour}}:{{slot.StartTimeMin}}] - To[{{slot.EndTimeHour}}:{{slot.EndTimeMin}}]
-  </div>
-</div> -->
-    <div *ngIf="!dataLoaded">
-      <!-- Loading or placeholder content can go here -->
-      Loading...
-    </div>
-    <div *ngIf="dataLoaded"  class="d-flex w-100" style="height: 100px; overflow-x:scroll">
-    <ng-container  *ngFor="let slot of mergedArray">
-      <div
-      class="col-1"
-      [ngClass]="{
-        'available': slot.available,
-        'unavailable' :!slot.available,
-        'reserved-font' :!slot.available,
-        'small-font': slot.width !== undefined && slot.width < 8
-         }"
-      [style.width.%]="slot.width"
-
-      id="slots-container">
-      <p class="mx-auto">
-        {{ formatTimeTo12Hour(slot.startTime) }}
-        -
-         {{ formatTimeTo12Hour(slot.endTime)}}
-      </p>
+<div class="time-slots-container" *ngIf="dataLoaded; else loadingTemplate">
+   <mat-card class="day-overview-card" elevation="2">
+    <mat-card-content>
+      <div class="day-header">
+        <div class="day-info">
+          <mat-icon class="calendar-icon">today</mat-icon>
+          <div>
+            <h3 class="day-title">{{ reservedAt | date:'EEEE' }}</h3>
+            <p class="day-date">{{ reservedAt | date:'mediumDate' }}</p>
+          </div>
+        </div>
+        <div class="room-info">
+          <mat-icon class="room-icon">meeting_room</mat-icon>
+          <span class="room-name">{{ roomName }}</span>
+        </div>
       </div>
+      
+      <!-- Quick Stats -->
+      <div class="stats-row">
+        <div class="stat-item available">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ getAvailableCount() }} Available</span>
+        </div>
+        <div class="stat-item reserved">
+          <mat-icon>event_busy</mat-icon>
+          <span>{{ getReservedCount() }} Reserved</span>
+        </div>
+        <div class="stat-item total">
+          <mat-icon>schedule</mat-icon>
+          <span>{{ getTotalHours() }}h Total</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-    </ng-container>
-
+  <!-- Time Scale Header -->
+  <div class="time-scale-header">
+    <div class="time-markers">
+      <div class="time-marker" *ngFor="let hour of getHourMarkers()">
+        <span class="hour-label">{{ hour }}</span>
+        <div class="hour-line"></div>
+      </div>
+    </div>
   </div>
+
+  <!-- Interactive Timeline -->
+  <mat-card class="timeline-card" elevation="3">
+    <mat-card-content class="timeline-content">
+      <div class="timeline-container">
+        <!-- Time slots -->
+        <div class="slots-track">
+          <div
+            *ngFor="let slot of mergedArray; let i = index; trackBy: trackBySlot"
+            class="time-slot"
+            [ngClass]="{
+              'available-slot': slot.available,
+              'reserved-slot': !slot.available,
+              'narrow-slot': slot.width && slot.width < 6,
+              'wide-slot': slot.width && slot.width > 15
+            }"
+            [style.width.%]="slot.width"
+            [style.animation-delay.ms]="i * 50"
+            (click)="onSlotClick(slot)"
+            [matTooltip]="getSlotTooltip(slot)"
+            matTooltipPosition="above"
+            matRipple
+            [matRippleDisabled]="!slot.available">
+            
+            <!-- Slot content -->
+            <div class="slot-content">
+              <div class="slot-time" [ngClass]="{'compact-time': slot.width && slot.width < 8}">
+                <span class="start-time">{{ formatTimeTo12Hour(slot.startTime) }}</span>
+                <mat-icon class="time-separator" *ngIf="slot.width && slot.width > 10">trending_flat</mat-icon>
+                <span class="end-time" *ngIf="slot.width && slot.width > 6">{{ formatTimeTo12Hour(slot.endTime) }}</span>
+              </div>
+              
+              <!-- Status indicator -->
+              <div class="slot-status">
+                <mat-icon class="status-icon" *ngIf="slot.available">check_circle</mat-icon>
+                <mat-icon class="status-icon" *ngIf="!slot.available">block</mat-icon>
+              </div>
+            </div>
+
+            <!-- Animated border for available slots -->
+            <div class="slot-border" *ngIf="slot.available"></div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Compact View Toggle -->
+  <div class="view-controls">
+    <mat-button-toggle-group [(value)]="viewMode" class="view-toggle">
+      <mat-button-toggle value="detailed">
+        <mat-icon>view_stream</mat-icon>
+        Detailed
+      </mat-button-toggle>
+      <mat-button-toggle value="compact">
+        <mat-icon>view_comfy</mat-icon>
+        Compact
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item available">
+      <div class="legend-color"></div>
+      <span>Available</span>
+    </div>
+    <div class="legend-item reserved">
+      <div class="legend-color"></div>
+      <span>Reserved</span>
+    </div>
+  </div>
+</div>
+
+ <ng-template #loadingTemplate>
+  <mat-card class="loading-card">
+    <mat-card-content class="loading-content">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p class="loading-text">Loading time slots...</p>
+      <div class="loading-skeleton">
+        <div class="skeleton-bar" *ngFor="let item of [1,2,3,4,5]"></div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

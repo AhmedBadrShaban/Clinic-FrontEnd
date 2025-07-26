@@ -72,7 +72,7 @@ export class ReservationFmComponent implements OnInit {
     this.reservationService.addReservation(userModel , this.roomName).subscribe({
       next:(responed:any)=>{
         alert(responed.message)
-         this.UpdateAllReservations();
+        //  this.UpdateAllReservations();
          this.updateAvailableSlots();
         this.closeDialog();
 
@@ -119,14 +119,14 @@ export class ReservationFmComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
   }
-  UpdateAllReservations(){
-    this.roomService.getAllReservations(this.date).subscribe((data:any)=>{
-      this.roomService.updateData(data);
-      //console.log( "data Updated : " ,data);
-    })
-  }
+  // UpdateAllReservations(){
+  //   this.roomService.getAllReservationsByDate(this.date).subscribe((data:any)=>{
+  //     this.roomService.updateRooms(data);
+  //     //console.log( "data Updated : " ,data);
+  //   })
+  // }
   updateAvailableSlots(){
-    this.roomService.getAvalliableSlots(this.roomName , this.date).subscribe((data=>{
+    this.roomService.getAvailableSlots(this.roomName , this.date).subscribe((data=>{
       //console.log('updated :>> ', data);
       this.roomService.updateSlots(data);
     }))

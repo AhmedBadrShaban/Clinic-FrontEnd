@@ -1,36 +1,494 @@
-div
-{
-  display: table; 
- }
-
-
-p {
-  text-align:center; 
-  vertical-align: middle;
-  display: table-cell;   
+// available-slots.component.scss
+.time-slots-container {
+  padding: 1rem;
+  max-width: 100%;
+  overflow: hidden;
 }
-.small-font {
-  font-size: 8px;
-}
-.reserved-font{
-  font-size: 10px;
 
+// Day Overview Card
+.day-overview-card {
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px !important;
+
+  .day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .day-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .calendar-icon {
+        font-size: 2rem !important;
+        width: 2rem;
+        height: 2rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .day-title {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .day-date {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.875rem;
+      }
+    }
+
+    .room-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+
+      .room-icon {
+        font-size: 1.25rem !important;
+      }
+
+      .room-name {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      backdrop-filter: blur(5px);
+
+      mat-icon {
+        font-size: 1.125rem !important;
+        width: 1.125rem;
+        height: 1.125rem;
+      }
+
+      &.available mat-icon {
+        color: #4ade80;
+      }
+
+      &.reserved mat-icon {
+        color: #f87171;
+      }
+
+      &.total mat-icon {
+        color: #60a5fa;
+      }
+    }
+  }
 }
- .slot {
-  width: 20px;
-  height:20px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 2px;
+
+// Time Scale Header
+.time-scale-header {
+  margin-bottom: 0.5rem;
+  height: 30px;
+  position: relative;
+
+  .time-markers {
+    display: flex;
+    height: 100%;
+    position: relative;
+
+    .time-marker {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .hour-label {
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .hour-line {
+        width: 1px;
+        height: 10px;
+        background: #cbd5e0;
+      }
+
+      &:first-child .hour-line {
+        background: #6b7280;
+        width: 2px;
+      }
+
+      &:last-child .hour-line {
+        background: #6b7280;
+        width: 2px;
+      }
+    }
+  }
+}
+
+// Timeline Card
+.timeline-card {
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+
+  .timeline-content {
+    padding: 0 !important;
+  }
+
+  .timeline-container {
+    position: relative;
+    height: 120px;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 3px;
+
+      &:hover {
+        background: #94a3b8;
+      }
+    }
+  }
+
+  .slots-track {
+    display: flex;
+    height: 100%;
+    min-width: 800px;
+    position: relative;
+  }
+}
+
+// Time Slots
+.time-slot {
+  position: relative;
+  height: 100%;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInFromBottom 0.6s ease-out forwards;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-2px);
+    z-index: 10;
+  }
+
+  &.available-slot {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-top: 3px solid #10b981;
+
+    &:hover {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+    }
+
+    .slot-border {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #10b981, #059669);
+      animation: shimmer 2s infinite;
+    }
+  }
+
+  &.reserved-slot {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border-top: 3px solid #ef4444;
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+    }
+  }
+
+  &.narrow-slot {
+    .slot-content {
+      padding: 0.25rem;
+    }
+
+    .slot-time {
+      flex-direction: column;
+      gap: 0.125rem;
+
+      .start-time, .end-time {
+        font-size: 0.625rem;
+      }
+    }
+  }
+
+  &.wide-slot {
+    .slot-content {
+      padding: 1rem;
+    }
+
+    .slot-time {
+      .start-time, .end-time {
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  .slot-content {
+    height: 100%;
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+  }
+
+  .slot-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    flex-grow: 1;
+    justify-content: center;
+
+    &.compact-time {
+      .start-time, .end-time {
+        font-size: 0.625rem;
+        font-weight: 600;
+      }
+    }
+
+    .start-time {
+      font-weight: 600;
+      color: #1f2937;
+      font-size: 0.75rem;
+    }
+
+    .end-time {
+      font-weight: 500;
+      color: #6b7280;
+      font-size: 0.65rem;
+    }
+
+    .time-separator {
+      font-size: 1rem !important;
+      color: #9ca3af;
+      margin: 0.125rem 0;
+    }
+  }
+
+  .slot-status {
+    margin-top: auto;
+
+    .status-icon {
+      font-size: 1rem !important;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  // Available slot status
+  &.available-slot .status-icon {
+    color: #10b981;
+  }
+
+  // Reserved slot status
+  &.reserved-slot .status-icon {
+    color: #ef4444;
+  }
+}
+
+// View Controls
+.view-controls {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 1rem;
+
+  .view-toggle {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    ::ng-deep .mat-button-toggle {
+      border: none !important;
+
+      .mat-button-toggle-label-content {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+      }
+
+      &.mat-button-toggle-checked {
+        background: #667eea !important;
+        color: white !important;
+      }
+    }
+  }
+}
+
+// Legend
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 2px solid;
+    }
+
+    &.available .legend-color {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-color: #10b981;
+    }
+
+    &.reserved .legend-color {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border-color: #ef4444;
+    }
+  }
+}
+
+// Loading States
+.loading-card {
+  border-radius: 16px !important;
   text-align: center;
+
+  .loading-content {
+    padding: 3rem !important;
+
+    .loading-text {
+      margin: 1rem 0 2rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .loading-skeleton {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+
+      .skeleton-bar {
+        width: 60px;
+        height: 80px;
+        background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+        background-size: 200% 100%;
+        border-radius: 8px;
+        animation: shimmer 1.5s infinite;
+      }
+    }
+  }
 }
 
-.available {
-  background-color: #c3e6cb;
-   /* Green for available slots */
+// Animations
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.unavailable {
-  background-color: #6F2DBD;
-  color:white;
- }
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .time-slots-container {
+    padding: 0.5rem;
+  }
+
+  .day-overview-card {
+    .day-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .stats-row {
+      flex-wrap: wrap;
+      gap: 0.75rem;
+
+      .stat-item {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+      }
+    }
+  }
+
+  .timeline-card {
+    .timeline-container {
+      height: 100px;
+    }
+  }
+
+  .time-slot {
+    &.narrow-slot .slot-time {
+      .start-time, .end-time {
+        font-size: 0.5rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .legend {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .view-controls {
+    .view-toggle ::ng-deep .mat-button-toggle .mat-button-toggle-label-content {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+}

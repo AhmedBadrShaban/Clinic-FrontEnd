@@ -1,64 +1,116 @@
-<app-available-slots class="row w-100 mb-2" [roomName]="roomName" [reservedAt]="date"></app-available-slots>
-<div class="flex-all">
-  <div class="grid-events" >
-    <div *ngFor="let e of eventsPerRoom let i = index">
-    <div [ngClass]="{
-    'grid-item-inProgress' : e.status === 'IN_PROGRESS',
-    'grid-item-confirmed' : e.status === 'CONFIRMED',
-    'grid-item-waiting' : e.status === 'WAITING',
-    'grid-item-toDoctor' : e.status === 'TO_DOCTOR',
-    'grid-item-done' : e.status === 'DONE',
-    'grid-item-cancelled' : e.status === 'CANCELLED',
-    'grid-item-completed' : e.status === 'COMPLETED',
-     }"
-           (click)="openDialog(e)"
-      >
-        <div>
-          Name : {{e.patientName}}
-        </div>
-        <div>
-         Number : {{e.patientPhone}}
-        </div>
-        <div>
-          Doctor Name : {{e.doctorName}}
-        </div>
-       <!-- <div>
-        Services :{{ getServicesString(e.services)}}
-       </div> -->
-        
-        <div>
-            <i class="bi bi-alarm"></i>
-             {{ formatTimeTo12Hour(e.reservationStart) }}
-             -
-              {{ formatTimeTo12Hour(e.reservationEnd)}}
-        </div>
-
-        <div style="color: black;" class="badge  bg-body-secondary bg-opacity-25">
-          <i
-          [ngClass]="{
-            'bi bi-cart' : e.status === 'IN_PROGRESS',
-            'bi bi-check' : e.status === 'CONFIRMED',
-            'bi bi-hourglass-bottom' : e.status === 'WAITING',
-            'bi bi-journal-medical' : e.status === 'TO_DOCTOR',
-            'bi bi-cash-coin' : e.status === 'DONE',
-            'bi bi-x-circle' : e.status === 'CANCELLED',
-            'bi bi-check2-circle' : e.status === 'COMPLETED',
-             }"
-            >
-          </i>
-           {{ e.status }}
-        </div>
-
-      </div>
-    </div>
+<div class="events-grid-container">
+  <div class="container-header">
+    <h1 class="container-title">Room Reservations</h1>
+    <p class="container-subtitle">{{ roomName }} • {{ date | date: 'mediumDate' }}</p>
   </div>
-   <!-- <div style="width: 20%; margin-left: 3%; align-content: center; border: #6F2DBD 1px solid; height: fit-content; text-align: center">
-    <h2>Available Slots</h2> -->
-    <!-- <app-available-slots [eventsPerDayTO] = "eventsPerDay" style="display: flex; display: flex;
-    flex-direction: column;
-    align-items: center;"> </app-available-slots>
-  </div> -->
 
+  <!-- Empty State -->
+  <div *ngIf="eventsPerRoom.length === 0" class="empty-reservations">
+    <mat-icon class="empty-icon">event_busy</mat-icon>
+    <h4>No Reservations</h4>
+    <p>No reservations found for {{ roomName }} on {{ date | date: 'mediumDate' }}</p>
+  </div>
+
+  <!-- Events Grid -->
+  <div *ngIf="eventsPerRoom.length > 0" class="reservations-grid">
+    <mat-card
+      *ngFor="let reservation of eventsPerRoom; trackBy: trackByReservationId; let i = index"
+      class="reservation-card"
+      [ngClass]="'status-' + getStatusClass(reservation.status)"
+      [style.animation-delay.s]="i * 0.1"
+      (click)="openDialog(reservation)"
+      matRipple>
+      
+      <!-- Status Badge -->
+      <div class="status-badge">
+        <mat-icon class="status-icon">{{ getStatusIcon(reservation.status) }}</mat-icon>
+        <span class="status-text">{{ getStatusDisplayName(reservation.status) }}</span>
+      </div>
+      
+      <!-- Card Content -->
+      <mat-card-content class="card-content">
+        <!-- Patient Section -->
+        <div class="patient-section">
+          <div class="section-title">
+            <mat-icon>person</mat-icon>
+            Patient Information
+          </div>
+          
+          <div class="info-row">
+            <mat-icon class="info-icon">person</mat-icon>
+            <span class="info-label">Name:</span>
+            <span class="info-value">{{ reservation.patientName }}</span>
+          </div>
+          
+          <div class="info-row">
+            <mat-icon class="info-icon">phone</mat-icon>
+            <span class="info-label">Phone:</span>
+            <span class="info-value">{{ reservation.patientPhone }}</span>
+          </div>
+          
+          <div class="info-row">
+            <mat-icon class="info-icon">medical_services</mat-icon>
+            <span class="info-label">Doctor:</span>
+            <span class="info-value">{{ reservation.doctorName }}</span>
+          </div>
+        </div>
+
+        <!-- Time Section -->
+        <div class="time-section">
+          <div class="time-text">
+            <mat-icon class="time-icon">schedule</mat-icon>
+            {{ formatTimeTo12Hour(reservation.reservationStart) }} - 
+            {{ formatTimeTo12Hour(reservation.reservationEnd) }}
+          </div>
+        </div>
+
+        <!-- Services Section -->
+        <div *ngIf="reservation.services && reservation.services.length > 0" class="services-section">
+          <div class="section-title">
+            <mat-icon>medical_information</mat-icon>
+            Services
+          </div>
+          <div class="services-text">{{ getServicesString(reservation.services) }}</div>
+        </div>
+
+        <!-- Note Section -->
+        <div *ngIf="reservation.note" class="note-section">
+          <div class="section-title">
+            <mat-icon>note</mat-icon>
+            {{ reservation.status === 'CANCELLED' ? 'Cancellation Reason' : 'Note' }}
+          </div>
+          <div class="note-text">{{ reservation.note }}</div>
+        </div>
+      </mat-card-content>
+
+      <!-- Quick Actions -->
+      <mat-card-actions class="card-actions">
+        <button
+          mat-icon-button
+          class="action-btn"
+          matTooltip="View Details"
+          (click)="openDialog(reservation); $event.stopPropagation()">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        
+        <button
+          *ngIf="reservation.status === 'WAITING' || reservation.status === 'IN_PROGRESS'"
+          mat-icon-button
+          class="action-btn primary"
+          matTooltip="Confirm Reservation"
+          (click)="$event.stopPropagation()">
+          <mat-icon>check</mat-icon>
+        </button>
+        
+        <button
+          *ngIf="reservation.status === 'DONE'"
+          mat-icon-button
+          class="action-btn primary"
+          matTooltip="Checkout"
+          (click)="$event.stopPropagation()">
+          <mat-icon>payment</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 </div>
-
-

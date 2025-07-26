@@ -27,6 +27,6 @@ export interface reservation {
   EndTimeHour:number,
   StartTimeMin:number,
   EndTimeMin:number,
-
+  note?:string,
   status:string
 }
