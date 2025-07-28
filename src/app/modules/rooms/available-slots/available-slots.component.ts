@@ -1,5 +1,5 @@
 // available-slots.component.ts
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RoomsService } from '../../Services/rooms/rooms.service';
 
@@ -13,19 +13,19 @@ interface TimeSlot {
 @Component({
   selector: 'app-available-slots',
   templateUrl: './available-slots.component.html',
-  styleUrls: ['./available-slots.component.scss']
+  styleUrls: ['./available-slots.component.css']
 })
 export class AvailableSlotsComponent implements OnInit, OnChanges {
   dataLoaded: boolean = false;
   viewMode: 'detailed' | 'compact' = 'detailed';
-  
+
   @Input() roomName: any;
   @Input() reservedAt: any;
 
   mergedArray: TimeSlot[] = [];
   reservedSlots: TimeSlot[] = [];
 
-  constructor(private datePipe: DatePipe, private roomServ: RoomsService) {}
+  constructor(private datePipe: DatePipe, private roomServ: RoomsService) { }
 
   ngOnInit() {
     this.fetchAvailableSlots();
@@ -81,11 +81,12 @@ export class AvailableSlotsComponent implements OnInit, OnChanges {
     });
 
     if (sortedInputArray.length > 0 && sortedInputArray[0].startTime > '00:00:00') {
+      const width = calculateWidth('00:00:00', sortedInputArray[0].startTime);
       availableTimeSlots.push({
         startTime: '00:00:00',
         endTime: sortedInputArray[0].startTime,
         available: true,
-        width: calculateWidth('00:00:00', sortedInputArray[0].startTime)
+        width: Math.max(width, 8) // Ensure minimum 8% width for readability
       });
     }
 
@@ -93,24 +94,36 @@ export class AvailableSlotsComponent implements OnInit, OnChanges {
       const currentSlot = sortedInputArray[i];
       const nextSlot = sortedInputArray[i + 1];
 
-      availableTimeSlots.push({
-        startTime: currentSlot.endTime,
-        endTime: nextSlot.startTime,
-        available: true,
-        width: calculateWidth(currentSlot.endTime, nextSlot.startTime)
-      });
+      if (currentSlot.endTime < nextSlot.startTime) {
+        const width = calculateWidth(currentSlot.endTime, nextSlot.startTime);
+        availableTimeSlots.push({
+          startTime: currentSlot.endTime,
+          endTime: nextSlot.startTime,
+          available: true,
+          width: Math.max(width, 8) // Ensure minimum 8% width for readability
+        });
+      }
     }
 
     const lastSlot = sortedInputArray[sortedInputArray.length - 1];
-    availableTimeSlots.push({
-      startTime: lastSlot.endTime,
-      endTime: '23:59:59',
-      available: true,
-      width: calculateWidth(lastSlot.endTime, '23:59:59')
-    });
+    if (lastSlot.endTime < '23:59:59') {
+      const width = calculateWidth(lastSlot.endTime, '23:59:59');
+      availableTimeSlots.push({
+        startTime: lastSlot.endTime,
+        endTime: '23:59:59',
+        available: true,
+        width: Math.max(width, 8) // Ensure minimum 8% width for readability
+      });
+    }
 
     this.mergedArray = [];
-    this.mergedArray.push(...this.reservedSlots, ...availableTimeSlots);
+    // Ensure reserved slots also have minimum width
+    const processedReservedSlots = this.reservedSlots.map(slot => ({
+      ...slot,
+      width: Math.max(slot.width || calculateWidth(slot.startTime, slot.endTime), 8)
+    }));
+
+    this.mergedArray.push(...processedReservedSlots, ...availableTimeSlots);
     this.mergedArray.sort((a, b) => a.startTime.localeCompare(b.startTime));
   }
 
@@ -129,23 +142,6 @@ export class AvailableSlotsComponent implements OnInit, OnChanges {
 
   getReservedCount(): number {
     return this.mergedArray.filter(slot => !slot.available).length;
-  }
-
-  getTotalHours(): number {
-    return Math.round(
-      this.mergedArray.reduce((total, slot) => {
-        return total + calculateDurationInHours(slot.startTime, slot.endTime);
-      }, 0)
-    );
-  }
-
-  getHourMarkers(): string[] {
-    const markers = [];
-    for (let i = 0; i <= 23; i += 3) {
-      const hour = i.toString().padStart(2, '0');
-      markers.push(`${hour}:00`);
-    }
-    return markers;
   }
 
   getSlotTooltip(slot: TimeSlot): string {

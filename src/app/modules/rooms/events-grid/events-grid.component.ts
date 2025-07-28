@@ -12,6 +12,7 @@ import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
   styleUrls: ['./events-grid.component.css'],
  })
 export class EventsGridComponent implements OnInit, OnChanges {
+  dataLoaded: boolean = false;
   @Input() roomName: string = '';
   @Input() roomId: number = 0;
   @Input() date: string = '';
@@ -34,16 +35,21 @@ export class EventsGridComponent implements OnInit, OnChanges {
   }
 
   private fetchRoomReservations(): void {
+    this.dataLoaded = false;
+
     if (!this.roomId || !this.date) return;
 
     this.roomsService.getRoomWithReservations(this.roomId, this.date).subscribe({
       next: (roomData) => {
+
         this.eventsPerRoom = Object.values(roomData).flat();
         this.eventsPerRoom = this.sortEventsByTime(this.eventsPerRoom);
+        this.dataLoaded = true;
          console.log('room reservations', this.eventsPerRoom);
        },
       error: (err) => {
         console.error('Failed to fetch room reservations:', err);
+        this.dataLoaded = true;
         this.eventsPerRoom = [];
       }
     });

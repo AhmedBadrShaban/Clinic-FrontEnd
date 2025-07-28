@@ -23,7 +23,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   selectedDate: string;
   selectedTabIndex = 0;
   activeRoom!: Room ;
-  loading = false;
+  dataLoaded: boolean = false;
   searchValue = '';
 
   constructor(
@@ -46,14 +46,14 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   private initializeData(): void {
-    this.roomsService.setLoading(true);
-
+    this.dataLoaded = false;
      this.roomsService.getAllRoomsV2()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (rooms) => {
           console.log('rooms', rooms)
           this.rooms = rooms;
+            this.dataLoaded = true;
           // this.roomsService.updateRooms(rooms);
           // if (rooms.length > 0) {
           //   this.activeRoom = rooms[0];
@@ -62,7 +62,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading rooms:', error);
-          this.roomsService.setLoading(false);
+          this.dataLoaded = true;
         }
       });
   }
@@ -88,12 +88,14 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   private updateAvailableSlots(): void {
     if (!this.activeRoom) return;
-
+    this.dataLoaded = false;
     this.roomsService.getAvailableSlots(this.activeRoom.roomName, this.selectedDate)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (slots) => {
           this.roomsService.updateSlots(slots);
+          this.dataLoaded = true;
+
         },
         error: (error) => {
           console.error('Error loading available slots:', error);

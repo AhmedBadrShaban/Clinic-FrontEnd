@@ -47,9 +47,10 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-
-
-
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
+ 
 @NgModule({
   declarations: [
     AppComponent,
@@ -88,8 +89,11 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     MatTabsModule,
     MatProgressSpinnerModule,
-    MatCardModule
-],
+    MatCardModule,
+     MatButtonToggleModule,   // For view mode toggle
+    MatTooltipModule,        // For slot tooltips
+    MatRippleModule,         // For ripple effects on slots
+  ],
   exports:[
     // ExpenseComponent,
 

@@ -1,6 +1,5 @@
-<div class="rooms-container">
-  <!-- Header Section -->
-  <mat-card class="header-card">
+<div class="rooms-container"  *ngIf="dataLoaded; else loadingTemplate" >
+   <mat-card class="header-card">
     <mat-card-content>
       <div class="header-actions">
         <!-- Action Buttons -->
@@ -52,12 +51,6 @@
     </mat-card-content>
   </mat-card>
 
-  <!-- Loading Indicator -->
-  <div *ngIf="loading" class="loading-container">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p class="loading-text">Loading rooms and reservations...</p>
-  </div>
-
   <!-- Main Content -->
   <div>
     <!-- Tabs for Rooms -->
@@ -103,3 +96,12 @@
     </div>
   </div>
 </div>
+ <ng-template #loadingTemplate>
+  <mat-card class="loading-card">
+    <mat-card-content class="loading-content">
+       <div class="loading-skeleton">
+        <div class="skeleton-bar" *ngFor="let item of [1,2,3,4,5]"></div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

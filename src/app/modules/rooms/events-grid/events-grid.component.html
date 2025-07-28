@@ -1,10 +1,4 @@
-<div class="events-grid-container">
-  <div class="container-header">
-    <h1 class="container-title">Room Reservations</h1>
-    <p class="container-subtitle">{{ roomName }} • {{ date | date: 'mediumDate' }}</p>
-  </div>
-
-  <!-- Empty State -->
+<div class="events-grid-container " *ngIf="dataLoaded; else loadingTemplate">
   <div *ngIf="eventsPerRoom.length === 0" class="empty-reservations">
     <mat-icon class="empty-icon">event_busy</mat-icon>
     <h4>No Reservations</h4>
@@ -20,14 +14,13 @@
       [style.animation-delay.s]="i * 0.1"
       (click)="openDialog(reservation)"
       matRipple>
-      
+
       <!-- Status Badge -->
       <div class="status-badge">
-        <mat-icon class="status-icon">{{ getStatusIcon(reservation.status) }}</mat-icon>
+        <mat-icon>{{ getStatusIcon(reservation.status) }}</mat-icon>
         <span class="status-text">{{ getStatusDisplayName(reservation.status) }}</span>
       </div>
-      
-      <!-- Card Content -->
+
       <mat-card-content class="card-content">
         <!-- Patient Section -->
         <div class="patient-section">
@@ -35,21 +28,21 @@
             <mat-icon>person</mat-icon>
             Patient Information
           </div>
-          
+
           <div class="info-row">
-            <mat-icon class="info-icon">person</mat-icon>
+            <mat-icon>person</mat-icon>
             <span class="info-label">Name:</span>
             <span class="info-value">{{ reservation.patientName }}</span>
           </div>
-          
+
           <div class="info-row">
-            <mat-icon class="info-icon">phone</mat-icon>
+            <mat-icon>phone</mat-icon>
             <span class="info-label">Phone:</span>
             <span class="info-value">{{ reservation.patientPhone }}</span>
           </div>
-          
+
           <div class="info-row">
-            <mat-icon class="info-icon">medical_services</mat-icon>
+            <mat-icon>medical_services</mat-icon>
             <span class="info-label">Doctor:</span>
             <span class="info-value">{{ reservation.doctorName }}</span>
           </div>
@@ -58,7 +51,7 @@
         <!-- Time Section -->
         <div class="time-section">
           <div class="time-text">
-            <mat-icon class="time-icon">schedule</mat-icon>
+            <mat-icon>schedule</mat-icon>
             {{ formatTimeTo12Hour(reservation.reservationStart) }} - 
             {{ formatTimeTo12Hour(reservation.reservationEnd) }}
           </div>
@@ -92,7 +85,7 @@
           (click)="openDialog(reservation); $event.stopPropagation()">
           <mat-icon>visibility</mat-icon>
         </button>
-        
+
         <button
           *ngIf="reservation.status === 'WAITING' || reservation.status === 'IN_PROGRESS'"
           mat-icon-button
@@ -101,7 +94,7 @@
           (click)="$event.stopPropagation()">
           <mat-icon>check</mat-icon>
         </button>
-        
+
         <button
           *ngIf="reservation.status === 'DONE'"
           mat-icon-button
@@ -114,3 +107,13 @@
     </mat-card>
   </div>
 </div>
+ <ng-template #loadingTemplate>
+  <mat-card class="loading-card">
+    <mat-card-content class="loading-content">
+      <p class="loading-text">Loading Reservations ...</p>
+      <div class="loading-skeleton">
+        <div class="skeleton-bar" *ngFor="let item of [1,2,3,4,5]"></div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
