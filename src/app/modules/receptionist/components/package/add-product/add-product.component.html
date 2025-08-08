@@ -54,11 +54,12 @@
                     class="patient-option">
                     <div class="d-flex align-items-center">
                       <div class="patient-details">
+                          <small class="patient-phone text-muted">
+                            <mat-icon class="small-icon">phone</mat-icon>
+                            {{ extractPatientPhone(patient) }}
+                          </small>
                         <div class="patient-name">{{ extractPatientName(patient) }}</div>
-                        <small class="patient-phone text-muted">
-                          <mat-icon class="small-icon">phone</mat-icon>
-                          {{ extractPatientPhone(patient) }}
-                        </small>
+                      
                       </div>
                     </div>
                   </mat-option>
@@ -239,12 +240,12 @@
               <mat-card-content>
                 <div class="d-flex justify-content-between align-items-center">
                   <span>Total Payments:</span>
-                  <span class="fw-bold">{{ getTotalPayments() | currency }}</span>
+                  <span class="fw-bold">{{ getTotalPayments() |  currency:'EGP':'symbol':'1.2-2' }}</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                   <span>Balance:</span>
                   <span [class]="getBalanceClass()" class="fw-bold">
-                    {{ getBalance() | currency }}
+                    {{ getBalance() |  currency:'EGP':'symbol':'1.2-2' }}
                   </span>
                 </div>
               </mat-card-content>

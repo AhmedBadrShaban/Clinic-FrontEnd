@@ -1,14 +1,44 @@
 /* add-product.component.css */
 
 .add-product-container {
-  width: 100%;
+   width: 100%;
   max-width: 800px;
   margin: 0 auto;
   background: #fafafa;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+
+  /* Make it fill available height */
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column;
 }
+.add-product-form {
+  padding: 0;
+  flex: 1; /* Take remaining space */
+  overflow-y: auto; /* Enable vertical scroll */
+}
+
+/* Optional: custom scrollbar style */
+.add-product-form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.add-product-form::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+.currency-suffix {
+  font-weight: 600;
+  color: #7b1fa2;
+  margin-left: 4px;
+}
+
+.add-product-form::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
 
 /* Header Styles */
 .form-header {
@@ -130,6 +160,8 @@
 }
 
 .patient-option, .doctor-option {
+  display:flex;
+  gap:0.5rem;
   padding: 12px 16px;
   border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.2s ease;

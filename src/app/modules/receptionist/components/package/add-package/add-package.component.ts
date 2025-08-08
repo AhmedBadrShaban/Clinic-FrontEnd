@@ -129,7 +129,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     this.isPatientLoading = true;
     this.cdr.markForCheck();
 
-    const subscription = this.namesAndNumbers.getPatientsNamesAndPhones()
+    const subscription = this.namesAndNumbers.getPatientsNamesAndPhonesAuto(0)
       .subscribe({
         next: (data: any) => {
           if (Array.isArray(data)) {

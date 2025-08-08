@@ -20,7 +20,7 @@ export class PackagesComponent {
   filteredData:  any[] = [];
   searchValue?:any;
   pageIndex: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
   totalItems: number = 0;
 
   constructor(private pckService: PackageService,private dialogRef : MatDialog) {

@@ -54,11 +54,12 @@
                     class="patient-option">
                     <div class="d-flex align-items-center">
                       <div class="patient-details">
-                        <div class="patient-name">{{ extractPatientName(patient) }}</div>
-                        <small class="patient-phone text-muted">
+                         <small class="patient-phone text-muted">
                           <mat-icon class="small-icon">phone</mat-icon>
                           {{ extractPatientPhone(patient) }}
                         </small>
+                        <div class="patient-name">{{ extractPatientName(patient) }}</div>
+                       
                       </div>
                     </div>
                   </mat-option>
@@ -118,7 +119,7 @@
                         </small>
                       </div>
                       <div class="package-cost">
-                        <mat-chip class="cost-chip">{{ package.packageCost | currency }}</mat-chip>
+                        <mat-chip class="cost-chip">{{ package.packageCost | currency:'EGP':'symbol':'1.2-2' }}</mat-chip>
                       </div>
                     </div>
                   </mat-option>
@@ -140,7 +141,7 @@
                 <mat-label>Package Cost</mat-label>
                 <input matInput formControlName="packageCost" readonly
                   class="readonly-field cost-field" placeholder="0.00">
-                <mat-icon matSuffix>attach_money</mat-icon>
+              <span matSuffix class="currency-suffix">EGP</span>
               </mat-form-field>
             </div>
           </div>

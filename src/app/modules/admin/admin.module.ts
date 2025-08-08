@@ -33,6 +33,8 @@ import {ReportsComponent} from "../../shared/components/reports/reports.componen
 import { ContributorsComponent } from './components/contributors/contributors.component';
 import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
 import {NzTabsModule} from "ng-zorro-antd/tabs";
+import { TableComponent } from '../receptionist/shared/table/table.component';
+
 
 @NgModule({
   declarations: [
@@ -52,8 +54,9 @@ import {NzTabsModule} from "ng-zorro-antd/tabs";
       MaterialsComponent,
       AddNewMatrialComponent,
       BlblComponent,
-      ContributorsComponent,
+       ContributorsComponent,
       AddContributorComponent,
+        
    ],
 
     imports: [

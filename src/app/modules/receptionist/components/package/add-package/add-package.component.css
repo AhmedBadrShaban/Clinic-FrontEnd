@@ -8,6 +8,36 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+
+  /* Make it fill available height */
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
+.add-package-form {
+  padding: 0;
+  flex: 1; /* Take remaining space */
+  overflow-y: auto; /* Enable vertical scroll */
+}
+
+/* Optional: custom scrollbar style */
+.add-package-form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.add-package-form::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+.currency-suffix {
+  font-weight: 600;
+  color: #7b1fa2;
+  margin-left: 4px;
+}
+
+.add-package-form::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 /* Header Styles */
@@ -144,8 +174,9 @@
 }
 
 .patient-details, .package-details {
-  flex: 1;
-}
+  display: flex;
+  gap:0.5rem;
+ }
 
 .patient-name, .package-name {
   font-weight: 500;
