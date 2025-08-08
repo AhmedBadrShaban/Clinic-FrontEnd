@@ -1,81 +1,107 @@
 import { Injectable } from '@angular/core';
-import{ HttpClient }from '@angular/common/http';
-import{ BehaviorSubject, Observable }from'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
+
+export interface Room {
+  roomId: number;
+  roomName: string;
+}
+
+export interface RoomReservation {
+  roomId: number;
+  roomName: string;
+  reservations: any[];
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoomsService {
-    private readonly baseUrl ;
-  constructor(private http :HttpClient ,private configService:ConfigService) {
+  private readonly baseUrl: string;
+
+  constructor(private http: HttpClient, private configService: ConfigService) {
     this.baseUrl = this.configService.getBaseUrl();
-
-   }
-  getAllReservations(date:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/get-rooms-with-all-reservation?date=${date}`);
-  }
-  getRoomReservation(roomName:any , date:any):Observable<any>{
-      //console.log("t1");
-      return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation?roomName=${roomName}&date=${date}`);
-    }
-  allRooms():Observable<any>{
-    if(sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST')
-    {
-      return this.http.get<any>(`${this.baseUrl}receptionist/rooms-object-to-specific-clinic`);
-    }
-    else
-    {
-      return this.http.get<any>(`${this.baseUrl}admin/rooms`);
-    }
-  }
-  allRoomsV2():Observable<any>{
-    if(sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST')
-    {
-      return this.http.get<any>(`${this.baseUrl}receptionist/rooms-names-to-specific-clinic`);
-    }
-    else
-    {
-      return this.http.get<any>(`${this.baseUrl}admin/rooms/name`);
-    }
-  }
-  addRoom(data:any){
-    return this.http.post(`${this.baseUrl}admin/rooms` , data);
-  }
-  chengeReservationStatus(id:number , status:string){
-    //console.log('chenging reservation status with id : ', id , "to status : " , status);
-    return this.http.post(`${this.baseUrl}receptionist/roomreservationn?id=${id}&status=${status}` ,id);
-
-  }
-  checkOutReservation(id:number){
-    return this.http.get<any>(`${this.baseUrl}receptionist/normal-payment?id=${id}`);
-  }
-  addClinic(data:string){
-    return this.http.post(`${this.baseUrl}admin/clinic-branch` , data);
-  }
-  allClinics():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/get-all-clinic-names`);
   }
 
-  getAvalliableSlots(roomName:any , date :any){
-    return this.http.get<any>(`${this.baseUrl}receptionist/get-reservation-slots?roomName=${roomName}&reservedAt=${date}`);
+  // New API methods
+  getAllRoomsV2(): Observable<Room[]> {
+    const endpoint = sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST'
+      ? `${this.baseUrl}receptionist/rooms-names-to-specific-clinic-v2`
+      : `${this.baseUrl}admin/rooms/name-v2`;
+
+    return this.http.get<Room[]>(endpoint).pipe(
+      shareReplay(1) // Cache the result
+    );
   }
 
+  getRoomWithReservations(roomId: number, date: string): Observable<RoomReservation> {
+    return this.http.get<RoomReservation>(
+      `${this.baseUrl}receptionist/get-room-with-reservation?roomId=${roomId}&date=${date}`
+    );
+  }
 
-  private listOfRooms = new BehaviorSubject<readonly any[]> ([]);
-rooms$ = this.listOfRooms.asObservable();
-updatedRooms(data: any[]){
-  this.listOfRooms.next(data);
+  // getAllReservationsByDate(date: string): Observable<{ [roomName: string]: any[] }> {
+  //   return this.http.get<{ [roomName: string]: any[] }>(
+  //     `${this.baseUrl}receptionist/get-rooms-with-all-reservation?date=${date}`
+  //   );
+  // }
+
+  getAvailableSlots(roomName: string, date: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}receptionist/get-reservation-slots?roomName=${roomName}&reservedAt=${date}`
+    );
   }
- private slots = new BehaviorSubject< any[]> ([]);
-updateSlots$ = this.slots.asObservable();
-updateSlots(data: any[]){
-  //console.log('Sending New Slots :>> ');
-  this.slots.next(data);
+
+  changeReservationStatus(id: number, status: string): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}receptionist/roomreservationn?id=${id}&status=${status}`,
+      { id, status }
+    );
   }
-private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);
-listOfData$ = this.listOfDataSubject.asObservable();
-updateData(data: any[]){
-  this.listOfDataSubject.next(data);
+
+  addRoom(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}admin/rooms`, data);
+  }
+
+  addClinic(data: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}admin/clinic-branch`, data);
+  }
+
+  checkOutReservation(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}receptionist/normal-payment?id=${id}`);
+  }
+
+  allClinics(): Observable<any> {
+    return this.http.get(`${this.baseUrl}admin/get-all-clinic-names`);
+  }
+
+  // State management with BehaviorSubjects
+  private roomsSubject = new BehaviorSubject<Room[]>([]);
+  rooms$ = this.roomsSubject.asObservable();
+
+  private reservationsSubject = new BehaviorSubject<{ [roomName: string]: any[] }>({});
+  reservations$ = this.reservationsSubject.asObservable();
+
+  private slotsSubject = new BehaviorSubject<any[]>([]);
+  slots$ = this.slotsSubject.asObservable();
+
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
+
+  updateRooms(rooms: Room[]): void {
+    this.roomsSubject.next(rooms);
+  }
+
+  updateReservations(reservations: { [roomName: string]: any[] }): void {
+    this.reservationsSubject.next(reservations);
+  }
+
+  updateSlots(slots: any[]): void {
+    this.slotsSubject.next(slots);
+  }
+
+  setLoading(loading: boolean): void {
+    this.loadingSubject.next(loading);
   }
 }

@@ -84,7 +84,7 @@ export class DailySheetComponent {
       this.dailySheetStatus = data[1];
       //console.log( "daily sheet recived : " ,this.dailyInfo);
     })
-    this.roomsService.allRooms().subscribe((rooms)=>{
+    this.roomsService.getAllRoomsV2().subscribe((rooms)=>{
       this.allRooms =rooms;
       //console.log('rooms :>> ', this.allRooms);
     })

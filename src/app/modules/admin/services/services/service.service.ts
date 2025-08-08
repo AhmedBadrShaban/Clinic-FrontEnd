@@ -19,7 +19,7 @@ export class ServiceService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-      return this.http.get<any>(`${this.baseUrl}admin/patientservice`)
+      return this.http.get<any>(`${this.baseUrl}admin/patientservice` , {params})
   }
   getAvaillableService():Observable<any>{
     return this.http.get<any>(`${this.baseUrl}receptionist/services-names`)

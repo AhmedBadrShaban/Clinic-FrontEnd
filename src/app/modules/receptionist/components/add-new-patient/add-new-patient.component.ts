@@ -48,7 +48,7 @@ export class AddNewPatientComponent implements OnInit {
               this.router.navigateByUrl('receptionist/addpatient')
             else if(this.authService.userType === 'ROLE_ADMIN')
             {
-              this.updatePatients.getPatientsNamesAndPhones().subscribe((data)=>
+              this.updatePatients.getPatientsNamesAndPhonesAuto(0).subscribe((data)=>
               {
                 this.updatePatients.updatePatientsArray(data);
               }

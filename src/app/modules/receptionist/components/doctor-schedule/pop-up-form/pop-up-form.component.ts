@@ -112,7 +112,7 @@ export class PopUpFormComponent implements OnInit {
       })
   }
   getAllRoomsNames(){
-    this.roomsService.allRooms().subscribe((data:any)=>{
+    this.roomsService.getAllRoomsV2().subscribe((data:any)=>{
       this.rooms =data;
       //console.log('Rooms ', this.rooms);
       })

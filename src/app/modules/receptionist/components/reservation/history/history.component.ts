@@ -25,7 +25,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   userType: any;
   dataSource = new MatTableDataSource<PatientHistory>();
   totalItems: number = 0;
-  pageSize: number = 5;
+  pageSize: number = 10;
   currentPage: number = 0;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   loadingState=false;

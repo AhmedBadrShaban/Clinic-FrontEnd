@@ -54,6 +54,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; /
 import { MatIconModule } from '@angular/material/icon'; // Add this
 import { MatSortModule } from '@angular/material/sort';
 import { TableComponent } from './shared/table/table.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
  
 @NgModule({
   declarations: [
@@ -102,7 +107,13 @@ import { TableComponent } from './shared/table/table.component';
     MatPaginatorModule,
     MatSortModule,
     MatIconModule,
-    MatProgressSpinnerModule,
+  MatCardModule,
+  MatIconModule,
+    MatDividerModule,
+    MatProgressBarModule,
+    MatChipsModule,
+   MatProgressSpinnerModule,
+   
   NavBarComponent
   ],
   exports:[

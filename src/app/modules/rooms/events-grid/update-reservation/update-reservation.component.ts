@@ -77,7 +77,7 @@ export class UpdateReservationComponent {
     this.reservationService.updateReservation(this.data.reservationId ,this.formData.value).subscribe({
       next:(responed:any)=>{
         alert(responed.message)
-         this.UpdateAllReservations();
+        //  this.UpdateAllReservations();
          this.updateAvailableSlots();
         this.closeDialog();
 
@@ -96,14 +96,14 @@ export class UpdateReservationComponent {
     // Add ':00' to the time string to make it in the format 'hh:mm:00'
     return `${time}:00`;
   }
-  UpdateAllReservations(){
-    this.roomService.getAllReservations(this.data.reservationDate).subscribe((data:any)=>{
-      this.roomService.updateData(data);
-      //console.log( "data Updated : " ,data);
-    })
-  }
+  // UpdateAllReservations(){
+  //   this.roomService.getAllReservationsByDate(this.data.reservationDate).subscribe((data:any)=>{
+  //     this.roomService.updateRooms(data);
+  //     //console.log( "data Updated : " ,data);
+  //   })
+  // }
   updateAvailableSlots(){
-    this.roomService.getAvalliableSlots(this.data.roomName , this.data.reservationDate).subscribe((data=>{
+    this.roomService.getAvailableSlots(this.data.roomName , this.data.reservationDate).subscribe((data=>{
       //console.log('updated :>> ', data);
       this.roomService.updateSlots(data);
     }))

@@ -20,7 +20,7 @@ export class ServicesComponent implements OnInit {
   filteredData:  any[] = [];
   searchValue?:any;
   pageIndex: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
   totalItems: number = 0;
    constructor(private servService : ServiceService,private dialogRef : MatDialog) {
     this.size= 'small' as NzTableSize,

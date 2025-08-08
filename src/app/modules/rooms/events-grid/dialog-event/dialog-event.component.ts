@@ -37,10 +37,10 @@ export class DialogEventComponent implements OnInit {
 
   }
   chengeReservationStatus( id:number,status:string){
-    this.roomsService.chengeReservationStatus(id , status).subscribe({
+    this.roomsService.changeReservationStatus(id , status).subscribe({
       next:(response:any)=>{
         alert(response.message);
-        this.UpdateAllReservations();
+        // this.UpdateAllReservations();
         this.updateAvailableSlots();
         this.close();
 
@@ -67,14 +67,14 @@ export class DialogEventComponent implements OnInit {
     this.dialog.open(UpdateReservationComponent ,  {data:this.reservation} );
     }
 
-  UpdateAllReservations(){
-    this.roomsService.getAllReservations(this.reservation.reservationDate).subscribe((data:any)=>{
-      this.roomsService.updateData(data);
-      //console.log( "data Updated : " ,data);
-    })
-  }
+  // UpdateAllReservations(){
+  //   this.roomsService.getAllReservationsByDate(this.reservation.reservationDate).subscribe((data:any)=>{
+  //     this.roomsService.updateRooms(data);
+  //     //console.log( "data Updated : " ,data);
+  //   })
+  // }
   updateAvailableSlots(){
-    this.roomsService.getAvalliableSlots( this.reservation.roomName ,this.reservation.reservationDate).subscribe((data=>{
+    this.roomsService.getAvailableSlots( this.reservation.roomName ,this.reservation.reservationDate).subscribe((data=>{
       //console.log('updated :>> ', data);
       this.roomsService.updateSlots(data);
     }))
