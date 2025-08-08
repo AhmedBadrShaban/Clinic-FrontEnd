@@ -20,7 +20,7 @@ export class ReservationsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones`);
   }
 
-  getPatientsNamesAndPhonesAuto(phone:number): Observable<any> {
+  getPatientsNamesAndPhonesAuto(phone:any): Observable<any> {
     const params = new HttpParams().set('phoneNumber', phone);
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones-v2`, { params } );
   }

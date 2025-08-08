@@ -56,7 +56,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
             this.dataLoaded = true;
           // this.roomsService.updateRooms(rooms);
           // if (rooms.length > 0) {
-          //   this.activeRoom = rooms[0];
+            this.activeRoom = rooms[0];
           //   this.loadReservationsForDate();
           // }
         },

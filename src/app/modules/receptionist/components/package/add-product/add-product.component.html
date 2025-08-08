@@ -1,185 +1,286 @@
-<div
-  class="border border-2 border-primary rounded container overflow-hidden"
-  style="width: 600px; background-color: #e5e5e5"
->
-  <div class="row mt-2 text-center">
-    <h1 style="font-size: 33; color: black; font-weight: 800">New Product</h1>
-  </div>
-
-  <form [formGroup]="addProductFm" (submit)="submit()">
-    <div class="row m-2 justify-content-between">
-      <label for="patient-number" class="form-label w-100">Patient Number</label
-      ><br />
-      <input
-        class="form-select"
-        id="patient-number"
-        placeholder="Type Patient's Phone Number"
-        formControlName="patientPhone"
-         (ngModelChange)="onChange($event)"
-        [nzAutocomplete]="PatientAuto"
-      />
-      <nz-autocomplete
-        [nzDataSource]="filteredData"
-        #PatientAuto
-      ></nz-autocomplete>
-    </div>
-    <div formArrayName="products">
-      <div
-        *ngFor="let productGroup of Products.controls; let i = index"
-        [formGroupName]="i"
-        class="row m-2 justify-content-between"
-      >
-        <div class="col-5">
-          <div class="row">
-            <label for="select-options" class="form-label w-100"
-              >Product Name</label
-            ><br />
-            <select
-              class="form-select shadow"
-              id="select-options"
-              formControlName="productName"
-              (change)="updatePrice(i)"
-            >
-              <option value="">Select Product</option>
-              <option
-                *ngFor="let product of AllProducts"
-                [value]="product.materialName"
-              >
-                {{ product.materialName }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <label for="quantity" class="form-label w-100">Quantity</label
-            ><br />
-            <input
-              type="number"
-              placeholder="Quantity"
-              class="form-control shadow"
-              formControlName="amount"
-              id="quantity"
-              name="quantity"
-              (input)="updatePrice(i)"
-            />
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <label for="product-cost" class="form-label w-100">Cost</label
-            ><br />
-            <input
-              class="form-control"
-              style="background-color: lightgray;"
-              id="product-cost"
-              readonly
-               formControlName="price"
-            />
-          </div>
+<!-- add-product.component.html -->
+<div class="add-product-container">
+  <!-- Modern Header -->
+  <div class="form-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-4 me-3">
+        <mat-icon class="header-icon me-3">shopping_cart</mat-icon>
+        <div>
+          <h2 class="mb-0">New Product</h2>
+          <small class="text-muted">Add products for patient</small>
         </div>
       </div>
-    </div>
-    <button
-      type="button"
-      style="
-        width: 500px;
-        margin-top: 10px;
-        margin-left: 30px;
-        height: 30px;
-        background-color: #adb3bd;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-      "
-      (click)="addProduct($event)"
-    >
-      Add Product
-    </button>
-    <div class="row m-2 justify-content-between">
-      <label for="Payment" class="form-label w-100">Payment Method</label><br />
-      <div class="col">
-        <input
-          type="number"
-          placeholder="Cash"
-          id="cash"
-          formControlName="cash"
-          class="form-control shadow"
-          name="cash"
-        />
-      </div>
-      <div class="col">
-        <input
-          type="number"
-          placeholder="VCash"
-          id="Vodafone"
-          formControlName="vodafoneCash"
-          class="form-control shadow"
-          name="Vodafone"
-        />
-      </div>
-      <div class="col">
-        <input
-          type="number"
-          placeholder="Visa"
-          id="visa"
-          formControlName="visa"
-          class="form-control shadow"
-          name="visa"
-        />
-      </div>
-    </div>
-    <div class="row m-2 justify-content-between">
-      <div class="col">
-        <input
-          type="number"
-          placeholder="Credit"
-          id="credit"
-          formControlName="credit"
-          class="form-control shadow"
-          name="credit"
-        />
-      </div>
-      <div class="col">
-        <input
-          type="number"
-          placeholder="InstaPay"
-          id="visa"
-          formControlName="instaPay"
-          class="form-control shadow"
-          name="InstaPay"
-        />
-      </div>
-      <!-- <div class="col">
-      <input type="number" placeholder="Debit" id="debit"   formControlName="debit" class="form-control shadow"
-      name="debit"/>
-     </div> -->
-    </div>
-
-    <div class="row m-2 justify-content-between">
-      <label for="Payment" class="form-label w-100">Total Cost</label><br />
-      <input
-              class="form-control"
-              style="background-color: lightgray;"
-              id="total-cost"
-              readonly
-              formControlName="total"
-            />
-    </div>
-    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
-      <button
-        type="submit"
-        style="
-          width: 120px;
-          height: 30px;
-          background-color: #1e3a8a;
-          color: #fff;
-          border: none;
-          border-radius: 4px;
-        "
-      >
-      Add Product
+      <button mat-icon-button (click)="closeDialog()" class="close-btn">
+        <mat-icon>close</mat-icon>
       </button>
     </div>
+  </div>
+
+  <!-- Enhanced Form -->
+  <form [formGroup]="addProductFm" (ngSubmit)="submit()" class="add-product-form">
+    <mat-card class="form-card">
+      <mat-card-content>
+
+        <!-- Patient Selection Section -->
+        <div class="form-section">
+          <div class="section-header">
+            <mat-icon class="section-icon">person</mat-icon>
+            <h3>Patient Information</h3>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Search Patient</mat-label>
+                <input matInput formControlName="patientPhone" [matAutocomplete]="PatientAuto"
+                  (input)="onPatientSearch($event)" placeholder="Type patient's name or phone number"
+                  autocomplete="off">
+
+                <!-- Loading spinner for patient search -->
+                <mat-spinner *ngIf="isPatientLoading" matSuffix diameter="20"></mat-spinner>
+
+                <!-- Search icon -->
+                <mat-icon *ngIf="!isPatientLoading" matSuffix>search</mat-icon>
+
+                <!-- Validation errors -->
+                <mat-error *ngIf="addProductFm.get('patientPhone')?.hasError('required')">
+                  Patient selection is required
+                </mat-error>
+
+                <!-- Enhanced Autocomplete -->
+                <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)"
+                  class="modern-autocomplete">
+                  <mat-option *ngFor="let patient of filteredPatients; trackBy: trackByPatient" [value]="patient"
+                    class="patient-option">
+                    <div class="d-flex align-items-center">
+                      <div class="patient-details">
+                        <div class="patient-name">{{ extractPatientName(patient) }}</div>
+                        <small class="patient-phone text-muted">
+                          <mat-icon class="small-icon">phone</mat-icon>
+                          {{ extractPatientPhone(patient) }}
+                        </small>
+                      </div>
+                    </div>
+                  </mat-option>
+
+                  <!-- No results -->
+                  <mat-option *ngIf="filteredPatients.length === 0 && patientSearchValue && !isPatientLoading" disabled>
+                    <div class="text-center py-3">
+                      <mat-icon class="text-muted">person_search</mat-icon>
+                      <p class="mb-0 mt-2">No patients found</p>
+                    </div>
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider class="my-4"></mat-divider>
+
+        <!-- Products Section -->
+        <div class="form-section">
+          <div class="section-header">
+            <mat-icon class="section-icon">inventory_2</mat-icon>
+            <h3>Products</h3>
+          </div>
+
+          <div formArrayName="products">
+            <div class="product-item" *ngFor="let productGroup of Products.controls; let i = index" [formGroupName]="i"
+              class="mb-4">
+
+              <mat-card class="product-card">
+                <mat-card-content>
+                  <div class="row g-3 align-items-end">
+                    <!-- Product Name -->
+                    <div class="col-md-5">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Product Name</mat-label>
+                        <mat-select formControlName="productName" (selectionChange)="updatePrice(i)"
+                          placeholder="Select Product">
+                          <mat-option value="">Choose a product</mat-option>
+                          <mat-option *ngFor="let product of AllProducts" [value]="product.materialName">
+                            {{ product.materialName }}
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix>inventory_2</mat-icon>
+                        <mat-error *ngIf="productGroup.get('productName')?.hasError('required')">
+                          Product selection is required
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Quantity</mat-label>
+                        <input matInput type="number" formControlName="amount" (input)="updatePrice(i)"
+                          placeholder="Quantity" min="1">
+                        <mat-icon matSuffix>tag</mat-icon>
+                        <mat-error *ngIf="productGroup.get('amount')?.hasError('required')">
+                          Quantity is required
+                        </mat-error>
+                        <mat-error *ngIf="productGroup.get('amount')?.hasError('min')">
+                          Quantity must be at least 1
+                        </mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- Cost -->
+                    <div class="col-md-3">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Cost</mat-label>
+                        <input matInput formControlName="price" readonly class="readonly-field" placeholder="0.00">
+                        <mat-icon matSuffix>attach_money</mat-icon>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <div class="col-md-1" *ngIf="Products.controls.length > 1">
+                      <button mat-icon-button type="button" color="warn" (click)="removeProduct(i)"
+                        matTooltip="Remove product">
+                        <mat-icon>remove_circle</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+
+          <!-- Add Product Button -->
+          <div class="text-center mt-3">
+            <button mat-raised-button type="button" color="primary" (click)="addProduct()" class="add-product-btn">
+              <mat-icon>add_circle</mat-icon>
+              Add Another Product
+            </button>
+          </div>
+        </div>
+
+        <mat-divider class="my-4"></mat-divider>
+
+        <!-- Payment Methods Section -->
+        <div class="form-section">
+          <div class="section-header">
+            <mat-icon class="section-icon">payment</mat-icon>
+            <h3>Payment Methods</h3>
+          </div>
+
+          <div class="row g-3">
+            <!-- Cash -->
+            <div class="col-md-4 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Cash</mat-label>
+                <input matInput type="number" formControlName="cash" placeholder="0.00" min="0" step="0.01">
+                <mat-icon matSuffix>money</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Vodafone Cash -->
+            <div class="col-md-4 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Vodafone Cash</mat-label>
+                <input matInput type="number" formControlName="vodafoneCash" placeholder="0.00" min="0" step="0.01">
+                <mat-icon matSuffix>phone_android</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Visa -->
+            <div class="col-md-4 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Visa</mat-label>
+                <input matInput type="number" formControlName="visa" placeholder="0.00" min="0" step="0.01">
+                <mat-icon matSuffix>credit_card</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Credit -->
+            <div class="col-md-4 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Credit</mat-label>
+                <input matInput type="number" formControlName="credit" placeholder="0.00" min="0" step="0.01">
+                <mat-icon matSuffix>credit_score</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- InstaPay -->
+            <div class="col-md-4 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>InstaPay</mat-label>
+                <input matInput type="number" formControlName="instaPay" placeholder="0.00" min="0" step="0.01">
+                <mat-icon matSuffix>flash_on</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider class="my-4"></mat-divider>
+
+        <!-- Total Cost Section -->
+        <div class="form-section">
+          <div class="section-header">
+            <mat-icon class="section-icon">calculate</mat-icon>
+            <h3>Total</h3>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Total Cost</mat-label>
+                <input matInput formControlName="total" readonly class="readonly-field total-field" placeholder="0.00">
+                <mat-icon matSuffix>attach_money</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Payment Summary -->
+          <div class="payment-summary mt-3" *ngIf="getTotalPayments() > 0">
+            <mat-card class="summary-card">
+              <mat-card-content>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span>Total Payments:</span>
+                  <span class="fw-bold">{{ getTotalPayments() | currency }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <span>Balance:</span>
+                  <span [class]="getBalanceClass()" class="fw-bold">
+                    {{ getBalance() | currency }}
+                  </span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <div class="m-3 d-flex justify-content-center align-items-center">
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button mat-stroked-button type="button" (click)="closeDialog()" class="me-3">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="addProductFm.invalid || isSubmitting"
+            class="submit-btn">
+            <mat-icon>{{ isSubmitting ? '' : 'add_shopping_cart' }}</mat-icon>
+            <mat-spinner *ngIf="isSubmitting" diameter="20" class="me-2"></mat-spinner>
+            {{ isSubmitting ? 'Adding...' : 'Add Product' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </form>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isSubmitting">
+    <div class="loading-content">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p class="mt-3">Adding your products...</p>
+    </div>
+  </div>
 </div>

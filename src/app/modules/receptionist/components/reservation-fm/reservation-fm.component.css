@@ -1,5 +1,198 @@
-/* .repeated
-{
-    border: 1px solid rgb(204, 202, 202);
-    padding: 15px;
-} */
+/* ============================
+   Reservation Form UI Upgrade
+   ============================ */
+
+/* ---- Global container ---- */
+.reservation-form-container {
+  font-family: "Roboto", sans-serif;
+  background: #f9fafc;
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.form-header {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #1976d2, #2196f3);
+  color: white;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.form-header h2 {
+  font-weight: 500;
+}
+
+.header-icon {
+  font-size: 2.2rem;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ---- Section styling ---- */
+.form-section {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-icon {
+  color: #1976d2;
+}
+
+/* ---- Material field tweaks ---- */
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  border-radius: 8px;
+}
+
+.mat-form-field:hover .mat-form-field-outline {
+  border-color: #2196f3 !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-outline {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* ---- Autocomplete options ---- */
+.modern-autocomplete .mat-option {
+  padding: 0.5rem 1rem;
+}
+
+.patient-option,
+.doctor-option {
+  transition: background 0.2s ease;
+}
+
+.patient-option:hover,
+.doctor-option:hover {
+  background: rgba(25, 118, 210, 0.08);
+  border-radius: 6px;
+}
+
+.patient-avatar,
+.doctor-avatar {
+  width: 36px;
+  height: 36px;
+  background: #e3f2fd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.patient-name,
+.doctor-name {
+  font-weight: 500;
+}
+
+/* ---- Services section ---- */
+.add-service-btn,
+.remove-service-btn {
+  background-color: #e3f2fd;
+  border-radius: 50%;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.add-service-btn:hover,
+.remove-service-btn:hover {
+  transform: scale(1.1);
+  background-color: #bbdefb;
+}
+
+/* ---- Time duration chip ---- */
+.time-duration mat-chip-option {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white !important;
+  font-weight: 500;
+}
+
+/* ---- Notes field ---- */
+textarea[matInput] {
+  border-radius: 8px;
+}
+
+/* ---- Form status ---- */
+.valid-form {
+  background: linear-gradient(135deg, #4caf50, #81c784) !important;
+  color: white !important;
+}
+
+.invalid-form {
+  background: linear-gradient(135deg, #f44336, #e57373) !important;
+  color: white !important;
+}
+
+/* ---- Action buttons ---- */
+.action-buttons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #1976d2, #42a5f5) !important;
+  color: white !important;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.submit-btn:disabled {
+  background: #b0bec5 !important;
+  color: #eceff1 !important;
+}
+
+/* ---- Loading overlay ---- */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 999;
+}
+
+.loading-content p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+.patient-details{
+    display:flex;
+    gap:0.5rem;
+}
+.section-header h3{
+    margin-bottom:0;
+}
+.mat-icon{
+    margin-right:0 !important;
+}
