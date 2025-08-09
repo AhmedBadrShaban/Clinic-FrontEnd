@@ -40,10 +40,10 @@ export class DialogEventComponent implements OnInit {
     this.roomsService.changeReservationStatus(id , status).subscribe({
       next:(response:any)=>{
         alert(response.message);
-        // this.UpdateAllReservations();
-        this.updateAvailableSlots();
-        this.close();
+          this.updateAvailableSlots();
+        this.UpdateAllReservations();
 
+ 
       },
       error:(err)=>{
         alert(err.error.message);
@@ -67,12 +67,9 @@ export class DialogEventComponent implements OnInit {
     this.dialog.open(UpdateReservationComponent ,  {data:this.reservation} );
     }
 
-  // UpdateAllReservations(){
-  //   this.roomsService.getAllReservationsByDate(this.reservation.reservationDate).subscribe((data:any)=>{
-  //     this.roomsService.updateRooms(data);
-  //     //console.log( "data Updated : " ,data);
-  //   })
-  // }
+  UpdateAllReservations(){
+    this.dialogRef.close('update');
+  }
   updateAvailableSlots(){
     this.roomsService.getAvailableSlots( this.reservation.roomName ,this.reservation.reservationDate).subscribe((data=>{
       //console.log('updated :>> ', data);
