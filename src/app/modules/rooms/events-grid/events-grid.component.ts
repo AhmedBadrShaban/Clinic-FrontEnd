@@ -79,8 +79,8 @@ export class EventsGridComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'updated') {
-        // Refresh data if needed
-        // this.refreshData();
+        console.log('updating reservations')
+        this.fetchRoomReservations(); // refresh the data
       }
     });
   }
