@@ -97,41 +97,51 @@
 }
 
  .status-waiting {
-  --status-color: linear-gradient(135deg, #f59e0b, #d97706);
-  --status-bg: #fef3c7;
+  --status-color: linear-gradient(135deg, #92400e, #d97706);
+  background-color: #f59e0b;
   --status-text: #92400e;
 }
 
 .status-in_progress,
 .status-in-progress {
   --status-color: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  --status-bg: #dbeafe;
+  background-color: bisque;
   --status-text: #1e40af;
 }
 
-.status-done,
-.status-completed {
+.status-done {
   --status-color: linear-gradient(135deg, #10b981, #059669);
-  --status-bg: #d1fae5;
+  background-color: #d1fae5;
   --status-text: #065f46;
 }
 
 .status-cancelled {
   --status-color: linear-gradient(135deg, #ef4444, #dc2626);
-  --status-bg: #fee2e2;
+  background-color: #fee2e2;
   --status-text: #991b1b;
 }
+.status-completed{
+    --status-color: linear-gradient(135deg, #10b981, #059669);
+  background-color: #e4ffe5;
+  --status-text: #065f46;
+}
 
-.status-confirmed {
+.status-cancelled {
+  --status-color: linear-gradient(135deg, #ef4444, #dc2626);
+  background-color: #fee2e2;
+  --status-text: #991b1b;
+}
+.status-confirmed,
+.status_confirmed {
   --status-color: linear-gradient(135deg, #8b5cf6, #7c3aed);
-  --status-bg: #ede9fe;
+  background-color: #ede9fe;
   --status-text: #5b21b6;
 }
 
 .status-to_doctor,
 .status-to-doctor {
   --status-color: linear-gradient(135deg, #06b6d4, #0891b2);
-  --status-bg: #cffafe;
+  background-color: #cffafe;
   --status-text: #0e7490;
 }
 

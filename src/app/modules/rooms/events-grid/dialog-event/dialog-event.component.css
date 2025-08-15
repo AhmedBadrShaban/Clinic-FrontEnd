@@ -51,7 +51,7 @@
       margin-left: 8px;
       &.status-confirmed {
         background-color: rgba(76, 175, 80, 0.2);
-        color: #4CAF50; 
+        color: #4CAF50;
       }
       
       &.status-in-progress {
