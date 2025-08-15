@@ -1,17 +1,16 @@
- <app-table
-   [data]="dataSource.data"
+<app-table
+  [data]="dataSource.data"
   [columns]="tableColumns"
   [totalItems]="totalItems"
   [pageSize]="pageSize"
   [currentPage]="currentPage + 1"
   [emptyTitle]="'No History Found'"
-  [emptyMessage]="'This user have no history on the system yet.'"
+  [emptyMessage]="'This user has no history yet.'"
   (onPageChange)="onPageChange($event)">
 </app-table>
 
-<!-- Step 2: Custom cell template for action column -->
 <ng-template #actionTemplate let-row>
-  <button mat-button color="primary" (click)="openDialog({
+      <button mat-button color="primary" (click)="openDialog({
     historyId: row.historyId,
     service: row.service,
     pulse: row.pulse,
@@ -27,3 +26,4 @@
     Edit
   </button>
 </ng-template>
+

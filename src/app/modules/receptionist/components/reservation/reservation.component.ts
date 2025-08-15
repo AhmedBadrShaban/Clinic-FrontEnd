@@ -1,4 +1,4 @@
-// TypeScript (reservation.component.ts)
+// reservation.component.ts
 import {
   ChangeDetectorRef,
   Component,
@@ -27,6 +27,7 @@ interface TabDataState {
   loading: boolean;
   loaded: boolean;
   error: string | null;
+  initialized: boolean; // Track if tab has been initialized
 }
 
 const SEARCH_DEBOUNCE_TIME = 300;
@@ -54,15 +55,16 @@ export class ReservationComponent implements OnInit, OnDestroy {
   private allPatientsData: PatientSearchItem[] = [];
   filteredData: string[] = [];
 
+  // Enhanced tab state tracking
   tabDataStates: { [key: string]: TabDataState } = {
-    patientInfoTab: { loading: false, loaded: false, error: null },
-    historyTab: { loading: false, loaded: false, error: null },
-    packagesTab: { loading: false, loaded: false, error: null },
-    pointsTab: { loading: false, loaded: false, error: null },
-    reservationsTab: { loading: false, loaded: false, error: null },
-    paymentHistoryTab: { loading: false, loaded: false, error: null },
-    afterWorkTab: { loading: false, loaded: false, error: null },
-    idlePatientsTab: { loading: false, loaded: false, error: null }
+    patientInfoTab: { loading: false, loaded: false, error: null, initialized: false },
+    historyTab: { loading: false, loaded: false, error: null, initialized: false },
+    packagesTab: { loading: false, loaded: false, error: null, initialized: false },
+    pointsTab: { loading: false, loaded: false, error: null, initialized: false },
+    reservationsTab: { loading: false, loaded: false, error: null, initialized: false },
+    paymentHistoryTab: { loading: false, loaded: false, error: null, initialized: false },
+    afterWorkTab: { loading: false, loaded: false, error: null, initialized: false },
+    idlePatientsTab: { loading: false, loaded: false, error: null, initialized: false }
   };
 
   private searchSubject = new Subject<string>();
@@ -182,7 +184,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
           this.reservationsService.updatePhoneNumber(this.patientNumber);
 
           this.reservationID = reservationID;
-          this.selectedTabIndex = 0; // Doctor only has one tab
+          this.selectedTabIndex = 0;
           this.resetTabStates();
 
           if (phoneNumber) {
@@ -198,12 +200,17 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private setInitialTab(): void {
-    this.selectedTabIndex = 0; // Always start with first tab
+    this.selectedTabIndex = 0;
   }
 
   private resetTabStates(): void {
     Object.keys(this.tabDataStates).forEach(key => {
-      this.tabDataStates[key] = { loading: false, loaded: false, error: null };
+      this.tabDataStates[key] = {
+        loading: false,
+        loaded: false,
+        error: null,
+        initialized: false
+      };
     });
   }
 
@@ -214,7 +221,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   onPatientSelected(event: MatAutocompleteSelectedEvent): void {
     const selectedValue = event.option.value as string;
     this.searchValue = selectedValue;
-    console.log('serachValue ', this.searchValue )
+    console.log('searchValue ', this.searchValue);
   }
 
   private performSearch(searchTerm: any): void {
@@ -239,7 +246,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
             .map(item => item.displayText);
 
           this.filteredData = filtered;
-          console.log('autocomplete', this.filteredData)
+          console.log('autocomplete', this.filteredData);
 
           this.isLoading = false;
           this.cdr.markForCheck();
@@ -277,9 +284,9 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   searchPatient(): void {
     const phoneNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
-    
-    // Simple tab selection - go to appropriate first patient tab
-      this.selectedTabIndex = 0; // First available tab
+
+    this.selectedTabIndex = 0;
+
     if (!phoneNumber) {
       this.showMessage('No valid phone number found in search value', 'error');
       return;
@@ -353,40 +360,25 @@ export class ReservationComponent implements OnInit, OnDestroy {
   onTabSelectChange(selectedIndex: number): void {
     this.selectedTabIndex = selectedIndex;
 
-     const currentTabName = this.getCurrentTabName(selectedIndex);
+    const currentTabName = this.getCurrentTabName(selectedIndex);
 
-    if (this.patientNumber && currentTabName !== 'idlePatientsTab') {
-      this.loadTabData(currentTabName);
-    }
+    // Mark tab as initialized but don't load data here
+    // Child components will handle their own initialization based on isActive input
+    this.tabDataStates[currentTabName].initialized = true;
 
     this.cdr.markForCheck();
   }
 
   private getCurrentTabName(index: number): string {
-    // Get tab name based on actual tab order in template
     if (this.userType === 'ROLE_DOCTOR') {
-      return 'afterWorkTab'; // Doctor only has one tab
+      return 'afterWorkTab';
     } else if (this.userType === 'ROLE_ADMIN') {
-      const adminTabs = ['idlePatientsTab', 'patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
-      return adminTabs[index] || 'idlePatientsTab';
+      const adminTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab', 'idlePatientsTab'];
+      return adminTabs[index] || 'patientInfoTab';
     } else {
       const receptionistTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
       return receptionistTabs[index] || 'patientInfoTab';
     }
-  }
-
-  private loadTabData(tabName: string): void {
-    if (!this.patientNumber || this.tabDataStates[tabName].loaded || this.tabDataStates[tabName].loading) {
-      return;
-    }
-
-    this.setTabLoading(tabName, true);
-    this.reservationsService.updatePhoneNumber(this.patientNumber);
-
-    setTimeout(() => {
-      this.setTabLoaded(tabName, true);
-      this.cdr.markForCheck();
-    }, 100);
   }
 
   private setTabLoading(tabName: string, loading: boolean): void {
@@ -399,6 +391,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   private setTabLoaded(tabName: string, loaded: boolean): void {
     this.tabDataStates[tabName].loaded = loaded;
     this.tabDataStates[tabName].loading = false;
+    this.tabDataStates[tabName].initialized = true;
   }
 
   private setTabError(tabName: string, error: string): void {
@@ -414,13 +407,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
     return item;
   }
 
-
-
-   selectTab(index: number): void {
+  selectTab(index: number): void {
     this.selectedTabIndex = index;
   }
 
-  // Helper method to select tab by name
   selectTabByName(tabName: string): void {
     const index = this.getTabIndexByName(tabName);
     if (index !== -1) {
@@ -432,7 +422,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     if (this.userType === 'ROLE_DOCTOR') {
       return tabName === 'afterWorkTab' ? 0 : -1;
     } else if (this.userType === 'ROLE_ADMIN') {
-      const adminTabs = ['idlePatientsTab', 'patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
+      const adminTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab', 'idlePatientsTab'];
       return adminTabs.indexOf(tabName);
     } else {
       const receptionistTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
@@ -440,7 +430,13 @@ export class ReservationComponent implements OnInit, OnDestroy {
     }
   }
 
-   get hasPatientData(): boolean {
+  // Helper method to check if a specific tab is active
+  isTabActive(tabName: string): boolean {
+    const currentTabName = this.getCurrentTabName(this.selectedTabIndex);
+    return currentTabName === tabName;
+  }
+
+  get hasPatientData(): boolean {
     return this.allPatientsData.length > 0;
   }
 

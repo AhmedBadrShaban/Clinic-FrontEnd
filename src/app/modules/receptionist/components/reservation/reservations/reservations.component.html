@@ -1,23 +1,17 @@
-<!-- reservations.component.html -->
 
-<!-- Step 1: Use the shared material table component -->
-<app-table
-  [data]="dataSource.data"
-  [columns]="tableColumns"
-  [totalItems]="totalItems"
-  [pageSize]="pageSize"
-  [currentPage]="currentPage + 1"
-  (onPageChange)="onPageChange($event)">
+<!-- Table -->
+<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+  [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
 </app-table>
 
-<!-- Step 2: Custom cell template for services column -->
+<!-- Services template -->
 <ng-template #servicesTemplate let-row>
   <span *ngFor="let ser of row.service; let last = last">
     {{ ser }}<ng-container *ngIf="!last"> - </ng-container>
   </span>
 </ng-template>
 
-<!-- Step 3: Custom cell template for status column -->
+<!-- Status template -->
 <ng-template #statusTemplate let-row>
   <span class="badge btn" [ngClass]="getStatusClass(row.status)">
     {{ row.status }}

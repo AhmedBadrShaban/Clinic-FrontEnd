@@ -1,32 +1,27 @@
-
-<!-- Step 1: Points summary section -->
+<!-- Points summary -->
 <div style="margin-bottom: 20px; display: flex; flex-direction: column; align-items: center;">
   <div style="display: flex; width: 100%; justify-content: space-around;">
     <div>
-      Total In : <span style="color: black;" class="bg-info badge">{{totalIn}}</span>
+      Total In: <span class="bg-info badge" style="color: black;">{{ totalIn }}</span>
     </div>
     <div>
-      Total out : <span style="color: black;" class="bg-info badge">{{totalOut}}</span>
+      Total Out: <span class="bg-info badge" style="color: black;">{{ totalOut }}</span>
     </div>
     <div>
-      Remain : <span style="color: black;" class="bg-info badge">{{remain}}</span>
+      Remain: <span class="bg-info badge" style="color: black;">{{ remain }}</span>
     </div>
   </div>
-  <button class="btn btn-primary mt-3" (click)="openModal()">
-    Send Points
-  </button>
+  <button class="btn btn-primary mt-3" (click)="openModal()">Send Points</button>
 </div>
 
- <app-table
-  [data]="dataSource.data"
-  [columns]="tableColumns"
-  [totalItems]="totalItems"
-  [pageSize]="pageSize"
-  [currentPage]="currentPage + 1"
-  (onPageChange)="onPageChange($event)">
+ 
+
+<!-- Table -->
+<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+  [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
 </app-table>
 
-<!-- Step 3: Custom cell template for notes column -->
+<!-- Note template -->
 <ng-template #noteTemplate let-row>
   <span style="font-size: 12px; color: blueviolet; text-decoration: underline;">
     {{ row.note }}

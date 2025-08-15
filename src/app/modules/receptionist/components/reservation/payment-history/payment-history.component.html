@@ -1,11 +1,4 @@
-<!-- payment-history.component.html -->
-
-<!-- Use the shared material table component -->
-<app-table
-  [data]="dataSource.data"
-  [columns]="tableColumns"
-  [totalItems]="totalItems"
-  [pageSize]="pageSize"
-  [currentPage]="currentPage + 1"
-  (onPageChange)="onPageChange($event)">
+<!-- Shared table -->
+<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+  [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
 </app-table>

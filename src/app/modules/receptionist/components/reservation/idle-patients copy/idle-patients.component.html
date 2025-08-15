@@ -1,10 +1,9 @@
-<!-- idle-patients.component.html -->
-<!-- Use the shared material table component -->
-<app-table
-  [data]="dataSource.data"
-  [columns]="tableColumns"
-  [totalItems]="totalItems"
-  [pageSize]="pageSize"
-  [currentPage]="currentPage + 1"
-  (onPageChange)="onPageChange($event)">
-</app-table>
+<ng-container *ngIf="loading; else tableContent">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</ng-container>
+
+<ng-template #tableContent>
+  <app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+    [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
+  </app-table>
+</ng-template>

@@ -1,70 +1,50 @@
+<!-- reservation.component.html -->
 <div class="content">
   <!-- Search Section -->
   <div *ngIf="showSearchSection" class="search-container w-75 mx-auto mb-4">
     <div class="search-row d-flex justify-content-center align-items-center" style="min-height: 60px;">
-      
+
       <!-- Search Input with Loading State -->
       <div class="search-input-container position-relative w-50 mx-2">
-        <input
-          class="form-control h-100 bg-light search-input"
-          [class.is-loading]="isLoading"
-          id="patient-search"
-          placeholder="Search by name or phone number..."
-          type="search"
-          [(ngModel)]="searchValue"
-          (ngModelChange)="onSearchValueChange($event)"
-          [matAutocomplete]="PatientAuto"
-          [disabled]="isLoading"
-          autocomplete="off"
-        />
-        
+        <input class="form-control h-100 bg-light search-input" [class.is-loading]="isLoading" id="patient-search"
+          placeholder="Search by name or phone number..." type="search" [(ngModel)]="searchValue"
+          (ngModelChange)="onSearchValueChange($event)" [matAutocomplete]="PatientAuto" [disabled]="isLoading"
+          autocomplete="off" />
+
         <!-- Loading Spinner -->
         <div *ngIf="isLoading" class="loading-spinner position-absolute">
           <i class="fas fa-spinner fa-spin"></i>
         </div>
-        
+
         <!-- Search Icon -->
         <div *ngIf="!isLoading" class="search-icon position-absolute">
           <i class="bi bi-search text-muted"></i>
         </div>
-        
+
         <!-- Material Autocomplete -->
-        <mat-autocomplete 
-          #PatientAuto="matAutocomplete"
-          (optionSelected)="onPatientSelected($event)">
-          <mat-option 
-            *ngFor="let option of filteredData; trackBy: trackByFn" 
-            [value]="option">
+        <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)">
+          <mat-option *ngFor="let option of filteredData; trackBy: trackByFn" [value]="option">
             <div class="autocomplete-item">
               <i class="bi bi-person-fill me-2 text-primary"></i>
-                {{ option }}
-             </div>
+              {{ option }}
+            </div>
           </mat-option>
         </mat-autocomplete>
       </div>
-            
+
       <!-- Search Button -->
       <div class="mx-2">
-        <button 
-          (click)="searchPatient()" 
-          type="button" 
-          class="btn btn-primary search-btn h-100 px-4"
-          [disabled]="!searchValue || isLoading"
-          [class.btn-loading]="isLoading"
-        >
+        <button (click)="searchPatient()" type="button" class="btn btn-primary search-btn h-100 px-4"
+          [disabled]="!searchValue || isLoading" [class.btn-loading]="isLoading">
           <i class="bi bi-search me-2"></i>
           <span>Search</span>
         </button>
       </div>
-      
+
       <!-- Add New Patient Button -->
       <div *ngIf="canAddNewPatient" class="mx-2">
-        <button
-          (click)="openDialog()"
-          class="btn btn-success add-patient-btn"
-          style="height: 50px; min-width: 180px;"
-          [disabled]="isLoading"
-        >
+        <button (click)="openDialog()" class="btn btn-success add-patient-btn" style="height: 50px; min-width: 180px;"
+          [disabled]="isLoading">
           <i class="bi bi-person-plus me-2"></i>
           <span>New Patient</span>
         </button>
@@ -72,78 +52,143 @@
     </div>
   </div>
 
-   <div class="tabs-container">
-    <mat-tab-group 
-      [(selectedIndex)]="selectedTabIndex"
-      (selectedIndexChange)="onTabSelectChange($event)"
-      class="patient-tabs"
-      mat-align-tabs="center"
-      backgroundColor="accent"
-      color="primary">
-      
+  <div class="tabs-container">
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabSelectChange($event)"
+      class="patient-tabs" mat-align-tabs="center" backgroundColor="accent" color="primary">
+
       <!-- Main Info Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Patient Info">
         <div class="tab-content-wrapper">
-          <app-patient-info
-            [phoneNumber]="patientNumber"
-            [info]="PatientInfo">
+          <!-- Only render when tab is active and patient is selected -->
+          <app-patient-info *ngIf="isTabActive('patientInfoTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
+            [info]="PatientInfo" [isActive]="isTabActive('patientInfoTab')">
           </app-patient-info>
+
+          <!-- Loading state -->
+          <div *ngIf="tabDataStates['patientInfoTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading patient information...
+          </div>
+
+          <!-- No patient selected state -->
+          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
+            <i class="bi bi-person-exclamation"></i>
+            <p>Please search and select a patient to view information</p>
+          </div>
         </div>
       </mat-tab>
-      
+
       <!-- History Tab -->
       <mat-tab label="History">
         <div class="tab-content-wrapper">
-          <app-history>
+          <app-history *ngIf="isTabActive('historyTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
+            [isActive]="isTabActive('historyTab')">
           </app-history>
+
+          <div *ngIf="tabDataStates['historyTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading history...
+          </div>
+
+          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
+            <i class="bi bi-clock-history"></i>
+            <p>Please search and select a patient to view history</p>
+          </div>
         </div>
       </mat-tab>
-      
+
       <!-- Packages Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Packages">
         <div class="tab-content-wrapper">
-          <app-packages>
+          <app-packages *ngIf="isTabActive('packagesTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
+            [isActive]="isTabActive('packagesTab')">
           </app-packages>
+
+          <div *ngIf="tabDataStates['packagesTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading packages...
+          </div>
+
+          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
+            <i class="bi bi-box"></i>
+            <p>Please search and select a patient to view packages</p>
+          </div>
         </div>
       </mat-tab>
-      
+
       <!-- Points Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Points">
         <div class="tab-content-wrapper">
-          <app-points>
+          <app-points *ngIf="isTabActive('pointsTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
+            [isActive]="isTabActive('pointsTab')">
           </app-points>
+
+          <div *ngIf="tabDataStates['pointsTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading points...
+          </div>
+
+          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
+            <i class="bi bi-star"></i>
+            <p>Please search and select a patient to view points</p>
+          </div>
         </div>
       </mat-tab>
-      
+
       <!-- Reservations Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Reservations">
         <div class="tab-content-wrapper">
-          <app-reservations>
+          <app-reservations *ngIf="isTabActive('reservationsTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
+            [isActive]="isTabActive('reservationsTab')">
           </app-reservations>
+
+          <div *ngIf="tabDataStates['reservationsTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading reservations...
+          </div>
+
+          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
+            <i class="bi bi-calendar"></i>
+            <p>Please search and select a patient to view reservations</p>
+          </div>
         </div>
       </mat-tab>
-      
+
       <!-- Payment History Tab (Not for Doctor) -->
       <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Payment History">
         <div class="tab-content-wrapper">
-          <app-payment-history>
+          <app-payment-history *ngIf="isTabActive('paymentHistoryTab') && hasSelectedPatient"
+            [phoneNumber]="patientNumber" [isActive]="isTabActive('paymentHistoryTab')">
           </app-payment-history>
+
+          <div *ngIf="tabDataStates['paymentHistoryTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading payment history...
+          </div>
+
+          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
+            <i class="bi bi-credit-card"></i>
+            <p>Please search and select a patient to view payment history</p>
+          </div>
         </div>
       </mat-tab>
-      
+
       <!-- Doctor: Treatment Notes Tab -->
       <mat-tab *ngIf="userType === 'ROLE_DOCTOR'" label="After Work">
         <div class="tab-content-wrapper">
-          <app-after-work
-            [phoneNumber]="patientNumber"
-            [id]="reservationID">
+          <app-after-work *ngIf="isTabActive('afterWorkTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
+            [id]="reservationID" [isActive]="isTabActive('afterWorkTab')">
           </app-after-work>
+
+          <div *ngIf="tabDataStates['afterWorkTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading treatment notes...
+          </div>
         </div>
       </mat-tab>
-      
-       <mat-tab *ngIf="userType === 'ROLE_ADMIN'" label="Idle Patients">
+
+      <mat-tab *ngIf="userType === 'ROLE_ADMIN'" label="Idle Patients">
         <div class="tab-content-wrapper">
-          <app-idle-patients></app-idle-patients>
+          <!-- Idle patients doesn't need patient selection -->
+          <app-idle-patients *ngIf="isTabActive('idlePatientsTab')" [isActive]="isTabActive('idlePatientsTab')">
+          </app-idle-patients>
+
+          <div *ngIf="tabDataStates['idlePatientsTab'].loading" class="text-center p-4">
+            <i class="fas fa-spinner fa-spin"></i> Loading idle patients...
+          </div>
         </div>
       </mat-tab>
     </mat-tab-group>
