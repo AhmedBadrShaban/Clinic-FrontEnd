@@ -1,6 +1,7 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 
 import { reservation } from '../../receptionist/models/event-reservation.model';
 import { DialogEventComponent } from './dialog-event/dialog-event.component';
@@ -10,49 +11,83 @@ import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
   selector: 'app-events-grid',
   templateUrl: './events-grid.component.html',
   styleUrls: ['./events-grid.component.css'],
- })
-export class EventsGridComponent implements OnInit, OnChanges {
-  dataLoaded: boolean = false;
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private lastFetchKey = '';
+
   @Input() roomName: string = '';
   @Input() roomId: number = 0;
   @Input() date: string = '';
+  @Input() refreshTrigger: number = 0; // Trigger from parent to refresh data
+
+  @Output() dataUpdated = new EventEmitter<void>(); // Emit when data needs refresh
+
   eventsPerRoom: reservation[] = [];
+  isLoading: boolean = false;
 
   constructor(
     public dialog: MatDialog,
     private roomsService: RoomsService,
-    private datePipe: DatePipe
-  ) {}
+    private datePipe: DatePipe,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-      this.fetchRoomReservations();
-   }
+    // Fetch data when component initializes
+    this.fetchRoomReservations();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['roomId'] || changes['date']) {
-      this.fetchRoomReservations();
+    // Fetch data when room, date, or refresh trigger changes
+    if (changes['roomId'] || changes['date'] || changes['refreshTrigger']) {
+      if (this.roomId && this.date) {
+        this.fetchRoomReservations();
+      }
     }
   }
 
-  private fetchRoomReservations(): void {
-    this.dataLoaded = false;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
+  private fetchRoomReservations(): void {
     if (!this.roomId || !this.date) return;
 
-    this.roomsService.getRoomWithReservations(this.roomId, this.date).subscribe({
-      next: (roomData) => {
+    const currentFetchKey = `${this.roomId}-${this.date}-${this.refreshTrigger}`;
 
-        this.eventsPerRoom = Object.values(roomData).flat();
-        this.eventsPerRoom = this.sortEventsByTime(this.eventsPerRoom);
-        this.dataLoaded = true;
-         console.log('room reservations', this.eventsPerRoom);
-       },
-      error: (err) => {
-        console.error('Failed to fetch room reservations:', err);
-        this.dataLoaded = true;
-        this.eventsPerRoom = [];
-      }
-    });
+    // Prevent duplicate fetches
+    if (currentFetchKey === this.lastFetchKey) return;
+
+    this.lastFetchKey = currentFetchKey;
+    this.isLoading = true;
+    this.cdr.detectChanges();
+
+    console.log(`Fetching reservations for room ${this.roomName} on ${this.date}`);
+
+    this.roomsService.getRoomWithReservations(this.roomId, this.date)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (roomData) => {
+          const reservations = Object.values(roomData).flat();
+          this.processReservations(reservations);
+          console.log(`Fetched ${this.eventsPerRoom.length} reservations for room ${this.roomName}`);
+        },
+        error: (err) => {
+          console.error('Failed to fetch room reservations:', err);
+          this.isLoading = false;
+          this.eventsPerRoom = [];
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  private processReservations(reservations: any[]): void {
+    this.eventsPerRoom = this.sortEventsByTime(reservations || []);
+    this.isLoading = false;
+    this.cdr.detectChanges();
   }
 
   private sortEventsByTime(events: reservation[]): reservation[] {
@@ -79,19 +114,12 @@ export class EventsGridComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'updated') {
-        console.log('updating reservations')
-        this.fetchRoomReservations(); // refresh the data
+        console.log('Reservation updated, refreshing data');
+        // Emit to parent to refresh data
+        this.dataUpdated.emit();
       }
     });
   }
-
-  // private refreshData(): void {
-  //    this.roomsService.getAllReservationsByDate(this.date).subscribe(
-  //     reservations => {
-  //       this.roomsService.updateReservations(reservations);
-  //     }
-  //   );
-  // }
 
   formatTimeTo12Hour(time: string): string {
     if (!time) {
@@ -147,7 +175,36 @@ export class EventsGridComponent implements OnInit, OnChanges {
     };
     return statusColors[status] || '#666';
   }
+
   trackByReservationId(index: number, reservation: reservation): number {
     return reservation.reservationId || index;
+  }
+
+  // Action methods
+  onReservationAction(action: string, reservation: reservation, event: Event): void {
+    event.stopPropagation();
+
+    switch (action) {
+      case 'confirm':
+        this.changeReservationStatus(reservation.reservationId, 'CONFIRMED');
+        break;
+      case 'checkout':
+        // Handle checkout
+        break;
+    }
+  }
+
+  private changeReservationStatus(reservationId: number, status: string): void {
+    this.roomsService.changeReservationStatus(reservationId, status)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          console.log('Status updated:', response.message);
+          this.dataUpdated.emit(); // Refresh data
+        },
+        error: (err) => {
+          console.error('Error updating status:', err);
+        }
+      });
   }
 }

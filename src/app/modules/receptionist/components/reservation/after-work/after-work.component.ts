@@ -1,5 +1,4 @@
-import { formatDate } from '@angular/common';
-import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -14,57 +13,81 @@ import { ReservationsService } from '../../../services/reservations-services/res
   styleUrls: ['./after-work.component.css']
 })
 export class AfterWorkComponent implements OnInit {
-  userType:any;
-  @Input() phoneNumber: any;
-  @Input() id: any;
-  reservationServices: string[] = [
-  ];
-  editedForm: FormGroup;
+  @Input() phoneNumber: string | null = null;
+  @Input() id: string | null = null;
+
+  userType: any;
+  reservationServices: string[] = [];
+  editedForm!: FormGroup;
+
   doneServicesForm: FormGroup = new FormGroup({
     dataList: new FormArray([])
   });
+  @Input() isActive: boolean = false;
+  loadingState = false; // NEW spinner flag
 
-  constructor( @Optional() @Inject(MAT_DIALOG_DATA) public data:any,public dialogRef: MatDialogRef<AfterWorkComponent> ,private fb: FormBuilder ,  private reservationService: ServiceService ,
-  private doctorService:DoctorReservationsService , private reservationsApi:ReservationsService, private router:Router ,   private loggedIn:AuthService) {
+  constructor(
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<AfterWorkComponent>,
+    private fb: FormBuilder,
+    private reservationService: ServiceService,
+    private doctorService: DoctorReservationsService,
+    private reservationsApi: ReservationsService,
+    private router: Router,
+    private cd: ChangeDetectorRef,
+    private loggedIn: AuthService
+  ) {
     this.userType = loggedIn.userType;
-   }
+  }
 
   ngOnInit(): void {
-    if(!this.data){
-      ////console.log('Received afterWork reservation ID :>> ', this.id);
-      this.reservationService.getAllServices(this.id).subscribe((data) => {
-        this.reservationServices = data;
-      for (const service of this.reservationServices) {
-        const serviceFormGroup = new FormGroup({
-          service: new FormControl(service, Validators.required),
-          pulse: new FormControl(0, Validators.min(0)),
-          spot: new FormControl(0, Validators.min(0)),
-          fluence1: new FormControl(0, Validators.min(0)),
-          fluence2: new FormControl(0, Validators.min(0)),
-          note: new FormControl('')
-        });
-        (this.doneServicesForm.get('dataList') as FormArray).push(serviceFormGroup);
-      }
-    });
+    if (this.data) {
+      this.initEditMode();
+    } else if (this.id) {
+      this.initCreateMode();
     }
-    else{
-      ////console.log("received History Data is: ", this.data);
-      this.reservationServices[0] =this.data.service;
-      for (const service of this.reservationServices) {
-        this.editedForm = this.fb.group({
-          historyId: [this.data.historyId, Validators.required],
-          service:[this.data.service],
-          pulse:[this.data.pulse],
-          fluence1:[this.data.fluence1],
-          fluence2: [this.data.fluence2, Validators.required],
-          spot: [this.data.spot, Validators.required],
-          note: [this.data.note, Validators.required],
-          date:[this.data.date],
-          doctorName:[this.data.doctorName],
-          clinic:[this.data.clinic],
-        });
-        (this.doneServicesForm.get('dataList') as FormArray).push(this.editedForm);
-      }
+  }
+
+  private initCreateMode(): void {
+    this.loadingState = true;
+    this.reservationService.getAllServices(this.id!).subscribe({
+      next: (data) => {
+        this.reservationServices = data;
+        for (const service of this.reservationServices) {
+          const serviceFormGroup = new FormGroup({
+            service: new FormControl(service, Validators.required),
+            pulse: new FormControl(0, Validators.min(0)),
+            spot: new FormControl(0, Validators.min(0)),
+            fluence1: new FormControl(0, Validators.min(0)),
+            fluence2: new FormControl(0, Validators.min(0)),
+            note: new FormControl('')
+          });
+          (this.doneServicesForm.get('dataList') as FormArray).push(serviceFormGroup);
+        }
+        this.cd.detectChanges();
+
+        this.loadingState = false;
+      },
+      error: () => this.loadingState = false
+    });
+  }
+
+  private initEditMode(): void {
+    this.reservationServices = [this.data.service];
+    for (const service of this.reservationServices) {
+      this.editedForm = this.fb.group({
+        historyId: [this.data.historyId, Validators.required],
+        service: [this.data.service],
+        pulse: [this.data.pulse],
+        fluence1: [this.data.fluence1],
+        fluence2: [this.data.fluence2, Validators.required],
+        spot: [this.data.spot, Validators.required],
+        note: [this.data.note, Validators.required],
+        date: [this.data.date],
+        doctorName: [this.data.doctorName],
+        clinic: [this.data.clinic],
+      });
+      (this.doneServicesForm.get('dataList') as FormArray).push(this.editedForm);
     }
   }
 
@@ -76,44 +99,39 @@ export class AfterWorkComponent implements OnInit {
     (this.doneServicesForm.get('dataList') as FormArray).removeAt(index);
   }
 
-  onSubmit() {
-   const  afterWork = this.doneServicesForm.value.dataList;
-    ////console.log(this.doneServicesForm.value.dataList);
-    this.doctorService.completeReservation(this.id ,afterWork).subscribe({
+  onSubmit(): void {
+    const afterWork = this.doneServicesForm.value.dataList;
+    this.doctorService.completeReservation(this.id!, afterWork).subscribe({
       next: (data: any) => {
         alert(data.message);
+        this.cd.detectChanges();
         this.router.navigate(['doctor']);
-       },
-      error: (error: any) =>{
+      },
+      error: (error: any) => {
         alert(error.error.message);
       }
-    })
-}
-updateHistory(){
-  ////console.log('Updated Data is  :>> ' , this.editedForm.value  );
-  this.reservationsApi.updateHistory( this.editedForm.value.historyId ,  this.editedForm.value).subscribe({
- next: (data: any) => {
+    });
+  }
+
+  updateHistory(): void {
+    this.reservationsApi.updateHistory(this.editedForm.value.historyId, this.editedForm.value).subscribe({
+      next: (data: any) => {
         alert(data.message);
         this.closeDialog();
-        // this.UpdatePatientHistory();
-        },
-      error: (error: any) =>{
+        this.cd.detectChanges();
+
+      },
+      error: (error: any) => {
         alert(error.error.message);
       }
-  })
-}
-cancelUpdate(){
-  this.closeDialog();
-}
-// UpdatePatientHistory(){
-//      this.reservationsApi.getHistory(this.data.phoneNumber).subscribe((data:any)=>{
-//   // Update the parent component's listOfData
-//      this.reservationsApi.updatePatientHistory(data);
-//       ////console.log( "data Updated : " ,data);
-//     })
-// }
-closeDialog() {
-  this.dialogRef.close();
-}
+    });
+  }
 
+  cancelUpdate(): void {
+    this.closeDialog();
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close();
+  }
 }

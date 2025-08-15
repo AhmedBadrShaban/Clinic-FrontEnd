@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged, combineLatest } from 'rxjs';
+import { Subject, takeUntil, BehaviorSubject, distinctUntilChanged } from 'rxjs';
 
 import { RoomsService, Room } from '../Services/rooms/rooms.service';
 import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
@@ -14,109 +14,110 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.css'],
- })
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
 export class RoomsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
+  // Use BehaviorSubjects for reactive state management
+  private selectedDateSubject = new BehaviorSubject<string>(
+    this.datePipe.transform(new Date(), 'yyyy-MM-dd') || ''
+  );
+  private selectedTabIndexSubject = new BehaviorSubject<number>(0);
+
+  // Trigger subject to signal child components to refresh
+  private refreshTriggerSubject = new BehaviorSubject<number>(0);
+
+  // Main data stores
   rooms: Room[] = [];
-  allReservations: { [roomName: string]: any[] } = {};
-  selectedDate: string;
-  selectedTabIndex = 0;
-  activeRoom!: Room ;
   dataLoaded: boolean = false;
   searchValue = '';
+
+  // Reactive streams
+  selectedDate$ = this.selectedDateSubject.asObservable();
+  selectedTabIndex$ = this.selectedTabIndexSubject.asObservable();
+  refreshTrigger$ = this.refreshTriggerSubject.asObservable();
 
   constructor(
     private datePipe: DatePipe,
     private router: Router,
     private roomsService: RoomsService,
     public authService: AuthService,
-    public dialog: MatDialog
-  ) {
-    this.selectedDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd') || '';
-  }
+    public dialog: MatDialog,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-    this.initializeData();
-   }
+    this.initializeRooms();
+    this.setupReactiveStreams();
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  private initializeData(): void {
+  private initializeRooms(): void {
     this.dataLoaded = false;
-     this.roomsService.getAllRoomsV2()
+
+    this.roomsService.getAllRoomsV2()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (rooms) => {
-          console.log('rooms', rooms)
+          console.log('rooms loaded', rooms);
           this.rooms = rooms;
-            this.dataLoaded = true;
-          // this.roomsService.updateRooms(rooms);
-          // if (rooms.length > 0) {
-            this.activeRoom = rooms[0];
-          //   this.loadReservationsForDate();
-          // }
+          this.dataLoaded = true;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error loading rooms:', error);
           this.dataLoaded = true;
+          this.cdr.detectChanges();
         }
       });
   }
 
- 
-  // private loadReservationsForDate(): void {
-  //   this.roomsService.setLoading(true);
-
-  //   this.roomsService.getAllReservationsByDate(this.selectedDate)
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe({
-  //       next: (reservations) => {
-  //         this.roomsService.updateReservations(reservations);
-  //         this.updateAvailableSlots();
-  //         this.roomsService.setLoading(false);
-  //       },
-  //       error: (error) => {
-  //         console.error('Error loading reservations:', error);
-  //         this.roomsService.setLoading(false);
-  //       }
-  //     });
-  // }
-
-  private updateAvailableSlots(): void {
-    if (!this.activeRoom) return;
-    this.dataLoaded = false;
-    this.roomsService.getAvailableSlots(this.activeRoom.roomName, this.selectedDate)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (slots) => {
-          this.roomsService.updateSlots(slots);
-          this.dataLoaded = true;
-
-        },
-        error: (error) => {
-          console.error('Error loading available slots:', error);
-        }
+  private setupReactiveStreams(): void {
+    // Listen for date changes and trigger refresh
+    this.selectedDate$
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((date) => {
+        console.log('Date changed:', date);
+        this.triggerRefresh();
       });
   }
 
+  private triggerRefresh(): void {
+    // Increment trigger value to signal child components to refresh
+    this.refreshTriggerSubject.next(this.refreshTriggerSubject.value + 1);
+  }
+
+  // Lazy load room data when tab changes
   onTabChange(index: number): void {
     if (index >= 0 && index < this.rooms.length) {
-      this.selectedTabIndex = index;
-      this.activeRoom = this.rooms[index];
-      this.updateAvailableSlots();
+      this.selectedTabIndexSubject.next(index);
+      // No need to trigger refresh here - child components will handle their own loading
     }
   }
 
   onDateChange(event: any): void {
     const newDate = this.datePipe.transform(event.value, 'yyyy-MM-dd');
-    if (newDate && newDate !== this.selectedDate) {
-      this.selectedDate = newDate;
-      // this.loadReservationsForDate();
+    if (newDate && newDate !== this.selectedDateSubject.value) {
+      this.selectedDateSubject.next(newDate);
     }
+  }
+
+  // Refresh specific room data (called after updates)
+  refreshRoomData(roomId?: number): void {
+    this.triggerRefresh();
+  }
+
+  // Refresh all room data (called after major changes)
+  refreshAllRoomData(): void {
+    this.triggerRefresh();
   }
 
   openDialog(dialogType: string, room?: Room, date?: string): void {
@@ -131,7 +132,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
         const roomDialogRef = this.dialog.open(AddNewRoomComponent, dialogConfig);
         roomDialogRef.afterClosed().subscribe(result => {
           if (result) {
-            this.initializeData(); // Refresh rooms list
+            this.initializeRooms(); // Reinitialize when new room is added
           }
         });
         break;
@@ -140,16 +141,17 @@ export class RoomsComponent implements OnInit, OnDestroy {
         const clinicDialogRef = this.dialog.open(AddClinicComponent, dialogConfig);
         clinicDialogRef.afterClosed().subscribe(result => {
           if (result) {
-            this.initializeData(); // Refresh data
+            this.refreshAllRoomData();
           }
         });
         break;
 
       case 'reservation':
-        if (this.activeRoom) {
+        const currentRoom = this.rooms[this.selectedTabIndexSubject.value];
+        if (currentRoom) {
           const reservationData = {
-            activeRoom: this.activeRoom,
-            date: date || this.selectedDate
+            activeRoom: currentRoom,
+            date: date || this.selectedDateSubject.value
           };
           const reservationDialogRef = this.dialog.open(ReservationFmComponent, {
             ...dialogConfig,
@@ -157,7 +159,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
           });
           reservationDialogRef.afterClosed().subscribe(result => {
             if (result) {
-              // this.loadReservationsForDate(); // Refresh reservations
+              this.refreshRoomData(currentRoom.roomId);
             }
           });
         }
@@ -167,19 +169,42 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   search(searchTerm: string): void {
     this.searchValue = searchTerm;
-    // Implement search logic here if needed
-    // You can filter the reservations based on patient name, phone, etc.
+    // Implement search logic if needed
   }
 
   trackByRoomId(index: number, room: Room): number {
     return room.roomId;
   }
 
+  // Getters for template
+  get selectedDate(): string {
+    return this.selectedDateSubject.value;
+  }
+
+  get selectedTabIndex(): number {
+    return this.selectedTabIndexSubject.value;
+  }
+
+  get activeRoom(): Room | undefined {
+    const index = this.selectedTabIndexSubject.value;
+    return this.rooms[index];
+  }
+
+  get activeRoomId(): number | undefined {
+    const index = this.selectedTabIndexSubject.value;
+    return this.rooms[index]?.roomId;
+  }
+
   get isAdmin(): boolean {
     return this.authService.userType === 'ROLE_ADMIN';
   }
 
-  get currentRoomReservations(): any[] {
-    return this.activeRoom ? (this.allReservations[this.activeRoom.roomName] || []) : [];
+  get refreshTrigger(): number {
+    return this.refreshTriggerSubject.value;
+  }
+
+  // Helper method to check if a room is the active one
+  isActiveRoom(roomId: number): boolean {
+    return this.activeRoomId === roomId;
   }
 }

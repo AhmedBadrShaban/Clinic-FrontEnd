@@ -279,6 +279,8 @@ export class CheckOutComponent implements OnInit {
 
   }
   navigateToRooms() {
+    // console.log('naviagting to reservationwith phone:', phone)
+    // this.router.navigate(['/receptionist/reservation', phone]);
      const roomsIndex = this.router.url.indexOf('rooms');
      const commonParentPath = this.router.url.substring(0, roomsIndex);
      this.router.navigate([commonParentPath, 'rooms']);

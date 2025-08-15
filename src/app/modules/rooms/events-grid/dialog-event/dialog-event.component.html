@@ -1,93 +1,167 @@
-<!--<div>{{data.DoctorName}}</div>-->
-<div class="Content modal-content">
-  <div class="Header">
-    Reservation Information
-  </div>
-  <div class="Content">
-    <table class="Table">
-      <tr>
-        <th scope="col">
-          <i *ngIf="debit" class="bi bi-asterisk bg-danger"></i>
-           Patient Name</th>
-        <td>
-          {{reservation.patientName}}</td>
-      </tr>
-
-      <tr>
-        <th>Patient Phone Number</th>
-        <td>{{reservation.patientPhone}}</td>
-      </tr>
-
-      <tr>
-        <th> Doctor Name </th>
-        <td> {{reservation.doctorName}} </td>
-      </tr>
-
-      <tr>
-        <th>Patient Note  </th>
-      <td>{{reservation.note}}</td>
-      </tr>
-
-      <tr>
-        <th>Date Of Reservation</th>
-        <td>{{reservation.reservationDate | date: 'dd/MM/yyyy'}}</td>
-      </tr>
-      <tr>
-        <th> Reservation Time <i class="bi bi-alarm"></i> </th>
-        <td>  {{ formatTimeTo12Hour(reservation.reservationStart) }}
-          -
-           {{ formatTimeTo12Hour(reservation.reservationEnd)}}</td>
-      </tr>
-
-      <tr>
-        <th>Status</th>
-        <td [ngClass]="{
-          'inprogress': reservation.status === 'IN_PROGRESS',
-          'confirmed': reservation.status === 'CONFIRMED',
-          'waiting': reservation.status === 'WAITING',
-          'to-doctor': reservation.status === 'TO_DOCTOR',
-          'done': reservation.status === 'DONE',
-          'cancelled': reservation.status === 'CANCELED'
-        }">
-          {{ reservation.status }}</td>
-      </tr>
-    </table>
-
-    <div (click)="changeToogle()"   class="header-Service">
-      <h3 class="m-auto" *ngIf="!toggle && reservation.status != 'DONE'">Show Reserved Services</h3>
-      <h3 class="m-auto"  *ngIf="toggle  && reservation.status != 'DONE'">Hide Reserved Services</h3>
-      <h3 class="m-auto"  *ngIf="!toggle && reservation.status === 'DONE'">Show Completed Services</h3>
-      <h3  class="m-auto" *ngIf="toggle  && reservation.status === 'DONE'">Hide Completed Services</h3>
-         <img *ngIf="!toggle"  class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40"/>
-        <img *ngIf="toggle"   class="toggle-img" src="../../../../../assets/expand.png" height="40" width="40" style="transform: rotate(180deg);"/>
+<!-- Modern Reservation Information Dialog -->
+<div class="reservation-dialog">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+       <div class="header-text">
+        <h2 mat-dialog-title>Reservation Details</h2>
+      </div>
+      <span>
+         <mat-icon matChipAvatar>{{getStatusIcon()}}</mat-icon>
+          {{getStatusText()}} 
+         <span class="reservation-id">#{{reservation.reservationId}}</span>
+        </span>
+       
     </div>
-    <div class="mb-4" >
-      <table *ngIf="toggle">
-        <thead>
-          <tr>
-            <th>Index</th>
-            <th>Service Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let service of reservation.services; let i = index" >
-            <td>{{ i + 1 }}</td>
-            <td>{{ service }}</td>
-          </tr>
-        </tbody>
-      </table>
+    
+  </div>
 
+  <!-- Patient Information Card -->
+  <mat-card class="info-card patient-card" appearance="outlined">
+    <mat-card-header>
+      <mat-icon mat-card-avatar class="patient-avatar">person</mat-icon>
+      <mat-card-title>Patient Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-item">
+          <mat-icon class="info-icon">person</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Patient Name</span>
+            <div class="info-value">
+              <span class="patient-name">{{reservation.patientName}}</span>
+              <mat-icon *ngIf="debit" class="debit-icon" color="warn">priority_high</mat-icon>
+            </div>
+          </div>
+          <button mat-icon-button color="primary" matTooltip="View Patient Info"
+            (click)="goToPatientInfo(reservation.patientPhone)">
+            <mat-icon>info</mat-icon>
+          </button>
+        </div>
+
+        <div class="info-item">
+          <mat-icon class="info-icon">phone</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Phone Number</span>
+            <span class="info-value">{{reservation.patientPhone}}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Appointment Details Card -->
+  <mat-card class="info-card appointment-card" appearance="outlined">
+    <mat-card-header>
+      <mat-icon mat-card-avatar class="appointment-avatar">event</mat-icon>
+      <mat-card-title>Appointment Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-item">
+          <mat-icon class="info-icon">medical_services</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Doctor</span>
+            <span class="info-value doctor-name">{{reservation.doctorName}}</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon class="info-icon">calendar_today</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Date</span>
+            <span class="info-value">{{reservation.reservationDate | date: 'fullDate'}}</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon class="info-icon">schedule</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Time</span>
+            <span class="info-value time-slot">
+              {{formatTimeTo12Hour(reservation.reservationStart)}} - {{formatTimeTo12Hour(reservation.reservationEnd)}}
+            </span>
+          </div>
+        </div>
+
+        <div class="info-item full-width" *ngIf="reservation.note">
+          <mat-icon class="info-icon">note</mat-icon>
+          <div class="info-content">
+            <span class="info-label">Patient Note</span>
+            <div class="info-value note-content">{{reservation.note}}</div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Services Card -->
+  <mat-card class="info-card services-card" appearance="outlined">
+    <mat-card-header>
+      <mat-icon mat-card-avatar class="services-avatar">list_alt</mat-icon>
+      <mat-card-title>
+        {{reservation.status === 'DONE' ? 'Completed Services' : 'Reserved Services'}}
+      </mat-card-title>
+      <div class="spacer"></div>
+      <button mat-icon-button (click)="changeToogle()" class="toggle-button">
+        <mat-icon [style.transform]="toggle ? 'rotate(180deg)' : 'rotate(0deg)'">expand_more</mat-icon>
+      </button>
+    </mat-card-header>
+
+    <mat-card-content [@slideToggle]="toggle">
+      <div *ngIf="toggle" class="services-list">
+        <mat-list>
+          <mat-list-item *ngFor="let service of reservation.services; let i = index" class="service-item">
+            <mat-icon matListItemIcon>medical_services</mat-icon>
+            <div matListItemTitle>{{service}}</div>
+            <div matListItemLine class="service-number">Service #{{i + 1}}</div>
+          </mat-list-item>
+        </mat-list>
+
+        <div *ngIf="reservation.services.length === 0" class="no-services">
+          <mat-icon class="no-services-icon">info</mat-icon>
+          <span>No services added yet</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Action Buttons -->
+  <div class="actions-container" *ngIf="reservation.status != 'COMPLETED'">
+    <div class="actions-grid">
+      <!-- Confirm Button -->
+      <button *ngIf="isWaitingOrInProgress()" mat-raised-button color="primary" class="action-button confirm-btn"
+        (click)="chengeReservationStatus(reservation.reservationId, 'CONFIRMED')">
+        <mat-icon>check_circle</mat-icon>
+        Confirm
+      </button>
+
+      <!-- Edit Button -->
+      <button mat-raised-button color="accent" class="action-button edit-btn" (click)="openDialog()">
+        <mat-icon>edit</mat-icon>
+        Edit
+      </button>
+
+      <!-- Send to Doctor Button -->
+      <button *ngIf="reservation.status == 'CONFIRMED'" mat-raised-button color="primary"
+        class="action-button doctor-btn" (click)="chengeReservationStatus(reservation.reservationId, 'TO_DOCTOR')">
+        <mat-icon>local_hospital</mat-icon>
+        Send to Doctor
+      </button>
+
+      <!-- Checkout Button -->
+      <button *ngIf="reservation.status == 'DONE'" mat-raised-button color="primary" class="action-button checkout-btn"
+        (click)="checkOut(reservation.reservationId)">
+        <mat-icon>payment</mat-icon>
+        Checkout
+      </button>
+
+      <!-- Cancel Button -->
+      <button *ngIf="reservation.status != 'DONE'" mat-raised-button color="warn" class="action-button cancel-btn"
+        (click)="chengeReservationStatus(reservation.reservationId, 'CANCELED')">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
     </div>
-
-
   </div>
- <div class="buttons-container"  *ngIf="reservation.status != 'COMPLETED'">
-  <button *ngIf="reservation.status == 'IN_PROGRESS' || reservation.status == 'WAITING' " mat-raised-button style="background-color:green !important;  margin-right: 2px; color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'CONFIRMED')">Confirm Reservation</button>
-   <button  mat-raised-button style="background-color:#33b249 !important;  margin-right: 2px; color: white; font-size:12px" (click)="openDialog()">Edit Reservation</button>
-   <button *ngIf="reservation.status == 'CONFIRMED'" mat-raised-button style="background-color:purple !important; margin-right: 5px;  color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'TO_DOCTOR')">Send Reservation To Doctor</button>
-   <button *ngIf="reservation.status == 'DONE'" mat-raised-button style="background-color:blue  !important; margin-right: 2px;  color: white; font-size:12px"  (click)="checkOut(reservation.reservationId)">GO TO CHECKOUT</button>
-   <button *ngIf="reservation.status != 'DONE'" mat-raised-button style="background-color: red !important; margin-right: 2px;  color: white; font-size:12px" (click)="chengeReservationStatus(reservation.reservationId , 'CANCELED')">Cancel Reservation</button>
-  </div>
-
 </div>
-

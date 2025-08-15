@@ -1,22 +1,10 @@
-<!-- packages.component.html -->
-
-<!-- Step 1: Use the shared material table component -->
-<app-table
-  [data]="dataSource.data"
-  [columns]="tableColumns"
-  [totalItems]="totalItems"
-  [pageSize]="pageSize"
-  [currentPage]="currentPage + 1"
-  (onPageChange)="onPageChange($event)">
+<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+  [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
 </app-table>
 
-<!-- Step 2: Custom cell template for action column -->
 <ng-template #actionTemplate let-row>
-  <button 
-    mat-button 
-    color="primary" 
-    (click)="openDialog(row.reservedId)"
-    style="width: 150px;">
+  <button mat-button color="primary" (click)="openDialog(row.reservedId)" style="width: 150px;">
     Details
   </button>
 </ng-template>
+ 

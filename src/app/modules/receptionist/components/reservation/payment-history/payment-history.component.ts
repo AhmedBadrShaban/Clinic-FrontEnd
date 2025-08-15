@@ -1,5 +1,12 @@
-// payment-history.component.ts
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef
+} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { DailySheet } from 'src/app/modules/receptionist/models/daily-sheet';
@@ -11,21 +18,24 @@ import { Subscription } from 'rxjs';
   templateUrl: './payment-history.component.html',
   styleUrls: ['./payment-history.component.css']
 })
-export class PaymentHistoryComponent implements OnInit, OnDestroy {
-  @Input() phoneNumber: any;
+export class PaymentHistoryComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() phoneNumber: string | null = null;
+  @Input() isActive = false; // NEW for lazy loading
 
-  private sub = new Subscription();
   tableColumns: Array<{ key: string, label: string, template?: any }> = [];
   dataSource = new MatTableDataSource<DailySheet>();
-  totalItems: number = 0;
-  pageSize: number = 10;
-  currentPage: number = 0; // Changed to 0-based indexing to match Material table
+  totalItems = 0;
+  pageSize = 10;
+  currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 50];
 
-  constructor(private reservationsService: ReservationsService) { }
+  private sub = new Subscription();
+  private initialized = false; // NEW to track first load
+  loadingState = false; // NEW spinner flag
+
+  constructor(private reservationsService: ReservationsService, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    // Define table columns for payment history
     this.tableColumns = [
       { key: 'patientName', label: 'Patient' },
       { key: 'paymentType', label: 'Payment Type' },
@@ -39,28 +49,37 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy {
       { key: 'debit', label: 'Debit' },
       { key: 'totalMoney', label: 'Total' }
     ];
+  }
 
-     this.sub.add(
-      this.reservationsService.phone$.subscribe((data: any) => {
-        this.phoneNumber = data;
-        console.log('phone Recived', this.phoneNumber)
-        if (this.phoneNumber) {
-          this.getPaymentHistory(this.currentPage);
-        }
-      })
-    );
+  ngOnChanges(changes: SimpleChanges): void {
+    // First time tab is opened
+    if (changes['isActive'] && this.isActive && !this.initialized && this.phoneNumber) {
+      this.initialized = true;
+      this.getPaymentHistory(this.currentPage);
+    }
+
+    // Phone number changed while tab is already active
+    if (changes['phoneNumber'] && this.isActive && this.phoneNumber) {
+      this.getPaymentHistory(this.currentPage);
+    }
   }
 
   getPaymentHistory(page: number): void {
-    if (this.phoneNumber) {
-      console.log('page, size', page, this.pageSize);
-      this.reservationsService.getPaymentHistory(this.phoneNumber, page, this.pageSize)
-        .subscribe((data) => {
+    if (!this.phoneNumber) return;
+    this.loadingState = true;
+
+    this.reservationsService.getPaymentHistory(this.phoneNumber, page, this.pageSize)
+      .subscribe({
+        next: (data) => {
           this.dataSource.data = [...data.data];
-          console.log('payment history received', this.dataSource.data);
           this.totalItems = data.totalItems;
-        });
-    }
+          this.cd.detectChanges();
+          this.loadingState = false;
+        },
+        error: () => {
+          this.loadingState = false;
+        }
+      });
   }
 
   onPageChange(event: PageEvent): void {

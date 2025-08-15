@@ -1,6 +1,6 @@
-// available-slots.component.ts
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 import { RoomsService } from '../../Services/rooms/rooms.service';
 
 interface TimeSlot {
@@ -13,135 +13,142 @@ interface TimeSlot {
 @Component({
   selector: 'app-available-slots',
   templateUrl: './available-slots.component.html',
-  styleUrls: ['./available-slots.component.css']
+  styleUrls: ['./available-slots.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AvailableSlotsComponent implements OnInit, OnChanges {
-  dataLoaded: boolean = false;
-  viewMode: 'detailed' | 'compact' = 'detailed';
+export class AvailableSlotsComponent implements OnInit, OnChanges, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private lastFetchKey = '';
 
-  @Input() roomName: any;
-  @Input() reservedAt: any;
+  @Input() roomName: string = '';
+  @Input() roomId: number = 0; // add roomId like events-grid
+  @Input() reservedAt: string = ''; // date
+  @Input() refreshTrigger: number = 0;
 
   mergedArray: TimeSlot[] = [];
   reservedSlots: TimeSlot[] = [];
+  isLoading: boolean = false;
 
-  constructor(private datePipe: DatePipe, private roomServ: RoomsService) { }
+  constructor(
+    private datePipe: DatePipe,
+    private roomServ: RoomsService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
-  ngOnInit() {
-    this.fetchAvailableSlots();
+  ngOnInit(): void {
+    this.tryFetchSlots();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      (changes['reservedAt'] || changes['roomName']) &&
-      this.roomName &&
-      this.reservedAt
-    ) {
-      this.fetchAvailableSlots();
+    if (changes['roomId'] || changes['reservedAt'] || changes['refreshTrigger']) {
+      this.tryFetchSlots();
     }
   }
 
-  fetchAvailableSlots(): void {
-    this.dataLoaded = false;
-    console.log('Fetching slots for', this.roomName, 'on', this.reservedAt);
-
-    this.roomServ.getAvailableSlots(this.roomName, this.reservedAt).subscribe((data) => {
-      this.reservedSlots = data;
-
-      if (data.length > 0) {
-        this.formateSlots();
-        this.dataLoaded = true;
-      } else {
-        this.mergedArray = [
-          {
-            startTime: '00:00:00',
-            endTime: '23:59:59',
-            available: true,
-            width: 100,
-          },
-        ];
-        this.dataLoaded = true;
-      }
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  formateSlots() {
-    this.reservedSlots = this.reservedSlots.map((slot) => ({
+  private tryFetchSlots(): void {
+    if (!this.roomName || !this.reservedAt) return;
+
+    const currentFetchKey = `${this.roomId}-${this.reservedAt}-${this.refreshTrigger}`;
+    if (currentFetchKey === this.lastFetchKey) return; // avoid duplicate fetch
+
+    this.lastFetchKey = currentFetchKey;
+    this.fetchAvailableSlots();
+  }
+
+  private fetchAvailableSlots(): void {
+    this.isLoading = true;
+    this.cdr.detectChanges();
+
+    console.log(`Fetching slots for room ${this.roomName} on ${this.reservedAt}`);
+
+    this.roomServ.getAvailableSlots(this.roomName, this.reservedAt)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.processSlots(data);
+        },
+        error: (error) => {
+          console.error('Error fetching slots:', error);
+          this.isLoading = false;
+          this.mergedArray = [];
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  private processSlots(data: TimeSlot[]): void {
+    this.reservedSlots = data.map(slot => ({
       ...slot,
-      available: false,
+      available: false
     }));
-    this.generateTimeSlots(this.reservedSlots);
+
+    if (this.reservedSlots.length > 0) {
+      this.generateTimeSlots(this.reservedSlots);
+    } else {
+      // all day available
+      this.mergedArray = [{
+        startTime: '00:00:00',
+        endTime: '23:59:59',
+        available: true,
+        width: 100
+      }];
+    }
+
+    this.isLoading = false;
+    this.cdr.detectChanges();
   }
 
-  generateTimeSlots(inputArray: TimeSlot[]) {
-    const availableTimeSlots: TimeSlot[] = [];
+  private generateTimeSlots(reserved: TimeSlot[]): void {
+    const available: TimeSlot[] = [];
+    const sorted = [...reserved].sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-    const sortedInputArray = inputArray.sort((a, b) => {
-      return a.startTime.localeCompare(b.startTime);
-    });
-
-    if (sortedInputArray.length > 0 && sortedInputArray[0].startTime > '00:00:00') {
-      const width = calculateWidth('00:00:00', sortedInputArray[0].startTime);
-      availableTimeSlots.push({
+    if (sorted[0].startTime > '00:00:00') {
+      available.push({
         startTime: '00:00:00',
-        endTime: sortedInputArray[0].startTime,
+        endTime: sorted[0].startTime,
         available: true,
-        width: Math.max(width, 8) // Ensure minimum 8% width for readability
+        width: Math.max(calculateWidth('00:00:00', sorted[0].startTime), 8)
       });
     }
 
-    for (let i = 0; i < sortedInputArray.length - 1; i++) {
-      const currentSlot = sortedInputArray[i];
-      const nextSlot = sortedInputArray[i + 1];
-
-      if (currentSlot.endTime < nextSlot.startTime) {
-        const width = calculateWidth(currentSlot.endTime, nextSlot.startTime);
-        availableTimeSlots.push({
-          startTime: currentSlot.endTime,
-          endTime: nextSlot.startTime,
+    for (let i = 0; i < sorted.length - 1; i++) {
+      if (sorted[i].endTime < sorted[i + 1].startTime) {
+        available.push({
+          startTime: sorted[i].endTime,
+          endTime: sorted[i + 1].startTime,
           available: true,
-          width: Math.max(width, 8) // Ensure minimum 8% width for readability
+          width: Math.max(calculateWidth(sorted[i].endTime, sorted[i + 1].startTime), 8)
         });
       }
     }
 
-    const lastSlot = sortedInputArray[sortedInputArray.length - 1];
-    if (lastSlot.endTime < '23:59:59') {
-      const width = calculateWidth(lastSlot.endTime, '23:59:59');
-      availableTimeSlots.push({
-        startTime: lastSlot.endTime,
+    if (sorted[sorted.length - 1].endTime < '23:59:59') {
+      available.push({
+        startTime: sorted[sorted.length - 1].endTime,
         endTime: '23:59:59',
         available: true,
-        width: Math.max(width, 8) // Ensure minimum 8% width for readability
+        width: Math.max(calculateWidth(sorted[sorted.length - 1].endTime, '23:59:59'), 8)
       });
     }
 
-    this.mergedArray = [];
-    // Ensure reserved slots also have minimum width
-    const processedReservedSlots = this.reservedSlots.map(slot => ({
-      ...slot,
-      width: Math.max(slot.width || calculateWidth(slot.startTime, slot.endTime), 8)
-    }));
-
-    this.mergedArray.push(...processedReservedSlots, ...availableTimeSlots);
-    this.mergedArray.sort((a, b) => a.startTime.localeCompare(b.startTime));
+    this.mergedArray = [
+      ...reserved.map(slot => ({
+        ...slot,
+        width: Math.max(slot.width || calculateWidth(slot.startTime, slot.endTime), 8)
+      })),
+      ...available
+    ].sort((a, b) => a.startTime.localeCompare(b.startTime));
   }
 
   formatTimeTo12Hour(time: string): string {
-    if (!time) {
-      return '';
-    }
+    if (!time) return '';
     const timeAsDate = new Date(`1970-01-01T${time}`);
     return this.datePipe.transform(timeAsDate, 'h:mm a') || '';
-  }
-
-  // New methods for enhanced functionality
-  getAvailableCount(): number {
-    return this.mergedArray.filter(slot => slot.available).length;
-  }
-
-  getReservedCount(): number {
-    return this.mergedArray.filter(slot => !slot.available).length;
   }
 
   getSlotTooltip(slot: TimeSlot): string {
@@ -152,19 +159,26 @@ export class AvailableSlotsComponent implements OnInit, OnChanges {
 
   onSlotClick(slot: TimeSlot): void {
     if (slot.available) {
-      // Emit event or handle available slot selection
       console.log('Selected available slot:', slot);
-      // You can emit an event here to parent component
-      // this.slotSelected.emit(slot);
+      // emit to parent if needed
     }
   }
 
   trackBySlot(index: number, slot: TimeSlot): string {
     return `${slot.startTime}-${slot.endTime}`;
   }
+
+
+  getAvailableCount(): number {
+    return this.mergedArray.filter(s => s.available).length;
+  }
+
+  getReservedCount(): number {
+    return this.mergedArray.filter(s => !s.available).length;
+  }
 }
 
-// Helper functions
+// Helpers
 function calculateWidth(startTime: string, endTime: string): number {
   const slotDurationInHours = calculateDurationInHours(startTime, endTime);
   const totalDurationInHours = calculateDurationInHours('00:00:00', '23:59:59');
@@ -172,16 +186,8 @@ function calculateWidth(startTime: string, endTime: string): number {
 }
 
 function calculateDurationInHours(startTime: string, endTime: string): number {
-  const startParts = startTime.split(':');
-  const endParts = endTime.split(':');
-
-  const startHours = parseInt(startParts[0]);
-  const startMinutes = parseInt(startParts[1]);
-
-  const endHours = parseInt(endParts[0]);
-  const endMinutes = parseInt(endParts[1]);
-
-  const durationInMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
-
-  return durationInMinutes / 60;
+  const [sh, sm] = startTime.split(':').map(Number);
+  const [eh, em] = endTime.split(':').map(Number);
+  const durationMinutes = (eh * 60 + em) - (sh * 60 + sm);
+  return durationMinutes / 60;
 }
