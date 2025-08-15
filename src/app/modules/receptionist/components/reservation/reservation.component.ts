@@ -100,6 +100,19 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeComponent();
+    const paramSubscription = this.route.paramMap.subscribe(params => {
+      const phoneFromRoute = params.get('phone');
+      if (phoneFromRoute) {
+        this.patientNumber = phoneFromRoute;
+        this.searchValue = phoneFromRoute; // Optional: fill search input
+        this.selectedTabIndex = 0;
+        this.resetTabStates();
+        this.reservationsService.updatePhoneNumber(this.patientNumber);
+        this.loadPatientInfo(phoneFromRoute);
+      }
+    });
+
+    this.subscriptions.add(paramSubscription);
   }
 
   ngOnDestroy(): void {

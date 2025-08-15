@@ -6,19 +6,40 @@ import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { DatePipe, NgClass, NgForOf, NgIf } from "@angular/common";
 import { Subject, takeUntil } from 'rxjs';
-
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { Router } from '@angular/router';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { UpdateReservationComponent } from '../update-reservation/update-reservation.component';
+import {MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+
+type ReservationStatus = 'IN_PROGRESS' | 'CONFIRMED' | 'WAITING' | 'TO_DOCTOR' | 'DONE' | 'CANCELED';
 
 @Component({
   selector: 'app-dialog-event',
   templateUrl: './dialog-event.component.html',
   styleUrls: ['./dialog-event.component.css'],
   standalone: true,
-  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, NgClass, NgForOf, NgIf, DatePipe],
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatIconModule, MatCardModule, MatListModule , FormsModule, MatButtonModule, NgClass, NgForOf, NgIf, DatePipe],
   providers: [DatePipe],
+  animations: [
+    trigger('slideToggle', [
+      state('true', style({
+        height: '*',
+        opacity: 1,
+        transform: 'translateY(0)'
+      })),
+      state('false', style({
+        height: '0',
+        opacity: 0,
+        transform: 'translateY(-10px)',
+        overflow: 'hidden'
+      })),
+      transition('true <=> false', animate('300ms ease-in-out'))
+    ])
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEventComponent implements OnInit, OnDestroy {
@@ -177,4 +198,54 @@ export class DialogEventComponent implements OnInit, OnDestroy {
     };
     return statusClasses[status] || '';
   }
+
+// Status helper methods
+getStatusIcon(): string {
+  const statusIcons: Record<ReservationStatus, string> = {
+    'IN_PROGRESS': 'hourglass_empty',
+    'CONFIRMED': 'check_circle',
+    'WAITING': 'schedule',
+    'TO_DOCTOR': 'local_hospital',
+    'DONE': 'task_alt',
+    'CANCELED': 'cancel'
+  };
+  return statusIcons[this.reservation.status as ReservationStatus] || 'help';
+}
+
+getStatusIconClass(): string {
+  return `status-icon-${this.reservation.status?.toLowerCase().replace('_', '-') || 'unknown'}`;
+}
+
+getStatusChipClass(): string {
+  const chipClasses: Record<ReservationStatus, string> = {
+    'IN_PROGRESS': 'status-in-progress',
+    'CONFIRMED': 'status-confirmed',
+    'WAITING': 'status-waiting',
+    'TO_DOCTOR': 'status-to-doctor',
+    'DONE': 'status-done',
+    'CANCELED': 'status-canceled'
+  };
+  return chipClasses[this.reservation.status as ReservationStatus] || '';
+}
+
+getStatusText(): string {
+  const statusTexts: Record<ReservationStatus, string> = {
+    'IN_PROGRESS': 'In Progress',
+    'CONFIRMED': 'Confirmed',
+    'WAITING': 'Waiting',
+    'TO_DOCTOR': 'With Doctor',
+    'DONE': 'Completed',
+    'CANCELED': 'Cancelled'
+  };
+  return statusTexts[this.reservation.status as ReservationStatus] || this.reservation.status;
+}
+
+isWaitingOrInProgress(): boolean {
+  return this.reservation.status === 'IN_PROGRESS' || this.reservation.status === 'WAITING';
+}
+  goToPatientInfo(phone: string): void {
+    console.log('naviagting to reservationwith phone:', phone)
+    this.router.navigate(['/receptionist/reservation', phone]);
+    this.close()
+}
 }
