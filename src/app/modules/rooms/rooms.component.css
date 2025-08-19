@@ -20,10 +20,17 @@
 
 .action-buttons {
   display: flex;
+  flex: 1;
+  justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
 }
-
+.add-actions{
+    display: flex;
+      align-items:center;
+      gap: 12px;
+        flex-wrap: wrap;
+}
 .action-btn {
   min-width: 140px;
   height: 48px;

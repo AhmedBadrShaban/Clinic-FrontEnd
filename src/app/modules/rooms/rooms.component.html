@@ -1,4 +1,3 @@
-<!-- rooms.component.html -->
 <div class="rooms-container" *ngIf="dataLoaded; else loadingTemplate">
   <!-- Header -->
   <mat-card class="header-card">
@@ -6,19 +5,30 @@
       <div class="header-actions">
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openDialog('room')" class="action-btn">
-            <mat-icon>add</mat-icon>
-            Add Room
-          </button>
-          <button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openDialog('clinic')" class="action-btn">
-            <mat-icon>add_business</mat-icon>
-            Add Clinic
-          </button>
-          <button mat-raised-button color="accent" (click)="openDialog('reservation', activeRoom, selectedDate)"
-            [disabled]="!activeRoom" class="action-btn">
-            <mat-icon>event_available</mat-icon>
-            New Reservation
-          </button>
+          <div class="add-actions">
+<button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openDialog('room')" class="action-btn">
+  <mat-icon>add</mat-icon>
+  Add Room
+</button>
+<button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openDialog('clinic')" class="action-btn">
+  <mat-icon>add_business</mat-icon>
+  Add Clinic
+</button>
+<button mat-raised-button color="accent" (click)="openDialog('reservation', activeRoom, selectedDate)"
+  [disabled]="!activeRoom" class="action-btn">
+  <mat-icon>event_available</mat-icon>
+  New Reservation
+</button>
+          </div>
+          <mat-form-field *ngIf="isAdmin" appearance="outline" class="clinic-select">
+            <mat-label>Select Clinic</mat-label>
+            <mat-select [(value)]="selectedClinic" (selectionChange)="onClinicChange($event.value)">
+              <mat-option *ngFor="let clinic of clinics" [value]="clinic">
+                {{ clinic }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
         </div>
         <!-- Date Picker -->
         <mat-form-field appearance="outline" class="date-picker">

@@ -1,4 +1,371 @@
-.col-5 {
-    flex: 0 0 auto;
-    width: 48.666667%;
+/* Patient Form Container */
+.patient-form-container {
+  max-width: 800px;
+  height:98vh;
+  margin: 0 auto;
+  padding: 12px;
+  background: linear-gradient(135deg, #f8faff 0%, #f1f5ff 100%);
+ }
+
+/* Header Section */
+.form-header {
+  display:flex;
+  gap:8px;
+  text-align: center;
+  padding:10px;
+  margin-bottom: 8px;
+ }
+ 
+.form-title {
+  flex:1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  background: linear-gradient(135deg, #6F2DBD, #8e44ad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Form Card */
+.form-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(111, 45, 189, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.form-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(111, 45, 189, 0.15);
+}
+
+/* Grid Layout - 2 items per row */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 8px;
+  margin: 0 6px;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 0 4px;
+  }
+  
+  .patient-form-container {
+    padding: 8px;
+  }
+}
+
+/* Ensure mat-form-field spans full width */
+mat-form-field.full-width {
+  width: 100%;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 10px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  border-left: 4px solid #6F2DBD;
+  transition: all 0.3s ease;
+}
+
+.form-section:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateX(4px);
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid rgba(111, 45, 189, 0.1);
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  letter-spacing: 0.5px;
+}
+
+.section-icon {
+  font-size: 20px !important;
+  width: 20px;
+  height: 20px;
+  color: #6F2DBD;
+  background: linear-gradient(135deg, rgba(111, 45, 189, 0.1), rgba(111, 45, 189, 0.2));
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 2px 6px rgba(111, 45, 189, 0.15);
+}
+
+/* Material Form Field Customization */
+::ng-deep .mat-mdc-form-field {
+  font-family: 'Roboto', sans-serif;
+}
+
+::ng-deep .mat-mdc-form-field-outline {
+  border-radius: 8px !important;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .mat-mdc-form-field:hover .mat-mdc-form-field-outline {
+  box-shadow: 0 0 0 2px rgba(111, 45, 189, 0.1);
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  border-color: #6F2DBD !important;
+  box-shadow: 0 0 0 2px rgba(111, 45, 189, 0.2);
+}
+
+::ng-deep .mat-mdc-form-field .mat-mdc-floating-label {
+  color: #6F2DBD !important;
+  font-weight: 500;
+}
+
+::ng-deep .mat-mdc-input-element {
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+::ng-deep .mat-mdc-form-field-prefix mat-icon {
+  color: #6F2DBD;
+  font-size: 18px;
+  margin-right: 4px;
+}
+
+/* Select Options */
+.option-icon {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+  color: #6F2DBD;
+}
+
+.clinic-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Action Buttons */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+   padding: 16px 0;
+  border-top: 1px solid rgba(111, 45, 189, 0.1);
+}
+
+.cancel-btn {
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  color: #7f8c8d !important;
+  border: 2px solid #bdc3c7 !important;
+  background: transparent !important;
+  transition: all 0.3s ease !important;
+}
+
+.cancel-btn:hover {
+  color: #e74c3c !important;
+  border-color: #e74c3c !important;
+  background: rgba(231, 76, 60, 0.05) !important;
+  transform: translateY(-2px);
+}
+
+.submit-btn {
+  padding: 12px 32px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  background: linear-gradient(135deg, #6F2DBD, #8e44ad) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(111, 45, 189, 0.3) !important;
+  transition: all 0.3s ease !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a2498, #7d3c98) !important;
+  box-shadow: 0 6px 20px rgba(111, 45, 189, 0.4) !important;
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  background: #bdc3c7 !important;
+  color: #7f8c8d !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-overlay p {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 16px;
+  text-align: center;
+}
+
+::ng-deep .loading-overlay .mat-mdc-progress-spinner circle {
+  stroke: #6F2DBD;
+}
+
+/* Error Messages */
+::ng-deep .mat-mdc-form-field-error {
+  color: #e74c3c;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* Hints */
+::ng-deep .mat-mdc-form-field-hint {
+  color: #7f8c8d;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Date Picker */
+::ng-deep .mat-datepicker-toggle {
+  color: #6F2DBD;
+}
+
+::ng-deep .mat-datepicker-content {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Textarea */
+::ng-deep textarea.mat-mdc-input-element {
+  resize: vertical;
+  min-height: 80px;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-section {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.form-section:nth-child(1) { animation-delay: 0.1s; }
+.form-section:nth-child(2) { animation-delay: 0.2s; }
+.form-section:nth-child(3) { animation-delay: 0.3s; }
+.form-section:nth-child(4) { animation-delay: 0.4s; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6F2DBD, #8e44ad);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5a2498, #7d3c98);
+}
+
+/* Responsive Design Enhancements */
+@media (max-width: 480px) {
+  .form-header {
+    margin-bottom: 20px;
+    padding: 16px 0;
+  }
+  
+  .form-title {
+    font-size: 24px;
+  }
+  
+  .header-icon .large-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 12px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .cancel-btn,
+  .submit-btn {
+    width: 100%;
+  }
+}
+
+/* Focus States */
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-prefix mat-icon {
+  color: #6F2DBD;
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+/* Select Panel Styling */
+::ng-deep .mat-mdc-select-panel {
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+::ng-deep .mat-mdc-option {
+  transition: all 0.2s ease;
+}
+
+::ng-deep .mat-mdc-option:hover {
+  background: rgba(111, 45, 189, 0.1);
 }

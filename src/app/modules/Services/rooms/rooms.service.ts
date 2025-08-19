@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 
@@ -25,15 +25,25 @@ export class RoomsService {
   }
 
   // New API methods
-  getAllRoomsV2(): Observable<Room[]> {
-    const endpoint = sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST'
+  getAllRoomsV2(clinicName?: string): Observable<Room[]> {
+    const isReceptionist = sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST';
+
+    let endpoint = isReceptionist
       ? `${this.baseUrl}receptionist/rooms-names-to-specific-clinic-v2`
       : `${this.baseUrl}admin/rooms/name-v2`;
 
-    return this.http.get<Room[]>(endpoint).pipe(
+    let options = {};
+
+    // Only add params when user is admin & clinicName is provided
+    if (!isReceptionist && clinicName) {
+      options = { params: new HttpParams().set('clinicName', clinicName) };
+    }
+
+    return this.http.get<Room[]>(endpoint, options).pipe(
       shareReplay(1) // Cache the result
     );
   }
+
 
   getRoomWithReservations(roomId: number, date: string): Observable<RoomReservation> {
     return this.http.get<RoomReservation>(

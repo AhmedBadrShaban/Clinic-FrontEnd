@@ -100,6 +100,9 @@ export class ReservationsService {
 
   sendPoints(fromPhoneNumber: string, toPhoneNumber: string, qty: number) {
    }
+  getTotalPatients(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}admin/total-patients`);
+  }
 
   private phoneNumberChange = new BehaviorSubject<any>(0);
   phone$ = this.phoneNumberChange.asObservable();

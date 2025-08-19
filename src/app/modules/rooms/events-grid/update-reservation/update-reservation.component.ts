@@ -142,7 +142,9 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
 
           // Don't need to update slots here - parent will handle refresh
           this.isSubmitting = false;
-          this.dialogRef.close('updated'); // Indicate successful update
+          this.dialogRef.close('updated');
+          location.reload();
+ // Indicate successful update
         },
         error: (err) => {
           console.error('Error updating reservation:', err);

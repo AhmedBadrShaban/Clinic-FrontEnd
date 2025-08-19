@@ -379,6 +379,7 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
           this.showSuccessMessage(response.message);
           this.updateAvailableSlots();
           this.closeDialog();
+          location.reload();
         },
         error: (err) => {
           this.isSubmitting = false;

@@ -45,7 +45,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   isLoading = false;
   searchValue = '';
   selectedTabIndex = 0;
-
+totalPatients!: number;
   private currentPatientSubject = new BehaviorSubject<PatientInfo | null>(null);
   currentPatient$ = this.currentPatientSubject.asObservable();
 
@@ -111,8 +111,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
         this.loadPatientInfo(phoneFromRoute);
       }
     });
-
-    this.subscriptions.add(paramSubscription);
+      
+     this.subscriptions.add(paramSubscription);
   }
 
   ngOnDestroy(): void {
@@ -121,6 +121,12 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private initializeComponent(): void {
+    if(this.userType === 'ROLE_ADMIN'){
+      this.reservationsService.getTotalPatients().subscribe(res => {
+        this.totalPatients = res;
+        console.log('Total patients:', res);
+      });
+    }
     if (this.userType === 'ROLE_DOCTOR') {
       this.initializeDoctorView();
     } else {

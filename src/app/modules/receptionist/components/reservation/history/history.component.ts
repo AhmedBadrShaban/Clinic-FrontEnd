@@ -64,6 +64,7 @@ export class HistoryComponent implements OnInit, OnDestroy, OnChanges {
       { key: 'fluence1', label: 'Fluence 1' },
       { key: 'fluence2', label: 'Fluence 2' },
       { key: 'spot', label: 'Spot' },
+      { key: 'roomName', label: 'Room' },
       { key: 'clinic', label: 'Clinic' },
       { key: 'note', label: 'Note' },
       ...(this.userType === 'ROLE_ADMIN' ? [{ key: 'action', label: 'Action', template: this.actionTemplate }] : [])

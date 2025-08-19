@@ -19,21 +19,21 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 export class RoomsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  // Use BehaviorSubjects for reactive state management
+  // Reactive state
   private selectedDateSubject = new BehaviorSubject<string>(
     this.datePipe.transform(new Date(), 'yyyy-MM-dd') || ''
   );
   private selectedTabIndexSubject = new BehaviorSubject<number>(0);
-
-  // Trigger subject to signal child components to refresh
   private refreshTriggerSubject = new BehaviorSubject<number>(0);
 
-  // Main data stores
+  // Main data
   rooms: Room[] = [];
+  clinics: any[] = [];   // store clinics
+  selectedClinic: string | null = null; // current selected clinic
   dataLoaded: boolean = false;
   searchValue = '';
 
-  // Reactive streams
+  // Streams
   selectedDate$ = this.selectedDateSubject.asObservable();
   selectedTabIndex$ = this.selectedTabIndexSubject.asObservable();
   refreshTrigger$ = this.refreshTriggerSubject.asObservable();
@@ -45,10 +45,14 @@ export class RoomsComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.initializeRooms();
+    if (this.isAdmin) {
+      this.loadClinics();
+    } else {
+      this.initializeRooms(); // Receptionist loads directly
+    }
     this.setupReactiveStreams();
   }
 
@@ -57,10 +61,30 @@ export class RoomsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private initializeRooms(): void {
+  /** 🔹 Fetch clinics for admins */
+  private loadClinics(): void {
+    this.roomsService.allClinics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinics) => {
+          this.clinics = clinics;
+          if (clinics.length > 0) {
+            this.selectedClinic = clinics[0].clinicName;
+            this.initializeRooms(this.selectedClinic || undefined);
+          }
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error loading clinics:', err);
+        }
+      });
+  }
+
+  /** 🔹 Fetch rooms, optionally by clinic */
+  private initializeRooms(clinicName?: string): void {
     this.dataLoaded = false;
 
-    this.roomsService.getAllRoomsV2()
+    this.roomsService.getAllRoomsV2(clinicName)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (rooms) => {
@@ -76,6 +100,13 @@ export class RoomsComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  /** 🔹 Triggered when clinic changes */
+  onClinicChange(clinicName: string): void {
+    this.selectedClinic = clinicName;
+    this.initializeRooms(clinicName);
+  }
+
 
   private setupReactiveStreams(): void {
     // Listen for date changes and trigger refresh
@@ -132,7 +163,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
         const roomDialogRef = this.dialog.open(AddNewRoomComponent, dialogConfig);
         roomDialogRef.afterClosed().subscribe(result => {
           if (result) {
-            this.initializeRooms(); // Reinitialize when new room is added
+            this.initializeRooms(this.selectedClinic || undefined); // Reinitialize when new room is added
           }
         });
         break;

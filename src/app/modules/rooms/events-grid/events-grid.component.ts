@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, Input, OnInit, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
@@ -30,6 +31,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private roomsService: RoomsService,
+    private router:Router , 
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef
   ) { }
@@ -179,6 +181,10 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
   trackByReservationId(index: number, reservation: reservation): number {
     return reservation.reservationId || index;
   }
+  checkOut(id: number): void {
+    console.log('Checking out reservation:', id);
+    this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
+   }
 
   // Action methods
   onReservationAction(action: string, reservation: reservation, event: Event): void {
@@ -189,6 +195,8 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
         this.changeReservationStatus(reservation.reservationId, 'CONFIRMED');
         break;
       case 'checkout':
+        this.checkOut(reservation.reservationId)
+        
         // Handle checkout
         break;
     }
