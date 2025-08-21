@@ -24,6 +24,7 @@ const routes: Routes = [
       {path: 'rooms', component: RoomsComponent, pathMatch:'full',},
       {path: 'expense', component: ExpenseComponent, pathMatch:'full'},
       {path: 'patients', component: ReservationComponent},
+      { path: "patients/:phone", component: ReservationComponent },
       {path: 'doctors', component: DoctorsComponent},
       {path: 'doctor/:id', component: DoctorComponent},
       {path: 'receptionists', component: ReceptionistsComponent},
