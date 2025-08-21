@@ -59,7 +59,7 @@ export class DialogEventComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef
   ) {
-    console.log('Received reservation data:', reservation);
+  //console.log('Received reservation data:', reservation);
   }
 
   ngOnInit(): void {
@@ -92,7 +92,7 @@ export class DialogEventComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
-          console.log('Status updated:', response.message);
+        //console.log('Status updated:', response.message);
 
           // Update local reservation status
           this.reservation.status = status;
@@ -133,7 +133,7 @@ export class DialogEventComponent implements OnInit, OnDestroy {
   }
 
   openDialog(): void {
-    console.log('Opening update dialog for room:', this.reservation.roomName);
+  //console.log('Opening update dialog for room:', this.reservation.roomName);
     this.close();
 
     const updateDialogRef = this.dialog.open(UpdateReservationComponent, {
@@ -152,7 +152,7 @@ export class DialogEventComponent implements OnInit, OnDestroy {
   }
 
   checkOut(id: number): void {
-    console.log('Checking out reservation:', id);
+  //console.log('Checking out reservation:', id);
     this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
     this.close();
   }
@@ -244,7 +244,7 @@ isWaitingOrInProgress(): boolean {
   return this.reservation.status === 'IN_PROGRESS' || this.reservation.status === 'WAITING';
 }
   goToPatientInfo(phone: string): void {
-    console.log('naviagting to reservationwith phone:', phone)
+  //console.log('naviagting to reservationwith phone:', phone)
     this.router.navigate(['/receptionist/reservation', phone]);
     this.close()
 }

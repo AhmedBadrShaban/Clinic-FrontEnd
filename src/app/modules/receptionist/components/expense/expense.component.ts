@@ -57,9 +57,9 @@ export class ExpenseComponent implements OnInit, OnDestroy {
   }
 
   getAllExpenses(page: number): void {
-    console.log('Fetching expenses - page:', page, 'pageSize:', this.pageSize);
+  //console.log('Fetching expenses - page:', page, 'pageSize:', this.pageSize);
     this.expenseService.getAllExpenses(page, this.pageSize).subscribe((res: any) => {
-      console.log('Expenses response:', res);
+    //console.log('Expenses response:', res);
       this.dataSource.data = [...res.data];
       this.totalItems = res.totalItems;
     });
@@ -75,9 +75,9 @@ export class ExpenseComponent implements OnInit, OnDestroy {
     this.selectedDate = event.value;
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     if (formattedDate) {
-      console.log('data filter', formattedDate)
+    //console.log('data filter', formattedDate)
       this.expenseService.filterByDate(formattedDate).subscribe((res: any) => {
-        console.log('data', res)
+      //console.log('data', res)
         this.dataSource.data = res.data;
       });
     }

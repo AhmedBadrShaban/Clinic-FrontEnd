@@ -76,8 +76,8 @@ export class DailySheetComponent implements OnInit {
       this.currentPage = response.currentPage;
       this.loadingState = false;
       this.cd.detectChanges();
-      console.log("daily sheet received: ", this.dataSource.data);
-      console.log("total items: ", this.totalItems);
+    //console.log("daily sheet received: ", this.dataSource.data);
+    //console.log("total items: ", this.totalItems);
     }, error => {
       this.loadingState = false;
       console.error('Error loading daily sheet data:', error);
@@ -87,25 +87,25 @@ export class DailySheetComponent implements OnInit {
   private loadRooms(): void {
     this.roomsService.getAllRoomsV2().subscribe((rooms) => {
       this.allRooms = rooms;
-      console.log('rooms :>> ', this.allRooms);
+    //console.log('rooms :>> ', this.allRooms);
     });
   }
 
   private loadDoctors(): void {
     this.dailySheetService.getAllDoctorsNames().subscribe((data: any) => {
       this.allDoctors = data;
-      console.log('AllNames of Doctors:>> ', this.allDoctors);
+    //console.log('AllNames of Doctors:>> ', this.allDoctors);
     });
   }
 
   onRoomChange(): void {
-    console.log("selected room before filtering is: ", this.selectedRoom);
+  //console.log("selected room before filtering is: ", this.selectedRoom);
     this.currentPage = 0; // Reset to first page on filter change
     this.loadDailySheetData(this.currentPage);
   }
 
   onDoctorChange(): void {
-    console.log("selected Doctor before filtering is: ", this.selectedDoctor);
+  //console.log("selected Doctor before filtering is: ", this.selectedDoctor);
     this.currentPage = 0; // Reset to first page on filter change
     this.loadDailySheetData(this.currentPage);
   }
@@ -113,13 +113,13 @@ export class DailySheetComponent implements OnInit {
   onDateChange(event: any): void {
     const formattedDate = event.value;
     this.selectedDate = this.datePipe.transform(formattedDate, 'yyyy-MM-dd');
-    console.log("selected Date before filtering is: ", this.selectedDate);
+  //console.log("selected Date before filtering is: ", this.selectedDate);
     this.currentPage = 0; // Reset to first page on filter change
     this.loadDailySheetData(this.currentPage);
   }
 
   clearFilter(): void {
-    console.log('Clearing Filters');
+  //console.log('Clearing Filters');
 
     // Reset the filters
     this.selectedDate = null;

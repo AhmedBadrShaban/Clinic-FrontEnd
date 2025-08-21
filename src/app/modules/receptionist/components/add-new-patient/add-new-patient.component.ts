@@ -84,7 +84,7 @@ export class AddNewPatientComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (clinics: any[]) => {
           this.clinics = clinics;
-          console.log('Clinics loaded:', clinics);
+        //console.log('Clinics loaded:', clinics);
         },
         error: (error: any) => {
           console.error('Error loading clinics:', error);

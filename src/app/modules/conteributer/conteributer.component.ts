@@ -37,7 +37,7 @@ export class ConteributerComponent implements OnInit {
   getReport(){
   this.conService.getMonthlyReport(this.getYear(this.selectedDate) , this.getMonth(this.selectedDate)).subscribe((report)=>{
     this.data = report;
-    console.log('data :>> ', this.data);
+  //console.log('data :>> ', this.data);
 
    })
 }

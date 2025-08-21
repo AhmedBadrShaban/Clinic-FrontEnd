@@ -88,7 +88,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (rooms) => {
-          console.log('rooms loaded', rooms);
+        //console.log('rooms loaded', rooms);
           this.rooms = rooms;
           this.dataLoaded = true;
           this.cdr.detectChanges();
@@ -116,7 +116,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe((date) => {
-        console.log('Date changed:', date);
+      //console.log('Date changed:', date);
         this.triggerRefresh();
       });
   }

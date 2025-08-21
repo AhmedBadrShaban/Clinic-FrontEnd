@@ -56,7 +56,7 @@ export class PackageComponent implements OnInit, OnDestroy {
 
   getAllPackages(page: number): void {
     this.packageService.getAllReservedPackages(page, this.pageSize).subscribe((res: any) => {
-      console.log('res packages', res  )
+    //console.log('res packages', res  )
       this.dataSource.data = [...res.data];
       this.totalItems = res.totalItems;
     });
@@ -73,7 +73,7 @@ export class PackageComponent implements OnInit, OnDestroy {
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     if (formattedDate) {
       this.packageService.filterByDate(formattedDate).subscribe((res: any) => {
-        console.log('res filter', res)
+      //console.log('res filter', res)
         this.dataSource.data = res.data;
       });
     }

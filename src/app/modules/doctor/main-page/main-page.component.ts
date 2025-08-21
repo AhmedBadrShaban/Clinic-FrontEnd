@@ -20,9 +20,10 @@ export class MainPageComponent {
       //console.log('Your Reservations is :>> ', this.reservations);
     })
   }
-  openReservation(phoneNumber: any , id:any) {
-    //console.log("Sending");
-    this.router.navigate(['doctor' ,'reservation'], { queryParams: { phoneNumber: phoneNumber  , id:id} });
+  openReservation(phoneNumber: any, id: any) {
+    this.router.navigate(['doctor', 'reservation'], {
+      queryParams: { phone: phoneNumber, id: id }
+    });
   }
   formatTimeTo12Hour(time: string): string {
     if (!time) {

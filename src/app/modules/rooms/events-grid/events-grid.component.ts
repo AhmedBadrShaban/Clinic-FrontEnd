@@ -67,7 +67,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
     this.isLoading = true;
     this.cdr.detectChanges();
 
-    console.log(`Fetching reservations for room ${this.roomName} on ${this.date}`);
+  //console.log(`Fetching reservations for room ${this.roomName} on ${this.date}`);
 
     this.roomsService.getRoomWithReservations(this.roomId, this.date)
       .pipe(takeUntil(this.destroy$))
@@ -75,7 +75,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
         next: (roomData) => {
           const reservations = Object.values(roomData).flat();
           this.processReservations(reservations);
-          console.log(`Fetched ${this.eventsPerRoom.length} reservations for room ${this.roomName}`);
+        //console.log(`Fetched ${this.eventsPerRoom.length} reservations for room ${this.roomName}`);
         },
         error: (err) => {
           console.error('Failed to fetch room reservations:', err);
@@ -116,7 +116,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'updated') {
-        console.log('Reservation updated, refreshing data');
+      //console.log('Reservation updated, refreshing data');
         // Emit to parent to refresh data
         this.dataUpdated.emit();
       }
@@ -182,7 +182,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
     return reservation.reservationId || index;
   }
   checkOut(id: number): void {
-    console.log('Checking out reservation:', id);
+  //console.log('Checking out reservation:', id);
     this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
    }
 
@@ -207,7 +207,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
-          console.log('Status updated:', response.message);
+        //console.log('Status updated:', response.message);
           this.dataUpdated.emit(); // Refresh data
         },
         error: (err) => {

@@ -45,7 +45,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-    console.log('PatientInfoComponent initialized, waiting to become active');
+  //console.log('PatientInfoComponent initialized, waiting to become active');
     // Don't load data here - wait for component to become active
   }
 
@@ -73,7 +73,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
 
   private handleActiveStateChange(): void {
     if (this.isActive && !this.hasInitialized) {
-      console.log('PatientInfoComponent becoming active');
+    //console.log('PatientInfoComponent becoming active');
 
       // If we already have info data from parent, use it
       if (this.info) {
@@ -115,7 +115,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     this.hasError = false;
     this.cdr.markForCheck();
 
-    console.log(`Loading additional patient data for: ${this.phoneNumber}`);
+  //console.log(`Loading additional patient data for: ${this.phoneNumber}`);
 
     // Only call this if you need additional data beyond what's passed in 'info'
     // If 'info' contains all needed data, you can skip this API call
@@ -169,7 +169,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     this.oldInfo = { ...info };
-    console.log('Form initialized with patient data:', this.oldInfo);
+  //console.log('Form initialized with patient data:', this.oldInfo);
   }
 
   updateInfo(): void {
@@ -179,7 +179,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     const formValue = this.formData.value;
-    console.log('Updating patient info:', formValue);
+  //console.log('Updating patient info:', formValue);
 
     const subscription = this.patientService.updatePatient(this.oldInfo.primaryPhone, formValue)
       .subscribe({
@@ -235,7 +235,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
   cancel(): void {
     if (this.oldInfo) {
       this.formData.patchValue(this.oldInfo);
-      console.log('Cancelled - form reset to:', this.oldInfo);
+    //console.log('Cancelled - form reset to:', this.oldInfo);
     }
   }
 

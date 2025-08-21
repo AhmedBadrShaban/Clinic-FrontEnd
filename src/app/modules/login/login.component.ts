@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(credentials).subscribe(
         (data: any) => {
           // Handle successful login response
-          console.log('Login successful', data);
+        //console.log('Login successful', data);
           this.authService.isLogged=true;
           this.authService.userType=data.authority;
           this.authService.setToken( data.token);

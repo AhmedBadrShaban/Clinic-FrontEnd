@@ -64,7 +64,7 @@ export class AvailableSlotsComponent implements OnInit, OnChanges, OnDestroy {
     this.isLoading = true;
     this.cdr.detectChanges();
 
-    console.log(`Fetching slots for room ${this.roomName} on ${this.reservedAt}`);
+  //console.log(`Fetching slots for room ${this.roomName} on ${this.reservedAt}`);
 
     this.roomServ.getAvailableSlots(this.roomName, this.reservedAt)
       .pipe(takeUntil(this.destroy$))
@@ -159,7 +159,7 @@ export class AvailableSlotsComponent implements OnInit, OnChanges, OnDestroy {
 
   onSlotClick(slot: TimeSlot): void {
     if (slot.available) {
-      console.log('Selected available slot:', slot);
+    //console.log('Selected available slot:', slot);
       // emit to parent if needed
     }
   }

@@ -70,7 +70,7 @@ export class PackagesComponent {
     const zeroBasedPage = page - 1;
     this.pckService.search(this.searchValue, zeroBasedPage, this.pageSize).subscribe((res: any) => {
       this.packages = res.data || res.content; // Ensure compatibility with different backend responses
-      console.log('packages updated')
+    //console.log('packages updated')
       this.totalItems = res.totalItems || this.packages.length;
 
       this.autoComplete(); // Add this line to match getAllPackages behavior

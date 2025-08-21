@@ -1,8 +1,7 @@
-<!-- reservation.component.html -->
 <div class="content">
 
   <!-- Search Section -->
-  <div *ngIf="showSearchSection" class="search-container w-75 mx-auto mb-4">
+  <div class="search-container w-75 mx-auto mb-4">
     <div class="search-row d-flex justify-content-center align-items-center" style="min-height: 60px;">
 
       <!-- Search Input with Loading State -->
@@ -50,18 +49,21 @@
           <span>New Patient</span>
         </button>
       </div>
-      <div *ngIf="canAddNewPatient" class="card text-white shadow m-3" style="background-color: rgba(111, 45, 189, 0.6);">
-        <div class="card-body p-3 ">
+
+      <div *ngIf="canAddNewPatient" class="card text-white shadow m-3"
+        style="background-color: rgba(111, 45, 189, 0.6);">
+        <div class="card-body p-3">
           <div class="d-flex align-items-center">
             <div class="flex-grow-1">
               <h4 class="mb-0 fw-bold">{{ totalPatients }} Patient</h4>
               <small class="opacity-75">In the System</small>
             </div>
             <div class="ms-3">
-              <mat-icon style="font-size: 32px; width: 32px; height: 32px; opacity: 0.5;">Person</mat-icon>
+              <mat-icon style="font-size: 32px; width: 32px; height: 32px; opacity: 0.5;">person</mat-icon>
             </div>
           </div>
         </div>
+      </div>
     </div>
   </div>
 
@@ -69,20 +71,17 @@
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabSelectChange($event)"
       class="patient-tabs" mat-align-tabs="center" backgroundColor="accent" color="primary">
 
-      <!-- Main Info Tab (Not for Doctor) -->
-      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Patient Info">
+      <!-- Patient Info Tab -->
+      <mat-tab label="Patient Info">
         <div class="tab-content-wrapper">
-          <!-- Only render when tab is active and patient is selected -->
           <app-patient-info *ngIf="isTabActive('patientInfoTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
             [info]="PatientInfo" [isActive]="isTabActive('patientInfoTab')">
           </app-patient-info>
 
-          <!-- Loading state -->
           <div *ngIf="tabDataStates['patientInfoTab'].loading" class="text-center p-4">
             <i class="fas fa-spinner fa-spin"></i> Loading patient information...
           </div>
 
-          <!-- No patient selected state -->
           <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
             <i class="bi bi-person-exclamation"></i>
             <p>Please search and select a patient to view information</p>
@@ -108,8 +107,8 @@
         </div>
       </mat-tab>
 
-      <!-- Packages Tab (Not for Doctor) -->
-      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Packages">
+      <!-- Packages Tab -->
+      <mat-tab label="Packages">
         <div class="tab-content-wrapper">
           <app-packages *ngIf="isTabActive('packagesTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
             [isActive]="isTabActive('packagesTab')">
@@ -126,8 +125,8 @@
         </div>
       </mat-tab>
 
-      <!-- Points Tab (Not for Doctor) -->
-      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Points">
+      <!-- Points Tab -->
+      <mat-tab label="Points">
         <div class="tab-content-wrapper">
           <app-points *ngIf="isTabActive('pointsTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
             [isActive]="isTabActive('pointsTab')">
@@ -144,8 +143,8 @@
         </div>
       </mat-tab>
 
-      <!-- Reservations Tab (Not for Doctor) -->
-      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Reservations">
+      <!-- Reservations Tab -->
+      <mat-tab label="Reservations">
         <div class="tab-content-wrapper">
           <app-reservations *ngIf="isTabActive('reservationsTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
             [isActive]="isTabActive('reservationsTab')">
@@ -162,8 +161,8 @@
         </div>
       </mat-tab>
 
-      <!-- Payment History Tab (Not for Doctor) -->
-      <mat-tab *ngIf="userType !== 'ROLE_DOCTOR'" label="Payment History">
+      <!-- Payment History Tab -->
+      <mat-tab label="Payment History">
         <div class="tab-content-wrapper">
           <app-payment-history *ngIf="isTabActive('paymentHistoryTab') && hasSelectedPatient"
             [phoneNumber]="patientNumber" [isActive]="isTabActive('paymentHistoryTab')">
@@ -180,22 +179,9 @@
         </div>
       </mat-tab>
 
-      <!-- Doctor: Treatment Notes Tab -->
-      <mat-tab *ngIf="userType === 'ROLE_DOCTOR'" label="After Work">
-        <div class="tab-content-wrapper">
-          <app-after-work *ngIf="isTabActive('afterWorkTab') && hasSelectedPatient" [phoneNumber]="patientNumber"
-            [id]="reservationID" [isActive]="isTabActive('afterWorkTab')">
-          </app-after-work>
-
-          <div *ngIf="tabDataStates['afterWorkTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading treatment notes...
-          </div>
-        </div>
-      </mat-tab>
-
+      <!-- Idle Patients Tab (Admin only) -->
       <mat-tab *ngIf="userType === 'ROLE_ADMIN'" label="Idle Patients">
         <div class="tab-content-wrapper">
-          <!-- Idle patients doesn't need patient selection -->
           <app-idle-patients *ngIf="isTabActive('idlePatientsTab')" [isActive]="isTabActive('idlePatientsTab')">
           </app-idle-patients>
 
@@ -204,6 +190,7 @@
           </div>
         </div>
       </mat-tab>
+
     </mat-tab-group>
   </div>
 </div>

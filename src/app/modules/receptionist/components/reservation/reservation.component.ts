@@ -1,4 +1,4 @@
-// reservation.component.ts
+// reservation.component.ts (cleaned - no doctor logic)
 import {
   ChangeDetectorRef,
   Component,
@@ -27,7 +27,7 @@ interface TabDataState {
   loading: boolean;
   loaded: boolean;
   error: string | null;
-  initialized: boolean; // Track if tab has been initialized
+  initialized: boolean;
 }
 
 const SEARCH_DEBOUNCE_TIME = 300;
@@ -45,17 +45,16 @@ export class ReservationComponent implements OnInit, OnDestroy {
   isLoading = false;
   searchValue = '';
   selectedTabIndex = 0;
-totalPatients!: number;
+  totalPatients!: number;
+
   private currentPatientSubject = new BehaviorSubject<PatientInfo | null>(null);
   currentPatient$ = this.currentPatientSubject.asObservable();
 
   patientNumber: string | null = null;
-  reservationID: string | null = null;
-
   private allPatientsData: PatientSearchItem[] = [];
   filteredData: string[] = [];
 
-  // Enhanced tab state tracking
+  // Tab state tracking (removed doctor-specific tabs)
   tabDataStates: { [key: string]: TabDataState } = {
     patientInfoTab: { loading: false, loaded: false, error: null, initialized: false },
     historyTab: { loading: false, loaded: false, error: null, initialized: false },
@@ -63,7 +62,6 @@ totalPatients!: number;
     pointsTab: { loading: false, loaded: false, error: null, initialized: false },
     reservationsTab: { loading: false, loaded: false, error: null, initialized: false },
     paymentHistoryTab: { loading: false, loaded: false, error: null, initialized: false },
-    afterWorkTab: { loading: false, loaded: false, error: null, initialized: false },
     idlePatientsTab: { loading: false, loaded: false, error: null, initialized: false }
   };
 
@@ -99,20 +97,23 @@ totalPatients!: number;
   }
 
   ngOnInit(): void {
+  //console.log('Receptionist reservation component initialized');
     this.initializeComponent();
+
+    // Handle route parameters for direct navigation
     const paramSubscription = this.route.paramMap.subscribe(params => {
       const phoneFromRoute = params.get('phone');
       if (phoneFromRoute) {
         this.patientNumber = phoneFromRoute;
-        this.searchValue = phoneFromRoute; // Optional: fill search input
+        this.searchValue = phoneFromRoute;
         this.selectedTabIndex = 0;
         this.resetTabStates();
         this.reservationsService.updatePhoneNumber(this.patientNumber);
         this.loadPatientInfo(phoneFromRoute);
       }
     });
-      
-     this.subscriptions.add(paramSubscription);
+
+    this.subscriptions.add(paramSubscription);
   }
 
   ngOnDestroy(): void {
@@ -121,18 +122,18 @@ totalPatients!: number;
   }
 
   private initializeComponent(): void {
-    if(this.userType === 'ROLE_ADMIN'){
+  //console.log('Initializing receptionist/admin component');
+
+    // Load total patients count for admin
+    if (this.userType === 'ROLE_ADMIN') {
       this.reservationsService.getTotalPatients().subscribe(res => {
         this.totalPatients = res;
-        console.log('Total patients:', res);
+      //console.log('Total patients:', res);
       });
     }
-    if (this.userType === 'ROLE_DOCTOR') {
-      this.initializeDoctorView();
-    } else {
-      this.initializePatientData();
-      this.setInitialTab();
-    }
+
+    this.initializePatientData();
+    this.setInitialTab();
   }
 
   private initializeSearchDebounce(): void {
@@ -192,32 +193,6 @@ totalPatients!: number;
     });
   }
 
-  private initializeDoctorView(): void {
-    const paramsSubscription = this.route.params.subscribe(() => {
-      this.route.queryParams.subscribe((params) => {
-        const phoneNumber = params['phoneNumber'] || null;
-        const reservationID = params['id'] || null;
-
-        if (phoneNumber !== this.patientNumber) {
-          this.patientNumber = phoneNumber;
-          this.reservationsService.updatePhoneNumber(this.patientNumber);
-
-          this.reservationID = reservationID;
-          this.selectedTabIndex = 0;
-          this.resetTabStates();
-
-          if (phoneNumber) {
-            this.loadPatientInfo(phoneNumber);
-          }
-        }
-
-        this.cdr.markForCheck();
-      });
-    });
-
-    this.subscriptions.add(paramsSubscription);
-  }
-
   private setInitialTab(): void {
     this.selectedTabIndex = 0;
   }
@@ -240,7 +215,7 @@ totalPatients!: number;
   onPatientSelected(event: MatAutocompleteSelectedEvent): void {
     const selectedValue = event.option.value as string;
     this.searchValue = selectedValue;
-    console.log('searchValue ', this.searchValue);
+  //console.log('searchValue ', this.searchValue);
   }
 
   private performSearch(searchTerm: any): void {
@@ -265,7 +240,7 @@ totalPatients!: number;
             .map(item => item.displayText);
 
           this.filteredData = filtered;
-          console.log('autocomplete', this.filteredData);
+        //console.log('autocomplete', this.filteredData);
 
           this.isLoading = false;
           this.cdr.markForCheck();
@@ -317,11 +292,11 @@ totalPatients!: number;
     this.reservationsService.updatePhoneNumber(this.patientNumber);
 
     this.cdr.markForCheck();
-
     this.loadPatientInfo(phoneNumber);
   }
 
   private loadPatientInfo(phoneNumber: string): void {
+  //console.log('Loading patient info for:', phoneNumber);
     this.setTabLoading('patientInfoTab', true);
 
     const searchSubscription = this.patientService.searchPatients(phoneNumber)
@@ -378,23 +353,17 @@ totalPatients!: number;
 
   onTabSelectChange(selectedIndex: number): void {
     this.selectedTabIndex = selectedIndex;
-
     const currentTabName = this.getCurrentTabName(selectedIndex);
-
-    // Mark tab as initialized but don't load data here
-    // Child components will handle their own initialization based on isActive input
     this.tabDataStates[currentTabName].initialized = true;
-
     this.cdr.markForCheck();
   }
 
-  private getCurrentTabName(index: number): string {
-    if (this.userType === 'ROLE_DOCTOR') {
-      return 'afterWorkTab';
-    } else if (this.userType === 'ROLE_ADMIN') {
+  public getCurrentTabName(index: number): string {
+    if (this.userType === 'ROLE_ADMIN') {
       const adminTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab', 'idlePatientsTab'];
       return adminTabs[index] || 'patientInfoTab';
     } else {
+      // Receptionist tabs
       const receptionistTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab'];
       return receptionistTabs[index] || 'patientInfoTab';
     }
@@ -419,7 +388,7 @@ totalPatients!: number;
   }
 
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
-    console.log(`${type.toUpperCase()}: ${message}`);
+  //console.log(`${type.toUpperCase()}: ${message}`);
   }
 
   trackByFn(index: number, item: string): string {
@@ -438,9 +407,7 @@ totalPatients!: number;
   }
 
   private getTabIndexByName(tabName: string): number {
-    if (this.userType === 'ROLE_DOCTOR') {
-      return tabName === 'afterWorkTab' ? 0 : -1;
-    } else if (this.userType === 'ROLE_ADMIN') {
+    if (this.userType === 'ROLE_ADMIN') {
       const adminTabs = ['patientInfoTab', 'historyTab', 'packagesTab', 'pointsTab', 'reservationsTab', 'paymentHistoryTab', 'idlePatientsTab'];
       return adminTabs.indexOf(tabName);
     } else {
@@ -449,7 +416,6 @@ totalPatients!: number;
     }
   }
 
-  // Helper method to check if a specific tab is active
   isTabActive(tabName: string): boolean {
     const currentTabName = this.getCurrentTabName(this.selectedTabIndex);
     return currentTabName === tabName;
@@ -457,10 +423,6 @@ totalPatients!: number;
 
   get hasPatientData(): boolean {
     return this.allPatientsData.length > 0;
-  }
-
-  get showSearchSection(): boolean {
-    return this.userType !== 'ROLE_DOCTOR';
   }
 
   get canAddNewPatient(): boolean {

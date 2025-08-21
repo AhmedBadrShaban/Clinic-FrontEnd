@@ -78,7 +78,7 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<ReservationFmComponent>,
     private cdr: ChangeDetectorRef
   ) {
-    console.log('data', data)
+  //console.log('data', data)
     this.roomName = data.activeRoom.roomName;
     this.date = data.date;
 

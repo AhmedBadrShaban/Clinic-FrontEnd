@@ -38,7 +38,7 @@ export class PackageService {
   filterByDate(date: any): Observable<any> {
     const url = `${this.baseUrl}receptionist/reserved-package-filter-v2`;
     const queryParams = new HttpParams().set('date', date);
-    console.log("filtling by date of :", date);
+  //console.log("filtling by date of :", date);
 
     return this.http.get<any>(url, { params: queryParams });
   }

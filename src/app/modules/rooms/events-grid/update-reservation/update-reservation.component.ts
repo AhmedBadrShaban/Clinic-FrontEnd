@@ -51,7 +51,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
       services: [this.data.services]
     });
 
-    console.log('Received reservation data:', this.data);
+  //console.log('Received reservation data:', this.data);
   }
 
   ngOnInit(): void {
@@ -85,9 +85,9 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
           this.selectedServices[service] = this.data.services.includes(service);
         });
 
-        console.log('Loaded doctors:', this.AllNames.length);
-        console.log('Loaded services:', this.allServices.length);
-        console.log('Selected services:', this.selectedServices);
+      //console.log('Loaded doctors:', this.AllNames.length);
+      //console.log('Loaded services:', this.allServices.length);
+      //console.log('Selected services:', this.selectedServices);
 
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -131,13 +131,13 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
       formValue.reservationEnd = this.formatTime(formValue.reservationEnd);
     }
 
-    console.log('Updating reservation with data:', formValue);
+  //console.log('Updating reservation with data:', formValue);
 
     this.reservationService.updateReservation(this.data.reservationId, formValue)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
-          console.log('Reservation updated successfully:', response.message);
+        //console.log('Reservation updated successfully:', response.message);
           alert(response.message);
 
           // Don't need to update slots here - parent will handle refresh
@@ -157,7 +157,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
 
   onCheckboxChange(service: string, event: any): void {
     this.selectedServices[service] = event.target.checked;
-    console.log('Service selection changed:', this.selectedServices);
+  //console.log('Service selection changed:', this.selectedServices);
   }
 
   formatTime(time: string): string {

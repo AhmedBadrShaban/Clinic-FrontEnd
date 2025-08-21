@@ -41,6 +41,7 @@ export class AfterWorkComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  //console.log('in after Work')
     if (this.data) {
       this.initEditMode();
     } else if (this.id) {
