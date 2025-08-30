@@ -375,3 +375,8 @@
 .status-icon-to-doctor { color: #9C27B0; }
 .status-icon-done { color: #4CAF50; }
 .status-icon-canceled { color: #F44336; }
+
+.mat-mdc-card-avatar{
+  width:24px;
+  height:24px;
+}
