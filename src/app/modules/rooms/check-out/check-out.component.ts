@@ -1,9 +1,9 @@
 import { CompletedService, PointsService } from './../../receptionist/models/payment';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoomsService } from '../../Services/rooms/rooms.service';
-import { MatDialog } from '@angular/material/dialog';
- import { PaymentComponent } from './payment/payment.component';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { PaymentService } from '../../receptionist/services/payment/payment.service';
 import { NormalPayment, Payments } from '../../receptionist/models/payment';
 
@@ -14,6 +14,8 @@ import { NormalPayment, Payments } from '../../receptionist/models/payment';
 })
 export class CheckOutComponent implements OnInit {
   id: number;
+  patientName: string = '';
+  patientPhone: string = '';
   completedServices: CompletedService[]=[] ;
   selectedCardIndex: number=0 ;
   selectedMethod:number=0;
@@ -23,6 +25,7 @@ export class CheckOutComponent implements OnInit {
     pointsService: [],
     packages: []
   };
+  showReceipt:boolean=false;
   normalPayment:NormalPayment = {
     serviceName: "",
     pulses: 0,
@@ -38,10 +41,19 @@ export class CheckOutComponent implements OnInit {
   usedPoints:number=0;
   showPointsButton:boolean = false;
   showRemainCash:boolean =false;
+  generatedAt: Date = new Date();
+  displayedColumns: string[] = ['serviceName', 'pulses', 'price', 'totalCost', 'payments'];
+
+  @ViewChild('checkoutReceiptSection', { static: false }) checkoutReceiptSection?: ElementRef;
 
   constructor(private route: ActivatedRoute ,private router:Router, private checkOutService:RoomsService , private payment:PaymentService  ) {}
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.patientName = params['patientName'];
+      this.patientPhone = params['patientPhone'];
+      // console.log('Checkout params:', this.patientName, this.patientPhone);
+    });
     this.route.params.subscribe(params => {
        this.id = +params['id'];
       //console.log('ID:', this.id);
@@ -81,6 +93,7 @@ export class CheckOutComponent implements OnInit {
   {
     const done = this.areAllServicesPaid();
     if(done){
+      // this.showReceipt =true;
       if(this.paymentsMethods.points.length===0){
         this.paymentsMethods.points.push(0);
       }
@@ -88,6 +101,10 @@ export class CheckOutComponent implements OnInit {
         next:(res:any)=>{
           alert(res.message)
           this.navigateToRooms();
+
+          // setTimeout(() => {
+          //   this.generateCheckoutPDF();
+          // }, 0);
         } ,
         error:(err)=>{
           alert(err.error.message);
@@ -277,6 +294,73 @@ export class CheckOutComponent implements OnInit {
     this.selectedCardIndex = index;
     this.selectedMethod=2;
 
+  }
+
+  generateCheckoutPDF(): void {
+    const receiptElement = this.checkoutReceiptSection?.nativeElement;
+    if (!receiptElement) {
+      alert('No receipt data to export');
+      this.navigateToRooms();
+      return;
+    }
+
+    html2canvas(receiptElement, { scale: 2, useCORS: true, backgroundColor: '#fff' })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pdfWidth - 20;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        const logoImg = new Image();
+        logoImg.onload = () => {
+          // draw logo
+          pdf.addImage(logoImg, 'PNG', 10, 10, 30, 30);
+
+          // leave space for logo
+          let y = 40;
+
+          if (imgHeight > pdfHeight - y - 10) {
+            let remainingHeight = imgHeight;
+            let position = y;
+
+            while (remainingHeight > 0) {
+              pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+              remainingHeight -= pdfHeight - y;
+              if (remainingHeight > 0) {
+                pdf.addPage();
+                position = 10;
+              }
+            }
+          } else {
+            pdf.addImage(imgData, 'PNG', 10, y, imgWidth, imgHeight);
+          }
+
+          const dateStr = new Date().toISOString().split('T')[0];
+          pdf.save(`checkout-${this.id}-${this.patientName}-${dateStr}.pdf`);
+          this.navigateToRooms();
+
+        };
+        // ✅ make sure logo exists in assets
+        logoImg.src = 'assets/logo.png';
+      })
+      .catch(() => {
+        alert('Error generating PDF');
+        this.navigateToRooms();
+
+      });
+  }
+
+
+  getTotalPaid(): number {
+    let total = 0;
+    this.paymentsMethods.normal.forEach(p => {
+      total += (p.cash || 0) + (p.visa || 0) + (p.vodafoneCash || 0) +
+        (p.credit || 0) + (p.debit || 0) + (p.instaPay || 0);
+    });
+    return total;
   }
   navigateToRooms() {
     // console.log('naviagting to reservationwith phone:', phone)

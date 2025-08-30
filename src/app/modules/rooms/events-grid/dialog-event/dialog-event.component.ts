@@ -151,10 +151,18 @@ export class DialogEventComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkOut(id: number): void {
-  //console.log('Checking out reservation:', id);
-    this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
-    this.close();
+  checkOut(reservation: any): void {
+     this.router.navigate(
+      [`/receptionist/rooms/check-out/${reservation.reservationId}`],
+      {
+        queryParams: {
+          patientName: reservation.patientName,
+          patientPhone: reservation.patientPhone
+        }
+      }
+      
+    ).then(() => {
+       this.close()});
   }
 
   formatTimeTo12Hour(time: string): string {

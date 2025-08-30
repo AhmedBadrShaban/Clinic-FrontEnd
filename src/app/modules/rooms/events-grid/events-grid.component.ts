@@ -221,10 +221,17 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
   trackByReservationId(index: number, reservation: reservation): number {
     return reservation.reservationId || index;
   }
-  checkOut(id: number): void {
-  //console.log('Checking out reservation:', id);
-    this.router.navigateByUrl(`receptionist/rooms/check-out/${id}`);
-   }
+  checkOut(reservation: any): void {
+    this.router.navigate(
+      [`/receptionist/rooms/check-out/${reservation.reservationId}`],
+      {
+        queryParams: {
+          patientName: reservation.patientName,
+          patientPhone: reservation.patientPhone
+        }
+      }
+    );
+  }
 
   // Action methods
   onReservationAction(action: string, reservation: reservation, event: Event): void {
@@ -235,7 +242,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
         this.changeReservationStatus(reservation.reservationId, 'CONFIRMED');
         break;
       case 'checkout':
-        this.checkOut(reservation.reservationId)
+        this.checkOut(reservation)
         
         // Handle checkout
         break;

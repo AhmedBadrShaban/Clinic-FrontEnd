@@ -32,7 +32,10 @@
   align-items: center;
   gap: 20px;
 }
-
+.mat-mdc-card-avatar {
+    height: 24px;
+    width: 24px;
+}
 .logo-icon {
   font-size: 48px;
   width: 70px;

@@ -50,6 +50,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTableModule } from '@angular/material/table';
 
  
 @NgModule({
@@ -89,6 +91,8 @@ import { MatRippleModule } from '@angular/material/core';
     ReportsComponent,
     MatIconModule,
     MatTabsModule,
+    MatTableModule,
+    MatDividerModule,
     MatProgressSpinnerModule,
     MatCardModule,
      MatButtonToggleModule,   // For view mode toggle

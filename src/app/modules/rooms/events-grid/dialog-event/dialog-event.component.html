@@ -151,7 +151,7 @@
 
       <!-- Checkout Button -->
       <button *ngIf="reservation.status == 'DONE'" mat-raised-button color="primary" class="action-button checkout-btn"
-        (click)="checkOut(reservation.reservationId)">
+        (click)="checkOut(reservation)">
         <mat-icon>payment</mat-icon>
         Checkout
       </button>

@@ -321,6 +321,13 @@ button.mat-raised-button {
 .mat-divider {
   margin: 4px 0 !important;
 }
+.service-container{
+  display: flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:5px;
+  font-size: 13px;
+}
 
 .receipt-date {
   font-size: 12px;
