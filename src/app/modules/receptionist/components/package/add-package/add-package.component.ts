@@ -5,7 +5,9 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import {
   FormBuilder,
@@ -14,11 +16,16 @@ import {
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DatePipe } from '@angular/common';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { ReservationsService } from './../../../services/reservations-services/reservations.service';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
+
 
 interface PatientSearchItem {
   displayText: string;
@@ -32,6 +39,23 @@ interface PackageItem {
   description?: string;
 }
 
+interface ReservationData {
+  patientPhone: string;
+  patientName: string;
+  packageName: string;
+  packageCost: number;
+  paymentMethods: {
+    cash?: number;
+    visa?: number;
+    debit?: number;
+    credit?: number;
+    instaPay?: number;
+    vodafoneCash?: number;
+  };
+  totalPayments: number;
+  reservationDate: Date;
+}
+
 const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 
@@ -43,6 +67,8 @@ const MAX_AUTOCOMPLETE_ITEMS = 50;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddPackageComponent implements OnInit, OnDestroy {
+  @ViewChild('receiptSection', { static: false }) receiptSection?: ElementRef;
+
   packageFm: FormGroup;
 
   // Patient search properties
@@ -59,6 +85,9 @@ export class AddPackageComponent implements OnInit, OnDestroy {
 
   // Form state
   isSubmitting = false;
+  showReceipt = false;
+  reservationData?: ReservationData;
+  generatedAt: Date = new Date();
 
   // Search subjects for debouncing
   private patientSearchSubject = new Subject<string>();
@@ -71,7 +100,9 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     private namesAndNumbers: ReservationsService,
     private patientservice: PatientService,
     private packageservice: PackageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
+    private datePipe: DatePipe
   ) {
     this.initializeForm();
     this.initializeSearchDebouncing();
@@ -281,13 +312,25 @@ export class AddPackageComponent implements OnInit, OnDestroy {
 
   // Utility methods
   extractPatientName(patient: string): string {
-    const parts = patient.split(' - ');
-    return parts[0]?.trim() || patient;
+    if (!patient) return '';
+
+    // Split by hyphen with or without spaces
+    const parts = patient.split(/\s*-\s*/);
+
+    // Everything before the last "-" is considered name
+    const namePart = parts.slice(0, -1).join('-').trim();
+
+    return namePart || patient.trim();
   }
 
   extractPatientPhone(patient: string): string {
-    const parts = patient.split(' - ');
-    return parts[1]?.trim() || '';
+    if (!patient) return '';
+
+    // Split by hyphen with or without spaces
+    const parts = patient.split(/\s*-\s*/);
+
+    // Last part after "-" is the phone
+    return parts.length > 1 ? parts[parts.length - 1].trim() : '';
   }
 
   // Track by functions for performance
@@ -383,8 +426,16 @@ export class AddPackageComponent implements OnInit, OnDestroy {
         next: (data: any) => {
           this.isSubmitting = false;
           this.showSuccessMessage("Package Reserved Successfully!");
+
+          // Prepare reservation data for receipt
+          this.prepareReservationData(formData);
+
+          // Show receipt and generate PDF
+          this.showReceipt = true;
+          this.cdr.markForCheck();
+
+     
           this.updatePackagesList();
-          this.closeDialog();
         },
         error: (err) => {
           this.isSubmitting = false;
@@ -397,6 +448,142 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     this.subscriptions.add(subscription);
   }
 
+  private prepareReservationData(formData: any): void {
+    const patientName = this.extractPatientName(this.patientSearchValue);
+    const patientPhone = this.extractPatientPhone(this.patientSearchValue);
+
+    this.reservationData = {
+      patientPhone: patientPhone,
+      patientName: patientName,
+      packageName: formData.packageName,
+      packageCost: formData.packageCost,
+      paymentMethods: {
+        cash: formData.cash,
+        visa: formData.visa,
+        debit: formData.debit,
+        credit: formData.credit,
+        instaPay: formData.instaPay,
+        vodafoneCash: formData.vodafoneCash
+      },
+      totalPayments: this.getTotalPayments(),
+      reservationDate: new Date()
+    };
+    console.log('reservationData', this.reservationData)
+    // Generate PDF after a short delay to ensure DOM is rendered
+    setTimeout(() => {
+      this.generatePDF();
+    }, 500);
+
+  }
+
+  generatePDF(): void {
+    const receiptElement = this.receiptSection?.nativeElement;
+    if (!receiptElement) {
+      this.showErrorMessage('Receipt section not found');
+      return;
+    }
+
+    if (!this.reservationData) {
+      this.showErrorMessage('No reservation data available to generate PDF');
+      return;
+    }
+
+    this.snackBar.open('Generating PDF...', '', { duration: 2000 });
+
+    // Configure html2canvas options for better quality
+    const canvasOptions = {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      removeContainer: true
+    };
+
+   html2canvas(receiptElement, canvasOptions).then((canvas) => {
+  const imgData = canvas.toDataURL('image/png', 1.0);
+  const pdf = new jsPDF('p', 'mm', 'a4');
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+  const imgWidth = pdfWidth - 20; // margins
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  const logoImg = new Image();
+  logoImg.onload = () => {
+    // Draw logo
+    pdf.addImage(logoImg, 'PNG', 10, 10, 30, 30);
+
+    // Place receipt below logo (leave space, e.g., 50mm)
+    let y = 50;
+
+    // If content too tall for one page, split across pages
+    if (imgHeight > pdfHeight - y - 10) {
+      let remainingHeight = imgHeight;
+      let position = y;
+
+      while (remainingHeight > 0) {
+        pdf.addImage(
+          imgData,
+          'PNG',
+          10,
+          position,
+          imgWidth,
+          imgHeight
+        );
+        remainingHeight -= pdfHeight - y;
+        if (remainingHeight > 0) {
+          pdf.addPage();
+          position = 10; // reset top margin for new page
+        }
+      }
+    } else {
+      pdf.addImage(imgData, 'PNG', 10, y, imgWidth, imgHeight);
+    }
+
+    const dateStr = this.datePipe.transform(new Date(), 'yyyy-MM-dd') || 'receipt';
+const patientName = this.reservationData?.patientName
+  ? this.extractPatientName(this.reservationData.patientName)
+  : 'Patient';
+  pdf.save(`package-receipt-${patientName}-${dateStr}.pdf`);
+  };
+
+  logoImg.src = 'assets/logo.png';
+});
+
+  }
+
+  getPaymentMethodsUsed(): Array<{ method: string, amount: number }> {
+    if (!this.reservationData) return [];
+
+    const payments = this.reservationData.paymentMethods;
+    const usedMethods: Array<{ method: string, amount: number }> = [];
+
+    if (payments.cash && payments.cash > 0) {
+      usedMethods.push({ method: 'Cash', amount: payments.cash });
+    }
+    if (payments.visa && payments.visa > 0) {
+      usedMethods.push({ method: 'Visa', amount: payments.visa });
+    }
+    if (payments.debit && payments.debit > 0) {
+      usedMethods.push({ method: 'Debit', amount: payments.debit });
+    }
+    if (payments.credit && payments.credit > 0) {
+      usedMethods.push({ method: 'Credit', amount: payments.credit });
+    }
+    if (payments.instaPay && payments.instaPay > 0) {
+      usedMethods.push({ method: 'InstaPay', amount: payments.instaPay });
+    }
+    if (payments.vodafoneCash && payments.vodafoneCash > 0) {
+      usedMethods.push({ method: 'Vodafone Cash', amount: payments.vodafoneCash });
+    }
+
+    return usedMethods;
+  }
+
+  regeneratePDF(): void {
+    this.generatePDF();
+  }
+
   private markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);
@@ -405,13 +592,17 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   }
 
   private showSuccessMessage(message: string): void {
-    // Replace with MatSnackBar for better UX
-    alert(message);
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['success-snackbar']
+    });
   }
 
   private showErrorMessage(message: string): void {
-    // Replace with MatSnackBar for better UX
-    alert(message);
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['error-snackbar']
+    });
   }
 
   private updatePackagesList(): void {
@@ -430,5 +621,10 @@ export class AddPackageComponent implements OnInit, OnDestroy {
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  backToForm(): void {
+    this.showReceipt = false;
+    this.cdr.markForCheck();
   }
 }
