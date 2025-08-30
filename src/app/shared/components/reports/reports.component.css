@@ -19,14 +19,7 @@
    .reports-container {
     position: relative;
     height: fit-content;
-    padding: 20px;
-  }
-
-  .date-picker-container {
-    position: absolute;
-    top: 0;
-    right: 20px;
-    z-index: 10;
+    padding: 10px;
   }
 
   .month-year-picker {
@@ -37,7 +30,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 60px;
     /* Space for the date picker */
     transition: opacity 0.3s ease;
   }
@@ -48,7 +40,7 @@
 
   .data-cards {
     width: 100%;
-    gap: 110px;
+    gap: 50px;
     display: flex;
     justify-content: center;
     align-items: center;

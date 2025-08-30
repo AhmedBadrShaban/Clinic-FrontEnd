@@ -16,6 +16,7 @@ import { AdminHomeComponent } from './components/admin-home/admin-home.component
 import { ReceptionistProfileComponent } from './components/receptionists/receptionist/receptionist.component';
 import { DoctorScheduleComponent } from '../receptionist/components/doctor-schedule/doctor-schedule.component';
 import {ContributorsComponent} from "./components/contributors/contributors.component";
+import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
 
 const routes: Routes = [
     { path: '', component: AdminComponent, children:[
@@ -32,6 +33,7 @@ const routes: Routes = [
       {path: 'services', component: ServicesComponent},
       {path: 'admin-package', component: PackagesComponent, pathMatch:'full'},
       {path: 'materials', component: MaterialsComponent},
+      { path: 'monthly-income', component: MonthlyMoneyReportComponent },
       {path: 'reservations', component: ReservationsComponent},
       {path: 'doctor-schedular', component: DoctorScheduleComponent},
         {path: 'contributors', component: ContributorsComponent},

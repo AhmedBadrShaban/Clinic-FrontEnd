@@ -28,12 +28,24 @@ import { AdminNavBarComponent } from './components/admin-nav-bar/admin-nav-bar.c
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { ReceptionistModule } from '../receptionist/receptionist.module';
-import { BlblComponent } from './components/admin-home/blbl/blbl.component';
 import {ReportsComponent} from "../../shared/components/reports/reports.component";
 import { ContributorsComponent } from './components/contributors/contributors.component';
 import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import { TableComponent } from '../receptionist/shared/table/table.component';
+import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -46,6 +58,7 @@ import { TableComponent } from '../receptionist/shared/table/table.component';
       ReceptionistProfileComponent,
       ServicesComponent,
       PackagesComponent,
+        MonthlyMoneyReportComponent,
       AddNewReceptionistComponent,
       AddNewPackageComponent,
       AddNewServiceComponent,
@@ -53,8 +66,7 @@ import { TableComponent } from '../receptionist/shared/table/table.component';
       AdminProfileComponent,
       MaterialsComponent,
       AddNewMatrialComponent,
-      BlblComponent,
-       ContributorsComponent,
+        ContributorsComponent,
       AddContributorComponent,
         
    ],
@@ -73,7 +85,18 @@ import { TableComponent } from '../receptionist/shared/table/table.component';
         NzAutocompleteModule,
         ReceptionistModule,
         ReportsComponent,
-        NzTabsModule
+        NzTabsModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        MatTableModule,
+        MatChipsModule,
+        MatTooltipModule
     ]
 })
 export class AdminModule { }

@@ -1,41 +1,362 @@
-.report-Section{
+/* Enhanced Cover Sheet Styles */
+.cover-sheet-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+/* Enhanced Header */
+.header-card {
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20px !important;
+}
+
+.header-content {
   display: flex;
-  justify-content: center;
-  margin: 0;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px !important;
+}
+
+.header-left {
+  display: flex;
   align-items: center;
 }
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  width: 50%;
-  margin: 20px;
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.grid-item {
-  border: 1px solid #dddddd;
-  width: 250px;
-  padding: 21px;
-  font-weight: 500;
-  text-align: left;
+.logo-icon {
+  font-size: 48px;
+  width: 70px;
+  height: 70px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 10px;
 }
 
-/* Style the form elements */
-.grid-item form {
-  display: grid;
-  gap: 8px;
+.title-section {
+  display: flex;
+  flex-direction: column;
 }
 
-.grid-item label {
-  font-weight: bold;
+.main-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.5px;
 }
 
-.grid-item input,
-.grid-item select {
+.subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 5px 0 0 0;
+  font-weight: 300;
+}
+
+.header-right {
+  min-width: 250px;
+}
+
+.date-picker {
   width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
 }
 
-span{font-family: Courier, monospace; font-weight: 450; font-size: 17px}
+.date-picker .mat-mdc-form-field-input-control {
+  color: white;
+}
+
+.date-picker .mat-mdc-form-field-label {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.date-picker .mat-mdc-form-field-outline {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.date-picker .mat-mdc-form-field-outline-thick {
+  color: white !important;
+}
+
+/* Report Section */
+.report-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Summary Section */
+.summary-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.summary-card {
+  border-radius: 15px !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.user-card {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+}
+
+.date-card {
+  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+  color: white;
+}
+
+.user-avatar, .date-avatar {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.summary-value {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 10px;
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* Financial Summary */
+.financial-summary {
+  border-radius: 20px !important;
+  background: white;
+}
+
+.financial-avatar {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 100%) !important;
+  color: white !important;
+}
+
+.financial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.financial-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.financial-item:hover {
+  transform: scale(1.02);
+}
+
+.financial-item.expenses {
+  background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+  color: white;
+}
+
+.financial-item.profit {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  color: white;
+}
+
+.financial-item.net {
+  background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+  color: white;
+}
+
+.financial-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.financial-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.financial-label {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.financial-value {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  margin-top: 5px;
+}
+
+/* Laser Data */
+.laser-data-card {
+  border-radius: 20px !important;
+  background: white;
+}
+
+.laser-avatar {
+  background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%) !important;
+  color: white !important;
+}
+
+.laser-grid {
+  margin-top: 20px;
+}
+
+.laser-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.laser-chip {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 14px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.laser-chip mat-icon {
+  margin-right: 8px;
+}
+
+.even-chip {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+}
+
+.odd-chip {
+  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+  color: white;
+}
+
+/* Responsive for laser chips */
+@media (max-width: 768px) {
+  .laser-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Action Section */
+.action-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.print-button {
+  padding: 15px 30px;
+  font-size: 16px;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.print-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.print-button mat-icon {
+  margin-right: 8px;
+}
+
+/* Loading Section */
+.loading-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  gap: 20px;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .header-right {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .main-title {
+    font-size: 24px;
+  }
+  
+  .financial-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .summary-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .cover-sheet-container {
+    padding: 10px;
+  }
+  
+  .financial-value {
+    font-size: 20px;
+  }
+  
+  .summary-value {
+    font-size: 18px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .cover-sheet-container {
+    background: white;
+    padding: 0;
+  }
+  
+  .header-card, .summary-card, .financial-summary, .laser-data-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+  }
+  
+  .action-section {
+    display: none;
+  }
+}

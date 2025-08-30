@@ -13,6 +13,13 @@ export interface RoomReservation {
   roomName: string;
   reservations: any[];
 }
+export interface Room {
+  id: number;
+  name: string;
+  clinicName?: string;
+  isActive: boolean;
+  description?: string;
+}
 
 @Injectable({
   providedIn: 'root'

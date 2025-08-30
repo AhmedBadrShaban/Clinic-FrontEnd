@@ -19,6 +19,7 @@ export class AdminHomeComponent {
         'expense',
         'contributors',
         'doctor-schedular',
+        'monthly-income'
     ]
 
 

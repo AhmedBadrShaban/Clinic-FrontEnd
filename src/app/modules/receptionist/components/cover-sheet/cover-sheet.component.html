@@ -1,156 +1,138 @@
-<div
-  class="filter"
-  style="
-    height: 80px;
-    color: white;
-    font-size: large;
-    font-size: 25px;
-    padding: 30px;
-    background-color: #31263e;
-    border-radius: 30px;
-    margin-top: 20px;
-  "
->
-  Cover Sheet
-  <div class="h-70" style="margin-left: 73%; margin-top: -4%">
-    <mat-form-field>
-      <mat-label>Choose a date</mat-label>
-      <input
-        matInput
-        [(ngModel)]="selectedDate"
-        [matDatepicker]="picker"
-        (dateChange)="onDateChange($event)"
-      />
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+<!-- Enhanced Cover Sheet Template -->
+<div class="cover-sheet-container">
+  <!-- Enhanced Header -->
+  <mat-card class="header-card" elevation="3">
+    <mat-card-content class="header-content">
+      <div class="header-left">
+        <div class="logo-section">
+          <mat-icon class="logo-icon">receipt_long</mat-icon>
+          <div class="title-section">
+            <h1 class="main-title">Cover Sheet Report</h1>
+            <p class="subtitle">Financial Summary & Details</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <mat-form-field appearance="outline" class="date-picker">
+          <mat-label>Select Report Date</mat-label>
+          <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)"
+            readonly />
+          <mat-datepicker-toggle matIconSuffix [for]="picker">
+            <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Main Content -->
+  <div *ngIf="listOfData" #reportSection id="report-Section" class="report-section">
+
+    <!-- Summary Cards -->
+    <div class="summary-section">
+      <mat-card class="summary-card user-card" elevation="2">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="user-avatar">person</mat-icon>
+          <mat-card-title>User Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="summary-value">{{ listOfData.user }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="summary-card date-card" elevation="2">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="date-avatar">today</mat-icon>
+          <mat-card-title>Report Date</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="summary-value">{{ listOfData.date }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Financial Summary -->
+    <mat-card class="financial-summary" elevation="2">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="financial-avatar">account_balance</mat-icon>
+        <mat-card-title>Financial Summary</mat-card-title>
+        <mat-card-subtitle>Overview of expenses, profit, and net total</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="financial-grid">
+          <div class="financial-item expenses">
+            <mat-icon class="financial-icon">trending_down</mat-icon>
+            <div class="financial-details">
+              <div class="financial-label">Total Expenses</div>
+              <div class="financial-value expense-value">{{ listOfData.expenses |
+                currency:'EGP':'symbol':'1.2-2':'en-EG' }}</div>
+            </div>
+          </div>
+
+          <div class="financial-item profit">
+            <mat-icon class="financial-icon">trending_up</mat-icon>
+            <div class="financial-details">
+              <div class="financial-label">Total Profit</div>
+              <div class="financial-value profit-value">{{ listOfData.profit | currency:'EGP':'symbol':'1.2-2':'en-EG'
+                }}</div>
+            </div>
+          </div>
+
+          <div class="financial-item net">
+            <mat-icon class="financial-icon">account_balance_wallet</mat-icon>
+            <div class="financial-details">
+              <div class="financial-label">Net Total</div>
+              <div class="financial-value net-value">{{ listOfData.net | currency:'EGP':'symbol':'1.2-2':'en-EG' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Laser Read Data -->
+    <mat-card class="laser-data-card" elevation="2" *ngIf="listOfData.laserRead && listOfData.laserRead.length > 0">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="laser-avatar">scanner</mat-icon>
+        <mat-card-title>Laser Read Data</mat-card-title>
+        <mat-card-subtitle>Scanned information and details</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="laser-grid">
+          <div class="laser-row" *ngFor="let item of listOfData.laserRead; let i = index">
+            <mat-chip *ngIf="i % 2 === 0" class="laser-chip even-chip">
+              <mat-icon matChipAvatar>qr_code_scanner</mat-icon>
+              {{ listOfData.laserRead[i] }}
+            </mat-chip>
+            <mat-chip *ngIf="listOfData.laserRead[i + 1] && i % 2 === 0" class="laser-chip odd-chip">
+              <mat-icon matChipAvatar>qr_code_scanner</mat-icon>
+              {{ listOfData.laserRead[i + 1] }}
+            </mat-chip>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Action Section -->
+    <div class="action-section">
+      <button mat-raised-button color="primary" class="print-button" (click)="generatePDF()">
+        <mat-icon>print</mat-icon>
+        Generate PDF Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="!listOfData" class="loading-section">
+    <mat-card elevation="1">
+      <mat-card-content>
+        <div class="loading-content">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p class="loading-text">Loading report data...</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
-
-<div *ngIf="listOfData" id="report-Section" class="report-Section">
-  <div style="width: 80%">
-    <div class="grid-container">
-      <div class="grid-item" style="width: 510px">
-        <div>
-          User Name :
-          <span style="font-family: 'Candara', sans-serif">
-            {{ listOfData.user }}
-          </span>
-        </div>
-      </div>
-      <div class="grid-item">
-        <div>
-          Date : <span> {{ listOfData.date }} </span>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid-container second-row">
-      <div class="grid-item">
-        <div>
-          Expenses : <span> {{ listOfData.expenses }} </span>
-        </div>
-      </div>
-      <div class="grid-item">
-        <div>
-          Net : <span> {{ listOfData.net }} </span>
-        </div>
-      </div>
-      <div class="grid-item">
-        <div>
-          Profit : <span> {{ listOfData.profit }} </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div style="width: 80%">
-    <div class="grid-container" *ngFor="let d of listOfData.laserRead; let i = index">
-      <ng-container *ngIf="i % 2 === 0">
-      <div class="grid-item" style="width: 379px">
-        <div>{{ listOfData.laserRead[i] }}</div>
-      </div>
-      <div class="grid-item" style="width: 379px" *ngIf="listOfData.laserRead[i + 1] !== undefined">
-        <div>{{ listOfData.laserRead[i + 1] }}</div>
-      </div>
-      </ng-container>
-    </div>
-
-</div>
-
-<button
-  class="mt-3 justify-content-center"
-  type="submit"
-  style="
-    margin-bottom: 30px;
-    margin-left: 43%;
-    width: 130px;
-    height: 30px;
-    background-color: green;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-  "
-  (click)="generatePDF()"
->
-  Print
-</button>
-
-<!--
-    <nz-table
-class="mx-auto"  style="width:90%"
-#dynamicTable
-[nzScroll]="{ x: scrollX, y: scrollY }"
-[nzData]="listOfData"
-[nzTableLayout]="settingValue.tableLayout"
-[nzBordered]="settingValue.bordered"
-[nzOuterBordered]	=true
-[nzSimple]="settingValue.simple"
-[nzLoading]="settingValue.loading"
-[nzPaginationType]="settingValue.paginationType"
-[nzPaginationPosition]="settingValue.position"
-[nzFrontPagination]="settingValue.pagination"
-[nzShowPagination]="settingValue.pagination"
-[nzSize]="settingValue.size"
->
-<thead>
-  <!-- <tr *ngIf="settingValue.header"  style="cursor: pointer;">
-    <th [nzAlign]="'center'">Date</th>
-    <th [nzAlign]="'center'">User</th>
-    <th [nzAlign]="'center'">Profit</th>
-    <th [nzAlign]="'center'">Expense</th>
-    <th [nzAlign]="'center'">Net</th>
-  </tr> -->
-
-<!-- <tbody style="background-color: #F2F2F2;">
-     <tr >
-      <th [nzAlign]="'center'">Date</th>
-      <td [nzLeft]="fixedColumn" [nzAlign]="'center'">{{ listOfData.date}}</td>
-    </tr>
-    <tr>
-        <th [nzAlign]="'center'">User</th>
-        <td [nzAlign]="'center'" [nzAlign]="'center'">{{ listOfData.user}}</td>
-    </tr>
-    <tr>
-        <th [nzAlign]="'center'">Profit</th>
-        <td [nzAlign]="'center'" style="font-size: 12px;">{{ listOfData.profit }}</td>
-
-    </tr>
-    <tr>
-        <th [nzAlign]="'center'">Expense</th>
-        <td  [nzAlign]="'center'">{{  listOfData.expense }}</td>
-    </tr>
-    <tr>
-        <th [nzAlign]="'center'">Net</th>
-
-        <td  [nzAlign]="'center'">{{  listOfData.profit }}</td>
-    </tr>
-
-      <!-- <br> -->
-
-<!-- <div style="color: #31263E; height: 20px;"></div> -->
-
-<!-- </tbody>
-</nz-table> -->

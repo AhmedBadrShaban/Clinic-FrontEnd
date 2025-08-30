@@ -1,17 +1,5 @@
 <div class="reports-container">
-  <!-- Month/Year Picker in top right -->
-  <div class="date-picker-container">
-    <mat-form-field appearance="outline" class="month-year-picker">
-      <mat-label>Select Month & Year</mat-label>
-      <input matInput [matDatepicker]="monthYearPicker" [formControl]="monthYearControl" readonly>
-      <mat-hint>{{ getSelectedMonthYear() }}</mat-hint>
-      <mat-datepicker-toggle matSuffix [for]="monthYearPicker">
-        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
-      </mat-datepicker-toggle>
-      <mat-datepicker #monthYearPicker startView="multi-year" (monthSelected)="monthSelected($event, monthYearPicker)">
-      </mat-datepicker>
-    </mat-form-field>
-  </div>
+
 
   <!-- Reports Data -->
   <div class="reports-data" [class.loading]="isLoading">
@@ -55,6 +43,19 @@
         <p class="data-basic">Reservations</p>
         <p class="data-value">{{ isLoading ? '...' : reservationsNumber }}</p>
       </div>
+        <!-- Month/Year Picker in top right -->
+        <div class="data-card">
+          <mat-form-field appearance="outline" class="month-year-picker">
+            <mat-label>Select Month & Year</mat-label>
+            <input matInput [matDatepicker]="monthYearPicker" [formControl]="monthYearControl" readonly>
+            <mat-hint>{{ getSelectedMonthYear() }}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="monthYearPicker">
+              <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker #monthYearPicker startView="multi-year" (monthSelected)="monthSelected($event, monthYearPicker)">
+            </mat-datepicker>
+          </mat-form-field>
+        </div>
     </div>
   </div>
 </div>
