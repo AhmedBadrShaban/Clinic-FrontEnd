@@ -103,8 +103,13 @@ export class RoomsService {
     this.roomsSubject.next(rooms);
   }
 
-  updateReservations(reservations: { [roomName: string]: any[] }): void {
-    this.reservationsSubject.next(reservations);
+  updateReservationsForRoom(roomName: string, reservations: any[]): void {
+    console.log('recived reservation in subject from room : ' , roomName)
+    const current = this.reservationsSubject.value;
+    this.reservationsSubject.next({
+      ...current,                // keep other rooms
+      [roomName]: reservations   // update only this room
+    });
   }
 
   updateSlots(slots: any[]): void {

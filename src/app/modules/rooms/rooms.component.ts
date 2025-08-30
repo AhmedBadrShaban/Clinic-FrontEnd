@@ -48,6 +48,20 @@ export class RoomsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Subscribe to rooms from service
+    this.roomsService.rooms$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(rooms => {
+        console.log('🏠 RoomsComponent received rooms update:', {
+          roomCount: rooms.length,
+          rooms: rooms,
+          previousRoomCount: this.rooms.length
+        });
+
+        this.rooms = rooms;
+        this.cdr.detectChanges();
+      });
+
     if (this.isAdmin) {
       this.loadClinics();
     } else {
@@ -162,9 +176,9 @@ export class RoomsComponent implements OnInit, OnDestroy {
       case 'room':
         const roomDialogRef = this.dialog.open(AddNewRoomComponent, dialogConfig);
         roomDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.initializeRooms(this.selectedClinic || undefined); // Reinitialize when new room is added
-          }
+          console.log('🚪 Room dialog closed with result:', result);
+          // The subscription to rooms$ will handle the update automatically
+          // No need to manually call initializeRooms again
         });
         break;
 
@@ -197,7 +211,6 @@ export class RoomsComponent implements OnInit, OnDestroy {
         break;
     }
   }
-
   search(searchTerm: string): void {
     this.searchValue = searchTerm;
     // Implement search logic if needed

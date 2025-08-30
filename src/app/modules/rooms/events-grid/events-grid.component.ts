@@ -36,11 +36,39 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
     private cdr: ChangeDetectorRef
   ) { }
 
-  ngOnInit(): void {
-    // Fetch data when component initializes
+   ngOnInit(): void {
+    // Subscribe to reservations from service
+    this.roomsService.reservations$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(reservationsMap => {
+        console.log('🔔 EventsGrid received reservations update:', {
+          roomName: this.roomName,
+          allRoomsInMap: Object.keys(reservationsMap),
+          hasDataForThisRoom: !!(this.roomName && reservationsMap[this.roomName]),
+          reservationCount: reservationsMap[this.roomName]?.length || 0,
+          fullReservationsMap: reservationsMap
+        });
+
+        if (this.roomName && reservationsMap[this.roomName]) {
+          console.log('✅ Processing reservations for room:', this.roomName, {
+            reservations: reservationsMap[this.roomName],
+            currentEventsCount: this.eventsPerRoom.length
+          });
+          this.processReservations(reservationsMap[this.roomName]);
+        } else {
+          console.log('❌ No reservations found for room:', this.roomName, {
+            roomNameExists: !!this.roomName,
+            roomDataExists: !!(reservationsMap[this.roomName]),
+            availableRooms: Object.keys(reservationsMap)
+          });
+        }
+      });
+
+    // Initial fetch
     this.fetchRoomReservations();
   }
 
+ 
   ngOnChanges(changes: SimpleChanges): void {
     // Fetch data when room, date, or refresh trigger changes
     if (changes['roomId'] || changes['date'] || changes['refreshTrigger']) {
@@ -59,38 +87,50 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.roomId || !this.date) return;
 
     const currentFetchKey = `${this.roomId}-${this.date}-${this.refreshTrigger}`;
-
-    // Prevent duplicate fetches
     if (currentFetchKey === this.lastFetchKey) return;
 
     this.lastFetchKey = currentFetchKey;
     this.isLoading = true;
     this.cdr.detectChanges();
 
-  //console.log(`Fetching reservations for room ${this.roomName} on ${this.date}`);
-
     this.roomsService.getRoomWithReservations(this.roomId, this.date)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (roomData) => {
           const reservations = Object.values(roomData).flat();
-          this.processReservations(reservations);
-        //console.log(`Fetched ${this.eventsPerRoom.length} reservations for room ${this.roomName}`);
+          // ✅ Push to service subject
+          this.roomsService.updateReservationsForRoom(this.roomName, reservations);
+          this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Failed to fetch room reservations:', err);
           this.isLoading = false;
-          this.eventsPerRoom = [];
+          this.roomsService.updateReservationsForRoom(this.roomName, []);
           this.cdr.detectChanges();
         }
       });
   }
 
+
   private processReservations(reservations: any[]): void {
+    console.log('🔄 Processing reservations in EventsGrid:', {
+      input: reservations,
+      inputLength: reservations?.length || 0,
+      beforeSort: this.eventsPerRoom.length
+    });
+
     this.eventsPerRoom = this.sortEventsByTime(reservations || []);
     this.isLoading = false;
+
+    console.log('✅ Reservations processed and sorted:', {
+      finalEventsCount: this.eventsPerRoom.length,
+      events: this.eventsPerRoom
+    });
+
     this.cdr.detectChanges();
   }
+
 
   private sortEventsByTime(events: reservation[]): reservation[] {
     return events.sort((a, b) => {

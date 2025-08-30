@@ -375,22 +375,21 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response: any) => {
           this.isSubmitting = false;
-          // Show success message (you can replace alert with a snackbar)
           this.showSuccessMessage(response.message);
-          this.updateAvailableSlots();
-          this.closeDialog();
-          location.reload();
+
+          // ✅ Refresh reservations for this room/date and update service
+          this.updateRoomReservations();
         },
         error: (err) => {
           this.isSubmitting = false;
           this.cdr.markForCheck();
-          // Show error message (you can replace alert with a snackbar)
           this.showErrorMessage(err.error?.message || 'An error occurred');
         }
       });
 
     this.subscriptions.add(subscription);
   }
+
 
   private markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
@@ -429,6 +428,29 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(subscription);
   }
+  private updateRoomReservations(): void {
+    const subscription = this.roomService.getRoomWithReservations(this.data.activeRoom.roomId, this.date)
+      .subscribe({
+        next: (roomData) => {
+          const reservations = Object.values(roomData).flat();
+          // ✅ Update the reservations BehaviorSubject
+          this.roomService.updateReservationsForRoom(this.roomName, reservations);
+          this.updateAvailableSlots();
+
+          // ✅ Now close the dialog after everything is updated
+          this.isSubmitting = false;
+          this.cdr.markForCheck();
+          this.closeDialog();
+        },
+        error: (err) => {
+          console.error('Error refreshing reservations:', err);
+          this.roomService.updateReservationsForRoom(this.roomName, []); // fallback
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
 
   closeDialog(): void {
     this.dialogRef.close();

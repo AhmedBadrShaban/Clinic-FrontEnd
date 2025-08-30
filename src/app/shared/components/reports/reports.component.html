@@ -1,44 +1,61 @@
-<div style="display: flex; justify-content: center; align-items: center; height: fit-content">
-  <div style="width: 100%;
-  gap: 110px;
-  display: flex;
-  justify-content: center;
-  align-items: center;">
-<div style="display: flex;flex-direction: column;align-items: center;">
-  <div class="img-container" >
-    <img src="../../../../assets/patients_icon.png" height="70" width="70"/>
+<div class="reports-container">
+  <!-- Month/Year Picker in top right -->
+  <div class="date-picker-container">
+    <mat-form-field appearance="outline" class="month-year-picker">
+      <mat-label>Select Month & Year</mat-label>
+      <input matInput [matDatepicker]="monthYearPicker" [formControl]="monthYearControl" readonly>
+      <mat-hint>{{ getSelectedMonthYear() }}</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="monthYearPicker">
+        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #monthYearPicker startView="multi-year" (monthSelected)="monthSelected($event, monthYearPicker)">
+      </mat-datepicker>
+    </mat-form-field>
   </div>
-  <p class="data-basic">New Patients</p>
-  <p class="data-basic" style="margin-top: 3%;">{{newPatients}}</p>
+
+  <!-- Reports Data -->
+  <div class="reports-data" [class.loading]="isLoading">
+    <div class="data-cards">
+      <div class="data-card">
+        <div class="img-container">
+          <img src="../../../../assets/patients_icon.png" height="70" width="70" alt="New Patients" />
+        </div>
+        <p class="data-basic">New Patients</p>
+        <p class="data-value">{{ isLoading ? '...' : newPatients }}</p>
+      </div>
+
+      <div class="data-card">
+        <div class="img-container">
+          <img src="../../../../assets/income.png" height="70" width="70" alt="Income" />
+        </div>
+        <p class="data-basic">Income</p>
+        <p class="data-value">{{ isLoading ? '...' : Income }}</p>
+      </div>
+
+      <div class="data-card">
+        <div class="img-container">
+          <img src="../../../../assets/outCome.png" height="70" width="70" alt="Outcome" />
+        </div>
+        <p class="data-basic">Outcome</p>
+        <p class="data-value">{{ isLoading ? '...' : outCome }}</p>
+      </div>
+
+      <div class="data-card">
+        <div class="img-container">
+          <img src="../../../../assets/pulses.png" height="70" width="70" alt="Pulses" />
+        </div>
+        <p class="data-basic">Pulses</p>
+        <p class="data-value">{{ isLoading ? '...' : pulses }}</p>
+      </div>
+
+      <div class="data-card">
+        <div class="img-container">
+          <img src="../../../../assets/reser.png" height="70" width="70" alt="Reservations" />
+        </div>
+        <p class="data-basic">Reservations</p>
+        <p class="data-value">{{ isLoading ? '...' : reservationsNumber }}</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div style="display: flex;flex-direction: column;align-items: center;">
-  <div class="img-container" >
-    <img src="../../../../assets/income.png" height="70" width="70"/>
-  </div>
-  <p class="data-basic">Income</p>
-  <p class="data-basic" style="margin-top: 3%;">{{Income}}</p>
-</div>
-<div style="display: flex;flex-direction: column;align-items: center;">
-  <div class="img-container" >
-    <img src="../../../../assets/outCome.png" height="70" width="70"/>
-  </div>
-  <p class="data-basic">Outcome</p>
-  <p class="data-basic" style="margin-top: 3%;">{{outCome}}</p>
-</div>
-<div style="display: flex;flex-direction: column;align-items: center;">
-  <div class="img-container" >
-    <img src="../../../../assets/pulses.png" height="70" width="70"/>
-  </div>
-  <p class="data-basic">Pulses</p>
-  <p class="data-basic" style="margin-top: 3%;">{{pulses}}</p>
-</div>
-<div style="display: flex;flex-direction: column;align-items: center;">
-  <div class="img-container" >
-    <img src="../../../../assets/reser.png" height="70" width="70"/>
-  </div>
-  <p class="data-basic">Reservations</p>
-  <p class="data-basic" style="margin-top: 3%;">{{reservationsNumber}}</p>
-</div>
-</div>
-</div>

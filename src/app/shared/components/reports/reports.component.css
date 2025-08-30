@@ -15,3 +15,92 @@
   font-weight: 800;
   margin-top: 10%;
 }
+
+   .reports-container {
+    position: relative;
+    height: fit-content;
+    padding: 20px;
+  }
+
+  .date-picker-container {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    z-index: 10;
+  }
+
+  .month-year-picker {
+    width: 200px;
+  }
+
+  .reports-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+    /* Space for the date picker */
+    transition: opacity 0.3s ease;
+  }
+
+  .reports-data.loading {
+    opacity: 0.6;
+  }
+
+  .data-cards {
+    width: 100%;
+    gap: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .data-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+    transition: transform 0.2s ease;
+  }
+
+  .data-card:hover {
+    transform: scale(1.05);
+  }
+
+  .img-container {
+    margin-bottom: 10px;
+  }
+
+  .data-basic {
+    margin: 5px 0;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .data-value {
+    margin-top: 3%;
+    font-weight: 600;
+    font-size: 1.2em;
+    color: #2c3e50;
+    text-align: center;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .data-cards {
+      gap: 50px;
+    }
+
+    .date-picker-container {
+      position: relative;
+      top: auto;
+      right: auto;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .reports-data {
+      margin-top: 20px;
+    }
+  }
+ 
