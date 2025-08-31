@@ -63,19 +63,21 @@
               </mat-form-field>
 
               <!-- Room Selection -->
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Move to Room</mat-label>
-                <mat-select formControlName="roomId" (selectionChange)="onRoomChange($event.value)">
-                  <mat-option *ngFor="let room of allRooms" [value]="room.id">
-                    <mat-icon>meeting_room</mat-icon>
-                    <span class="ml-2">{{ room.roomName}}</span>
-                  </mat-option>
-                </mat-select>
-                <mat-icon matSuffix>room</mat-icon>
-                <mat-error *ngIf="formData.get('roomName')?.hasError('required')">
-                  Room selection is required
-                </mat-error>
-              </mat-form-field>
+            <!-- Room Selection -->
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Move to Room</mat-label>
+              <mat-select formControlName="roomId" (selectionChange)="onRoomChange($event.value)">
+                <mat-option *ngFor="let room of allRooms" [value]="room.roomId">
+                  <mat-icon>meeting_room</mat-icon>
+                  <span class="ml-2">{{ room.roomName}}</span>
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>room</mat-icon>
+              <mat-error *ngIf="formData.get('roomId')?.hasError('required')">
+                Room selection is required
+              </mat-error>
+
+            </mat-form-field>
             </div>
 
             <div class="form-row">
@@ -161,6 +163,10 @@
                   <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
               </mat-chip-set>
+            </div>
+            <div *ngIf="showError"
+              class="services-error">
+              <mat-error>At least one service must be selected</mat-error>
             </div>
           </mat-card-content>
         </mat-card>

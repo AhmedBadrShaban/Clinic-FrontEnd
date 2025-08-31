@@ -32,6 +32,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
 
   isLoading = false;
   isSubmitting = false;
+  showError=false;
   
   private subscriptions = new Subscription();
 
@@ -56,7 +57,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
       reservationEnd: [this.data.reservationEnd, Validators.required],
       note: [this.data.note],
       services: [this.data.services],
-      roomId: [this.data.roomId]  
+      roomId: [this.data.roomId, Validators.required]  
     });
   }
 
@@ -110,28 +111,71 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
     );
   }
 
-  onRoomChange(newRoomName: string): void {
-    // When room changes, reload services for the new room
-    this.reservationService.getAllServicesNamesToRoom(newRoomName)
+  onRoomChange(newRoomId: string): void {
+    // Find the selected room object to get its name
+    const selectedRoom = this.allRooms.find(room => room.roomId === newRoomId);
+
+    if (!selectedRoom) {
+      console.error('Room not found');
+      return;
+    }
+
+    // Update the roomId form control
+    this.formData.patchValue({ roomId: newRoomId });
+
+    // Store current selected services to preserve them if they exist in new room
+    const currentlySelectedServices = Object.keys(this.selectedServices)
+      .filter(service => this.selectedServices[service]);
+
+    // Load services for the new room
+    this.reservationService.getAllServicesNamesToRoom(selectedRoom.roomName)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (services) => {
           this.allServices = services;
-          console.log('allServices', this.allServices)
-          // Reset selected services when room changes
+          console.log('allServices for new room:', this.allServices);
+
+          // Reset selectedServices object
           this.selectedServices = {};
+
+          // Initialize all services as unchecked first
           this.allServices.forEach(service => {
             this.selectedServices[service] = false;
           });
+
+          // Re-check services that were previously selected AND exist in new room
+          currentlySelectedServices.forEach(service => {
+            if (this.allServices.includes(service)) {
+              this.selectedServices[service] = true;
+            }
+          });
+
+          // Update the services form control with the preserved selections
+          const newSelectedServices = Object.keys(this.selectedServices)
+            .filter(service => this.selectedServices[service]);
+          this.formData.patchValue({ services: newSelectedServices });
+
           this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Error loading services for room:', err);
+          // Reset services on error
+          this.allServices = [];
+          this.selectedServices = {};
+          this.formData.patchValue({ services: [] });
+          this.cdr.detectChanges();
         }
       });
   }
 
+
   update(): void {
+    if(this.selectedServicesCount<=0)
+    {
+      this.showError =true;
+      return ;
+    }
+    
     if (!this.formData.valid) {
       console.error('Form is invalid');
       return;
@@ -200,7 +244,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
   }
 
   isFormValid(): boolean {
-    return this.formData.valid && !this.isSubmitting;
+    return this.formData.valid && !this.isSubmitting  ;
   }
 
   get hasSelectedServices(): boolean {
