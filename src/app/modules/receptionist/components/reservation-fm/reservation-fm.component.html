@@ -60,12 +60,12 @@
                         <mat-icon>person</mat-icon>
                       </div> -->
                       <div class="patient-details">
-                          <small class="patient-phone text-muted">
+                        <small class="patient-phone text-muted">
                           <mat-icon class="small-icon">phone</mat-icon>
                           {{ extractPatientPhone(patient) }}
                         </small>
                         <div class="patient-name">{{ extractPatientName(patient) }}</div>
-                      
+
                       </div>
                     </div>
                   </mat-option>
@@ -153,8 +153,12 @@
                   <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Service {{ i + 1 }}</mat-label>
                     <mat-select [formControlName]="i" placeholder="Select Service">
-                      <mat-option value="">Choose a service</mat-option>
-                      <mat-option *ngFor="let serviceOption of AllServices" [value]="serviceOption">
+
+                      <!-- ✅ Search box -->
+                      <mat-option>
+                        <ngx-mat-select-search  [formControl]="serviceSearchCtrl" placeholderLabel="" ></ngx-mat-select-search>
+                      </mat-option>
+                      <mat-option *ngFor="let serviceOption of filteredServices" [value]="serviceOption">
                         {{ serviceOption }}
                       </mat-option>
                     </mat-select>
@@ -178,6 +182,7 @@
               </div>
             </div>
           </div>
+
         </div>
 
         <mat-divider class="my-4"></mat-divider>
@@ -195,37 +200,29 @@
               <div class="time-section">
                 <h4 class="time-title">Appointment Time</h4>
 
-  <div class="row g-3">
-   <!-- Start Time -->
-  <div>
-       <label class="form-label w-100 text-center" for="startTime">Start Time</label>
-      <input
-        id="startTime"
-        type="time"
-        class="form-control"
-        formControlName="start"
-      />
-      <div *ngIf="reservationFm.get('start')?.hasError('required')" class="text-danger small mt-1 text-center">
-        Start time is required
-      </div>
-    </div>
-  </div>
-        
-    <div class="row g-3">
-  <!-- End Time -->
-  <div >
-       <label class="form-label w-100 text-center" for="endTime">End Time</label>
-      <input
-        id="endTime"
-        type="time"
-        class="form-control"
-        formControlName="end"
-      />
-      <div *ngIf="reservationFm.get('end')?.hasError('required')" class="text-danger small mt-1 text-center">
-        End time is required
-      </div>
-    </div>
-  </div>
+                <div class="row g-3">
+                  <!-- Start Time -->
+                  <div>
+                    <label class="form-label w-100 text-center" for="startTime">Start Time</label>
+                    <input id="startTime" type="time" class="form-control" formControlName="start" />
+                    <div *ngIf="reservationFm.get('start')?.hasError('required')"
+                      class="text-danger small mt-1 text-center">
+                      Start time is required
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <!-- End Time -->
+                  <div>
+                    <label class="form-label w-100 text-center" for="endTime">End Time</label>
+                    <input id="endTime" type="time" class="form-control" formControlName="end" />
+                    <div *ngIf="reservationFm.get('end')?.hasError('required')"
+                      class="text-danger small mt-1 text-center">
+                      End time is required
+                    </div>
+                  </div>
+                </div>
                 <!-- Time Duration Display -->
                 <div class="time-duration" *ngIf="getTimeDuration()">
                   <mat-chip-listbox>
@@ -257,7 +254,7 @@
     <div class="form-actions">
       <div class="m-3 d-flex justify-content-center align-items-center">
 
-     
+
         <!-- Action Buttons -->
         <div class="action-buttons">
           <button mat-stroked-button type="button" (click)="closeDialog()" class="me-3">

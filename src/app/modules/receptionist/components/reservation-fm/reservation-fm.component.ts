@@ -67,7 +67,8 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
   private patientSearchSubject = new Subject<string>();
   private doctorSearchSubject = new Subject<string>();
   private subscriptions = new Subscription();
-
+  serviceSearchCtrl = new FormControl('');
+  filteredServices: string[] = [];
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
@@ -88,6 +89,20 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadInitialData();
+    this.subscriptions.add(
+      this.serviceSearchCtrl.valueChanges
+        .pipe(debounceTime(200), distinctUntilChanged())
+        .subscribe(search => {
+          if (!search) {
+            this.filteredServices = this.AllServices;
+          } else {
+            this.filteredServices = this.AllServices.filter(service =>
+              service.toLowerCase().includes(search.toLowerCase())
+            );
+          }
+          this.cdr.markForCheck();
+        })
+    );
   }
 
   ngOnDestroy(): void {
@@ -189,6 +204,7 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data: any) => {
           this.AllServices = data;
+          this.filteredServices = [...this.AllServices];
           this.cdr.markForCheck();
         },
         error: (error) => {

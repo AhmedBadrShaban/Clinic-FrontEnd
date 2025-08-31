@@ -52,6 +52,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 
  
 @NgModule({
@@ -77,7 +80,7 @@ import { MatTableModule } from '@angular/material/table';
     FormsModule,
     DatePipe,
     ReactiveFormsModule,
-    MatButtonModule, MatNativeDateModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatDialogModule,
+    MatButtonModule, MatNativeDateModule, MatAutocompleteModule, MatCheckboxModule,MatChipsModule ,  MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatDialogModule,
     SharedModule,
     NavBarComponent,
     BrowserAnimationsModule,

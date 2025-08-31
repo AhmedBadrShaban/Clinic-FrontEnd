@@ -1,25 +1,328 @@
-.hr-container {
-  position: relative;
-  text-align: center;
-  margin: 30px 0;
+/* Container Styles */
+.update-reservation-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+ }
+
+.dialog-content {
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.bi-hr {
-  border: none;
-  border-top: 1px solid #000; /* Adjust the color and style of the line */
+/* Header Styles */
+.dialog-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-icon {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 12px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+}
+
+ 
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-subtitle {
+  margin: 8px 0 0 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 32px;
+  gap: 16px;
+}
+
+.loading-container p {
+  color: #666;
   margin: 0;
 }
 
-.hr-text {
-  position: absolute;
-  top: -12px; /* Adjust this value to vertically center the text */
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff; /* Same as the background color of the page */
-  padding: 0 10px; /* Optional: add padding around the text */
+/* Form Container */
+.form-container {
+  padding: 24px 32px;
+  background: #fafafa;
+    height:90vh;
+
+
+ }
+
+/* Card Styles */
+.info-card {
+  margin-bottom: 24px;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0 !important;
 }
-.Header{
-  padding: 6%;
-  font-size: 30px;
-  border-bottom: 2px solid #6F2DBD ;
+
+.info-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+.patient-card .mat-mdc-card-header {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  margin: -1px -1px 16px -1px;
+  padding: 16px 24px;
+  border-radius: 11px 11px 0 0;
+}
+
+.reservation-card .mat-mdc-card-header {
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  color: white;
+  margin: -1px -1px 16px -1px;
+  padding: 16px 24px;
+  border-radius: 11px 11px 0 0;
+}
+
+.services-card .mat-mdc-card-header {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+  color: white;
+  margin: -1px -1px 16px -1px;
+  padding: 16px 24px;
+  border-radius: 11px 11px 0 0;
+}
+
+/* Form Field Styles */
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.two-column {
+  flex-wrap: wrap;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  flex: 1;
+  min-width: 280px;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+}
+
+.mat-mdc-form-field-outline {
+  border-radius: 8px !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline-thick {
+  border-color: #667eea !important;
+}
+
+/* Services Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.service-checkbox {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+}
+
+.service-checkbox:hover {
+  background: #f5f5f5;
+  border-color: #667eea;
+}
+
+.service-checkbox.mat-mdc-checkbox-checked {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+.no-services {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px;
+  color: #666;
+  gap: 12px;
+}
+
+.no-services mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}
+
+/* Selected Services Preview */
+.selected-services-preview {
+  margin-top: 24px;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 12px 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.mat-mdc-chip-set {
+  margin-top: 8px;
+}
+
+.mat-mdc-chip {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+/* Dialog Actions */
+.dialog-actions {
+  display:flex;
+  justify-content:center;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  gap: 12px;
+}
+
+.save-button {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  min-width: 140px;
+}
+
+.button-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.save-button span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .update-reservation-container {
+    max-width: 100%;
+  }
+  
+  .form-container {
+    padding: 16px;
+  }
+  
+  .dialog-header {
+    padding: 20px 16px;
+  }
+  
+  .two-column {
+    flex-direction: column;
+  }
+  
+  .half-width {
+    min-width: unset;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dialog-actions {
+    padding: 12px 16px !important;
+    flex-direction: column-reverse;
+  }
+  
+  .dialog-actions button {
+    width: 100%;
+  }
+}
+
+/* Custom Material Overrides */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px !important;
+  max-width: 90vw !important;
+}
+
+.mat-mdc-card-title {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-card-subtitle {
+  opacity: 0.8 !important;
+}
+
+/* Autocomplete Styles */
+.mat-mdc-option {
+  padding: 12px 16px !important;
+}
+
+.mat-mdc-option:hover {
+  background: #f5f5f5 !important;
+}
+
+.ml-2 {
+  margin-left: 8px;
+}
+
+/* Animation Classes */
+.info-card {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus States */
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: #667eea !important;
+}
+
+/* Error States */
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-form-field-outline-thick {
+  border-color: #f44336 !important;
+}
+
+/* Success States */
+.mat-mdc-form-field.ng-valid.ng-dirty .mat-mdc-form-field-outline-thick {
+  border-color: #4CAF50 !important;
 }

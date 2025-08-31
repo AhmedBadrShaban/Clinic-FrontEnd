@@ -1,102 +1,185 @@
-<div class="container">
-  <div class="Header text-center">
-    Edit Reservation  
-  </div>
-
-  <div class="row">
-    <form [formGroup]="formData" (ngSubmit)="update()" role="form">
-      <div class="row m-2 mt-3 justify-content-between">
-        <div class="form-group col-6">
-         <label for="doctor-name" class="form-label w-100 ">Doctor Name</label><br>
-         <input class="form-select" id="doctor-name" [value]="data.doctorName"
-        formControlName="doctorName"
-        nz-input
-        (ngModelChange)="onChange($event)"
-        [nzAutocomplete]="doctor"
-      />
-      <nz-autocomplete [nzDataSource]="FilterdNames" #doctor></nz-autocomplete>
-      </div>
-      <div class="form-group col-6">
-        <label class="form-label w-100 ">Reservation Date:</label>
-        <input class="form-control" type="date" formControlName="reservationDate" [value]="data.reservationDate"
-        />
-      </div>
-      </div>
-      <div class="row m-2 mt-3 justify-content-between">
-        <div class="form-group col-6">
-          <div class="row m-2">
-            <div class="d-flex align-items-center">
-              <label class="form-label w-100">From</label>
-            </div>
-            <input
-              type="time"
-              [value]="data.reservationStart"
-              formControlName="reservationStart"
-              id="from"
-              class="form-control shadow"
-              name="From"
-            />
-          </div>
-          <div class="row m-2">
-            <div class="d-flex align-items-center">
-              <label class="form-label w-100">To</label>
-            </div>
-            <input
-              type="time"
-              [value]="data.reservationEnd"
-               formControlName="reservationEnd"
-              id="from"
-              class="form-control shadow"
-              name="to"
-            />
-          </div>
-        </div>
-        <div class="form-group col-6">
-          <div class="d-flex align-items-center">
-            <i class="bi bi-card-text me-2 fs-4" style="margin-bottom: 5px"></i>
-            <label class="form-label w-100">Note</label>
-          </div>
-          <textarea
-            id="note"
-            rows="4"
-            [value]="data.note"
-            placeholder="Note"
-            formControlName="note"
-             class="form-control shadow"
-          ></textarea>
-        </div>
-      </div>
-      <div class="hr-container">
-        <hr>
-        <span class="hr-text">Services</span>
-      </div>
-       <div class="row m-2">
-<div class="form-group w-100">
-  <div class="row">
-    <div *ngFor="let service of allServices" class="col-3">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" [id]="'flexCheck' + service" [value]="service"
-          [checked]="selectedServices[service]" (change)="onCheckboxChange(service, $event)">
-        <label class="form-check-label" [for]="'flexCheck' + service">
-          {{ service }}
-        </label>
-      </div>
-    </div>
-  </div>
-</div>
-
-      </div>
-      <div class="row m-2 mt-3 justify-content-center">
-        <div class="form-group col-6">
-          <div class="text-center">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-           </div>
-        </div>
-        <div class="form-group col-6">
-          <a (click)="closeDialog()"  class="btn btn-danger">Cancel</a>
-        </div>
-       
+<div class="update-reservation-container">
+  <!-- Header -->
+  <mat-dialog-content class="dialog-content">
+    <div class="dialog-header">
+      <h2 mat-dialog-title>Edit Reservation</h2>
      </div>
- </form>
-  </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading reservation data...</p>
+    </div>
+
+    <!-- Form Content -->
+    <div *ngIf="!isLoading" class="form-container">
+      <form [formGroup]="formData" (ngSubmit)="update()">
+
+        <!-- Patient Information Card -->
+        <mat-card class="info-card patient-card" appearance="outlined">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>person</mat-icon>
+            <mat-card-title>Patient Information</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row two-column">
+              <mat-form-field appearance="outline"  class="half-width">
+                <mat-label>Patient Name</mat-label>
+                <input matInput formControlName="patientName" readonly>
+                <mat-icon matSuffix>badge</mat-icon>
+              </mat-form-field>
+                <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Phone Number</mat-label>
+                <input matInput formControlName="patientPhone" readonly>
+                <mat-icon matSuffix>phone</mat-icon>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Reservation Details Card -->
+        <mat-card class="info-card reservation-card" appearance="outlined">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>event</mat-icon>
+            <mat-card-title>Reservation Details</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row two-column">
+              <!-- Doctor Selection -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Doctor Name</mat-label>
+                <input matInput formControlName="doctorName" [matAutocomplete]="doctorAuto"
+                  (input)="onChange($any($event.target).value)">
+                <mat-icon matSuffix>local_hospital</mat-icon>
+                <mat-autocomplete #doctorAuto="matAutocomplete">
+                  <mat-option *ngFor="let doctor of FilterdNames" [value]="doctor">
+                    <mat-icon>person</mat-icon>
+                    <span class="ml-2">{{ doctor }}</span>
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="formData.get('doctorName')?.hasError('required')">
+                  Doctor name is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Room Selection -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Move to Room</mat-label>
+                <mat-select formControlName="roomId" (selectionChange)="onRoomChange($event.value)">
+                  <mat-option *ngFor="let room of allRooms" [value]="room.id">
+                    <mat-icon>meeting_room</mat-icon>
+                    <span class="ml-2">{{ room.roomName}}</span>
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>room</mat-icon>
+                <mat-error *ngIf="formData.get('roomName')?.hasError('required')">
+                  Room selection is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <!-- Date Selection -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Reservation Date</mat-label>
+                <input matInput [matDatepicker]="datePicker" formControlName="reservationDate" readonly>
+                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+                <mat-error *ngIf="formData.get('reservationDate')?.hasError('required')">
+                  Reservation date is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row two-column">
+              <!-- Time From -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>From</mat-label>
+                <input matInput type="time" formControlName="reservationStart">
+                <mat-icon matSuffix>schedule</mat-icon>
+                <mat-error *ngIf="formData.get('reservationStart')?.hasError('required')">
+                  Start time is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Time To -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>To</mat-label>
+                <input matInput type="time" formControlName="reservationEnd">
+                <mat-icon matSuffix>schedule</mat-icon>
+                <mat-error *ngIf="formData.get('reservationEnd')?.hasError('required')">
+                  End time is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Notes</mat-label>
+                <textarea matInput formControlName="note" rows="3"
+                  placeholder="Add any special notes or requirements..."></textarea>
+                <mat-icon matSuffix>note</mat-icon>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Services Card -->
+        <mat-card class="info-card services-card" appearance="outlined">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>medical_services</mat-icon>
+            <mat-card-title>Services</mat-card-title>
+            <mat-card-subtitle *ngIf="hasSelectedServices">
+              {{ selectedServicesCount }} service(s) selected
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div *ngIf="!hasServices" class="no-services">
+              <mat-icon>info</mat-icon>
+              <p>No services available for the selected room</p>
+            </div>
+
+            <div *ngIf="hasServices" class="services-grid">
+              <mat-checkbox *ngFor="let service of allServices" [checked]="selectedServices[service]"
+                (change)="onCheckboxChange(service, $event)" class="service-checkbox">
+                {{ service }}
+              </mat-checkbox>
+            </div>
+
+            <!-- Selected Services Preview -->
+            <div *ngIf="hasSelectedServices" class="selected-services-preview">
+              <mat-divider></mat-divider>
+              <div class="preview-header">
+                <mat-icon>preview</mat-icon>
+                <span>Selected Services</span>
+              </div>
+              <mat-chip-set>
+                <mat-chip *ngFor="let service of getSelectedServicesList()"
+                  (removed)="selectedServices[service] = false">
+                  {{ service }}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </form>
+    </div>
+  </mat-dialog-content>
+
+  <!-- Dialog Actions -->
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-button type="button" (click)="closeDialog()" [disabled]="isSubmitting">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+
+    <button mat-raised-button color="primary" type="submit" (click)="update()" [disabled]="!isFormValid()"
+      class="save-button">
+      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+      <mat-icon *ngIf="!isSubmitting">save</mat-icon>
+      <span>{{ isSubmitting ? 'Saving...' : 'Save Changes' }}</span>
+    </button>
+  </mat-dialog-actions>
 </div>

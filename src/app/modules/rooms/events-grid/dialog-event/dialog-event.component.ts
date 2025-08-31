@@ -22,7 +22,7 @@ type ReservationStatus = 'IN_PROGRESS' | 'CONFIRMED' | 'WAITING' | 'TO_DOCTOR' |
   templateUrl: './dialog-event.component.html',
   styleUrls: ['./dialog-event.component.css'],
   standalone: true,
-  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatIconModule, MatCardModule, MatListModule , FormsModule, MatButtonModule, NgClass, NgForOf, NgIf, DatePipe],
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatIconModule, MatCardModule, MatListModule , FormsModule, MatButtonModule, NgForOf, NgIf, DatePipe],
   providers: [DatePipe],
   animations: [
     trigger('slideToggle', [
@@ -138,10 +138,7 @@ export class DialogEventComponent implements OnInit, OnDestroy {
 
     const updateDialogRef = this.dialog.open(UpdateReservationComponent, {
       data: this.reservation,
-      width: '600px',
-      maxHeight: '90vh',
-      panelClass: 'custom-dialog-container'
-    });
+     });
 
     updateDialogRef.afterClosed().subscribe(result => {
       if (result === 'updated') {

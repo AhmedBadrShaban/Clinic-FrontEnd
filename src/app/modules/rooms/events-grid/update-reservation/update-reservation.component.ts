@@ -1,8 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Subject, takeUntil, forkJoin } from 'rxjs';
+import { Subject, takeUntil, forkJoin, Subscription } from 'rxjs';
+
+ 
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 import { PatientInfo } from 'src/app/modules/receptionist/models/patient-Info';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
@@ -12,7 +15,7 @@ import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 
 @Component({
   selector: 'app-update-reservation',
-  templateUrl: './update-reservation.component.html',
+   templateUrl: './update-reservation.component.html',
   styleUrls: ['./update-reservation.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -22,12 +25,15 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
   AllNames: any[] = [];
   FilterdNames: string[] = [];
   allServices: any[] = [];
+  allRooms: any[] = [];
   selectedServices: { [key: string]: boolean } = {};
   doctorName: any;
   formData: FormGroup;
 
   isLoading = false;
   isSubmitting = false;
+  
+  private subscriptions = new Subscription();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -39,19 +45,19 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef
   ) {
+    console.log(this.data)
     this.formData = this.fb.group({
       patientName: [this.data.patientName],
       patientPhone: [this.data.patientPhone],
       reservationId: [this.data.reservationId],
       doctorName: [this.data.doctorName, Validators.required],
-      reservationDate: [this.data.reservationDate, Validators.required],
+      reservationDate: [new Date(this.data.reservationDate), Validators.required],
       reservationStart: [this.data.reservationStart, Validators.required],
       reservationEnd: [this.data.reservationEnd, Validators.required],
       note: [this.data.note],
-      services: [this.data.services]
+      services: [this.data.services],
+      roomId: [this.data.roomId]  
     });
-
-  //console.log('Received reservation data:', this.data);
   }
 
   ngOnInit(): void {
@@ -68,26 +74,24 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.cdr.detectChanges();
 
-    // Load doctors and services concurrently
+    // Load doctors, services, and rooms concurrently
     forkJoin({
       doctors: this.reservationService.getAllDoctorsNames(),
-      services: this.reservationService.getAllServicesNamesToRoom(this.data.roomName)
+      services: this.reservationService.getAllServicesNamesToRoom(this.data.roomName),
+      rooms: this.roomService.getAllRoomsV2()
     }).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
-      next: ({ doctors, services }) => {
+      next: ({ doctors, services, rooms }) => {
         this.AllNames = doctors;
         this.FilterdNames = this.AllNames;
         this.allServices = services;
+        this.allRooms = rooms;
 
         // Initialize selected services
         this.allServices.forEach(service => {
           this.selectedServices[service] = this.data.services.includes(service);
         });
-
-      //console.log('Loaded doctors:', this.AllNames.length);
-      //console.log('Loaded services:', this.allServices.length);
-      //console.log('Selected services:', this.selectedServices);
 
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -106,13 +110,34 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
     );
   }
 
+  onRoomChange(newRoomName: string): void {
+    // When room changes, reload services for the new room
+    this.reservationService.getAllServicesNamesToRoom(newRoomName)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (services) => {
+          this.allServices = services;
+          console.log('allServices', this.allServices)
+          // Reset selected services when room changes
+          this.selectedServices = {};
+          this.allServices.forEach(service => {
+            this.selectedServices[service] = false;
+          });
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error loading services for room:', err);
+        }
+      });
+  }
+
   update(): void {
     if (!this.formData.valid) {
       console.error('Form is invalid');
       return;
     }
 
-    if (this.isSubmitting) return; // Prevent double submission
+    if (this.isSubmitting) return;
 
     this.isSubmitting = true;
     this.cdr.detectChanges();
@@ -121,7 +146,13 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
       .filter(service => this.selectedServices[service]);
 
     const formValue = { ...this.formData.value };
+    console.log('formValue', formValue)
     formValue.services = selectedServices;
+
+    // Format date
+    if (formValue.reservationDate instanceof Date) {
+      formValue.reservationDate = this.datePipe.transform(formValue.reservationDate, 'yyyy-MM-dd');
+    }
 
     // Format time fields if necessary
     if (formValue.reservationStart.length < 8) {
@@ -131,37 +162,27 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
       formValue.reservationEnd = this.formatTime(formValue.reservationEnd);
     }
 
-  //console.log('Updating reservation with data:', formValue);
-
     this.reservationService.updateReservation(this.data.reservationId, formValue)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
-        //console.log('Reservation updated successfully:', response.message);
-          alert(response.message);
-
-          // Don't need to update slots here - parent will handle refresh
           this.isSubmitting = false;
-          this.dialogRef.close('updated');
-          location.reload();
- // Indicate successful update
+          this.updateRoomReservations()
         },
         error: (err) => {
           console.error('Error updating reservation:', err);
-          alert(err.error?.message || 'Failed to update reservation');
           this.isSubmitting = false;
           this.cdr.detectChanges();
         }
       });
   }
 
-  onCheckboxChange(service: string, event: any): void {
-    this.selectedServices[service] = event.target.checked;
-  //console.log('Service selection changed:', this.selectedServices);
+  onCheckboxChange(service: string, event: MatCheckboxChange): void {
+    this.selectedServices[service] = event.checked;
+    this.cdr.detectChanges();  
   }
 
   formatTime(time: string): string {
-    // Add ':00' to the time string to make it in the format 'hh:mm:00'
     return `${time}:00`;
   }
 
@@ -180,5 +201,34 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
 
   isFormValid(): boolean {
     return this.formData.valid && !this.isSubmitting;
+  }
+
+  get hasSelectedServices(): boolean {
+    return this.selectedServicesCount > 0;
+  }
+
+  getSelectedServicesList(): string[] {
+    return Object.keys(this.selectedServices).filter(service => this.selectedServices[service]);
+  }
+  private updateRoomReservations(): void {
+    const subscription = this.roomService.getRoomWithReservations(this.data.roomId, this.data.reservationDate)
+      .subscribe({
+        next: (roomData) => {
+          const reservations = Object.values(roomData).flat();
+          console.log('updated Reservations')
+          // ✅ Update the reservations BehaviorSubject
+          this.roomService.updateReservationsForRoom(this.data.roomName, reservations);
+          // ✅ Now close the dialog after everything is updated
+          this.isSubmitting = false;
+          this.cdr.markForCheck();
+          this.dialogRef.close('updated');
+        },
+        error: (err) => {
+          console.error('Error refreshing reservations:', err);
+          this.roomService.updateReservationsForRoom(this.data.roomName, []);  
+        }
+      });
+
+    this.subscriptions.add(subscription);
   }
 }
