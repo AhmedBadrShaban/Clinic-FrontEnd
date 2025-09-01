@@ -72,13 +72,11 @@ export class AddNewRoomComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadParentRooms(clinicName: string): void {
+  private loadParentRooms(clinicName?: string): void {
     this.isLoadingParentRooms = true;
     this.cdr.detectChanges();
 
-    console.log('🔄 Loading parent rooms for clinic:', clinicName);
-
-    this.roomService.getAllRoomsV2(clinicName)
+    this.roomService.getAllRoomsV2()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (rooms) => {
