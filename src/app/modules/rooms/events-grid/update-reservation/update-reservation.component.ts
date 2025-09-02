@@ -215,6 +215,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error updating reservation:', err);
+          alert(err.error.message)
           this.isSubmitting = false;
           this.cdr.detectChanges();
         }
