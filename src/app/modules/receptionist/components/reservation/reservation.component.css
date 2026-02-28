@@ -1,4 +1,39 @@
- 
+ .cancel-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff5f5;
+  color: #e05050;
+  border: 1.5px solid #f5c0c0;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.cancel-action-btn:hover:not(:disabled) {
+  background: #ffe0e0;
+  border-color: #e05050;
+}
+
+.cancel-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-action-btn mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.no-action {
+  color: #ccc;
+  font-size: 16px;
+}
   
   /* styles.css */
 

@@ -83,32 +83,35 @@ export class DialogEventComponent implements OnInit, OnDestroy {
   }
 
   chengeReservationStatus(id: number, status: string): void {
-    if (this.isUpdatingStatus) return; // Prevent multiple simultaneous updates
+    if (this.isUpdatingStatus) return;
+
+    // Step 1: Confirm cancellation
+    if (status === 'CANCELED') {
+      const confirmed = confirm('Are you sure you want to cancel this reservation?');
+      if (!confirmed) return;
+    }
+
+    // Step 2: Get reason BEFORE calling API
+    let reason: string | null = null;
+    if (status === 'CANCELED') {
+      reason = prompt('Please provide a cancellation reason:');
+      if (!reason) return; // user dismissed the prompt — abort
+    }
 
     this.isUpdatingStatus = true;
     this.cdr.detectChanges();
 
-    this.roomsService.changeReservationStatus(id, status)
+    // Step 3: Call API with reason included
+    this.roomsService.changeReservationStatus(id, status, reason ?? undefined)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
-        //console.log('Status updated:', response.message);
-
-          // Update local reservation status
           this.reservation.status = status;
-
-          // If canceling, prompt for reason
-          if (status === 'CANCELED') {
-            const reason = prompt('Please provide a cancellation reason:');
-            if (reason) {
-              this.reservation.note = reason;
-            }
+          if (reason) {
+            this.reservation.note = reason;
           }
-
           this.isUpdatingStatus = false;
           this.cdr.detectChanges();
-
-          // Close dialog and indicate update
           this.dialogRef.close('updated');
         },
         error: (err) => {

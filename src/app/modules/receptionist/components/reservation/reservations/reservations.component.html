@@ -1,4 +1,3 @@
-
 <!-- Table -->
 <app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
   [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
@@ -16,4 +15,14 @@
   <span class="badge btn" [ngClass]="getStatusClass(row.status)">
     {{ row.status }}
   </span>
+</ng-template>
+
+<!-- Action template -->
+<ng-template #actionTemplate let-row>
+  <button *ngIf="row.status !== 'CANCELLED' && row.status !== 'COMPLETED' && row.status !== 'DONE'" class="cancel-action-btn"
+    [disabled]="cancellingId === row.id" (click)="cancelReservation(row)">
+    <mat-icon>cancel</mat-icon>
+    {{ cancellingId === row.id ? 'Cancelling...' : 'Cancel' }}
+  </button>
+  <span *ngIf="row.status === 'CANCELLED' || row.status === 'COMPLETED' || row.status === 'DONE'" class="no-action">—</span>
 </ng-template>

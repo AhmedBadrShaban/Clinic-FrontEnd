@@ -70,7 +70,7 @@ export class RoomsService {
     );
   }
 
-  changeReservationStatus(id: number, status: string): Observable<any> {
+  changeReservationStatus(id: number, status: string , reason?: string): Observable<any> {
     return this.http.post(
       `${this.baseUrl}receptionist/roomreservationn?id=${id}&status=${status}`,
       { id, status }

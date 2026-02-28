@@ -15,16 +15,16 @@ import { ReservationsService } from '../../../services/reservations-services/res
 export class AfterWorkComponent implements OnInit {
   @Input() phoneNumber: string | null = null;
   @Input() id: string | null = null;
+  @Input() isActive: boolean = false;
 
   userType: any;
   reservationServices: string[] = [];
   editedForm!: FormGroup;
+  loadingState = false;
 
   doneServicesForm: FormGroup = new FormGroup({
     dataList: new FormArray([])
   });
-  @Input() isActive: boolean = false;
-  loadingState = false; // NEW spinner flag
 
   constructor(
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
@@ -41,7 +41,6 @@ export class AfterWorkComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  //console.log('in after Work')
     if (this.data) {
       this.initEditMode();
     } else if (this.id) {
@@ -57,19 +56,22 @@ export class AfterWorkComponent implements OnInit {
         for (const service of this.reservationServices) {
           const serviceFormGroup = new FormGroup({
             service: new FormControl(service, Validators.required),
-            pulse: new FormControl(0, Validators.min(0)),
-            spot: new FormControl(0, Validators.min(0)),
-            fluence1: new FormControl(0, Validators.min(0)),
-            fluence2: new FormControl(0, Validators.min(0)),
-            note: new FormControl('')
+            pulse: new FormControl(null, [Validators.required, Validators.min(0)]),
+            spot: new FormControl(null, [Validators.required, Validators.min(0)]),
+            fluence1: new FormControl(null, [Validators.required, Validators.min(0)]),
+            fluence2: new FormControl(null, [Validators.required, Validators.min(0)]),
+            zimmer: new FormControl(null),        // optional
+            oneThird: new FormControl(false),       // optional checkbox
+            note: new FormControl('', Validators.required)
           });
           (this.doneServicesForm.get('dataList') as FormArray).push(serviceFormGroup);
         }
         this.cd.detectChanges();
-
         this.loadingState = false;
       },
-      error: () => this.loadingState = false
+      error: () => {
+        this.loadingState = false;
+      }
     });
   }
 
@@ -78,11 +80,13 @@ export class AfterWorkComponent implements OnInit {
     for (const service of this.reservationServices) {
       this.editedForm = this.fb.group({
         historyId: [this.data.historyId, Validators.required],
-        service: [this.data.service],
-        pulse: [this.data.pulse],
-        fluence1: [this.data.fluence1],
-        fluence2: [this.data.fluence2, Validators.required],
-        spot: [this.data.spot, Validators.required],
+        service: [this.data.service, Validators.required],
+        pulse: [this.data.pulse, [Validators.required, Validators.min(0)]],
+        fluence1: [this.data.fluence1, [Validators.required, Validators.min(0)]],
+        fluence2: [this.data.fluence2, [Validators.required, Validators.min(0)]],
+        spot: [this.data.spot, [Validators.required, Validators.min(0)]],
+        zimmer: [this.data.zimmer ?? null],   // optional
+        oneThird: [this.data.oneThird ?? false],  // optional checkbox
         note: [this.data.note, Validators.required],
         date: [this.data.date],
         doctorName: [this.data.doctorName],
@@ -101,6 +105,10 @@ export class AfterWorkComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // Mark all fields touched to show validation errors
+    this.doneServicesForm.markAllAsTouched();
+    if (this.doneServicesForm.invalid) return;
+
     const afterWork = this.doneServicesForm.value.dataList;
     this.doctorService.completeReservation(this.id!, afterWork).subscribe({
       next: (data: any) => {
@@ -115,12 +123,14 @@ export class AfterWorkComponent implements OnInit {
   }
 
   updateHistory(): void {
+    this.doneServicesForm.markAllAsTouched();
+    if (this.doneServicesForm.invalid) return;
+
     this.reservationsApi.updateHistory(this.editedForm.value.historyId, this.editedForm.value).subscribe({
       next: (data: any) => {
         alert(data.message);
         this.closeDialog();
         this.cd.detectChanges();
-
       },
       error: (error: any) => {
         alert(error.error.message);

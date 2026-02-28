@@ -1,41 +1,42 @@
-<div class="whole">
-  <div *ngFor="let r of reservations" (click)="openReservation(r.patientPhone , r.reservationId )" class="the-box">
-    <div class="left-part">
-      <div style="display: flex;justify-content: center; margin-top: 2%; margin-bottom: 3%;
-                  font-size: 27px ; font-weight: 800">
-        {{r.patientName}}
-      </div>
+<div class="page-wrapper">
 
-      <div class="container">
-        <div *ngFor="let s of r.service" class="service-class">
-            {{s}}
-        </div>
-      </div>
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Today's Appointments</h1>
+      <p class="page-subtitle">{{ today | date:'EEEE, MMMM d, y' }}</p>
     </div>
-    <div class="right-part">
-      <div>
-        <img src="../../../assets/onTime.png" height="50" width="50"/>
-      </div>
-      <div style="margin: 5%;">
-        {{formatTimeTo12Hour(r.start)}}
-      </div>
+    <div class="count-badge">
+      <span class="count-num">{{ reservations.length || 0 }}</span>
+      <span class="count-lbl">Patients</span>
     </div>
   </div>
 
+  <div class="cards-list">
+    <div *ngFor="let r of reservations; let i = index" class="res-card" [style.animation-delay]="i * 50 + 'ms'"
+      (click)="openReservation(r)">
+
+      <div class="card-left">
+        <div class="patient-name">{{ r.patientName }}</div>
+        <div class="services-grid">
+          <span *ngFor="let s of r.service" class="service-pill">{{ s }}</span>
+        </div>
+      </div>
+
+      <div class="card-right">
+        <div class="time-display">
+          <mat-icon class="clock-icon">schedule</mat-icon>
+          <span>{{ formatTimeTo12Hour(r.start) }}</span>
+        </div>
+        <mat-icon class="chevron-icon">chevron_right</mat-icon>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="!reservations || reservations.length === 0" class="empty-state">
+    <mat-icon>event_available</mat-icon>
+    <h3>No appointments today</h3>
+    <p>Your schedule is clear.</p>
+  </div>
+
 </div>
-
-<!--id: string;-->
-<!--patientName: string;-->
-<!--patientPhoneNumber: string;-->
-<!--time:{-->
-<!--hour: number;-->
-<!--minute: number;-->
-<!--}-->
-<!--services:Service[];-->
-
-
-<!--id: string;-->
-<!--name: string;-->
-<!--cost: number;-->
-<!--room: string;-->
-<!--status: StatusOfService;-->

@@ -13,6 +13,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
 import { Subscription } from 'rxjs';
+import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 
 @Component({
   selector: 'app-reservations',
@@ -21,12 +22,13 @@ import { Subscription } from 'rxjs';
 })
 export class ReservationsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() phoneNumber: string | null = null;
-  @Input() isActive = false; // NEW: to control lazy loading
+  @Input() isActive = false;
   @ViewChild('servicesTemplate', { static: true }) servicesTemplate!: TemplateRef<any>;
   @ViewChild('statusTemplate', { static: true }) statusTemplate!: TemplateRef<any>;
+  @ViewChild('actionTemplate', { static: true }) actionTemplate!: TemplateRef<any>;
 
   private sub = new Subscription();
-  private initialized = false; // NEW: track first load
+  private initialized = false;
 
   tableColumns: Array<{ key: string, label: string, template?: TemplateRef<any> }> = [];
   dataSource = new MatTableDataSource<any>();
@@ -35,8 +37,9 @@ export class ReservationsComponent implements OnInit, OnDestroy, OnChanges {
   currentPage: number = 0;
   pageSizeOptions: number[] = [5, 10, 25, 50];
   loadingState = false;
+  cancellingId: number | null = null; // tracks which row is being cancelled
 
-  constructor(private reservationsService: ReservationsService, private cd: ChangeDetectorRef) { }
+  constructor(private reservationsService: ReservationsService, private roomsService: RoomsService, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.tableColumns = [
@@ -46,18 +49,16 @@ export class ReservationsComponent implements OnInit, OnDestroy, OnChanges {
       { key: 'time', label: 'Time' },
       { key: 'clinic', label: 'Clinic' },
       { key: 'note', label: 'Note' },
-      { key: 'status', label: 'Status', template: this.statusTemplate }
+      { key: 'status', label: 'Status', template: this.statusTemplate },
+      { key: 'action', label: 'Action', template: this.actionTemplate }
     ];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Tab just became active for the first time
     if (changes['isActive'] && this.isActive && !this.initialized && this.phoneNumber) {
       this.initialized = true;
       this.getReservations(this.currentPage);
     }
-
-    // Phone number changed while tab is already active
     if (changes['phoneNumber'] && this.isActive && this.phoneNumber) {
       this.getReservations(this.currentPage);
     }
@@ -73,13 +74,43 @@ export class ReservationsComponent implements OnInit, OnDestroy, OnChanges {
         next: (data) => {
           this.dataSource.data = [...data.data];
           this.totalItems = data.totalItems;
-          this.cd.detectChanges();
           this.loadingState = false;
+          this.cd.detectChanges();
         },
         error: () => {
           this.loadingState = false;
         }
       });
+  }
+
+  cancelReservation(row: any): void {
+    alert('Cancellation  will be availlable soon. :-(');
+     // Step 1: confirm
+    // const confirmed = confirm('Are you sure you want to cancel this reservation?');
+    // if (!confirmed) return;
+
+    // // Step 2: get reason before calling API
+    // const reason = prompt('Please provide a cancellation reason:');
+    // if (!reason) return;
+
+    // this.cancellingId = row.id;
+    // this.cd.detectChanges();
+
+    // this.roomsService.changeReservationStatus(row.id, 'CANCELED', reason)
+    //   .subscribe({
+    //     next: () => {
+    //       // Update row in place — no need to reload full list
+    //       row.status = 'CANCELLED';
+    //       row.note = reason;
+    //       this.cancellingId = null;
+    //       this.cd.detectChanges();
+    //     },
+    //     error: (err) => {
+    //       alert(err.error?.message || 'Failed to cancel reservation');
+    //       this.cancellingId = null;
+    //       this.cd.detectChanges();
+    //     }
+    //   });
   }
 
   onPageChange(event: PageEvent): void {

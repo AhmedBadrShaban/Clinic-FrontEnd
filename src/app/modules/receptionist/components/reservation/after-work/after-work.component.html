@@ -1,64 +1,161 @@
-<div class="body">
- 
+<div class="aw-wrapper">
 
-  <!-- Main content -->
-  <div *ngIf="!loadingState">
-    <div *ngIf="userType=='ROLE_ADMIN'" class="Header text-center">
-      Edit History
+  <!-- Loading -->
+  <div *ngIf="loadingState" class="aw-loading">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>Loading services...</span>
+  </div>
+
+  <!-- Main -->
+  <div *ngIf="!loadingState" class="aw-body">
+
+    <!-- Admin header -->
+    <div *ngIf="userType=='ROLE_ADMIN'" class="admin-banner">
+      <mat-icon>edit_note</mat-icon>
+      <span>Edit History Record</span>
     </div>
 
-    <div class="carts-reservation" [formGroup]="doneServicesForm">
-      <form [formGroup]="doneServicesForm" style="width: 87%;">
-        <div formArrayName="dataList">
-          <div *ngFor="let serviceGroup of dataListControls; let i = index" [formGroupName]="i" class="service-cart">
-            <h3 class="title text-center m-2">{{ serviceGroup.get('service')!.value }}</h3>
+    <form [formGroup]="doneServicesForm">
+      <div formArrayName="dataList">
 
-            <div class="first-Row">
-              <div class="div-btn">
-                <label for="pulses"> Pulses</label>
-                <input id="pulses" type="number" formControlName="pulse" class="form-control">
-              </div>
-              <div class="div-btn">
-                <label for="Spot"> Spot</label>
-                <input class="form-control" id="Spot" type="number" formControlName="spot">
-              </div>
-              <div class="div-btn">
-                <label for="Flunce1"> Flunce 1</label>
-                <input class="form-control" id="Flunce1" type="number" formControlName="fluence1">
-              </div>
-              <div class="div-btn">
-                <label for="Flunce2"> Flunce 2</label>
-                <input class="form-control" id="Flunce2" type="number" formControlName="fluence2">
-              </div>
+        <!-- Service Card -->
+        <div *ngFor="let serviceGroup of dataListControls; let i = index" [formGroupName]="i" class="service-card"
+          [style.animation-delay]="i * 60 + 'ms'">
+
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="service-name-pill">
+              <mat-icon class="svc-icon">spa</mat-icon>
+              {{ serviceGroup.get('service')!.value }}
+            </div>
+            <button *ngIf="userType != 'ROLE_ADMIN'" type="button" class="remove-btn" (click)="onCancel(i)"
+              matTooltip="Remove this service">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <!-- Metrics Grid -->
+          <div class="metrics-grid">
+
+            <div class="metric-field">
+              <label class="field-label">
+                <mat-icon class="field-icon">flash_on</mat-icon>
+                Pulses <span class="required-star">*</span>
+              </label>
+              <input type="number" formControlName="pulse" class="field-input" min="0" placeholder="0"
+                [class.invalid]="serviceGroup.get('pulse')!.invalid && serviceGroup.get('pulse')!.touched">
+              <span class="error-msg" *ngIf="serviceGroup.get('pulse')!.invalid && serviceGroup.get('pulse')!.touched">
+                Required
+              </span>
             </div>
 
-            <div class="notes-div">
-              <div style="width: 80%;">
-                <label>Notes:</label>
-                <input type="text" formControlName="note" class="form-control">
-              </div>
-              <div *ngIf="userType!='ROLE_ADMIN'">
-                <button class="btn btn-danger" style="margin-top: 30%" (click)="onCancel(i)"> Cancel</button>
+            <div class="metric-field">
+              <label class="field-label">
+                <mat-icon class="field-icon">crop_square</mat-icon>
+                Spot <span class="required-star">*</span>
+              </label>
+              <input type="number" formControlName="spot" class="field-input" min="0" placeholder="0"
+                [class.invalid]="serviceGroup.get('spot')!.invalid && serviceGroup.get('spot')!.touched">
+              <span class="error-msg" *ngIf="serviceGroup.get('spot')!.invalid && serviceGroup.get('spot')!.touched">
+                Required
+              </span>
+            </div>
+
+            <div class="metric-field">
+              <label class="field-label">
+                <mat-icon class="field-icon">tune</mat-icon>
+                Fluence 1 <span class="required-star">*</span>
+              </label>
+              <input type="number" formControlName="fluence1" class="field-input" min="0" placeholder="0"
+                [class.invalid]="serviceGroup.get('fluence1')!.invalid && serviceGroup.get('fluence1')!.touched">
+              <span class="error-msg"
+                *ngIf="serviceGroup.get('fluence1')!.invalid && serviceGroup.get('fluence1')!.touched">
+                Required
+              </span>
+            </div>
+
+            <div class="metric-field">
+              <label class="field-label">
+                <mat-icon class="field-icon">tune</mat-icon>
+                Fluence 2 <span class="required-star">*</span>
+              </label>
+              <input type="number" formControlName="fluence2" class="field-input" min="0" placeholder="0"
+                [class.invalid]="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
+              <span class="error-msg"
+                *ngIf="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
+                Required
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Zimmer + 1/3 Row -->
+          <div class="extra-row">
+            <div class="metric-field">
+              <label class="field-label">
+                <mat-icon class="field-icon">ac_unit</mat-icon>
+                Zimmer
+                <span class="optional-tag">optional</span>
+              </label>
+              <input type="number" formControlName="zimmer" class="field-input" min="0" placeholder="—">
+            </div>
+
+            <div class="checkbox-field">
+              <label class="field-label">
+                <mat-icon class="field-icon">looks_3</mat-icon>
+                1/3
+                <span class="optional-tag">optional</span>
+              </label>
+              <div class="checkbox-wrapper">
+                <input type="checkbox" formControlName="oneThird" id="oneThird_{{ i }}" class="styled-checkbox">
+                <label for="oneThird_{{ i }}" class="checkbox-label">Apply 0/30</label>
               </div>
             </div>
           </div>
 
-          <div *ngIf="userType!='ROLE_ADMIN'" class="Confirm">
-            <button [disabled]="dataListControls.length == 0 || doneServicesForm.invalid" class="btn btn-success"
-              style="width: 70%" (click)="onSubmit()"> Confirm </button>
+          <!-- Notes -->
+          <div class="note-field">
+            <label class="field-label">
+              <mat-icon class="field-icon">notes</mat-icon>
+              Notes <span class="required-star">*</span>
+            </label>
+            <textarea formControlName="note" class="field-textarea" rows="2" placeholder="Add session notes here..."
+              [class.invalid]="serviceGroup.get('note')!.invalid && serviceGroup.get('note')!.touched">
+            </textarea>
+            <span class="error-msg" *ngIf="serviceGroup.get('note')!.invalid && serviceGroup.get('note')!.touched">
+              Notes are required
+            </span>
           </div>
 
-          <div class="d-flex justify-content-center my-4" *ngIf="userType=='ROLE_ADMIN'">
-            <div>
-              <button [disabled]="dataListControls.length == 0 || doneServicesForm.invalid" class="btn btn-secondary"
-                (click)="updateHistory()"> Update History </button>
-            </div>
-            <div>
-              <button class="mx-2 btn btn-danger" (click)="cancelUpdate()"> Cancel</button>
-            </div>
-          </div>
         </div>
-      </form>
-    </div>
+
+        <!-- Empty state -->
+        <div *ngIf="dataListControls.length === 0" class="empty-services">
+          <mat-icon>assignment_late</mat-icon>
+          <p>No services found for this reservation.</p>
+        </div>
+
+        <!-- Doctor: Confirm -->
+        <div *ngIf="userType != 'ROLE_ADMIN' && dataListControls.length > 0" class="action-row">
+          <button type="button" class="confirm-btn" [disabled]="doneServicesForm.invalid" (click)="onSubmit()">
+            <mat-icon>check_circle</mat-icon>
+            Confirm &amp; Complete
+          </button>
+        </div>
+
+        <!-- Admin: Update / Cancel -->
+        <div *ngIf="userType == 'ROLE_ADMIN' && dataListControls.length > 0" class="action-row admin-actions">
+          <button type="button" class="update-btn" [disabled]="doneServicesForm.invalid" (click)="updateHistory()">
+            <mat-icon>save</mat-icon>
+            Update History
+          </button>
+          <button type="button" class="cancel-btn" (click)="cancelUpdate()">
+            <mat-icon>close</mat-icon>
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </form>
   </div>
 </div>
