@@ -17,6 +17,7 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class PackageComponent implements OnInit, OnDestroy {
   @ViewChild('expireTemplate', { static: true }) expireTemplate!: TemplateRef<any>;
+  @ViewChild('receiptTemplate', { static: true }) receiptTemplate!: TemplateRef<any>;
 
   selectedDate: Date | null = new Date();
   tableColumns: Array<{ key: string, label: string, template?: TemplateRef<any> }> = [];
@@ -38,12 +39,6 @@ export class PackageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setupColumns();
     this.getAllPackages(0);
-
-    // this.sub.add(
-    //   this.packageService.listOfData$.subscribe((data) => {
-    //     this.dataSource = data;
-    //   })
-    // );
   }
 
   setupColumns(): void {
@@ -51,12 +46,24 @@ export class PackageComponent implements OnInit, OnDestroy {
       { key: 'patientName', label: 'Patient Name' },
       { key: 'packageName', label: 'Package' },
       { key: 'expire', label: 'Expire', template: this.expireTemplate },
+      { key: 'receipt', label: 'Receipt', template: this.receiptTemplate },
     ];
+  }
+
+  downloadReceipt(row: Package): void {
+    alert('Download receipt feature will be available soon!');
+    // this.packageService.downloadReceipt(row).subscribe((blob: Blob) => {
+    //   const url = window.URL.createObjectURL(blob);
+    //   const anchor = document.createElement('a');
+    //   anchor.href = url;
+    //   anchor.download = `receipt-${row.patientName ?? 'unknown'}.pdf`;
+    //   anchor.click();
+    //   window.URL.revokeObjectURL(url);
+    // });
   }
 
   getAllPackages(page: number): void {
     this.packageService.getAllReservedPackages(page, this.pageSize).subscribe((res: any) => {
-    //console.log('res packages', res  )
       this.dataSource.data = [...res.data];
       this.totalItems = res.totalItems;
     });
@@ -73,7 +80,6 @@ export class PackageComponent implements OnInit, OnDestroy {
     const formattedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
     if (formattedDate) {
       this.packageService.filterByDate(formattedDate).subscribe((res: any) => {
-      //console.log('res filter', res)
         this.dataSource.data = res.data;
       });
     }

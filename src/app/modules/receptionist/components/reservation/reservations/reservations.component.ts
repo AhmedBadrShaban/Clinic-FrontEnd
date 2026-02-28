@@ -44,6 +44,7 @@ export class ReservationsComponent implements OnInit, OnDestroy, OnChanges {
       { key: 'service', label: 'Services', template: this.servicesTemplate },
       { key: 'date', label: 'Date' },
       { key: 'time', label: 'Time' },
+      { key: 'clinic', label: 'Clinic' },
       { key: 'note', label: 'Note' },
       { key: 'status', label: 'Status', template: this.statusTemplate }
     ];

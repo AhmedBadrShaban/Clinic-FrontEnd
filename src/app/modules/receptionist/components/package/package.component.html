@@ -22,15 +22,16 @@
   </div>
 </div>
 
-<app-table
-  [data]="dataSource.data"
-  [columns]="tableColumns"
-  [totalItems]="totalItems"
-  [pageSize]="pageSize"
-  [currentPage]="currentPage + 1"
-  (onPageChange)="onPageChange($event)">
+<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+  [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
 </app-table>
 
 <ng-template #expireTemplate let-row>
   <span>{{ row.expire }}</span>
+</ng-template>
+
+<ng-template #receiptTemplate let-row>
+  <button mat-icon-button color="primary" (click)="downloadReceipt(row)" matTooltip="Download Receipt">
+    <mat-icon>download</mat-icon>
+  </button>
 </ng-template>

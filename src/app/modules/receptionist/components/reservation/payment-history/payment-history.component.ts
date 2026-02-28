@@ -37,15 +37,17 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     this.tableColumns = [
+      { key: 'date', label: 'Date' },
       { key: 'patientName', label: 'Patient' },
-      { key: 'paymentType', label: 'Payment Type' },
-      { key: 'service', label: 'Service' },
+      { key: 'roomName', label: 'Room' },
+      { key: 'doctorName', label: 'Doctor' },
+      { key: 'paymentType', label: 'Payment Type / Service' },
       { key: 'pulses', label: 'Pulses' },
       { key: 'cash', label: 'Cash' },
       { key: 'vodafoneCash', label: 'Vcash' },
       { key: 'visa', label: 'Visa' },
-      { key: 'credit', label: 'Credit' },
       { key: 'instaPay', label: 'InstaPay' },
+      { key: 'credit', label: 'Credit' },
       { key: 'debit', label: 'Debit' },
       { key: 'totalMoney', label: 'Total' }
     ];
@@ -87,7 +89,9 @@ export class PaymentHistoryComponent implements OnInit, OnDestroy, OnChanges {
     this.pageSize = event.pageSize;
     this.getPaymentHistory(this.currentPage);
   }
-
+handleSort(event: { column: string; direction: string }) {
+  //  this.loadData(event.column, event.direction);
+}
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
