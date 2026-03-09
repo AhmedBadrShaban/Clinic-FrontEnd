@@ -1,3 +1,4 @@
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { Component, Inject, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -54,6 +55,7 @@ export class DialogEventComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public reservation: any = {},
     private roomsService: RoomsService,
     private patienDepit: PatientService,
+    private authService:AuthService,
     public dialog: MatDialog,
     private router: Router,
     private datePipe: DatePipe,
@@ -152,19 +154,22 @@ export class DialogEventComponent implements OnInit, OnDestroy {
   }
 
   checkOut(reservation: any): void {
-     this.router.navigate(
-      [`/receptionist/rooms/check-out/${reservation.reservationId}`],
+    const basePath = this.isAdmin ? 'admin' : 'receptionist';
+
+    this.router.navigate(
+      [`/${basePath}/rooms/check-out/${reservation.reservationId}`],
       {
         queryParams: {
           patientName: reservation.patientName,
           patientPhone: reservation.patientPhone
         }
       }
+    )
       
-    ).then(() => {
+    .then(() => {
        this.close()});
   }
-
+ 
   formatTimeTo12Hour(time: string): string {
     if (!time) {
       return '';
@@ -192,7 +197,9 @@ export class DialogEventComponent implements OnInit, OnDestroy {
       this.reservation.status !== 'CANCELED' &&
       !this.isUpdatingStatus;
   }
-
+  get isAdmin(): boolean {
+    return this.authService.userType === 'ROLE_ADMIN';
+  }
   getStatusClass(status: string): string {
     const statusClasses: { [key: string]: string } = {
       'IN_PROGRESS': 'inprogress',

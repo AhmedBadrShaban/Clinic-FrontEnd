@@ -11,23 +11,22 @@ export class AuthGuardService implements CanActivate {
   constructor(private authService: AuthService, private router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    //console.log( "applying Rout Guard : "  ,this.authService.isAauthenticated());
     if (this.authService.isAauthenticated()) {
-      // Check if the user has the required role to access the module
-      const requiredRole = route.data['requiredRole'] as string;
-            //console.log('requiredRole :>> ', requiredRole);
 
-      if (requiredRole && this.authService.userType !== requiredRole) {
-        //console.log('userType :>> ', this.authService.userType);
+      const requiredRoles = route.data['requiredRoles'] as string[];
 
-         this.router.navigate(['/forbidden']);
+      // If no roles defined, allow access
+      if (!requiredRoles || requiredRoles.length === 0) return true;
+
+      // Check if user's role is in the allowed list
+      if (!requiredRoles.includes(this.authService.userType!)) {
+        this.router.navigate(['/forbidden']);
         return false;
       }
 
       return true;
     }
 
-    // Redirect to the login page if the user is not authenticated
     this.router.navigate(['/login']);
     return false;
   }

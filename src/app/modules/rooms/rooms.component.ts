@@ -18,6 +18,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 })
 export class RoomsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  private readonly STORAGE_KEY = 'rooms_selected_tab';
 
   // Reactive state
   private selectedDateSubject = new BehaviorSubject<string>(
@@ -48,16 +49,9 @@ export class RoomsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to rooms from service
     this.roomsService.rooms$
       .pipe(takeUntil(this.destroy$))
       .subscribe(rooms => {
-        console.log('🏠 RoomsComponent received rooms update:', {
-          roomCount: rooms.length,
-          rooms: rooms,
-          previousRoomCount: this.rooms.length
-        });
-
         this.rooms = rooms;
         this.cdr.detectChanges();
       });
@@ -65,11 +59,10 @@ export class RoomsComponent implements OnInit, OnDestroy {
     if (this.isAdmin) {
       this.loadClinics();
     } else {
-      this.initializeRooms(); // Receptionist loads directly
+      this.initializeRooms();
     }
     this.setupReactiveStreams();
   }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -94,7 +87,6 @@ export class RoomsComponent implements OnInit, OnDestroy {
       });
   }
 
-  /** 🔹 Fetch rooms, optionally by clinic */
   private initializeRooms(clinicName?: string): void {
     this.dataLoaded = false;
 
@@ -102,9 +94,18 @@ export class RoomsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (rooms) => {
-        //console.log('rooms loaded', rooms);
           this.rooms = rooms;
           this.dataLoaded = true;
+
+          // ✅ Restore saved tab HERE — rooms are guaranteed to exist now
+          const savedRoomId = localStorage.getItem(this.STORAGE_KEY);
+          if (savedRoomId) {
+            const savedIndex = this.rooms.findIndex(r => r.roomId === +savedRoomId);
+            if (savedIndex !== -1) {
+              this.selectedTabIndexSubject.next(savedIndex);
+            }
+          }
+
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -140,11 +141,14 @@ export class RoomsComponent implements OnInit, OnDestroy {
     this.refreshTriggerSubject.next(this.refreshTriggerSubject.value + 1);
   }
 
-  // Lazy load room data when tab changes
-  onTabChange(index: number): void {
+   onTabChange(index: number): void {
     if (index >= 0 && index < this.rooms.length) {
       this.selectedTabIndexSubject.next(index);
-      // No need to trigger refresh here - child components will handle their own loading
+
+       const room = this.rooms[index];
+      if (room) {
+        localStorage.setItem(this.STORAGE_KEY, String(room.roomId));
+      }
     }
   }
 

@@ -17,12 +17,14 @@ import { ReceptionistProfileComponent } from './components/receptionists/recepti
 import { DoctorScheduleComponent } from '../receptionist/components/doctor-schedule/doctor-schedule.component';
 import {ContributorsComponent} from "./components/contributors/contributors.component";
 import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
+import { CheckOutComponent } from '../rooms/check-out/check-out.component';
 
 const routes: Routes = [
     { path: '', component: AdminComponent, children:[
       {path: '', component: AdminHomeComponent},
       {path: 'adminProfile', component: AdminProfileComponent },
       {path: 'rooms', component: RoomsComponent, pathMatch:'full',},
+      { path: 'rooms/check-out/:id', component: CheckOutComponent, pathMatch: 'full' },
       {path: 'expense', component: ExpenseComponent, pathMatch:'full'},
       {path: 'patients', component: ReservationComponent},
       { path: "patients/:phone", component: ReservationComponent },

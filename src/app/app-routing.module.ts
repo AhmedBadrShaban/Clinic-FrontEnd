@@ -10,19 +10,29 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
 const routes:Routes = [
   {path : '', component:LoginComponent},
   {path : 'login' , component:LoginComponent},
-  { path: 'receptionist', loadChildren:
-  () => import('./modules/receptionist/receptionist.module').then(m => m.ReceptionistModule),
+  {
+  path: 'receptionist',
+  loadChildren: () => import('./modules/receptionist/receptionist.module').then(m => m.ReceptionistModule),
   canActivate: [AuthGuardService],
-  data: { requiredRole: 'ROLE_RECEPTIONIST' }
+  data: { requiredRoles: ['ROLE_RECEPTIONIST'] },
+ },
+ {
+  path: 'admin',
+    loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule),
+      canActivate: [AuthGuardService],
+        data: { requiredRoles: ['ROLE_ADMIN'] }
 },
-
-  { path: 'admin', loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule) ,
-    canActivate: [AuthGuardService],
-    data: { requiredRole: 'ROLE_ADMIN' }
+{
+  path: 'doctor',
+    loadChildren: () => import('./modules/doctor/doctor.module').then(m => m.DoctorModule),
+      canActivate: [AuthGuardService],
+        data: { requiredRoles: ['ROLE_DOCTOR'] }
 },
-  { path: 'doctor', loadChildren: () => import('./modules/doctor/doctor.module').then(m => m.DoctorModule),
-    canActivate: [AuthGuardService],
-    data: { requiredRole: 'ROLE_DOCTOR' }
+{
+  path: 'contributer',
+    loadChildren: () => import('./modules/conteributer/conteributer.module').then(m => m.ConteributerModule),
+      canActivate: [AuthGuardService],
+        data: { requiredRoles: ['ROLE_CONTRIBUTOR'] }
 },
 { path: 'forbidden', component: ForbiddenComponent },
   { path: 'contributer', loadChildren: () => import('./modules/conteributer/conteributer.module').then(m => m.ConteributerModule), 

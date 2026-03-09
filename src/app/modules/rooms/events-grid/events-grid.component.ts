@@ -7,7 +7,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { reservation } from '../../receptionist/models/event-reservation.model';
 import { DialogEventComponent } from './dialog-event/dialog-event.component';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
-
+import { AuthService } from 'src/app/shared/services/auth.service';
+ 
 @Component({
   selector: 'app-events-grid',
   templateUrl: './events-grid.component.html',
@@ -31,6 +32,7 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private roomsService: RoomsService,
+    private authService: AuthService,
     private router:Router , 
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef
@@ -221,9 +223,12 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
   trackByReservationId(index: number, reservation: reservation): number {
     return reservation.reservationId || index;
   }
+
   checkOut(reservation: any): void {
+    const basePath = this.isAdmin ? 'admin' : 'receptionist';
+
     this.router.navigate(
-      [`/receptionist/rooms/check-out/${reservation.reservationId}`],
+      [`/${basePath}/rooms/check-out/${reservation.reservationId}`],
       {
         queryParams: {
           patientName: reservation.patientName,
@@ -261,5 +266,8 @@ export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
           console.error('Error updating status:', err);
         }
       });
+  }
+  get isAdmin(): boolean {
+    return this.authService.userType === 'ROLE_ADMIN';
   }
 }

@@ -26,7 +26,7 @@ const routes: Routes = [
     { path: "reservation/:phone", component: ReservationComponent }  ,
     {path:"reservationform",component:ReservationFmComponent},
     {path: 'rooms', component: RoomsComponent, pathMatch:'full'},
-    {path: 'rooms/check-out/:id', component: CheckOutComponent},
+    { path: 'rooms/check-out/:id', component: CheckOutComponent, pathMatch: 'full' },
 
   ] },
 
