@@ -37,6 +37,7 @@ const routes: Routes = [
       {path: 'materials', component: MaterialsComponent},
       { path: 'monthly-income', component: MonthlyMoneyReportComponent },
       {path: 'reservations', component: ReservationsComponent},
+      { path: "reservation/:phone", component: ReservationComponent, pathMatch: 'full' },
       {path: 'doctor-schedular', component: DoctorScheduleComponent},
         {path: 'contributors', component: ContributorsComponent},
 

@@ -23,7 +23,7 @@ const routes: Routes = [
     {path:"dailysheet",component:DailySheetComponent},
     {path:"coversheet",component:CoverSheetComponent},
     { path: "reservation", component: ReservationComponent },
-    { path: "reservation/:phone", component: ReservationComponent }  ,
+    { path: "reservation/:phone", component: ReservationComponent, pathMatch: 'full' }  ,
     {path:"reservationform",component:ReservationFmComponent},
     {path: 'rooms', component: RoomsComponent, pathMatch:'full'},
     { path: 'rooms/check-out/:id', component: CheckOutComponent, pathMatch: 'full' },

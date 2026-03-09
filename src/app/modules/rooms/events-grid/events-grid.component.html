@@ -50,20 +50,21 @@
         </div>
 
         <!-- Time Banner -->
-        <div class="time-banner">
-          <div class="time-range">
-            <span class="time-val">{{ formatTimeTo12Hour(reservation.reservationStart) }}</span>
-            <div class="time-arrow">
-              <span class="time-line"></span>
-              <mat-icon>arrow_forward</mat-icon>
-            </div>
-            <span class="time-val">{{ formatTimeTo12Hour(reservation.reservationEnd) }}</span>
-          </div>
+    <div class="time-banner">
+  <!-- <mat-icon class="time-banner-icon">schedule</mat-icon> -->
+  <div class="time-range">
+    <span class="time-val">{{ formatTimeTo12Hour(reservation.reservationStart) }}</span>
+    <div class="time-arrow">
+      <span class="time-line"></span>
+      <mat-icon>arrow_forward</mat-icon>
+    </div>
+    <span class="time-val">{{ formatTimeTo12Hour(reservation.reservationEnd) }}</span>
+  </div>
+ </div>
           <!-- <div class="date-chip">
             <mat-icon>calendar_today</mat-icon>
             <span>{{ reservation.reservationDate | date: 'MMM d' }}</span>
           </div> -->
-        </div>
 
         <!-- Patient & Doctor Info -->
         <div class="card-body">
@@ -103,11 +104,12 @@
           <!-- Flags Row: hasDebit + notes -->
           <div class="flags-row">
             <!-- Debit Flag -->
-            <div class="flag-chip debit-chip" [class.active]="reservation.hasDebit"
-              matTooltip="{{ reservation.hasDebit ? 'Has Outstanding Debit' : 'No Debit' }}">
-              <mat-icon>{{ reservation.hasDebit ? 'account_balance_wallet' : 'check_circle' }}</mat-icon>
-              <span>{{ reservation.hasDebit ? 'Has Debit' : 'No Debit' }}</span>
-            </div>
+<div *ngIf="reservation.hasDebit"
+  class="flag-chip debit-chip active"
+  matTooltip="Has Outstanding Debit">
+  <mat-icon>account_balance_wallet</mat-icon>
+  <span>Has Debit</span>
+</div>
           </div>
 
            <div *ngIf="reservation.note && reservation.status === 'CANCELLED'" class="note-block cancellation">

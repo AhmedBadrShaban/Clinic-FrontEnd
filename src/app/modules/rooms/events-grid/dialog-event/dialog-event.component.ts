@@ -259,8 +259,8 @@ isWaitingOrInProgress(): boolean {
   return this.reservation.status === 'IN_PROGRESS' || this.reservation.status === 'WAITING';
 }
   goToPatientInfo(phone: string): void {
-  //console.log('naviagting to reservationwith phone:', phone)
-    this.router.navigate(['/receptionist/reservation', phone]);
-    this.close()
-}
+    const basePath = this.isAdmin ? 'admin' : 'receptionist';
+    this.router.navigate([`/${basePath}/reservation`, phone]);
+    this.close();
+  }
 }
