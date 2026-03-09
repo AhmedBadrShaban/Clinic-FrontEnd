@@ -1,3 +1,4 @@
+import { reservation } from './../../../models/event-reservation.model';
 import {
   Component,
   Input,
@@ -84,33 +85,31 @@ export class ReservationsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   cancelReservation(row: any): void {
-    alert('Cancellation  will be availlable soon. :-(');
-     // Step 1: confirm
-    // const confirmed = confirm('Are you sure you want to cancel this reservation?');
-    // if (!confirmed) return;
+    // alert('Cancellation  will be availlable soon. :-(');
+     const confirmed = confirm('Are you sure you want to cancel this reservation?');
+    if (!confirmed) return;
 
-    // // Step 2: get reason before calling API
-    // const reason = prompt('Please provide a cancellation reason:');
-    // if (!reason) return;
+    // Step 2: get reason before calling API
+    const reason = prompt('Please provide a cancellation reason:');
+    if (!reason) return;
 
-    // this.cancellingId = row.id;
-    // this.cd.detectChanges();
+    this.cancellingId = row.id;
+    this.cd.detectChanges();
 
-    // this.roomsService.changeReservationStatus(row.id, 'CANCELED', reason)
-    //   .subscribe({
-    //     next: () => {
-    //       // Update row in place — no need to reload full list
-    //       row.status = 'CANCELLED';
-    //       row.note = reason;
-    //       this.cancellingId = null;
-    //       this.cd.detectChanges();
-    //     },
-    //     error: (err) => {
-    //       alert(err.error?.message || 'Failed to cancel reservation');
-    //       this.cancellingId = null;
-    //       this.cd.detectChanges();
-    //     }
-    //   });
+    this.roomsService.changeReservationStatus(row.reservationId, 'CANCELED', reason)
+      .subscribe({
+        next: () => {
+           row.status = 'CANCELLED';
+          row.note = reason;
+          this.cancellingId = null;
+          this.cd.detectChanges();
+        },
+        error: (err) => {
+          alert(err.error?.message || 'Failed to cancel reservation');
+          this.cancellingId = null;
+          this.cd.detectChanges();
+        }
+      });
   }
 
   onPageChange(event: PageEvent): void {

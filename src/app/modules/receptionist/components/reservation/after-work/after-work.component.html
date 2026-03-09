@@ -89,26 +89,32 @@
 
           </div>
 
-          <!-- Zimmer + 1/3 Row -->
+          <!-- Zimmer + 0/3 Row -->
           <div class="extra-row">
             <div class="metric-field">
               <label class="field-label">
                 <mat-icon class="field-icon">ac_unit</mat-icon>
                 Zimmer
-                <span class="optional-tag">optional</span>
+                <!-- <span class="optional-tag">optional</span> -->
               </label>
               <input type="number" formControlName="zimmer" class="field-input" min="0" placeholder="—">
+                <span class="error-msg" *ngIf="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
+                  Required
+                </span>
             </div>
 
             <div class="checkbox-field">
               <label class="field-label">
                 <mat-icon class="field-icon">looks_3</mat-icon>
-                1/3
-                <span class="optional-tag">optional</span>
+                0/3
+                <!-- <span class="optional-tag">optional</span> -->
               </label>
               <div class="checkbox-wrapper">
-                <input type="checkbox" formControlName="oneThird" id="oneThird_{{ i }}" class="styled-checkbox">
-                <label for="oneThird_{{ i }}" class="checkbox-label">Apply 0/30</label>
+                <input type="checkbox" formControlName="zeroThirty" id="zeroThirty_{{ i }}" class="styled-checkbox">
+                <label for="zeroThirty_{{ i }}" class="checkbox-label">Apply 0/30</label>
+                  <span class="error-msg" *ngIf="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
+                    Required
+                  </span>
               </div>
             </div>
           </div>

@@ -64,6 +64,8 @@ export class HistoryComponent implements OnInit, OnDestroy, OnChanges {
       { key: 'fluence1', label: 'Fluence 1' },
       { key: 'fluence2', label: 'Fluence 2' },
       { key: 'spot', label: 'Spot' },
+      { key: 'zeroThirty', label: '0/30' },
+     {key: 'zimmer', label: 'Zimmer'},
       { key: 'roomName', label: 'Room' },
       { key: 'clinic', label: 'Clinic' },
       { key: 'note', label: 'Note' },

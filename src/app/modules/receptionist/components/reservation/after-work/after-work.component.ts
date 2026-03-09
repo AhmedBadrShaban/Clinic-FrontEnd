@@ -61,7 +61,7 @@ export class AfterWorkComponent implements OnInit {
             fluence1: new FormControl(null, [Validators.required, Validators.min(0)]),
             fluence2: new FormControl(null, [Validators.required, Validators.min(0)]),
             zimmer: new FormControl(null),        // optional
-            oneThird: new FormControl(false),       // optional checkbox
+            zeroThirty: new FormControl(false),       // optional checkbox
             note: new FormControl('', Validators.required)
           });
           (this.doneServicesForm.get('dataList') as FormArray).push(serviceFormGroup);
@@ -85,8 +85,8 @@ export class AfterWorkComponent implements OnInit {
         fluence1: [this.data.fluence1, [Validators.required, Validators.min(0)]],
         fluence2: [this.data.fluence2, [Validators.required, Validators.min(0)]],
         spot: [this.data.spot, [Validators.required, Validators.min(0)]],
-        zimmer: [this.data.zimmer ?? null],   // optional
-        oneThird: [this.data.oneThird ?? false],  // optional checkbox
+        zimmer: [this.data.zimmer , [Validators.required, Validators.min(0)]],    
+        zeroThirty: [this.data.zeroThirty ,[Validators.required, Validators.min(0)]],  
         note: [this.data.note, Validators.required],
         date: [this.data.date],
         doctorName: [this.data.doctorName],
