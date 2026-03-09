@@ -27,6 +27,8 @@ export interface reservation {
   EndTimeHour:number,
   StartTimeMin:number,
   EndTimeMin:number,
+  generalNote?:string,
+  hasDebit?:boolean,
   note?:string,
   status:string
 }

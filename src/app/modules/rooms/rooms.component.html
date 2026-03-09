@@ -51,8 +51,7 @@
         <ng-container *ngIf="isActiveRoom(room.roomId)">
           <!-- Tab Content -->
           <div class="tab-content">
-            <!-- Available Slots - Let it fetch its own data -->
-            <app-available-slots [roomName]="room.roomName" [reservedAt]="selectedDate"
+             <app-available-slots [roomName]="room.roomName" [reservedAt]="selectedDate"
               [refreshTrigger]="refreshTrigger">
             </app-available-slots>
 
