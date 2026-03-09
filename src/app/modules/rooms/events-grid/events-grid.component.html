@@ -1,156 +1,140 @@
-<!-- events-grid.component.html -->
+events-grid.component.html
 <div class="events-grid-container">
-
   <!-- Loading State -->
   <ng-container *ngIf="isLoading">
-    <div class="loading-wrapper">
-      <div class="pulse-ring"></div>
-      <div class="loading-inner">
-        <mat-spinner diameter="28"></mat-spinner>
-        <span>Loading Reservations</span>
-      </div>
-      <div class="skeleton-cards">
-        <div class="skeleton-card" *ngFor="let item of [1,2,3]">
-          <div class="sk-header"></div>
-          <div class="sk-line wide"></div>
-          <div class="sk-line med"></div>
-          <div class="sk-line short"></div>
-          <div class="sk-badge"></div>
+    <mat-card class="loading-card">
+      <mat-card-content class="loading-content">
+        <div class="loading-flex">
+          <mat-spinner diameter="24"></mat-spinner>
+          <p class="loading-text">Loading Reservations...</p>
         </div>
-      </div>
-    </div>
+        <div class="loading-skeleton">
+          <div class="skeleton-bar" *ngFor="let item of [1,2,3]"></div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </ng-container>
 
   <!-- Content when not loading -->
   <ng-container *ngIf="!isLoading">
-
     <!-- Empty State -->
-    <div *ngIf="eventsPerRoom.length === 0" class="empty-state">
-      <div class="empty-icon-wrap">
-        <mat-icon>event_busy</mat-icon>
-      </div>
+    <div *ngIf="eventsPerRoom.length === 0" class="empty-reservations">
+      <mat-icon class="empty-icon">event_busy</mat-icon>
       <h4>No Reservations</h4>
-      <p>No appointments found for <strong>{{ roomName }}</strong> on {{ date | date: 'EEEE, MMM d' }}</p>
+      <p>No reservations found for {{ roomName }} on {{ date | date: 'mediumDate' }}</p>
     </div>
 
     <!-- Events Grid -->
     <div *ngIf="eventsPerRoom.length > 0" class="reservations-grid">
-
-      <div *ngFor="let reservation of eventsPerRoom; trackBy: trackByReservationId; let i = index"
+      <mat-card *ngFor="let reservation of eventsPerRoom; trackBy: trackByReservationId; let i = index"
         class="reservation-card" [ngClass]="'status-' + getStatusClass(reservation.status)"
-        [style.animation-delay.ms]="i * 80" (click)="openDialog(reservation)" matRipple>
+        [style.animation-delay.s]="i * 0.1" (click)="openDialog(reservation)" matRipple>
 
-        <!-- Top Status Strip -->
-        <div class="card-strip">
-          <div class="status-pill">
-            <mat-icon>{{ getStatusIcon(reservation.status) }}</mat-icon>
-            <span>{{ getStatusDisplayName(reservation.status) }}</span>
-          </div>
-          <div class="reservation-id">#{{ reservation.reservationId }}</div>
+        <!-- Status Badge -->
+        <div class="status-badge">
+          <mat-icon>{{ getStatusIcon(reservation.status) }}</mat-icon>
+          <span class="status-text">{{ getStatusDisplayName(reservation.status) }}</span>
         </div>
 
-        <!-- Time Banner -->
-    <div class="time-banner">
-  <!-- <mat-icon class="time-banner-icon">schedule</mat-icon> -->
-  <div class="time-range">
-    <span class="time-val">{{ formatTimeTo12Hour(reservation.reservationStart) }}</span>
-    <div class="time-arrow">
-      <span class="time-line"></span>
-      <mat-icon>arrow_forward</mat-icon>
-    </div>
-    <span class="time-val">{{ formatTimeTo12Hour(reservation.reservationEnd) }}</span>
-  </div>
- </div>
-          <!-- <div class="date-chip">
-            <mat-icon>calendar_today</mat-icon>
-            <span>{{ reservation.reservationDate | date: 'MMM d' }}</span>
-          </div> -->
-
-        <!-- Patient & Doctor Info -->
-        <div class="card-body">
-
-          <div class="info-block patient-block">
-            <div class="avatar-circle">
+        <mat-card-content class="card-content">
+          <!-- Patient Section -->
+          <div class="patient-section">
+            <div class="section-title">
               <mat-icon>person</mat-icon>
+              Patient Information
             </div>
-            <div class="info-text">
-              <span class="info-name">{{ reservation.patientName }}</span>
-              <span class="info-sub">
-                <mat-icon>phone</mat-icon>
-                {{ reservation.patientPhone }}
-              </span>
+
+            <div class="info-row">
+              <mat-icon>person</mat-icon>
+              <span class="info-label">Name:</span>
+              <span class="info-value">{{ reservation.patientName }}</span>
             </div>
-          </div>
 
-          <div class="divider-line"></div>
+            <div class="info-row">
+              <mat-icon>phone</mat-icon>
+              <span class="info-label">Phone:</span>
+              <span class="info-value">{{ reservation.patientPhone }}</span>
+            </div>
 
-          <div class="info-block doctor-block">
-            <div class="avatar-circle doctor">
+            <div class="info-row">
               <mat-icon>medical_services</mat-icon>
-            </div>
-            <div class="info-text">
-              <span class="info-name">Dr. {{ reservation.doctorName }}</span>
-              <span class="info-sub label-text">Attending Doctor</span>
+              <span class="info-label">Doctor:</span>
+              <span class="info-value">{{ reservation.doctorName }}</span>
             </div>
           </div>
 
-          <!-- Services Tags -->
-          <div *ngIf="reservation.services && reservation.services.length > 0" class="services-row">
-            <span class="service-tag" *ngFor="let svc of reservation.services">
-              <mat-icon>spa</mat-icon>{{ svc }}
-            </span>
+          <!-- Time Section -->
+          <div class="time-section">
+            <div class="time-text">
+              <mat-icon>schedule</mat-icon>
+              {{ formatTimeTo12Hour(reservation.reservationStart) }} -
+              {{ formatTimeTo12Hour(reservation.reservationEnd) }}
+            </div>
           </div>
 
-          <!-- Flags Row: hasDebit + notes -->
-          <div class="flags-row">
-            <!-- Debit Flag -->
-<div *ngIf="reservation.hasDebit"
-  class="flag-chip debit-chip active"
-  matTooltip="Has Outstanding Debit">
-  <mat-icon>account_balance_wallet</mat-icon>
-  <span>Has Debit</span>
-</div>
+          <!-- Services Section -->
+          <div *ngIf="reservation.services && reservation.services.length > 0" class="services-section">
+            <div class="section-title">
+              <mat-icon>medical_information</mat-icon>
+              Services
+            </div>
+            <div class="services-text">{{ getServicesString(reservation.services) }}</div>
           </div>
 
-           <div *ngIf="reservation.note && reservation.status === 'CANCELLED'" class="note-block cancellation">
-            <div class="note-label">
+          <!-- Has Debit Flag -->
+  
+
+          <!-- Cancellation Note Section -->
+          <div *ngIf="reservation.note && reservation.status === 'CANCELLED'" class="note-section cancellation-note">
+            <div class="section-title">
               <mat-icon>cancel</mat-icon>
               Cancellation Reason
             </div>
-            <p class="note-content">{{ reservation.note }}</p>
+            <div class="note-text">{{ reservation.note }}</div>
           </div>
 
-          <div *ngIf="reservation.generalNote" class="note-block general">
-            <div class="note-label">
+          <!-- General Note Section -->
+          <div *ngIf="reservation.generalNote" class="note-section general-note">
+            <div class="section-title">
               <mat-icon>description</mat-icon>
               General Note
             </div>
-            <p class="note-content">{{ reservation.generalNote }}</p>
+            <div class="note-text">{{ reservation.generalNote }}</div>
           </div>
 
+          <!-- Legacy Note (non-cancelled, non-generalNote) -->
+          <div *ngIf="reservation.note && reservation.status !== 'CANCELLED'" class="note-section">
+            <div class="section-title">
+              <mat-icon>note</mat-icon>
+              Note
+            </div>
+            <div class="note-text">{{ reservation.note }}</div>
+          </div>
+        <div *ngIf="reservation.hasDebit" class="debit-flag">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <span>Has Outstanding Debit</span>
         </div>
+        </mat-card-content>
 
-        <!-- Card Actions Footer -->
-        <div class="card-footer" (click)="$event.stopPropagation()">
-          <button mat-icon-button class="footer-btn view-btn" matTooltip="View Details"
-            (click)="openDialog(reservation)">
-            <mat-icon>open_in_new</mat-icon>
+        <!-- Quick Actions -->
+        <mat-card-actions class="card-actions">
+          <button mat-icon-button class="action-btn" matTooltip="View Details"
+            (click)="openDialog(reservation); $event.stopPropagation()">
+            <mat-icon>visibility</mat-icon>
           </button>
 
           <button *ngIf="reservation.status === 'WAITING' || reservation.status === 'IN_PROGRESS'" mat-icon-button
-            class="footer-btn confirm-btn" matTooltip="Confirm Reservation"
+            class="action-btn primary" matTooltip="Confirm Reservation"
             (click)="onReservationAction('confirm', reservation, $event)">
-            <mat-icon>check_circle</mat-icon>
+            <mat-icon>check</mat-icon>
           </button>
 
-          <button *ngIf="reservation.status === 'DONE'" mat-icon-button class="footer-btn checkout-btn"
-            matTooltip="Proceed to Checkout" (click)="onReservationAction('checkout', reservation, $event)">
+          <button *ngIf="reservation.status === 'DONE'" mat-icon-button class="action-btn primary" matTooltip="Checkout"
+            (click)="onReservationAction('checkout', reservation, $event)">
             <mat-icon>payment</mat-icon>
           </button>
-        </div>
-
-      </div>
+        </mat-card-actions>
+      </mat-card>
     </div>
-
   </ng-container>
 </div>
