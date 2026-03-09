@@ -1,4 +1,4 @@
-events-grid.component.html
+<!-- events-grid.component.html -->
 <div class="events-grid-container">
   <!-- Loading State -->
   <ng-container *ngIf="isLoading">
@@ -48,6 +48,7 @@ events-grid.component.html
               <mat-icon>person</mat-icon>
               <span class="info-label">Name:</span>
               <span class="info-value">{{ reservation.patientName }}</span>
+              <span *ngIf="reservation.hasDebit" class="debit-dot" matTooltip="Has Outstanding Debit">Debit</span>
             </div>
 
             <div class="info-row">
@@ -81,9 +82,6 @@ events-grid.component.html
             <div class="services-text">{{ getServicesString(reservation.services) }}</div>
           </div>
 
-          <!-- Has Debit Flag -->
-  
-
           <!-- Cancellation Note Section -->
           <div *ngIf="reservation.note && reservation.status === 'CANCELLED'" class="note-section cancellation-note">
             <div class="section-title">
@@ -110,10 +108,6 @@ events-grid.component.html
             </div>
             <div class="note-text">{{ reservation.note }}</div>
           </div>
-        <div *ngIf="reservation.hasDebit" class="debit-flag">
-          <mat-icon>account_balance_wallet</mat-icon>
-          <span>Has Outstanding Debit</span>
-        </div>
         </mat-card-content>
 
         <!-- Quick Actions -->
