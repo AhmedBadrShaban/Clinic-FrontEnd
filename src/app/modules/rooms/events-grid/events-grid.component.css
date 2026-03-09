@@ -341,6 +341,25 @@ mat-icon {
   text-transform: uppercase;
   flex-shrink: 0;
   white-space: nowrap;
+  vertical-align: middle;
+  margin-left: 0.25rem;
+}
+
+.info-value-wrap {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+
+  .info-value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 1;
+  }
 }
 
 .card-actions {

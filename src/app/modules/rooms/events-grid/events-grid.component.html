@@ -41,14 +41,16 @@
           <div class="patient-section">
             <div class="section-title">
               <mat-icon>person</mat-icon>
-              Patient Information
+              Patient Info            <span *ngIf="reservation.hasDebit" class="debit-dot" matTooltip="Has Outstanding Debit">has Debit</span>
+
             </div>
 
             <div class="info-row">
               <mat-icon>person</mat-icon>
               <span class="info-label">Name:</span>
-              <span class="info-value">{{ reservation.patientName }}</span>
-              <span *ngIf="reservation.hasDebit" class="debit-dot" matTooltip="Has Outstanding Debit">Debit</span>
+              <span class="info-value-wrap">
+                <span class="info-value">{{ reservation.patientName }}</span>
+              </span>
             </div>
 
             <div class="info-row">
