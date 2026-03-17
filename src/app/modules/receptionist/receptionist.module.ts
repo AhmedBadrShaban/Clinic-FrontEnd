@@ -6,7 +6,7 @@ import { NavBarComponent } from 'src/app/shared/components/nav-bar/nav-bar.compo
 import { ReservationFmComponent } from './components/reservation-fm/reservation-fm.component';
 import { CoverSheetComponent } from './components/cover-sheet/cover-sheet.component';
 import { AddNewPatientComponent } from './components/add-new-patient/add-new-patient.component';
-import { DoctorScheduleComponent } from './components/doctor-schedule/doctor-schedule.component';
+import { ConfirmDeleteDialogComponent, DoctorScheduleComponent } from './components/doctor-schedule/doctor-schedule.component';
 import { PopUpFormComponent } from './components/doctor-schedule/pop-up-form/pop-up-form.component';
 import { ExpenseComponent } from './components/expense/expense.component';
 import { AddExpenseComponent } from './components/expense/add-expense/add-expense.component';
@@ -60,6 +60,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { PackageReceiptDialogComponent } from './components/reservation/packages/package-receipt-dialog/package-receipt-dialog.component';
 
 
 @NgModule({
@@ -69,6 +70,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     TableComponent,
     AddNewPatientComponent,
     DoctorScheduleComponent,
+    ConfirmDeleteDialogComponent,
     PopUpFormComponent,
     AddExpenseComponent,
     PackageComponent,
@@ -89,6 +91,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     SendPointsComponent,
     AfterWorkComponent,
     PackageDetailsComponent,
+    PackageReceiptDialogComponent,
     UpdatePackageComponent,
   ],
   imports: [
@@ -163,6 +166,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatDividerModule,
     MatProgressBarModule,
     MatChipsModule,
+    MatProgressSpinnerModule,
     MatProgressSpinnerModule,
 
     // Export Forms modules

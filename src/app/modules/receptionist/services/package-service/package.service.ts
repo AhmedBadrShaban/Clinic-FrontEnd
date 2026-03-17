@@ -11,7 +11,7 @@ export class PackageService {
   private readonly baseUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
-    this.baseUrl = this.configService.getBaseUrl();  
+    this.baseUrl = this.configService.getBaseUrl();
   }
 
   getAllPackages(): Observable<any> {
@@ -23,23 +23,36 @@ export class PackageService {
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-details`, { params });
   }
 
+   getReservedPackagePaymentDetails(id: string | number): Observable<any> {
+    const params = new HttpParams().set('id', id.toString());
+    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-history-details`, { params });
+  }
+
   updatePatientPackage(id: any, data: any) {
     const params = new HttpParams().set('id', id);
     return this.http.put<any>(`${this.baseUrl}receptionist/update-reserved-package`, data, { params });
   }
 
-  getAllReservedPackages(page:number =0 , size:number=20): Observable<any> {
-    const params = new HttpParams()
+  getAllReservedPackages(
+    page: number = 0,
+    size: number = 20,
+    branchName?: string | null
+  ): Observable<any> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages-v2` , {params});
+
+    if (branchName?.trim()) {
+      params = params.set('branchName', branchName.trim());
+    }
+
+    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages-v2`, { params });
   }
+
 
   filterByDate(date: any): Observable<any> {
     const url = `${this.baseUrl}receptionist/reserved-package-filter-v2`;
     const queryParams = new HttpParams().set('date', date);
-  //console.log("filtling by date of :", date);
-
     return this.http.get<any>(url, { params: queryParams });
   }
 

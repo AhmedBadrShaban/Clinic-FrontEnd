@@ -1,37 +1,127 @@
-<div class="mx-auto my-2 d-flex justify-content-between overflow-hidden" style="width:90%; height: 50px;">
-  <div class="h-100">
-    <a class="btn btn-info h-100" style="line-height: 40px;" (click)="openDialog('Package')">
-      <i class="bi bi-plus"></i> Reserve Package
-    </a>
+<!-- package.component.html -->
+<div class="pkg-page">
+
+  <!-- ── Filter Card ──────────────────────────────────────── -->
+  <div class="filter-card">
+
+    <div class="filter-card-title">
+      <mat-icon>filter_list</mat-icon>
+      <span>Filters</span>
+    </div>
+
+    <div class="filter-row">
+
+      <!-- Add buttons -->
+      <div class="action-group">
+        <button mat-raised-button class="btn-add-pkg" (click)="openDialog('Package')">
+          <mat-icon>add</mat-icon> Add Package
+        </button>
+        <button mat-raised-button class="btn-add-prod" (click)="openDialog('Product')">
+          <mat-icon>inventory_2</mat-icon> Add Product
+        </button>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <!-- Date filter -->
+      <div class="filter-group">
+        <label class="filter-label">
+          <mat-icon class="filter-label-icon">calendar_today</mat-icon>
+          Date
+        </label>
+        <mat-form-field appearance="outline" class="filter-field">
+          <input matInput
+                 [matDatepicker]="picker"
+                 [(ngModel)]="selectedDate"
+                 (dateChange)="onDateChange($event)"
+                 readonly
+                 placeholder="Pick a date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- Clinic autocomplete filter — admin only -->
+      <ng-container *ngIf="isAdmin">
+        <div class="filter-divider"></div>
+        <div class="filter-group">
+          <label class="filter-label">
+            <mat-icon class="filter-label-icon">business</mat-icon>
+            Clinic
+          </label>
+          <mat-form-field appearance="outline" class="filter-field">
+            <input matInput
+                   [(ngModel)]="filterClinic"
+                   [matAutocomplete]="clinicAuto"
+                   (ngModelChange)="onClinicSearch($event)"
+                   (keyup.enter)="applyClinicFilter()"
+                   placeholder="Search clinic…">
+            <button *ngIf="filterClinic" matSuffix mat-icon-button
+                    (click)="clearClinicFilter()" matTooltip="Clear">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-autocomplete #clinicAuto="matAutocomplete"
+                              (optionSelected)="onClinicSelected($event.option.value)">
+              <mat-option *ngFor="let clinic of filteredClinics" [value]="clinic">
+                <mat-icon class="option-icon">business</mat-icon>
+                {{ clinic }}
+              </mat-option>
+              <mat-option *ngIf="filteredClinics.length === 0 && filterClinic" disabled>
+                No clinics found
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <button mat-raised-button class="btn-search" (click)="applyClinicFilter()">
+            <mat-icon>search</mat-icon> Search
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Clear all -->
+      <button *ngIf="selectedDate || hasClinicFilter"
+              mat-stroked-button class="btn-clear"
+              (click)="clearFilter()">
+        <mat-icon>clear_all</mat-icon> Clear All
+      </button>
+
+    </div>
+
+    <!-- Active clinic chip -->
+    <div *ngIf="isAdmin && hasClinicFilter" class="active-chips">
+      <span class="chips-label">Active filter:</span>
+      <mat-chip-set>
+        <mat-chip class="clinic-chip" (removed)="clearClinicFilter()">
+          <mat-icon matChipAvatar>business</mat-icon>
+          {{ activeClinic }}
+          <button matChipRemove><mat-icon>cancel</mat-icon></button>
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+
   </div>
-  <div class="h-100">
-    <a class="btn btn-info h-100" style="line-height: 40px;" (click)="openDialog('Product')">
-      <i class="bi bi-plus"></i> Reserve Material
-    </a>
-  </div>
-  <div class="h-100">
-    <mat-form-field>
-      <mat-label>Choose a date</mat-label>
-      <input matInput [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)" [matDatepicker]="picker">
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </div>
-  <div class="h-100">
-    <button mat-button class="custom-gray-button" (click)="clearFilter()">Clear Filter</button>
-  </div>
+
+  <!-- ── Table ─────────────────────────────────────────────── -->
+  <app-table
+    [data]="dataSource.data"
+    [columns]="tableColumns"
+    [totalItems]="totalItems"
+    [pageSize]="pageSize"
+    [currentPage]="currentPage + 1"
+    [emptyTitle]="'No Reserved Packages'"
+    [emptyMessage]="hasClinicFilter
+      ? 'No packages found for clinic \'' + activeClinic + '\'.'
+      : 'There are no reserved packages to display.'"
+    (onPageChange)="onPageChange($event)">
+  </app-table>
+
+  <!-- ── Templates ─────────────────────────────────────────── -->
+  <ng-template #expireTemplate let-row>
+    <span [class.expired]="isExpired(row.expire)"
+          [class.active]="!isExpired(row.expire)">
+      <mat-icon class="expire-icon">{{ isExpired(row.expire) ? 'event_busy' : 'event_available' }}</mat-icon>
+      {{ row.expire | date:'mediumDate' }}
+    </span>
+  </ng-template>
+
 </div>
-
-<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
-  [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
-</app-table>
-
-<ng-template #expireTemplate let-row>
-  <span>{{ row.expire }}</span>
-</ng-template>
-
-<ng-template #receiptTemplate let-row>
-  <button mat-icon-button color="primary" (click)="downloadReceipt(row)" matTooltip="Download Receipt">
-    <mat-icon>download</mat-icon>
-  </button>
-</ng-template>

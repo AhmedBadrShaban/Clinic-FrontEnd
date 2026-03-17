@@ -1,10 +1,22 @@
-<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
-  [currentPage]="currentPage + 1" (onPageChange)="onPageChange($event)">
+<!-- packages.component.html -->
+<app-table
+  [data]="dataSource.data"
+  [columns]="tableColumns"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage + 1"
+  (onPageChange)="onPageChange($event)">
 </app-table>
 
 <ng-template #actionTemplate let-row>
-  <button mat-button color="primary" (click)="openDialog(row.reservedId)" style="width: 150px;">
-    Details
+  <!-- Existing Details button -->
+  <button mat-button color="primary" (click)="openDialog(row.reservedId)" style="min-width: 90px;">
+    <mat-icon>info</mat-icon> Details
+  </button>
+
+  <!-- New Receipt / Download PDF button -->
+  <button mat-button color="accent" (click)="openReceiptDialog(row.reservedId)"
+    style="min-width: 110px;" matTooltip="Download payment receipt as PDF">
+    <mat-icon>receipt_long</mat-icon> Receipt
   </button>
 </ng-template>
- 

@@ -1,12 +1,188 @@
-.smaller-mat-form-field {
-  height: 80px;
-  width:200px;
-  font-size: 12px;
-  padding: 0px;
-  color: black;
- }
-.smaller-mat-form-field  mat-label, .custom-mat-form-field .mat-select-value-text {
-  color: black;}
-  .mat-mdc-text-field-wrapper.mdc-text-field.ng-tns-c1205077789-1.mdc-text-field--filled {
-    background-color: white;
+/* pop-up-form.component.css */
+
+.schedule-form-dialog {
+  width: 560px;
+  max-width: 100%;
+  font-family: inherit;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.dialog-title mat-icon {
+  color: #1565c0;
+}
+
+.close-btn {
+  color: #999;
+}
+
+/* ── Body ─────────────────────────────────────────────────── */
+.dialog-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Form rows ────────────────────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-row.center {
+  grid-template-columns: 1fr;
+  max-width: 260px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Labels ───────────────────────────────────────────────── */
+.field-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Inputs & selects ─────────────────────────────────────── */
+.field-input,
+.field-select {
+  height: 40px;
+  border: 1px solid #d0d7e6;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field-input:focus,
+.field-select:focus {
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+}
+
+.field-input:disabled,
+.field-select:disabled {
+  background: #f5f5f5;
+  color: #aaa;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
+}
+
+/* ── Pulse badges ─────────────────────────────────────────── */
+.once-badge {
+  font-size: 10px;
+  font-weight: 600;
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 1px 7px;
+  border-radius: 20px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.locked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  background: #fce4ec;
+  color: #c62828;
+  padding: 1px 7px;
+  border-radius: 20px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.badge-icon {
+  font-size: 11px;
+  width: 11px;
+  height: 11px;
+}
+
+/* ── Non-laser hint ───────────────────────────────────────── */
+.non-laser-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #888;
+  background: #f9f9f9;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.non-laser-hint mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #bbb;
+}
+
+/* ── Actions ──────────────────────────────────────────────── */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .schedule-form-dialog { width: 100%; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-row.center { max-width: 100%; }
+}
+
+/* ── Autocomplete fields ───────────────────────────────────── */
+.autocomplete-field {
+  width: 100%;
+  /* pull up the bottom spacing mat-form-field adds */
+  margin-bottom: -1.25em;
+}
+
+/* Match the outline colour to the rest of the form inputs */
+.autocomplete-field .mat-mdc-text-field-wrapper {
+  border-radius: 8px;
 }

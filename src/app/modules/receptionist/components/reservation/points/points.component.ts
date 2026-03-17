@@ -1,3 +1,4 @@
+// points.component.ts
 import {
   Component,
   Input,
@@ -25,11 +26,11 @@ import { Subscription } from 'rxjs';
 })
 export class PointsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() phoneNumber: string | null = null;
-  @Input() isActive = false; 
+  @Input() isActive = false;
   @ViewChild('noteTemplate', { static: true }) noteTemplate!: TemplateRef<any>;
 
   private sub = new Subscription();
-  private initialized = false;  
+  private initialized = false;
 
   remain: number = 0;
   totalOut: number = 0;
@@ -46,7 +47,7 @@ export class PointsComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private reservationsService: ReservationsService,
     private patientService: PatientService,
-    private dialogRef: MatDialog,
+    private dialog: MatDialog,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -60,13 +61,10 @@ export class PointsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Tab just became active and hasn't loaded yet
     if (changes['isActive'] && this.isActive && !this.initialized && this.phoneNumber) {
       this.initialized = true;
       this.loadPointsData();
     }
-
-    // Phone number changed while tab is active
     if (changes['phoneNumber'] && this.isActive && this.phoneNumber) {
       this.loadPointsData();
     }
@@ -86,12 +84,10 @@ export class PointsComponent implements OnInit, OnDestroy, OnChanges {
         next: (data) => {
           this.dataSource.data = [...data.data];
           this.totalItems = data.totalItems;
+          this.loadingState = false;
           this.cd.detectChanges();
-          this.loadingState = false;
         },
-        error: () => {
-          this.loadingState = false;
-        }
+        error: () => { this.loadingState = false; }
       });
   }
 
@@ -104,7 +100,6 @@ export class PointsComponent implements OnInit, OnDestroy, OnChanges {
         this.totalOut = data.total_points_out;
         this.remain = data.remain;
         this.cd.detectChanges();
-
       });
   }
 
@@ -115,9 +110,19 @@ export class PointsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   openModal(): void {
-    if (this.phoneNumber) {
-      this.dialogRef.open(SendPointsComponent, { data: this.phoneNumber });
-    }
+    if (!this.phoneNumber) return;
+
+    const dialogRef = this.dialog.open(SendPointsComponent, {
+      data: this.phoneNumber
+    });
+
+    // FIX: refresh points data after dialog closes with success result
+    const sub = dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.loadPointsData();
+      }
+    });
+    this.sub.add(sub);
   }
 
   ngOnDestroy(): void {

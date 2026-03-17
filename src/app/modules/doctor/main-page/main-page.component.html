@@ -1,3 +1,4 @@
+<!-- reservation cards template -->
 <div class="page-wrapper">
 
   <div class="page-header">
@@ -15,20 +16,47 @@
     <div *ngFor="let r of reservations; let i = index" class="res-card" [style.animation-delay]="i * 50 + 'ms'"
       (click)="openReservation(r)">
 
-      <div class="card-left">
-        <div class="patient-name">{{ r.patientName }}</div>
-        <div class="services-grid">
-          <span *ngFor="let s of r.service" class="service-pill">{{ s }}</span>
+      <!-- ── Top row: patient name | ID + reserved date ── -->
+      <div class="card-top">
+        <span class="patient-name">{{ r.patientName }}</span>
+        <div class="card-top-right">
+          <div>
+            <span class="res-id">#{{ r.reservationId }}</span>
+            <span class="res-id">Clinic: {{ r.clinicName }}</span>
+          </div>
+          <span class="res-date">
+            <mat-icon class="meta-icon">event</mat-icon>
+            Reserved: {{ r.reservedAt | date:'mediumDate' }}
+          </span>
         </div>
       </div>
 
-      <div class="card-right">
-        <div class="time-display">
-          <mat-icon class="clock-icon">schedule</mat-icon>
-          <span>{{ formatTimeTo12Hour(r.start) }}</span>
-        </div>
-        <mat-icon class="chevron-icon">chevron_right</mat-icon>
+      <!-- ── Meta row: clinic + doctor ── -->
+      <!-- <div class="card-meta">
+        <span class="meta-item">
+          <mat-icon class="meta-icon">local_hospital</mat-icon>
+          <span class="meta-label">Clinic:</span> {{ r.clinicName }}
+        </span>
+        <span class="meta-divider">·</span>
+        <span class="meta-item">
+          <mat-icon class="meta-icon">person</mat-icon>
+          <span class="meta-label">Doctor:</span> {{ r.doctorName }}
+        </span>
+      </div> -->
+
+      <!-- ── Services ── -->
+      <div class="services-grid">
+        <span *ngFor="let s of r.service" class="service-pill">{{ s }}</span>
       </div>
+
+      <!-- ── Note (only when present) ── -->
+      <div *ngIf="r.note" class="card-note">
+        <mat-icon class="meta-icon">notes</mat-icon>
+        <span>{{ r.note }}</span>
+      </div>
+
+      <!-- ── Chevron ── -->
+      <mat-icon class="chevron-icon">chevron_right</mat-icon>
 
     </div>
   </div>

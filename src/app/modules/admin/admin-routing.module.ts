@@ -11,38 +11,40 @@ import { ReceptionistsComponent } from './components/receptionists/receptionists
 import { ReservationsComponent } from './components/reservations/reservations.component';
 import { ServicesComponent } from './components/services/services.component';
 import { PackagesComponent } from './components/packages/packages.component';
+import { PackageComponent } from '../receptionist/components/package/package.component'; // ← NEW
 import { ExpenseComponent } from '../receptionist/components/expense/expense.component';
 import { AdminHomeComponent } from './components/admin-home/admin-home.component';
 import { ReceptionistProfileComponent } from './components/receptionists/receptionist/receptionist.component';
 import { DoctorScheduleComponent } from '../receptionist/components/doctor-schedule/doctor-schedule.component';
-import {ContributorsComponent} from "./components/contributors/contributors.component";
+import { ContributorsComponent } from "./components/contributors/contributors.component";
 import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
 import { CheckOutComponent } from '../rooms/check-out/check-out.component';
 
 const routes: Routes = [
-    { path: '', component: AdminComponent, children:[
-      {path: '', component: AdminHomeComponent},
-      {path: 'adminProfile', component: AdminProfileComponent },
-      {path: 'rooms', component: RoomsComponent, pathMatch:'full',},
+  {
+    path: '', component: AdminComponent, children: [
+      { path: '', component: AdminHomeComponent },
+      { path: 'adminProfile', component: AdminProfileComponent },
+      { path: 'rooms', component: RoomsComponent, pathMatch: 'full' },
       { path: 'rooms/check-out/:id', component: CheckOutComponent, pathMatch: 'full' },
-      {path: 'expense', component: ExpenseComponent, pathMatch:'full'},
-      {path: 'patients', component: ReservationComponent},
-      { path: "patients/:phone", component: ReservationComponent },
-      {path: 'doctors', component: DoctorsComponent},
-      {path: 'doctor/:id', component: DoctorComponent},
-      {path: 'receptionists', component: ReceptionistsComponent},
-      {path: 'receptionist/:id', component: ReceptionistProfileComponent},
-      {path: 'services', component: ServicesComponent},
-      {path: 'admin-package', component: PackagesComponent, pathMatch:'full'},
-      {path: 'materials', component: MaterialsComponent},
+      { path: 'expense', component: ExpenseComponent, pathMatch: 'full' },
+      { path: 'patients', component: ReservationComponent },
+      { path: 'patients/:phone', component: ReservationComponent },
+      { path: 'doctors', component: DoctorsComponent },
+      { path: 'doctor/:id', component: DoctorComponent },
+      { path: 'receptionists', component: ReceptionistsComponent },
+      { path: 'receptionist/:id', component: ReceptionistProfileComponent },
+      { path: 'services', component: ServicesComponent },
+      { path: 'admin-package', component: PackagesComponent, pathMatch: 'full' },
+      { path: 'reserved-packages', component: PackageComponent, pathMatch: 'full' }, // ← NEW
+      { path: 'materials', component: MaterialsComponent },
       { path: 'monthly-income', component: MonthlyMoneyReportComponent },
-      {path: 'reservations', component: ReservationsComponent},
-      { path: "reservation/:phone", component: ReservationComponent, pathMatch: 'full' },
-      {path: 'doctor-schedular', component: DoctorScheduleComponent},
-        {path: 'contributors', component: ContributorsComponent},
-
-    ]},
-
+      { path: 'reservations', component: ReservationsComponent },
+      { path: 'reservation/:phone', component: ReservationComponent, pathMatch: 'full' },
+      { path: 'doctor-schedular', component: DoctorScheduleComponent },
+      { path: 'contributors', component: ContributorsComponent },
+    ]
+  },
 ];
 
 @NgModule({

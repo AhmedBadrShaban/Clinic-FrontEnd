@@ -7,7 +7,7 @@
       <!-- Search Input with Loading State -->
       <div class="search-input-container position-relative w-50 mx-2">
         <input class="form-control h-100 bg-light search-input" [class.is-loading]="isLoading" id="patient-search"
-          placeholder="Search by name or phone number..." type="search" [(ngModel)]="searchValue"
+          placeholder=" Search by Patient phone number..." type="search" [(ngModel)]="searchValue"
           (ngModelChange)="onSearchValueChange($event)" [matAutocomplete]="PatientAuto" [disabled]="isLoading"
           autocomplete="off" />
 

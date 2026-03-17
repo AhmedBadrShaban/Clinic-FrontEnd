@@ -1,36 +1,105 @@
+<!-- send-points.component.html -->
 
-<div class="border border-2 border-primary rounded container overflow-hidden"
-  style="width:600px; background-color: #E5E5E5;">
+<div class="send-points-dialog">
 
-  <div class="row mt-2 text-center">
-    <h1 style="font-size: 33; color: black; font-weight: 800;">Convert Points</h1>
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 class="dialog-title">
+      <mat-icon>swap_horiz</mat-icon>
+      Transfer Points
+    </h2>
+    <button mat-icon-button (click)="closeDialog()" class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
-  <form (submit)="submit()">
-    <div class="row m-2 justify-content-between">
-      <label for="patient-number" class="form-label w-100 ">Patient Number</label><br>
-      <input class="form-select" id="patient-number"
-      placeholder="Type Patient's Phone Number"
-      nz-input
-      [(ngModel)]="formData.receiverPhone"
-      [ngModelOptions]="{standalone: true}"
-      (ngModelChange)="onChange($event)"
-      [nzAutocomplete]="PatientAuto"
-    />
-    <nz-autocomplete [nzDataSource]="filteredNumbers" #PatientAuto></nz-autocomplete>
+  <form class="dialog-body" (ngSubmit)="submit()">
+
+    <!-- Sender (read-only info) -->
+    <div class="sender-info">
+      <mat-icon class="sender-icon">person</mat-icon>
+      <div>
+        <span class="sender-label">Sending from</span>
+        <span class="sender-phone">{{ formData.senderPhone }}</span>
+      </div>
     </div>
-    <div class="row m-2 justify-content-between">
-      <label for="Points-number" class="form-label w-100 ">Points Number</label><br>
-      <input type="number" placeholder="Points Number" id="points-number"  [(ngModel)]="formData.theAmount" class="form-control shadow"
-      name="points-number"/>
+
+    <div class="transfer-arrow">
+      <mat-icon>arrow_downward</mat-icon>
     </div>
-    <div class="mt-3 d-flex justify-content-center" style=" margin-bottom: 25px;">
-      <button type="submit"
-        style="width: 120px; height: 30px; background-color: #1E3A8A; color: #fff; border: none; border-radius: 4px;">
-       Send
+
+    <!-- Receiver autocomplete -->
+    <div class="form-group">
+      <label class="field-label">
+        <mat-icon class="label-icon">person_search</mat-icon>
+        Receiver Patient
+      </label>
+      <mat-form-field appearance="outline" class="full-field">
+        <input matInput
+               [matAutocomplete]="patientAuto"
+               [(ngModel)]="searchValue"
+               name="receiverSearch"
+               (input)="onSearchInput($event)"
+               placeholder=" Search by Patient phone…"
+               autocomplete="off">
+        <mat-spinner *ngIf="isSearching" matSuffix diameter="18"></mat-spinner>
+        <mat-icon *ngIf="!isSearching" matSuffix>search</mat-icon>
+
+        <mat-autocomplete #patientAuto="matAutocomplete"
+                          (optionSelected)="onPatientSelected($event)">
+          <mat-option
+            *ngFor="let patient of filteredPatients; trackBy: trackByPatient"
+            [value]="patient"
+            class="patient-option">
+            <div class="option-content">
+              <span class="option-name">{{ extractName(patient) }}</span>
+              <span class="option-phone">
+                <mat-icon class="option-phone-icon">phone</mat-icon>
+                {{ extractPhone(patient) }}
+              </span>
+            </div>
+          </mat-option>
+
+          <mat-option
+            *ngIf="filteredPatients.length === 0 && searchValue && !isSearching"
+            disabled>
+            <span class="no-results">No patients found</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- Points amount -->
+    <div class="form-group">
+      <label class="field-label">
+        <mat-icon class="label-icon">stars</mat-icon>
+        Points to Transfer
+      </label>
+      <mat-form-field appearance="outline" class="full-field">
+        <input matInput
+               type="number"
+               name="theAmount"
+               [(ngModel)]="formData.theAmount"
+               placeholder="Enter amount"
+               min="1">
+        <mat-icon matSuffix>confirmation_number</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Actions -->
+    <div class="dialog-actions">
+      <button type="button" mat-stroked-button (click)="closeDialog()">
+        Cancel
       </button>
-
+      <button type="submit"
+              mat-raised-button
+              color="primary"
+              [disabled]="isSubmitting">
+        <mat-spinner *ngIf="isSubmitting" diameter="18" class="btn-spinner"></mat-spinner>
+        <mat-icon *ngIf="!isSubmitting">send</mat-icon>
+        {{ isSubmitting ? 'Sending…' : 'Send Points' }}
+      </button>
     </div>
 
-    </form>
+  </form>
 </div>

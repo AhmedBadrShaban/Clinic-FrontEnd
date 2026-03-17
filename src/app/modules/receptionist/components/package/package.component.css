@@ -1,4 +1,208 @@
-.custom-gray-button {
-  color: blue !important;
-  text-decoration:underline;
+/* package.component.css */
+
+.pkg-page {
+  padding: 20px 24px;
+}
+
+/* ── Filter Card ──────────────────────────────────────────── */
+.filter-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border: 1px solid #f0f0f0;
+}
+
+.filter-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #9e9e9e;
+  margin-bottom: 14px;
+}
+
+.filter-card-title mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #bdbdbd;
+}
+
+/* ── Filter row ───────────────────────────────────────────── */
+.filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── Action buttons group ─────────────────────────────────── */
+.action-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-add-pkg {
+  background: #1565c0 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px !important;
+  height: 40px;
+}
+
+.btn-add-prod {
+  background: #6a1b9a !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px !important;
+  height: 40px;
+}
+
+/* ── Vertical divider ─────────────────────────────────────── */
+.filter-divider {
+  width: 1px;
+  height: 40px;
+  background: #e0e0e0;
+  flex-shrink: 0;
+}
+
+/* ── Filter group (label + field) ────────────────────────── */
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #555;
+  white-space: nowrap;
+}
+
+.filter-label-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+  color: #9e9e9e;
+}
+
+.filter-field {
+  min-width: 200px;
+  /* tighten mat-form-field bottom gap */
+  margin-bottom: -1.25em;
+}
+
+/* ── Search button ────────────────────────────────────────── */
+.btn-search {
+  background: #1565c0 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px !important;
+  height: 40px;
+  white-space: nowrap;
+}
+
+/* ── Clear all button ─────────────────────────────────────── */
+.btn-clear {
+  height: 40px;
+  border-radius: 8px !important;
+  white-space: nowrap;
+  font-weight: 600;
+  color: #e53935 !important;
+  border-color: #e53935 !important;
+}
+
+/* ── Active chips ─────────────────────────────────────────── */
+.active-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f5f5f5;
+}
+
+.chips-label {
+  font-size: 0.75rem;
+  color: #999;
+  font-weight: 600;
+}
+
+.clinic-chip {
+  background: #e3f2fd !important;
+  color: #1565c0 !important;
+  font-weight: 600;
+}
+
+/* ── Autocomplete option icon ─────────────────────────────── */
+.option-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 6px;
+  color: #9e9e9e;
+}
+
+/* ── Expire cell ──────────────────────────────────────────── */
+.expired {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #e53935;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.active {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.expire-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-divider { display: none; }
+
+  .filter-field { min-width: unset; width: 100%; }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .action-group {
+    flex-direction: column;
+  }
+
+  .btn-add-pkg,
+  .btn-add-prod,
+  .btn-search,
+  .btn-clear {
+    width: 100%;
+  }
 }

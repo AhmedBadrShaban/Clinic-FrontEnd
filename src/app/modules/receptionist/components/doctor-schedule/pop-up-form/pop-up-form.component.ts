@@ -1,145 +1,310 @@
-import { AuthService } from './../../../../../shared/services/auth.service';
-import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
-import { DoctorScheduleComponent } from './../doctor-schedule.component';
-import { scheduleData } from './../../../models/doctor.schedule.model';
-import { Component, OnInit, Inject, Input } from '@angular/core';
+// pop-up-form.component.ts
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DoctorScheduleServiceService } from 'src/app/modules/receptionist/services/doctor-schedule-service/doctor-schedule-service.service';
 import { ReservationfmService } from 'src/app/modules/receptionist/services/Reservation_Form/reservationfm.service';
+import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { scheduleData } from '../../../models/doctor.schedule.model';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 @Component({
   selector: 'app-pop-up-form',
   templateUrl: './pop-up-form.component.html',
- })
-export class PopUpFormComponent implements OnInit {
-   formData: scheduleData;
-   doctors:string[];
-   disableEndPulse:boolean = false;
-   disableStartPulses:boolean = false;
-   isAdmin:boolean = false;
-   rooms: any []=[];
+  styleUrls: ['./pop-up-form.component.css']
+})
+export class PopUpFormComponent implements OnInit, OnDestroy {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private router: Router, public dialogRef: MatDialogRef<PopUpFormComponent>, private DoctorScheduleService: DoctorScheduleServiceService ,private scheduleDataService:ReservationfmService ,private roomsService:RoomsService , private loogedIn:AuthService ) {
-    this.formData = data;
-    if(this.formData.startPulses!=null){
-      this.disableStartPulses = true;
-    }
-    //console.log("received data is: ", this.formData);
+  formData: scheduleData;
+  doctors: string[] = [];
+  rooms: any[] = [];
+  isAdmin = false;
+  isSubmitting = false;
 
+  // Autocomplete filtered lists
+  filteredDoctors: string[] = [];
+  filteredRooms: any[] = [];
+
+  // Snapshot of values that were already persisted on the server when the dialog opened.
+  // The lock rule is based on what the SERVER had — not what the user is currently typing.
+  private savedStartPulses: number | null = null;
+  private savedEndPulses: number | null = null;
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<PopUpFormComponent>,
+    private doctorScheduleService: DoctorScheduleServiceService,
+    private scheduleDataService: ReservationfmService,
+    private roomsService: RoomsService,
+    private loggedIn: AuthService,
+    private snackBar: MatSnackBar
+  ) {
+    this.formData = { ...data }; // shallow copy — avoid mutating injected reference
+
+    // Snapshot what the server already has — used by pulse disable logic
+    this.savedStartPulses = data.startPulses ?? null;
+    this.savedEndPulses = data.endPulses ?? null;
   }
 
   ngOnInit(): void {
-    this.getAllDoctorsNames();
-    this.getAllRoomsNames();
-    if(this.formData.endPulses > 0){
-      this.disableEndPulse =true;
-    }
-    if(this.loogedIn.userType === 'ROLE_ADMIN')
-    {
-      this.isAdmin = true;
-    }
+    this.isAdmin = this.loggedIn.userType === 'ROLE_ADMIN';
+    this.loadDoctors();
+    this.loadRooms();
   }
 
-  create() {
-    delete (this.formData as any)['new'];
-    //console.log('formData :>> ', this.formData);
-    if( this.formData.startTime.length !== 8 ){
-          this.formData.startTime = this.formatTime(this.formData.startTime);
-    }
-    if( this.formData.endTime.length !== 8 ){
-      this.formData.endTime = this.formatTime(this.formData.endTime);
-    }
-    this.DoctorScheduleService.newSchedule(this.formData).subscribe({
-      next: (data:any) => {
-        this.closeDialog();
-        this.UpdateAllSchedules();
-        alert(data.message)
-       },
-      error: (err) => {
-        alert(err.error.message)
-        this.closeDialog();
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // ── Pulse disable logic (fixed) ───────────────────────────
+  //
+  // Rules:
+  //  1. If room is NOT a laser room → both disabled always
+  //  2. Admin → both always enabled
+  //  3. Receptionist, new schedule:
+  //     - startPulses: enabled
+  //     - endPulses: enabled only if startPulses already has a value
+  //  4. Receptionist, existing schedule:
+  //     - startPulses: enabled only if it has no value yet (null/0)
+  //     - endPulses: enabled only if startPulses is filled AND endPulses has no value yet
+
+  get isLaser(): boolean {
+    return this.isLaserRoom(this.formData.roomName);
+  }
+
+  get startPulsesDisabled(): boolean {
+    if (!this.isLaser) return true;
+    if (this.isAdmin) return false;
+
+    // Receptionist: locked only if the server ALREADY had a value when the dialog opened.
+    // What the user types in the current session never triggers the lock until after submit.
+    return this.savedStartPulses != null && this.savedStartPulses > 0;
+  }
+
+  get endPulsesDisabled(): boolean {
+    if (!this.isLaser) return true;
+    if (this.isAdmin) return false;
+
+    // End pulses require start pulses to be filled first (use live formData for this check
+    // so typing a start value immediately unlocks end within the same session).
+    const startFilled = (this.formData.startPulses != null && this.formData.startPulses > 0)
+      || (this.savedStartPulses != null && this.savedStartPulses > 0);
+    if (!startFilled) return true;
+
+    // Locked only if the server already had an end value when the dialog opened.
+    return this.savedEndPulses != null && this.savedEndPulses > 0;
+  }
+
+  // ── Form Actions ──────────────────────────────────────────
+
+  create(): void {
+    if (!this.validateForm()) return;
+
+    // FIX: do NOT delete formData.new here — if the API returns an error the form
+    // would permanently switch to edit mode. Delete it only on success.
+    const payload = { ...this.formData };
+    delete (payload as any)['new'];
+
+    payload.startTime = this.ensureFullTimeFormat(payload.startTime);
+    payload.endTime = this.ensureFullTimeFormat(payload.endTime);
+
+    this.isSubmitting = true;
+    this.doctorScheduleService.newSchedule(payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.isSubmitting = false;
+          delete (this.formData as any)['new']; // safe to remove now — success path only
+          this.showSuccess(res.message || 'Schedule created.');
+          this.dialogRef.close(true); // close with result=true → parent handles refresh
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          // formData.new is still intact — form stays in create mode
+          this.showError(err.error?.message || 'Failed to create schedule.');
         }
-    });
+      });
   }
 
+  edit(): void {
+    if (!this.validateForm()) return;
 
-  // edit method to update a schedule
-  edit() {
-    if( this.formData.startTime ==  this.formData.endTime){
-      alert("Start Time Cant be Equal to End Time")
-      return
-    }
-    if( this.formData.startTime.length !== 8 ){
-      this.formData.startTime = this.formatTime(this.formData.startTime);
-    }
-    else if( this.formData.endTime.length !== 8){
-      this.formData.endTime = this.formatTime(this.formData.endTime);
-    }
-    //console.log('Edited Data :>> ', this.formData);
-    this.DoctorScheduleService.editSchedule(this.formData).subscribe({
-      next: (data) => {
-        this.closeDialog();
-        alert(data.message);
-        this.UpdateAllSchedules();
+    // FIX: was else-if — only startTime was ever fixed, endTime was skipped
+    this.formData.startTime = this.ensureFullTimeFormat(this.formData.startTime);
+    this.formData.endTime = this.ensureFullTimeFormat(this.formData.endTime);
 
-      },
-      error: (err) => {
-        alert(err.error.message);
-        this.closeDialog();
-       }
-    });
+    // FIX: normalize before comparing to avoid "09:00" !== "09:00:00" false negatives
+    if (this.formData.startTime === this.formData.endTime) {
+      this.showError('Start time and end time cannot be the same.');
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.doctorScheduleService.editSchedule(this.formData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.isSubmitting = false;
+          this.showSuccess(res.message || 'Schedule updated.');
+          this.dialogRef.close(true); // close with result=true → parent handles refresh
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          this.showError(err.error?.message || 'Failed to update schedule.');
+        }
+      });
   }
 
-  UpdateAllSchedules(){
-    this.DoctorScheduleService.getAllSchedules().subscribe((data:any)=>{
-  // Update the parent component's listOfData
-     this.DoctorScheduleService.updateListOfData(data);
-      //console.log( "data Updated : " ,data);
-    })
-  }
-
-  closeDialog() {
+  closeDialog(): void {
     this.dialogRef.close();
   }
 
-  onSubmit() {
-    //console.log(this.formData);
-  }
+  // ── Helpers ───────────────────────────────────────────────
 
-  getAllDoctorsNames(){
-    this.scheduleDataService.getAllDoctorsNames().subscribe((data:any)=>{
-      this.doctors =data;
-      })
-  }
-  getAllRoomsNames(){
-    this.roomsService.getAllRoomsV2().subscribe((data:any)=>{
-      this.rooms =data;
-      //console.log('Rooms ', this.rooms);
-      })
+  private validateForm(): boolean {
+    if (!this.formData.doctorName) {
+      this.showError('Please select a doctor.');
+      return false;
+    }
+    if (!this.formData.roomName) {
+      this.showError('Please select a room.');
+      return false;
+    }
+    if (!this.formData.date) {
+      this.showError('Please select a date.');
+      return false;
+    }
+    if (!this.formData.startTime) {
+      this.showError('Please enter start time.');
+      return false;
+    }
+    if (!this.formData.endTime) {
+      this.showError('Please enter end time.');
+      return false;
+    }
 
-  }
-  convertDateFormat(inputDate: string): string {
-    if (inputDate) {
-      const parts = inputDate.split('/');
-      if (parts.length === 3) {
-        const [month, day, year] = parts;
-        return `${year}-${month}-${day}`;
+    // Pulse range validation — only relevant for laser rooms when both values are present
+    if (this.isLaser) {
+      const start = this.formData.startPulses;
+      const end = this.formData.endPulses;
+      const startVal = start != null ? Number(start) : null;
+      const endVal = end != null ? Number(end) : null;
+
+      if (startVal !== null && endVal !== null && startVal > endVal) {
+        this.showError('Start pulses cannot be greater than end pulses.');
+        return false;
       }
+    }
+
+    return true;
+  }
+
+  /**
+   * Ensures time string is in HH:mm:ss format.
+   * FIX: replaces the old formatTime() which assumed input was always HH:mm.
+   */
+  private ensureFullTimeFormat(time: string): string {
+    if (!time) return time;
+    // Already full format
+    if (time.length === 8) return time;
+    // HH:mm → HH:mm:00
+    if (time.length === 5) return `${time}:00`;
+    return time;
+  }
+
+  private refreshParentList(): void {
+    this.doctorScheduleService.getAllSchedules()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: any) => this.doctorScheduleService.updateListOfData(data),
+        error: () => { } // parent will show its own error if needed
+      });
+  }
+
+  private loadDoctors(): void {
+    this.scheduleDataService.getAllDoctorsNames()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: string[]) => {
+          this.doctors = data;
+          this.filteredDoctors = [...data];
+        },
+        error: () => this.showError('Failed to load doctors.')
+      });
+  }
+
+  private loadRooms(): void {
+    this.roomsService.getAllRoomsV2()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: any[]) => {
+          this.rooms = data;
+          this.filteredRooms = [...data];
+        },
+        error: () => this.showError('Failed to load rooms.')
+      });
+  }
+
+  // ── Autocomplete filter methods ───────────────────────────
+
+  onDoctorSearch(value: string): void {
+    const lower = (value || '').toLowerCase();
+    this.filteredDoctors = this.doctors.filter(d =>
+      d.toLowerCase().includes(lower)
+    );
+  }
+
+  onRoomSearch(value: string): void {
+    const lower = (value || '').toLowerCase();
+    this.filteredRooms = this.rooms.filter(r =>
+      r.roomName.toLowerCase().includes(lower)
+    );
+  }
+
+  isLaserRoom(name: any): boolean {
+    if (!name) return false;
+    const room = this.rooms.find(r => r.roomName === name);
+
+    // Check API flags first
+    const flagResult = room?.laser ?? room?.isLaser ?? null;
+    if (flagResult !== null) return flagResult;
+
+    // TEMPORARY: fallback — infer from room name until API returns the flag
+    return this.isLaserRoomByName(name);
+  }
+
+  /** TEMPORARY: infers laser room from name keywords until API provides the flag */
+  private isLaserRoomByName(name: string): boolean {
+    const keywords = ["laser", "lazar", "lazer"];
+    return keywords.some(k => name.toLowerCase().includes(k));
+  }
+
+  convertDateFormat(inputDate: string): string {
+    if (!inputDate) return inputDate;
+    const parts = inputDate.split('/');
+    if (parts.length === 3) {
+      const [month, day, year] = parts;
+      return `${year}-${month}-${day}`;
     }
     return inputDate;
   }
-  formatTime(time: string): string {
-     return `${time}:00`;
+
+  private showSuccess(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      panelClass: ['success-snackbar']
+    });
   }
-  isLaserRoom(name: any): boolean {
-    if(name){
-      for (const room of this.rooms) {
-        if (room.roomName === name && room.laser) {
-          return true;
-        }
-      }
-      return false;
-    }
-   return false;
+
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['error-snackbar']
+    });
   }
 }

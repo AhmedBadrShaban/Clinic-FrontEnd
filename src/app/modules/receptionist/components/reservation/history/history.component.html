@@ -1,30 +1,92 @@
-<app-table
-  [data]="dataSource.data"
-  [columns]="tableColumns"
-  [totalItems]="totalItems"
-  [pageSize]="pageSize"
-  [currentPage]="currentPage + 1"
-  [emptyTitle]="'No History Found'"
-  [emptyMessage]="'This user has no history yet.'"
-  (onPageChange)="onPageChange($event)">
+<!-- history.component.html -->
+
+<!-- ── Filter Bar ─────────────────────────────────────────── -->
+<div class="filter-bar mat-elevation-z1">
+
+  <!-- Date picker — Material calendar popup -->
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Date</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="filterDate" placeholder="Pick a date" readonly>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <!-- Service / Treatment area -->
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Treatment Area</mat-label>
+    <input matInput type="text" [(ngModel)]="filterService" placeholder="e.g. Under arms"
+      (keyup.enter)="applyFilters()">
+    <mat-icon matSuffix>spa</mat-icon>
+  </mat-form-field>
+
+  <!-- Search button -->
+  <button mat-raised-button color="primary" class="search-btn" (click)="applyFilters()">
+    <mat-icon>search</mat-icon>
+    Search
+  </button>
+
+  <!-- Clear all (only visible when filters are active) -->
+  <button *ngIf="hasActiveFilters" mat-stroked-button color="warn" class="clear-btn" (click)="clearAllFilters()">
+    <mat-icon>clear_all</mat-icon>
+    Clear All
+  </button>
+
+</div>
+
+<!-- ── Active Filter Chips ────────────────────────────────── -->
+<div *ngIf="hasActiveFilters" class="active-chips">
+  <span class="chips-label">Filtering by:</span>
+
+  <mat-chip-set>
+    <mat-chip *ngIf="activeFilterDate" color="primary" highlighted (removed)="removeDateFilter()">
+      <mat-icon matChipAvatar>calendar_today</mat-icon>
+      {{ activeFilterDate }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+
+    <mat-chip *ngIf="activeFilterService" color="primary" highlighted (removed)="removeServiceFilter()">
+      <mat-icon matChipAvatar>spa</mat-icon>
+      {{ activeFilterService }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+  </mat-chip-set>
+</div>
+
+<!-- ── Table ──────────────────────────────────────────────── -->
+<app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+  [currentPage]="currentPage + 1" [emptyTitle]="'No History Found'" [emptyMessage]="hasActiveFilters
+    ? 'No records match your current filters. Try adjusting or clearing them.'
+    : 'This user has no history yet.'" (onPageChange)="onPageChange($event)">
 </app-table>
 
+<!-- ── zeroThirty icon template ──────────────────────────── -->
+<ng-template #zeroThirtyTemplate let-row>
+  <mat-icon *ngIf="row.zeroThirty; else noIcon" style="color: #4caf50;">check_circle</mat-icon>
+  <ng-template #noIcon>
+    <mat-icon style="color: #f44336;">cancel</mat-icon>
+  </ng-template>
+</ng-template>
+
+<!-- ── Action template (admin only) ──────────────────────── -->
 <ng-template #actionTemplate let-row>
-      <button mat-button color="primary" (click)="openDialog({
+  <button mat-button color="primary" (click)="openDialog({
     historyId: row.historyId,
-    service: row.service,
-    pulse: row.pulse,
-    fluence1: row.fluence1,
-    fluence2: row.fluence2,
-    date: row.date,
-    spot: row.spot,
-    note: row.note,
+    service:   row.service,
+    pulse:     row.pulse,
+    fluence1:  row.fluence1,
+    fluence2:  row.fluence2,
+    date:      row.date,
+    spot:      row.spot,
+    note:      row.note,
     doctorName: row.doctorName,
-    room:row.roomName,
-    clinic: row.clinic,
+    room:      row.roomName,
+    clinic:    row.clinic,
     phoneNumber: phoneNumber
   })">
     Edit
   </button>
 </ng-template>
-

@@ -1,0 +1,247 @@
+/* package-receipt-dialog.component.css */
+
+/* ── Outer shell ── */
+.receipt-dialog-container {
+  width: 420px;
+  max-width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1a1a2e;
+}
+
+/* ── Loading / Error panels ── */
+.state-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 16px;
+}
+
+.state-label {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.state-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+}
+
+.error-icon {
+  color: #e53935;
+}
+
+/* ── Capture area (what goes into the PDF) ── */
+.receipt-capture-area {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Header band ── */
+.receipt-header-band {
+  background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+  color: #fff;
+  padding: 20px 24px 16px;
+  text-align: center;
+}
+
+.clinic-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.receipt-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.receipt-meta {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.meta-sep {
+  opacity: 0.5;
+}
+
+/* ── Body ── */
+.receipt-body {
+  padding: 16px 20px;
+}
+
+.receipt-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #1565c0;
+  margin-bottom: 6px;
+  margin-top: 10px;
+}
+
+.receipt-section-label:first-child {
+  margin-top: 0;
+}
+
+/* ── Info grid ── */
+.receipt-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+.info-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.info-key {
+  font-size: 0.7rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.info-val {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+/* ── Divider ── */
+.receipt-divider {
+  border-top: 1px dashed #d0d7e6;
+  margin: 10px 0;
+}
+
+/* ── Services ── */
+.services-block {
+  margin-top: 4px;
+}
+
+.services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.service-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  background: #f4f6fb;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.service-name {
+  color: #333;
+  font-weight: 500;
+}
+
+.service-sessions {
+  font-size: 0.78rem;
+  color: #1565c0;
+  font-weight: 600;
+  background: #e3eaf8;
+  padding: 1px 8px;
+  border-radius: 20px;
+}
+
+/* ── Payment rows ── */
+.payment-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  padding: 3px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.pay-method {
+  color: #555;
+}
+
+.pay-amount {
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+/* ── Total ── */
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e8f5e9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 6px;
+}
+
+.total-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1b5e20;
+}
+
+.total-amount {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #2e7d32;
+}
+
+/* ── Footer note ── */
+.receipt-footer-note {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+/* ── Dialog action bar ── */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 4px 4px;
+}
+
+.action-btn-close {
+  min-width: 90px;
+}
+
+.action-btn-download {
+  min-width: 150px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-spinner {
+  display: inline-block;
+}

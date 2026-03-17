@@ -16,13 +16,13 @@ export class ReservationsService {
     this.baseUrl = this.configService.getBaseUrl();
   }
 
-   getPatientsNamesAndPhones(): Observable<any> {
+  getPatientsNamesAndPhones(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones`);
   }
 
-  getPatientsNamesAndPhonesAuto(phone:any): Observable<any> {
+  getPatientsNamesAndPhonesAuto(phone: any): Observable<any> {
     const params = new HttpParams().set('phoneNumber', phone);
-    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones-v2`, { params } );
+    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones-v2`, { params });
   }
 
   getPatientByNumber(phoneNumber: any): Observable<any> {
@@ -30,20 +30,36 @@ export class ReservationsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone`, { params });
   }
 
-  // 
-  getHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
-    const params = new HttpParams()
+  /**
+   * Get patient history with optional date and service filters.
+   * @param phone      Patient phone number
+   * @param page       Page index (0-based)
+   * @param size       Page size
+   * @param date       Optional filter: date string in YYYY-MM-DD format
+   * @param service    Optional filter: treatment area / service name
+   */
+  getHistory(
+    phone: any,
+    page: number = 0,
+    size: number = 5,
+    date?: string | null,
+    service?: string | null
+  ): Observable<any> {
+    let params = new HttpParams()
       .set('phone', phone)
       .set('page', page.toString())
       .set('size', size.toString());
 
+    if (date) {
+      params = params.set('date', date);
+    }
+
+    if (service) {
+      params = params.set('service', service);
+    }
+
     return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
   }
-
-  // getHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
-  //   const params = new HttpParams().set('phone', phone);
-  //   return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
-  // }
 
   updateHistory(id: number, updatedData: any): Observable<any> {
     const params = new HttpParams().set('historyId', id.toString());
@@ -61,16 +77,12 @@ export class ReservationsService {
 
   getPointsHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
     const params = new HttpParams()
-       .set('phone', phone)
+      .set('phone', phone)
       .set('page', page.toString())
       .set('size', size.toString());
     return this.http.get<any>(`${this.baseUrl}receptionist/point-histories-v2`, { params });
   }
 
-  // getReservationsHistory(phone: any): Observable<any> {
-  //   const params = new HttpParams().set('phone', phone);
-  //   return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation-phone`, { params });
-  // }
   getReservationsHistory(phone: string, page: number = 0, size: number = 5): Observable<any> {
     const params = new HttpParams()
       .set('phone', phone)
@@ -89,7 +101,6 @@ export class ReservationsService {
     return this.http.get<any>(`${this.baseUrl}receptionist/get-patient-daily-sheet`, { params });
   }
 
-
   extractPhoneNumberFromSearchResult(selectedRecord: any): string | null {
     const parts = selectedRecord.split('-');
     if (parts.length === 2) {
@@ -98,8 +109,8 @@ export class ReservationsService {
     return selectedRecord;
   }
 
-  sendPoints(fromPhoneNumber: string, toPhoneNumber: string, qty: number) {
-   }
+  sendPoints(fromPhoneNumber: string, toPhoneNumber: string, qty: number) { }
+
   getTotalPatients(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}admin/total-patients`);
   }
@@ -115,5 +126,4 @@ export class ReservationsService {
   updatePatientsArray(data: any) {
     this.NewPatients.next(data);
   }
-
 }
