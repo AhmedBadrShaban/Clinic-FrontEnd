@@ -12,15 +12,26 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./daily-sheet.component.css']
 })
 export class DailySheetComponent implements OnInit {
-  allRooms: any[];
-  allDoctors: string[];
-  selectedRoom: string;
-  selectedDoctor: any;
-  selectedDate: any;
-  dailySheetStatus: DailySheetStatus;
 
-  // Table configuration similar to history component
-  tableColumns: Array<{ key: string, label: string, template?: TemplateRef<any> }> = [];
+  // ── Raw lists (full, unfiltered) ─────────────────────────
+  allRooms: any[] = [];
+  allDoctors: string[] = [];
+
+  // ── Autocomplete filtered lists ──────────────────────────
+  filteredRooms: any[] = [];
+  filteredDoctors: string[] = [];
+
+  // ── Selected filter values ───────────────────────────────
+  selectedRoom: string | null;
+  selectedDoctor: string | null;
+  selectedDate: any;
+
+  // ── Status panel ─────────────────────────────────────────
+  dailySheetStatus: DailySheetStatus | null = null;
+  statusLoading = false;
+
+  // ── Table configuration ──────────────────────────────────
+  tableColumns: Array<{ key: string; label: string; template?: TemplateRef<any> }> = [];
   dataSource = new MatTableDataSource<DailySheet>();
   totalItems = 0;
   pageSize = 10;
@@ -40,11 +51,11 @@ export class DailySheetComponent implements OnInit {
   ngOnInit(): void {
     this.selectedDate = this.datePipe.transform(this.selectedDate, 'yyyy-MM-dd');
 
-    // Initialize table columns
+    // date is the first column, before patientName
     this.tableColumns = [
+      { key: 'date', label: 'Date' },        // ← first column
       { key: 'patientName', label: 'Patient' },
       { key: 'paymentType', label: 'Payment Type' },
-      { key: 'service', label: 'What She Will Do' },
       { key: 'pulses', label: 'Pulses' },
       { key: 'cash', label: 'Cash' },
       { key: 'vodafoneCash', label: 'Vcash' },
@@ -60,8 +71,11 @@ export class DailySheetComponent implements OnInit {
     this.loadDoctors();
   }
 
+  // ── Data loading ─────────────────────────────────────────
+
   private loadDailySheetData(page: number): void {
     this.loadingState = true;
+    this.statusLoading = true;
 
     this.dailySheetService.filterDailySheet(
       this.selectedRoom,
@@ -69,64 +83,84 @@ export class DailySheetComponent implements OnInit {
       this.selectedDoctor,
       page,
       this.pageSize
-    ).subscribe((response: any) => {
-      // Handle the new response format
-      this.dataSource.data = [...response.data];
-      this.totalItems = response.totalItems;
-      this.currentPage = response.currentPage;
-      this.loadingState = false;
-      this.cd.detectChanges();
-    //console.log("daily sheet received: ", this.dataSource.data);
-    //console.log("total items: ", this.totalItems);
-    }, error => {
-      this.loadingState = false;
-      console.error('Error loading daily sheet data:', error);
+    ).subscribe({
+      next: (response: any) => {
+        this.dataSource.data = [...response.data];
+        this.totalItems = response.totalItems;
+        this.currentPage = response.currentPage;
+
+        // status lives inside the same response object:
+        // { balance: end-start, pulses: actual used, status: balance===pulses }
+        this.dailySheetStatus = response.status ?? null;
+
+        this.loadingState = false;
+        this.statusLoading = false;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        this.loadingState = false;
+        this.statusLoading = false;
+        console.error('Error loading daily sheet data:', err);
+      }
     });
   }
 
   private loadRooms(): void {
     this.roomsService.getAllRoomsV2().subscribe((rooms) => {
       this.allRooms = rooms;
-    //console.log('rooms :>> ', this.allRooms);
+      this.filteredRooms = [...rooms];
     });
   }
 
   private loadDoctors(): void {
     this.dailySheetService.getAllDoctorsNames().subscribe((data: any) => {
       this.allDoctors = data;
-    //console.log('AllNames of Doctors:>> ', this.allDoctors);
+      this.filteredDoctors = [...data];
     });
   }
 
+  // ── Autocomplete filter handlers ─────────────────────────
+
+  onRoomSearch(value: string): void {
+    const lower = (value || '').toLowerCase();
+    this.filteredRooms = this.allRooms.filter(r =>
+      r.roomName.toLowerCase().includes(lower)
+    );
+  }
+
+  onDoctorSearch(value: string): void {
+    const lower = (value || '').toLowerCase();
+    this.filteredDoctors = this.allDoctors.filter(d =>
+      d.toLowerCase().includes(lower)
+    );
+  }
+
+  // ── Filter change handlers ───────────────────────────────
+
   onRoomChange(): void {
-  //console.log("selected room before filtering is: ", this.selectedRoom);
-    this.currentPage = 0; // Reset to first page on filter change
+    this.currentPage = 0;
     this.loadDailySheetData(this.currentPage);
   }
 
   onDoctorChange(): void {
-  //console.log("selected Doctor before filtering is: ", this.selectedDoctor);
-    this.currentPage = 0; // Reset to first page on filter change
+    this.currentPage = 0;
     this.loadDailySheetData(this.currentPage);
   }
 
   onDateChange(event: any): void {
-    const formattedDate = event.value;
-    this.selectedDate = this.datePipe.transform(formattedDate, 'yyyy-MM-dd');
-  //console.log("selected Date before filtering is: ", this.selectedDate);
-    this.currentPage = 0; // Reset to first page on filter change
+    this.selectedDate = this.datePipe.transform(event.value, 'yyyy-MM-dd');
+    this.currentPage = 0;
     this.loadDailySheetData(this.currentPage);
   }
 
   clearFilter(): void {
-  //console.log('Clearing Filters');
-
-    // Reset the filters
     this.selectedDate = null;
-    this.selectedRoom = "Room";
+    this.selectedRoom = null;
     this.selectedDoctor = null;
     this.currentPage = 0;
-
+    this.filteredRooms = [...this.allRooms];
+    this.filteredDoctors = [...this.allDoctors];
+    this.dailySheetStatus = null;
     this.loadDailySheetData(this.currentPage);
   }
 

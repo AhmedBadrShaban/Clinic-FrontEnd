@@ -12,16 +12,16 @@ export class AdminHomeComponent {
     'rooms',             // 0
     'patients',          // 1
     'doctors',           // 2
-    'receptionists',     // 3
-    'services',          // 4
-    'admin-package',     // 5
-    'reserved-packages', // 6  ← NEW — placed before materials
-    'materials',         // 7  ← was 6, shifted by 1
-    'reservations',      // 8
-    'expense',           // 9  ← was 8
-    'contributors',      // 9  ← was 9 (no change in template GoTo)
-    'doctor-schedular',  // 10
-    'monthly-income'     // 11
+    'doctor-schedular',  // 3 
+    'receptionists',     // 4
+    'services',          // 5
+    'admin-package',     // 6
+    'reserved-packages', // 7   
+    'materials',         // 8   
+    'expense',           // 9  
+    'monthly-income',     // 10
+    'contributors',      // 11   
+  
   ];
 
   constructor(private router: Router) { }

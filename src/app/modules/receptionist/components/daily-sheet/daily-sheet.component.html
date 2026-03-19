@@ -1,69 +1,123 @@
-<div class="mx-auto my-2 d-flex justify-content-between overflow-hidden" style="width: 90%; height: 50px;">
-  <div class="h-100">
-    <mat-form-field>
-      <mat-label>Room</mat-label>
-      <mat-select [(ngModel)]="selectedRoom" (ngModelChange)="onRoomChange()">
-        <mat-option [disabled]="true">Choose Rooms</mat-option>
-        <mat-option *ngFor="let room of allRooms" [value]="room.roomName">{{room.roomName}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+<!-- daily-sheet.component.html -->
+
+<!-- ── Filter Bar ─────────────────────────────────────────── -->
+<div class="filter-bar mx-auto" style="width: 90%;">
+
+  <!-- Room autocomplete -->
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Room</mat-label>
+    <input matInput [(ngModel)]="selectedRoom" [matAutocomplete]="roomAuto" (ngModelChange)="onRoomSearch($event)"
+      placeholder="Search room…">
+    <mat-icon matSuffix>meeting_room</mat-icon>
+    <mat-autocomplete #roomAuto="matAutocomplete" (optionSelected)="onRoomChange()">
+      <mat-option *ngFor="let room of filteredRooms" [value]="room.roomName">
+        {{ room.roomName }}
+      </mat-option>
+      <mat-option *ngIf="filteredRooms.length === 0" disabled>No rooms found</mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <!-- Doctor autocomplete -->
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Doctor</mat-label>
+    <input matInput [(ngModel)]="selectedDoctor" [matAutocomplete]="doctorAuto" (ngModelChange)="onDoctorSearch($event)"
+      placeholder="Search doctor…">
+    <mat-icon matSuffix>person_search</mat-icon>
+    <mat-autocomplete #doctorAuto="matAutocomplete" (optionSelected)="onDoctorChange()">
+      <mat-option *ngFor="let doc of filteredDoctors" [value]="doc">{{ doc }}</mat-option>
+      <mat-option *ngIf="filteredDoctors.length === 0" disabled>No doctors found</mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <!-- Date picker -->
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Date</mat-label>
+    <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <!-- Clear button -->
+  <button mat-stroked-button class="clear-btn" (click)="clearFilter()">
+    <mat-icon>filter_alt_off</mat-icon>
+    Clear Filters
+  </button>
+
+</div>
+
+<!-- ── Status Card ────────────────────────────────────────── -->
+<div class="mx-auto status-card-wrapper" style="width: 90%;" *ngIf="dailySheetStatus || statusLoading">
+
+  <!-- Skeleton -->
+  <div class="status-card status-card--loading" *ngIf="statusLoading && !dailySheetStatus">
+    <div class="skeleton skeleton--wide"></div>
+    <div class="skeleton skeleton--short"></div>
   </div>
-  <div class="h-100">
-    <mat-form-field>
-      <mat-label>Doctor</mat-label>
-      <mat-select [placeholder]="'Select Doctor'" [(ngModel)]="selectedDoctor" (ngModelChange)="onDoctorChange()">
-        <mat-option [disabled]="true">Choose Doctor</mat-option>
-        <mat-option *ngFor="let doc of allDoctors" [value]="doc">{{doc}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div class="h-100">
-    <mat-form-field>
-      <mat-label>Choose a date</mat-label>
-      <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </div>
-  <div class="h-100">
-    <button mat-button class="custom-gray-button" (click)="clearFilter()">Clear Filters</button>
+
+  <!-- Populated card -->
+  <div class="status-card" *ngIf="!statusLoading && dailySheetStatus">
+
+    <!-- Left accent strip -->
+    <div class="status-accent" [ngClass]="dailySheetStatus.status ? 'accent--ok' : 'accent--err'"></div>
+
+    <!-- OK / Not OK badge -->
+    <div class="badge-col">
+      <div class="status-badge" [ngClass]="dailySheetStatus.status ? 'badge--ok' : 'badge--err'">
+        <mat-icon class="badge-icon">
+          {{ dailySheetStatus.status ? 'check_circle' : 'cancel' }}
+        </mat-icon>
+        <span>{{ dailySheetStatus.status ? 'OK' : 'Not OK' }}</span>
+      </div>
+      <span class="status-sub-label">Daily Status</span>
+    </div>
+
+    <div class="vdivider"></div>
+
+    <!-- Start Pulse -->
+    <div class="metric">
+      <span class="metric-label">Start Pulse</span>
+      <span class="metric-value">{{ dailySheetStatus.startPulse | number }}</span>
+    </div>
+
+    <!-- End Pulse -->
+    <div class="metric">
+      <span class="metric-label">End Pulse</span>
+      <span class="metric-value">{{ dailySheetStatus.endPulse | number }}</span>
+    </div>
+
+    <div class="vdivider"></div>
+
+    <!-- Expected = balance (end - start) -->
+    <div class="metric">
+      <span class="metric-label">Expected</span>
+      <span class="metric-tag tag--expected">end − start</span>
+      <span class="metric-value">{{ dailySheetStatus.balance | number }}</span>
+    </div>
+
+    <!-- = / ≠ indicator with diff -->
+    <div class="eq-indicator">
+      <span class="eq-symbol" [ngClass]="dailySheetStatus.status ? 'eq--match' : 'eq--mismatch'">
+        {{ dailySheetStatus.status ? '=' : '≠' }}
+      </span>
+      <span class="diff-label" [ngClass]="dailySheetStatus.status ? 'diff--ok' : 'diff--err'">
+        <ng-container *ngIf="dailySheetStatus.status">Match</ng-container>
+        <ng-container *ngIf="!dailySheetStatus.status">
+          −{{ (dailySheetStatus.balance - dailySheetStatus.pulses) | number }}
+        </ng-container>
+      </span>
+    </div>
+
+    <!-- Actual = pulses used by doctor -->
+    <div class="metric">
+      <span class="metric-label">Actual Used</span>
+      <span class="metric-tag tag--actual">by doctor</span>
+      <span class="metric-value">{{ dailySheetStatus.pulses | number }}</span>
+    </div>
+
   </div>
 </div>
 
-<div class="my-3" style="display: flex; width: 100%; justify-content: space-around;" *ngIf="dailySheetStatus">
-  <div>
-    <h2>
-      Start Pulse : <span style="color: black;">{{dailySheetStatus.startPulse}}</span>
-    </h2>
-  </div>
-  <div>
-    <h2>
-      End Pulse : <span style="color: black;">{{dailySheetStatus.endPulse}}</span>
-    </h2>
-  </div>
-  <div>
-    <h2>
-      Pulses : <span style="color: black;">{{dailySheetStatus.pulses}}</span>
-    </h2>
-  </div>
-  <div>
-    <h2>
-      Balance : <span style="color: black;">{{dailySheetStatus.balance}}</span>
-    </h2>
-  </div>
-  <div *ngIf="dailySheetStatus.status">
-    <h2>
-      Status : <span style="color: white;" class="bg-success badge">OK</span>
-    </h2>
-  </div>
-  <div *ngIf="!dailySheetStatus.status">
-    <h2>
-      Status : <span style="color: white;" class="bg-danger badge">Not OK</span>
-    </h2>
-  </div>
-</div>
-
-<!-- Using the same table component as history -->
+<!-- ── Data Table ─────────────────────────────────────────── -->
 <div class="mx-auto" style="width: 90%;">
   <app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
     [currentPage]="currentPage + 1" [isLoading]="loadingState" [emptyTitle]="'No Daily Sheet Data Found'"

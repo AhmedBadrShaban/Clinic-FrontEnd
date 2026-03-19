@@ -25,7 +25,7 @@ export class DailysheetService {
     return this.http.get<any>(`${this.baseUrl}receptionist/daily-sheet`);
   }
 
-  filterDailySheet(roomName?: string, date?: any, doctorName?: string, page: number = 0, size: number = 5): Observable<any> {
+  filterDailySheet(roomName?: string | null, date?: any, doctorName?: string|null, page: number = 0, size: number = 5): Observable<any> {
     let queryParams = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
