@@ -44,7 +44,7 @@ export class PopUpFormComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar
   ) {
     this.formData = { ...data }; // shallow copy — avoid mutating injected reference
-
+    console.log('formdata :>> ', this.formData);
     // Snapshot what the server already has — used by pulse disable logic
     this.savedStartPulses = data.startPulses ?? null;
     this.savedEndPulses = data.endPulses ?? null;
@@ -61,17 +61,7 @@ export class PopUpFormComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ── Pulse disable logic (fixed) ───────────────────────────
-  //
-  // Rules:
-  //  1. If room is NOT a laser room → both disabled always
-  //  2. Admin → both always enabled
-  //  3. Receptionist, new schedule:
-  //     - startPulses: enabled
-  //     - endPulses: enabled only if startPulses already has a value
-  //  4. Receptionist, existing schedule:
-  //     - startPulses: enabled only if it has no value yet (null/0)
-  //     - endPulses: enabled only if startPulses is filled AND endPulses has no value yet
+ 
 
   get isLaser(): boolean {
     return this.isLaserRoom(this.formData.roomName);
@@ -188,19 +178,21 @@ export class PopUpFormComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // Pulse range validation — only relevant for laser rooms when both values are present
-    if (this.isLaser) {
-      const start = this.formData.startPulses;
-      const end = this.formData.endPulses;
-      const startVal = start != null ? Number(start) : null;
-      const endVal = end != null ? Number(end) : null;
+if (this.isLaser) {
+   if (this.formData.startPulses == null || this.formData.startPulses <= 0) {
+    this.showError('Start pulses are required and must be greater than 0.');
+    return false;
+  }
 
-      if (startVal !== null && endVal !== null && startVal > endVal) {
-        this.showError('Start pulses cannot be greater than end pulses.');
-        return false;
-      }
-    }
-
+   if (
+    this.formData.endPulses != null &&
+    this.formData.endPulses > 0 &&
+    this.formData.startPulses > this.formData.endPulses
+  ) {
+    this.showError('Start pulses cannot be greater than end pulses.');
+    return false;
+  }
+}
     return true;
   }
 
