@@ -30,9 +30,11 @@ export class LoginComponent implements OnInit {
       next: (data: any) => {
         this.authService.isLogged = true;
         this.authService.userType = data.authority;
+        this.authService.isSuper = data.isSuperReceptionist;
         this.authService.setToken(data.token);
         sessionStorage.setItem('isLogged', 'true');
         sessionStorage.setItem('userType', data.authority);
+        sessionStorage.setItem('isSuper', data.isSuperReceptionist.toString());
         this.router.navigateByUrl(this.mapUserRoleToString(data.authority));
       },
       error: (error) => {

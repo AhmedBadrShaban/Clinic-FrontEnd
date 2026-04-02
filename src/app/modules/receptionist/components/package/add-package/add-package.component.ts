@@ -25,6 +25,7 @@ import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs'
 import { ReservationsService } from './../../../services/reservations-services/reservations.service';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 
 interface PatientSearchItem {
@@ -99,6 +100,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private namesAndNumbers: ReservationsService,
     private patientservice: PatientService,
+    private authService: AuthService,
     private packageservice: PackageService,
     private cdr: ChangeDetectorRef,
     private snackBar: MatSnackBar,
@@ -406,13 +408,15 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     const totalPayments = this.getTotalPayments();
     const packageCost = this.getPackageCost();
 
-    // Validation
-    if (packageCost > totalPayments) {
-      this.showErrorMessage("Total Payments Value is Less Than the Package Cost!!");
-      return;
-    } else if (packageCost < totalPayments) {
-      this.showErrorMessage("Total Payments Value is More Than the Package Cost!!");
-      return;
+    // Only validate payments if the user is NOT super
+    if (!this.isSuper) {
+      if (packageCost > totalPayments) {
+        this.showErrorMessage("Total Payments Value is Less Than the Package Cost!!");
+        return;
+      } else if (packageCost < totalPayments) {
+        this.showErrorMessage("Total Payments Value is More Than the Package Cost!!");
+        return;
+      }
     }
 
     this.isSubmitting = true;
@@ -434,7 +438,6 @@ export class AddPackageComponent implements OnInit, OnDestroy {
           this.showReceipt = true;
           this.cdr.markForCheck();
 
-     
           this.updatePackagesList();
         },
         error: (err) => {
@@ -446,6 +449,9 @@ export class AddPackageComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptions.add(subscription);
+  }
+  get isSuper(): boolean | null {
+    return this.authService.isSuper;
   }
 
   private prepareReservationData(formData: any): void {
@@ -618,7 +624,9 @@ const patientName = this.reservationData?.patientName
 
     this.subscriptions.add(subscription);
   }
-
+  get userType(): string | null {
+    return this.authService.userType;
+  }
   closeDialog(): void {
     this.dialogRef.close();
   }

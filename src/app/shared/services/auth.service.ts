@@ -13,7 +13,10 @@ export class AuthService{
 
   private tokenKey = 'token';
   userType: string | null = sessionStorage.getItem('userType');
-  constructor(private userService: UserService, private http: HttpClient, private configService: ConfigService) {
+  isSuper: boolean | null = (() => {
+    const stored = sessionStorage.getItem('isSuper');
+    return stored !== null ? stored === 'true' : null;
+  })();  constructor(private userService: UserService, private http: HttpClient, private configService: ConfigService) {
     this.baseUrl = this.configService.getBaseUrl();
   }
 
@@ -24,9 +27,13 @@ export class AuthService{
   logout(){
     this.isLogged =false;
     this.userType=null;
+    this.isSuper = null;
+
     this.clearToken();
     sessionStorage.removeItem('isLogged');
     sessionStorage.removeItem('userType');
+    sessionStorage.removeItem('isSuper');
+
   }
 
   getToken(): string | null {
