@@ -408,8 +408,14 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     const totalPayments = this.getTotalPayments();
     const packageCost = this.getPackageCost();
 
-    // Only validate payments if the user is NOT super
-    if (!this.isSuper) {
+    if (this.isSuper) {
+      // Super user: total payments must be exactly 0
+      if (totalPayments !== 0) {
+        this.showErrorMessage("Super user reservations must have a total payment of 0!");
+        return;
+      }
+    } else {
+      // Regular user: total payments must match package cost exactly
       if (packageCost > totalPayments) {
         this.showErrorMessage("Total Payments Value is Less Than the Package Cost!!");
         return;
