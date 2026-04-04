@@ -17,4 +17,7 @@ export class ServiceService {
   getAllServices(id:any):Observable<any>{
     return this.http.get<any>(`${this.baseUrl}doctor/reservtionservices?id=${id}`);
   }
+  getAvaillableService(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}receptionist/services-names`)
+  }
 }

@@ -6,6 +6,7 @@ import { DoctorReservationsService } from 'src/app/modules/doctor/Services/docto
 import { ServiceService } from 'src/app/modules/doctor/Services/service.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-after-work',
@@ -22,7 +23,11 @@ export class AfterWorkComponent implements OnInit {
   reservationServices: string[] = [];
   editedForm!: FormGroup;
   loadingState = false;
- 
+
+  // ── Autocomplete state per service card ─────────────────────────────────
+  filteredOptions: string[][] = [];   // filtered list per card index
+  allServiceNames: string[] = [];     // full list from API
+  showDropdown: boolean[] = [];       // dropdown visibility per card
 
   doneServicesForm: FormGroup = new FormGroup({
     dataList: new FormArray([])
@@ -43,23 +48,55 @@ export class AfterWorkComponent implements OnInit {
   }
 
   ngOnInit(): void {
-     if (this.data) {
- 
+    this.loadAllServiceNames();
+    if (this.data) {
       this.initEditMode();
     } else if (this.id) {
- 
       this.initCreateMode();
     }
   }
 
+  // ── Load all available service names for autocomplete ───────────────────
+
+  private loadAllServiceNames(): void {
+    this.reservationService.getAvaillableService().subscribe({
+      next: (data: string[]) => {
+        this.allServiceNames = data;
+      }
+    });
+  }
+
+  // ── Autocomplete logic ───────────────────────────────────────────────────
+
+  onServiceInput(value: string, index: number): void {
+    const lower = value.toLowerCase();
+    this.filteredOptions[index] = this.allServiceNames.filter(name =>
+      name.toLowerCase().includes(lower)
+    );
+    this.showDropdown[index] = true;
+    this.cd.detectChanges();
+  }
+
+  selectOption(option: string, index: number): void {
+    const control = (this.doneServicesForm.get('dataList') as FormArray)
+      .at(index)
+      .get('service');
+    control?.setValue(option);
+    this.showDropdown[index] = false;
+    this.cd.detectChanges();
+  }
+
+  hideDropdown(index: number): void {
+    // Delay so click on option fires before blur hides the dropdown
+    setTimeout(() => {
+      this.showDropdown[index] = false;
+      this.cd.detectChanges();
+    }, 200);
+  }
+
   // ── Validator helpers ────────────────────────────────────────────────────
 
-  /**
-   * Returns the validators for pulse / spot / fluence1 / fluence2.
-   * Mandatory when isLaser=true, optional when isLaser=false.
-   */
-  private laserFieldValidators(): ValidatorFn[]
-{
+  private laserFieldValidators(): ValidatorFn[] {
     return this.isLaser
       ? [Validators.required, Validators.min(0)]
       : [Validators.min(0)];
@@ -72,52 +109,54 @@ export class AfterWorkComponent implements OnInit {
     this.reservationService.getAllServices(this.id!).subscribe({
       next: (data) => {
         this.reservationServices = data;
- 
 
-        for (const service of this.reservationServices) {
+        for (let i = 0; i < this.reservationServices.length; i++) {
+          const service = this.reservationServices[i];
+          this.filteredOptions.push([...this.allServiceNames]);
+          this.showDropdown.push(false);
+
           const serviceFormGroup = new FormGroup({
             service: new FormControl(service, Validators.required),
             pulse: new FormControl(null, this.laserFieldValidators()),
             spot: new FormControl(null, this.laserFieldValidators()),
             fluence1: new FormControl(null, this.laserFieldValidators()),
             fluence2: new FormControl(null, this.laserFieldValidators()),
-            zimmer: new FormControl(null),          // always optional
-            zeroThirty: new FormControl(false),         // always optional
-            note: new FormControl('', Validators.required)  // always required
+            zimmer: new FormControl(null),
+            zeroThirty: new FormControl(false),
+            note: new FormControl('', Validators.required)
           });
+
           (this.doneServicesForm.get('dataList') as FormArray).push(serviceFormGroup);
         }
 
         this.cd.detectChanges();
         this.loadingState = false;
       },
-      error: () => {
-        this.loadingState = false;
-      }
+      error: () => { this.loadingState = false; }
     });
   }
 
   private initEditMode(): void {
     this.reservationServices = [this.data.service];
+    this.filteredOptions.push([...this.allServiceNames]);
+    this.showDropdown.push(false);
 
-    for (const service of this.reservationServices) {
-      this.editedForm = this.fb.group({
-        historyId: [this.data.historyId, Validators.required],
-        service: [this.data.service, Validators.required],
-        pulse: [this.data.pulse, this.laserFieldValidators()],
-        fluence1: [this.data.fluence1, this.laserFieldValidators()],
-        fluence2: [this.data.fluence2, this.laserFieldValidators()],
-        spot: [this.data.spot, this.laserFieldValidators()],
-        zimmer: [this.data.zimmer],                             // always optional
-        zeroThirty: [this.data.zeroThirty],                        // always optional
-        note: [this.data.note, Validators.required],   // always required
-        date: [this.data.date],
-        doctorName: [this.data.doctorName],
-        clinic: [this.data.clinic],
-      });
+    this.editedForm = this.fb.group({
+      historyId: [this.data.historyId, Validators.required],
+      service: [this.data.service, Validators.required],
+      pulse: [this.data.pulse, this.laserFieldValidators()],
+      fluence1: [this.data.fluence1, this.laserFieldValidators()],
+      fluence2: [this.data.fluence2, this.laserFieldValidators()],
+      spot: [this.data.spot, this.laserFieldValidators()],
+      zimmer: [this.data.zimmer],
+      zeroThirty: [this.data.zeroThirty],
+      note: [this.data.note, Validators.required],
+      date: [this.data.date],
+      doctorName: [this.data.doctorName],
+      clinic: [this.data.clinic],
+    });
 
-      (this.doneServicesForm.get('dataList') as FormArray).push(this.editedForm);
-    }
+    (this.doneServicesForm.get('dataList') as FormArray).push(this.editedForm);
   }
 
   // ── FormArray accessor ───────────────────────────────────────────────────
@@ -130,6 +169,8 @@ export class AfterWorkComponent implements OnInit {
 
   onCancel(index: number): void {
     (this.doneServicesForm.get('dataList') as FormArray).removeAt(index);
+    this.filteredOptions.splice(index, 1);
+    this.showDropdown.splice(index, 1);
   }
 
   onSubmit(): void {
@@ -143,9 +184,7 @@ export class AfterWorkComponent implements OnInit {
         this.cd.detectChanges();
         this.router.navigate(['doctor']);
       },
-      error: (error: any) => {
-        alert(error.error.message);
-      }
+      error: (error: any) => { alert(error.error.message); }
     });
   }
 
@@ -159,17 +198,10 @@ export class AfterWorkComponent implements OnInit {
         this.closeDialog();
         this.cd.detectChanges();
       },
-      error: (error: any) => {
-        alert(error.error.message);
-      }
+      error: (error: any) => { alert(error.error.message); }
     });
   }
 
-  cancelUpdate(): void {
-    this.closeDialog();
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close();
-  }
+  cancelUpdate(): void { this.closeDialog(); }
+  closeDialog(): void { this.dialogRef.close(); }
 }

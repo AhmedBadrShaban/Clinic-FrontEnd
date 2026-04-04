@@ -23,16 +23,43 @@
           [style.animation-delay]="i * 60 + 'ms'">
 
           <!-- Card Header -->
-          <div class="card-header">
-            <div class="service-name-pill">
-              <mat-icon class="svc-icon">spa</mat-icon>
-              {{ serviceGroup.get('service')!.value }}
-            </div>
-            <button *ngIf="userType != 'ROLE_ADMIN'" type="button" class="remove-btn" (click)="onCancel(i)"
-              matTooltip="Remove this service">
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
+<!-- Card Header -->
+<div class="card-header">
+
+  <!-- Autocomplete Service Name -->
+  <div class="autocomplete-wrapper">
+    <div class="service-input-container">
+      <mat-icon class="svc-icon">spa</mat-icon>
+      <input type="text" class="service-name-input" formControlName="service"
+        [value]="serviceGroup.get('service')!.value" (input)="onServiceInput($any($event.target).value, i)"
+        (focus)="onServiceInput(serviceGroup.get('service')!.value, i)" (blur)="hideDropdown(i)"
+        placeholder="Search service..." autocomplete="off"
+        [class.invalid]="serviceGroup.get('service')!.invalid && serviceGroup.get('service')!.touched" />
+    </div>
+
+    <!-- Dropdown -->
+    <div class="autocomplete-dropdown" *ngIf="showDropdown[i] && filteredOptions[i]?.length">
+      <div *ngFor="let option of filteredOptions[i]" class="autocomplete-option" (mousedown)="selectOption(option, i)">
+        <mat-icon class="option-icon">spa</mat-icon>
+        {{ option }}
+      </div>
+    </div>
+
+    <!-- No results -->
+    <div class="autocomplete-dropdown" *ngIf="showDropdown[i] && filteredOptions[i]?.length === 0">
+      <div class="autocomplete-no-result">No services found</div>
+    </div>
+
+    <span class="error-msg" *ngIf="serviceGroup.get('service')!.invalid && serviceGroup.get('service')!.touched">
+      Service is required
+    </span>
+  </div>
+
+  <button *ngIf="userType != 'ROLE_ADMIN'" type="button" class="remove-btn" (click)="onCancel(i)"
+    matTooltip="Remove this service">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
           <!-- Metrics Grid -->
           <div class="metrics-grid">
