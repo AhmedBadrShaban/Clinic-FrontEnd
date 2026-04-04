@@ -18,12 +18,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DatePipe } from '@angular/common';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { ReservationRes } from './../../models/reservation-res';
 import { ReservationfmService } from '../../services/Reservation_Form/reservationfm.service';
 import { PatientService } from '../../services/patient-server/patient.service';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { ReservationsService } from '../../services/reservations-services/reservations.service';
+import { LaserConfirmDialogComponent } from './laser-confirm-dialog/laser-confirm-dialog.component';
 
 interface PatientSearchItem {
   displayText: string;
@@ -76,6 +78,8 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
     private reservationService: ReservationfmService,
     private namesAndNumbers: ReservationsService,
     private roomService: RoomsService,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     public dialogRef: MatDialogRef<ReservationFmComponent>,
     private cdr: ChangeDetectorRef
   ) {
@@ -372,41 +376,108 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  // Form submission
   submit(): void {
     if (this.reservationFm.invalid) {
       this.markFormGroupTouched(this.reservationFm);
       return;
     }
+    this.executeReservation(false); // always start with confirm=false
+  }
 
-    this.isSubmitting = true;
-    this.cdr.markForCheck();
-
-    let userModel: ReservationRes = this.reservationFm.value as ReservationRes;
+  private buildPayload(): ReservationRes {
+    const userModel: ReservationRes = { ...this.reservationFm.value };
     userModel.patientPhone = this.namesAndNumbers.extractPhoneNumberFromSearchResult(userModel.patientPhone);
     userModel.start = this.formatTime(userModel.start);
     userModel.end = this.formatTime(userModel.end);
+    return userModel;
+  }
 
-    const subscription = this.reservationService.addReservation(userModel, this.roomName)
+  private executeReservation(confirm: boolean): void {
+    this.isSubmitting = true;
+    this.cdr.markForCheck();
+
+    const payload = this.buildPayload();
+
+    const subscription = this.reservationService
+      .addReservation(payload, this.roomName, confirm)  // ← pass confirm param
       .subscribe({
         next: (response: any) => {
           this.isSubmitting = false;
-          this.showSuccessMessage(response.message);
+          this.cdr.markForCheck();
 
-          // ✅ Refresh reservations for this room/date and update service
+          // Show non-blocking warning if present alongside success
+          if (response.warning) {
+            this.showWarningSnackBar(response.warning);
+          } else {
+            this.showSuccessSnackBar(response.message);
+          }
+
           this.updateRoomReservations();
         },
         error: (err) => {
           this.isSubmitting = false;
           this.cdr.markForCheck();
-          this.showErrorMessage(err.error?.message || 'An error occurred');
+
+          if (err.status === 400) {
+            // Hard block — show error snackbar
+            this.showErrorSnackBar(err.error?.message || 'This reservation cannot be created.');
+
+          } else if (err.status === 409 && err.error?.confirmationRequired) {
+            // Warning — ask user to confirm
+            this.openConfirmationDialog(err.error);
+
+          } else {
+            this.showErrorSnackBar(err.error?.message || 'An unexpected error occurred.');
+          }
         }
       });
 
     this.subscriptions.add(subscription);
   }
 
+  private openConfirmationDialog(errorBody: any): void {
+    const ref = this.dialog.open(LaserConfirmDialogComponent, {
+      data: {
+        message: errorBody.message,
+        warning: errorBody.warning
+      },
+      disableClose: true,
+      panelClass: 'laser-confirm-dialog-panel'
+    });
 
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.executeReservation(true); // resend with confirm=true
+      }
+      // if false/undefined: user cancelled, do nothing
+    });
+  }
+  private showSuccessSnackBar(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      panelClass: ['snackbar-success'],
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
+
+  private showWarningSnackBar(warning: string): void {
+    this.snackBar.open(warning, 'Dismiss', {
+      duration: 15000,
+      panelClass: ['snackbar-warning'],
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
+
+  private showErrorSnackBar(message: string): void {
+    this.snackBar.open(message, 'Dismiss', {
+      duration: 15000,
+      panelClass: ['snackbar-error'],
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
   private markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);
@@ -426,16 +497,7 @@ export class ReservationFmComponent implements OnInit, OnDestroy {
     });
   }
 
-  private showSuccessMessage(message: string): void {
-    // Replace with MatSnackBar for better UX
-    alert(message);
-  }
-
-  private showErrorMessage(message: string): void {
-    // Replace with MatSnackBar for better UX
-    alert(message);
-  }
-
+ 
   private updateAvailableSlots(): void {
     const subscription = this.roomService.getAvailableSlots(this.roomName, this.date)
       .subscribe((data) => {

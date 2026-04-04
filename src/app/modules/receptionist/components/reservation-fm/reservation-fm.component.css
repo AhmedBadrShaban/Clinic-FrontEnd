@@ -196,3 +196,48 @@ textarea[matInput] {
 .mat-icon{
     margin-right:0 !important;
 }
+/* ---- Scroll fix ---- */
+.reservation-form-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.form-header {
+  flex-shrink: 0;
+}
+
+.reservation-form {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #1976d2 #e3f2fd;
+}
+
+.reservation-form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reservation-form::-webkit-scrollbar-track {
+  background: #e3f2fd;
+  border-radius: 99px;
+}
+
+.reservation-form::-webkit-scrollbar-thumb {
+  background: #1976d2;
+  border-radius: 99px;
+}
+
+.reservation-form::-webkit-scrollbar-thumb:hover {
+  background: #1565c0;
+}
+
+.form-actions {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 1px solid #e8eaf0;
+}

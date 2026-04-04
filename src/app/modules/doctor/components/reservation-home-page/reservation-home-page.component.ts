@@ -89,6 +89,7 @@ interface TabDataState {
                 *ngIf="isTabActive('afterWorkTab')"
                 [phoneNumber]="patientNumber"
                 [id]="reservationID"
+                [isLaser]="isLaser"
                 [isActive]="isTabActive('afterWorkTab')">
               </app-after-work>
             </div>
@@ -100,8 +101,7 @@ interface TabDataState {
     </div>
   `,
   styles: [`
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-
+ 
     :host {
       display: block;
       min-height: 100vh;
@@ -337,17 +337,18 @@ interface TabDataState {
 export class DoctorReservationComponent implements OnInit, OnDestroy {
   selectedTabIndex = 0;
 
-  patientNumber:   string | null = null;
-  patientName:     string | null = null;
-  doctorName:      string | null = null;
-  reservationID:   string | null = null;
+  patientNumber: string | null = null;
+  patientName: string | null = null;
+  doctorName: string | null = null;
+  reservationID: string | null = null;
   reservationDate: string | null = null;
-  services:        string[]      = [];
-  note:            string | null = null;
+  services: string[] = [];
+  note: string | null = null;
+  isLaser: boolean = false;
   stateLost = false;
 
   tabDataStates: { [key: string]: TabDataState } = {
-    historyTab:   { loading: false, loaded: false, error: null, initialized: false },
+    historyTab: { loading: false, loaded: false, error: null, initialized: false },
     afterWorkTab: { loading: false, loaded: false, error: null, initialized: false }
   };
 
@@ -358,7 +359,7 @@ export class DoctorReservationComponent implements OnInit, OnDestroy {
     private router: Router,
     private reservationsService: ReservationsService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeDoctorView();
@@ -373,13 +374,13 @@ export class DoctorReservationComponent implements OnInit, OnDestroy {
     // router.getCurrentNavigation() is null in ngOnInit because navigation
     // is already complete by then. Read from window.history.state instead.
     const historyState = window.history.state;
-    console.log('[DoctorReservation] window.history.state:', historyState);
+    // console.log('[DoctorReservation] window.history.state:', historyState);
 
     const reservation = historyState?.reservation;
-    console.log('[DoctorReservation] reservation from state:', reservation);
+    // console.log('[DoctorReservation] reservation from state:', reservation);
 
     if (reservation && reservation.patientPhone) {
-      console.log('[DoctorReservation] ✅ State found — loading patient:', reservation.patientName);
+      // console.log('[DoctorReservation] ✅ State found — loading patient:', reservation.patientName);
       this.applyReservation(reservation);
       return;
     }
@@ -404,16 +405,18 @@ export class DoctorReservationComponent implements OnInit, OnDestroy {
   }
 
   private applyReservation(reservation: any): void {
-    this.patientNumber   = reservation.patientPhone;
-    this.patientName     = reservation.patientName;
-    this.doctorName      = reservation.doctorName;
-    this.reservationID   = reservation.reservationId;
+    // console.log('reservation :>> ', reservation);
+    this.patientNumber = reservation.patientPhone;
+    this.patientName = reservation.patientName;
+    this.doctorName = reservation.doctorName;
+    this.reservationID = reservation.reservationId;
     this.reservationDate = reservation.reservedAt;
-    this.services        = reservation.service || [];
-    this.note            = reservation.note    || null;
-    this.stateLost       = false;
+    this.services = reservation.service || [];
+    this.note = reservation.note || null;
+    this.isLaser = reservation.laser || false;
+    this.stateLost = false;
 
-    console.log('[DoctorReservation] Applied reservation. patientNumber:', this.patientNumber);
+    // console.log('[DoctorReservation] Applied reservation. patientNumber:', this.patientNumber);
 
     this.reservationsService.updatePhoneNumber(this.patientNumber!);
     this.resetTabStates();

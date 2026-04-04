@@ -24,14 +24,17 @@ getAllServicesNames():Observable<any>{
 getAllServicesNamesToRoom(roomName:any):Observable<any>{
   return this.http.get<any>(`${this.baseUrl}receptionist/services-room?roomName=${roomName}`);
 }
-addReservation(data:any , roomName:any): Observable<any> {
-  //console.log('roomName before Api Request :>> ', roomName);
-  //console.log('and Data before Api Request :>> ', data);
-    return this.http.post(`${this.baseUrl}receptionist/roomreservation?roomName=${roomName}`, data);
+  addReservation(data: any, roomName: any, confirm: boolean = false): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}receptionist/roomreservation?roomName=${roomName}&confirm=${confirm}`,
+      data
+    );
   }
-  updateReservation(resId:number ,  data:any){
-    //console.log('data before sending Api :>> ', data);
-    return this.http.put(`${this.baseUrl}receptionist/update-reservation-by-id?reservationId=${resId}`, data);
 
+  updateReservation(resId: number, data: any, confirm: boolean = false): Observable<any> {
+    return this.http.put(
+      `${this.baseUrl}receptionist/update-reservation-by-id?reservationId=${resId}&confirm=${confirm}`,
+      data
+    );
   }
 }

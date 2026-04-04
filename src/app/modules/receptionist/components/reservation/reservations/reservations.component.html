@@ -19,10 +19,10 @@
 
 <!-- Action template -->
 <ng-template #actionTemplate let-row>
-  <button *ngIf="row.status !== 'CANCELLED' && row.status !== 'COMPLETED' && row.status !== 'DONE'" class="cancel-action-btn"
+  <button *ngIf="row.status !== 'CANCELED' && row.status !== 'COMPLETED' && row.status !== 'DONE'" class="cancel-action-btn"
     [disabled]="cancellingId === row.id" (click)="cancelReservation(row)">
     <mat-icon>cancel</mat-icon>
     {{ cancellingId === row.id ? 'Cancelling...' : 'Cancel' }}
   </button>
-  <span *ngIf="row.status === 'CANCELLED' || row.status === 'COMPLETED' || row.status === 'DONE'" class="no-action">—</span>
+  <span *ngIf="row.status === 'CANCELED' || row.status === 'COMPLETED' || row.status === 'DONE'" class="no-action">—</span>
 </ng-template>

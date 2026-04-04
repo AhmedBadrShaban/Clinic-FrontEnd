@@ -37,89 +37,95 @@
           <!-- Metrics Grid -->
           <div class="metrics-grid">
 
+            <!-- Pulses — required only when isLaser -->
             <div class="metric-field">
               <label class="field-label">
                 <mat-icon class="field-icon">flash_on</mat-icon>
-                Pulses <span class="required-star">*</span>
+                Pulses
+                <span *ngIf="isLaser" class="required-star">*</span>
+                <span *ngIf="!isLaser" class="optional-tag">optional</span>
               </label>
               <input type="number" formControlName="pulse" class="field-input" min="0" placeholder="0"
                 [class.invalid]="serviceGroup.get('pulse')!.invalid && serviceGroup.get('pulse')!.touched">
               <span class="error-msg" *ngIf="serviceGroup.get('pulse')!.invalid && serviceGroup.get('pulse')!.touched">
-                Required
+                {{ isLaser ? 'Required' : 'Must be ≥ 0' }}
               </span>
             </div>
 
+            <!-- Spot — required only when isLaser -->
             <div class="metric-field">
               <label class="field-label">
                 <mat-icon class="field-icon">crop_square</mat-icon>
-                Spot <span class="required-star">*</span>
+                Spot
+                <span *ngIf="isLaser" class="required-star">*</span>
+                <span *ngIf="!isLaser" class="optional-tag">optional</span>
               </label>
               <input type="number" formControlName="spot" class="field-input" min="0" placeholder="0"
                 [class.invalid]="serviceGroup.get('spot')!.invalid && serviceGroup.get('spot')!.touched">
               <span class="error-msg" *ngIf="serviceGroup.get('spot')!.invalid && serviceGroup.get('spot')!.touched">
-                Required
+                {{ isLaser ? 'Required' : 'Must be ≥ 0' }}
               </span>
             </div>
 
+            <!-- Fluence 1 — required only when isLaser -->
             <div class="metric-field">
               <label class="field-label">
                 <mat-icon class="field-icon">tune</mat-icon>
-                Fluence 1 <span class="required-star">*</span>
+                Fluence 1
+                <span *ngIf="isLaser" class="required-star">*</span>
+                <span *ngIf="!isLaser" class="optional-tag">optional</span>
               </label>
               <input type="number" formControlName="fluence1" class="field-input" min="0" placeholder="0"
                 [class.invalid]="serviceGroup.get('fluence1')!.invalid && serviceGroup.get('fluence1')!.touched">
               <span class="error-msg"
                 *ngIf="serviceGroup.get('fluence1')!.invalid && serviceGroup.get('fluence1')!.touched">
-                Required
+                {{ isLaser ? 'Required' : 'Must be ≥ 0' }}
               </span>
             </div>
 
+            <!-- Fluence 2 — required only when isLaser -->
             <div class="metric-field">
               <label class="field-label">
                 <mat-icon class="field-icon">tune</mat-icon>
-                Fluence 2 <span class="required-star">*</span>
+                Fluence 2
+                <span *ngIf="isLaser" class="required-star">*</span>
+                <span *ngIf="!isLaser" class="optional-tag">optional</span>
               </label>
               <input type="number" formControlName="fluence2" class="field-input" min="0" placeholder="0"
                 [class.invalid]="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
               <span class="error-msg"
                 *ngIf="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
-                Required
+                {{ isLaser ? 'Required' : 'Must be ≥ 0' }}
               </span>
             </div>
 
           </div>
 
-          <!-- Zimmer + 0/3 Row -->
+          <!-- Zimmer + 0/3 Row — always optional -->
           <div class="extra-row">
             <div class="metric-field">
               <label class="field-label">
                 <mat-icon class="field-icon">ac_unit</mat-icon>
                 Zimmer
-                <!-- <span class="optional-tag">optional</span> -->
+                <span class="optional-tag">optional</span>
               </label>
               <input type="number" formControlName="zimmer" class="field-input" min="0" placeholder="—">
-                <span class="error-msg" *ngIf="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
-                  Required
-                </span>
             </div>
 
             <div class="checkbox-field">
               <label class="field-label">
                 <mat-icon class="field-icon">looks_3</mat-icon>
                 0/3
-                <!-- <span class="optional-tag">optional</span> -->
+                <span class="optional-tag">optional</span>
               </label>
               <div class="checkbox-wrapper">
                 <input type="checkbox" formControlName="zeroThirty" id="zeroThirty_{{ i }}" class="styled-checkbox">
                 <label for="zeroThirty_{{ i }}" class="checkbox-label">Apply 0/30</label>
-                  <span class="error-msg" *ngIf="serviceGroup.get('fluence2')!.invalid && serviceGroup.get('fluence2')!.touched">
-                    Required
-                  </span>
               </div>
             </div>
           </div>
 
-          <!-- Notes -->
+          <!-- Notes — always required -->
           <div class="note-field">
             <label class="field-label">
               <mat-icon class="field-icon">notes</mat-icon>

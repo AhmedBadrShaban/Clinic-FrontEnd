@@ -1,191 +1,268 @@
-<div class="update-reservation-container">
+<div class="reservation-form-container">
+
   <!-- Header -->
-  <mat-dialog-content class="dialog-content">
-    <div class="dialog-header">
-      <h2 mat-dialog-title>Edit Reservation</h2>
-     </div>
+  <div class="form-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-4 me-3">
+        <mat-icon class="header-icon me-3">edit_calendar</mat-icon>
+        <div>
+          <h2 class="mb-0">Edit Reservation</h2>
+          <small class="text-muted">
+            {{ data.roomName }} • {{ data.reservationDate | date:'mediumDate' }}
+          </small>
+        </div>
+      </div>
+      <button mat-icon-button (click)="closeDialog()" class="close-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
 
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="loading-container">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p>Loading reservation data...</p>
+  <!-- Scrollable body -->
+  <div class="update-dialog-body">
+
+    <div *ngIf="isLoading" class="loading-initial">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p class="mt-3">Loading reservation data...</p>
     </div>
 
-    <!-- Form Content -->
-    <div *ngIf="!isLoading" class="form-container">
-      <form [formGroup]="formData" (ngSubmit)="update()">
+    <form *ngIf="!isLoading" [formGroup]="formData" (ngSubmit)="update()">
+      <mat-card class="form-card">
+        <mat-card-content>
 
-        <!-- Patient Information Card -->
-        <mat-card class="info-card patient-card" appearance="outlined">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>person</mat-icon>
-            <mat-card-title>Patient Information</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="form-row two-column">
-              <mat-form-field appearance="outline"  class="half-width">
-                <mat-label>Patient Name</mat-label>
-                <input matInput formControlName="patientName" readonly>
-                <mat-icon matSuffix>badge</mat-icon>
-              </mat-form-field>
-                <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Phone Number</mat-label>
-                <input matInput formControlName="patientPhone" readonly>
-                <mat-icon matSuffix>phone</mat-icon>
-              </mat-form-field>
+          <!-- Patient -->
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon class="section-icon">person</mat-icon>
+              <h3>Patient Information</h3>
             </div>
-          </mat-card-content>
-        </mat-card>
-
-        <!-- Reservation Details Card -->
-        <mat-card class="info-card reservation-card" appearance="outlined">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>event</mat-icon>
-            <mat-card-title>Reservation Details</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="form-row two-column">
-              <!-- Doctor Selection -->
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Doctor Name</mat-label>
-                <input matInput formControlName="doctorName" [matAutocomplete]="doctorAuto"
-                  (input)="onChange($any($event.target).value)">
-                <mat-icon matSuffix>local_hospital</mat-icon>
-                <mat-autocomplete #doctorAuto="matAutocomplete">
-                  <mat-option *ngFor="let doctor of FilterdNames" [value]="doctor">
-                    <mat-icon>person</mat-icon>
-                    <span class="ml-2">{{ doctor }}</span>
-                  </mat-option>
-                </mat-autocomplete>
-                <mat-error *ngIf="formData.get('doctorName')?.hasError('required')">
-                  Doctor name is required
-                </mat-error>
-              </mat-form-field>
-
-              <!-- Room Selection -->
-            <!-- Room Selection -->
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Move to Room</mat-label>
-              <mat-select formControlName="roomId" (selectionChange)="onRoomChange($event.value)">
-                <mat-option *ngFor="let room of allRooms" [value]="room.roomId">
-                  <mat-icon>meeting_room</mat-icon>
-                  <span class="ml-2">{{ room.roomName}}</span>
-                </mat-option>
-              </mat-select>
-              <mat-icon matSuffix>room</mat-icon>
-              <mat-error *ngIf="formData.get('roomId')?.hasError('required')">
-                Room selection is required
-              </mat-error>
-
-            </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <!-- Date Selection -->
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Reservation Date</mat-label>
-                <input matInput [matDatepicker]="datePicker" formControlName="reservationDate" readonly>
-                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-                <mat-datepicker #datePicker></mat-datepicker>
-                <mat-error *ngIf="formData.get('reservationDate')?.hasError('required')">
-                  Reservation date is required
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row two-column">
-              <!-- Time From -->
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>From</mat-label>
-                <input matInput type="time" formControlName="reservationStart">
-                <mat-icon matSuffix>schedule</mat-icon>
-                <mat-error *ngIf="formData.get('reservationStart')?.hasError('required')">
-                  Start time is required
-                </mat-error>
-              </mat-form-field>
-
-              <!-- Time To -->
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>To</mat-label>
-                <input matInput type="time" formControlName="reservationEnd">
-                <mat-icon matSuffix>schedule</mat-icon>
-                <mat-error *ngIf="formData.get('reservationEnd')?.hasError('required')">
-                  End time is required
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <!-- Notes -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Notes</mat-label>
-                <textarea matInput formControlName="note" rows="3"
-                  placeholder="Add any special notes or requirements..."></textarea>
-                <mat-icon matSuffix>note</mat-icon>
-              </mat-form-field>
-            </div>
-          </mat-card-content>
-        </mat-card>
-
-        <!-- Services Card -->
-        <mat-card class="info-card services-card" appearance="outlined">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>medical_services</mat-icon>
-            <mat-card-title>Services</mat-card-title>
-            <mat-card-subtitle *ngIf="hasSelectedServices">
-              {{ selectedServicesCount }} service(s) selected
-            </mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <div *ngIf="!hasServices" class="no-services">
-              <mat-icon>info</mat-icon>
-              <p>No services available for the selected room</p>
-            </div>
-
-            <div *ngIf="hasServices" class="services-grid">
-              <mat-checkbox *ngFor="let service of allServices" [checked]="selectedServices[service]"
-                (change)="onCheckboxChange(service, $event)" class="service-checkbox">
-                {{ service }}
-              </mat-checkbox>
-            </div>
-
-            <!-- Selected Services Preview -->
-            <div *ngIf="hasSelectedServices" class="selected-services-preview">
-              <mat-divider></mat-divider>
-              <div class="preview-header">
-                <mat-icon>preview</mat-icon>
-                <span>Selected Services</span>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Patient Name</mat-label>
+                  <input matInput formControlName="patientName" readonly>
+                  <mat-icon matSuffix>badge</mat-icon>
+                </mat-form-field>
               </div>
-              <mat-chip-set>
-                <mat-chip *ngFor="let service of getSelectedServicesList()"
-                  (removed)="selectedServices[service] = false">
-                  {{ service }}
-                  <mat-icon matChipRemove>cancel</mat-icon>
-                </mat-chip>
-              </mat-chip-set>
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Phone Number</mat-label>
+                  <input matInput formControlName="patientPhone" readonly>
+                  <mat-icon matSuffix>phone</mat-icon>
+                </mat-form-field>
+              </div>
             </div>
-            <div *ngIf="showError"
-              class="services-error">
-              <mat-error>At least one service must be selected</mat-error>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      </form>
-    </div>
-  </mat-dialog-content>
+          </div>
 
-  <!-- Dialog Actions -->
-  <mat-dialog-actions align="end" class="dialog-actions">
-    <button mat-button type="button" (click)="closeDialog()" [disabled]="isSubmitting">
-      <mat-icon>close</mat-icon>
+          <mat-divider class="my-4"></mat-divider>
+
+          <!-- Doctor -->
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon class="section-icon">medical_services</mat-icon>
+              <h3>Doctor Assignment</h3>
+            </div>
+            <div class="row g-3">
+              <div class="col-12">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Select Doctor</mat-label>
+                  <input matInput formControlName="doctorName" [matAutocomplete]="DoctorAuto"
+                    (input)="onDoctorSearch($event)" placeholder="Type doctor's name" autocomplete="off">
+                  <mat-spinner *ngIf="isDoctorLoading" matSuffix diameter="20"></mat-spinner>
+                  <mat-icon *ngIf="!isDoctorLoading" matSuffix>medical_services</mat-icon>
+                  <mat-error *ngIf="formData.get('doctorName')?.hasError('required')">
+                    Doctor selection is required
+                  </mat-error>
+                  <mat-autocomplete #DoctorAuto="matAutocomplete" class="modern-autocomplete">
+                    <mat-option *ngFor="let doctor of filteredDoctors; trackBy: trackByDoctor" [value]="doctor"
+                      class="doctor-option">
+                      <div class="d-flex align-items-center">
+                        <div class="doctor-avatar me-3">
+                          <mat-icon>medical_services</mat-icon>
+                        </div>
+                        <div class="doctor-name">Dr. {{ doctor }}</div>
+                      </div>
+                    </mat-option>
+                    <mat-option *ngIf="filteredDoctors.length === 0 && doctorSearchValue && !isDoctorLoading" disabled>
+                      <div class="text-center py-3">
+                        <mat-icon class="text-muted">search</mat-icon>
+                        <p class="mb-0 mt-2">No doctors found</p>
+                      </div>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider class="my-4"></mat-divider>
+
+          <!-- Room -->
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon class="section-icon">meeting_room</mat-icon>
+              <h3>Room</h3>
+            </div>
+            <div class="row g-3">
+              <div class="col-12">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Move to Room</mat-label>
+                  <mat-select formControlName="roomId" (selectionChange)="onRoomChange($event.value)">
+                    <mat-option *ngFor="let room of allRooms" [value]="room.roomId">
+                      {{ room.roomName }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>room</mat-icon>
+                  <mat-error *ngIf="formData.get('roomId')?.hasError('required')">
+                    Room selection is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider class="my-4"></mat-divider>
+
+          <!-- Services -->
+<div class="form-section">
+  <div class="section-header">
+    <mat-icon class="section-icon">medical_services</mat-icon>
+    <h3>Services</h3>
+  </div>
+
+  <div formArrayName="service">
+    <div class="service-item" *ngFor="let service of Services.controls; let i = index"
+      [class.mb-3]="i < Services.controls.length - 1">
+
+      <div class="row g-3 align-items-center">
+        <div class="col-md-10">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Service {{ i + 1 }}</mat-label>
+
+            <mat-select [formControl]="service" placeholder="Select Service">
+
+              <mat-option>
+                <ngx-mat-select-search [formControl]="serviceSearchCtrl" placeholderLabel="Search services...">
+                </ngx-mat-select-search>
+              </mat-option>
+
+              <mat-option *ngFor="let serviceOption of filteredServices; trackBy: trackByService"
+                [value]="serviceOption">
+                {{ serviceOption }}
+              </mat-option>
+
+            </mat-select>
+
+            <mat-icon matSuffix>list_alt</mat-icon>
+            <mat-error *ngIf="Services.at(i)?.hasError('required')">
+              Service is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-2" *ngIf="i === Services.controls.length - 1">
+          <button mat-icon-button type="button" color="primary" (click)="addService()" matTooltip="Add another service"
+            class="add-service-btn">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        </div>
+
+        <div class="col-md-2" *ngIf="i > 0">
+          <button mat-icon-button type="button" color="warn" (click)="removeService(i)" matTooltip="Remove service"
+            class="remove-service-btn">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+          <mat-divider class="my-4"></mat-divider>
+
+          <!-- Time & Notes -->
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon class="section-icon">schedule</mat-icon>
+              <h3>Time & Details</h3>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="time-section">
+                  <h4 class="time-title">Appointment Time</h4>
+                  <div class="row g-3">
+                    <div>
+                      <label class="form-label w-100 text-center" for="startTime">Start Time</label>
+                      <input id="startTime" type="time" class="form-control" formControlName="reservationStart" />
+                      <div *ngIf="formData.get('reservationStart')?.hasError('required')"
+                        class="text-danger small mt-1 text-center">Start time is required</div>
+                    </div>
+                  </div>
+                  <div class="row g-3">
+                    <div>
+                      <label class="form-label w-100 text-center" for="endTime">End Time</label>
+                      <input id="endTime" type="time" class="form-control" formControlName="reservationEnd" />
+                      <div *ngIf="formData.get('reservationEnd')?.hasError('required')"
+                        class="text-danger small mt-1 text-center">End time is required</div>
+                    </div>
+                  </div>
+                  <div class="time-duration" *ngIf="getTimeDuration()">
+                    <mat-chip-listbox>
+                      <mat-chip-option selected>
+                        <mat-icon>timer</mat-icon>
+                        Duration: {{ getTimeDuration() }}
+                      </mat-chip-option>
+                    </mat-chip-listbox>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 d-flex flex-column gap-3">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Reservation Date</mat-label>
+                  <input matInput [matDatepicker]="datePicker" formControlName="reservationDate">
+                  <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #datePicker></mat-datepicker>
+                  <mat-error *ngIf="formData.get('reservationDate')?.hasError('required')">
+                    Date is required
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-100 flex-grow-1">
+                  <mat-label>Notes</mat-label>
+                  <textarea matInput formControlName="note" placeholder="Add any special notes or instructions..."
+                    rows="4" cdkTextareaAutosize cdkAutosizeMinRows="4" cdkAutosizeMaxRows="6">
+                  </textarea>
+                  <mat-icon matSuffix>note</mat-icon>
+                  <mat-hint>Optional: Special instructions or requirements</mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div class="update-dialog-footer">
+    <button mat-stroked-button type="button" (click)="closeDialog()">
+      <mat-icon>cancel</mat-icon>
       Cancel
     </button>
-
-    <button mat-raised-button color="primary" type="submit" (click)="update()" [disabled]="!isFormValid()"
-      class="save-button">
-      <mat-spinner *ngIf="isSubmitting" diameter="20" class="button-spinner"></mat-spinner>
+    <button mat-raised-button color="primary" (click)="update()" [disabled]="formData.invalid || isSubmitting"
+      class="submit-btn">
+      <mat-spinner *ngIf="isSubmitting" diameter="20" class="me-2"></mat-spinner>
       <mat-icon *ngIf="!isSubmitting">save</mat-icon>
-      <span>{{ isSubmitting ? 'Saving...' : 'Save Changes' }}</span>
+      {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
     </button>
-  </mat-dialog-actions>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" *ngIf="isSubmitting">
+    <div class="loading-content">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p class="mt-3">Saving your changes...</p>
+    </div>
+  </div>
+
 </div>

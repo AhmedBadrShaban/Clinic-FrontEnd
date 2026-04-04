@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, Input, OnInit, Optional } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DoctorReservationsService } from 'src/app/modules/doctor/Services/doctor-reservations.service';
@@ -16,11 +16,13 @@ export class AfterWorkComponent implements OnInit {
   @Input() phoneNumber: string | null = null;
   @Input() id: string | null = null;
   @Input() isActive: boolean = false;
+  @Input() isLaser: boolean = false;
 
   userType: any;
   reservationServices: string[] = [];
   editedForm!: FormGroup;
   loadingState = false;
+ 
 
   doneServicesForm: FormGroup = new FormGroup({
     dataList: new FormArray([])
@@ -41,31 +43,51 @@ export class AfterWorkComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.data) {
+     if (this.data) {
+ 
       this.initEditMode();
     } else if (this.id) {
+ 
       this.initCreateMode();
     }
   }
+
+  // ── Validator helpers ────────────────────────────────────────────────────
+
+  /**
+   * Returns the validators for pulse / spot / fluence1 / fluence2.
+   * Mandatory when isLaser=true, optional when isLaser=false.
+   */
+  private laserFieldValidators(): ValidatorFn[]
+{
+    return this.isLaser
+      ? [Validators.required, Validators.min(0)]
+      : [Validators.min(0)];
+  }
+
+  // ── Init modes ───────────────────────────────────────────────────────────
 
   private initCreateMode(): void {
     this.loadingState = true;
     this.reservationService.getAllServices(this.id!).subscribe({
       next: (data) => {
         this.reservationServices = data;
+ 
+
         for (const service of this.reservationServices) {
           const serviceFormGroup = new FormGroup({
             service: new FormControl(service, Validators.required),
-            pulse: new FormControl(null, [Validators.required, Validators.min(0)]),
-            spot: new FormControl(null, [Validators.required, Validators.min(0)]),
-            fluence1: new FormControl(null, [Validators.required, Validators.min(0)]),
-            fluence2: new FormControl(null, [Validators.required, Validators.min(0)]),
-            zimmer: new FormControl(null),        // optional
-            zeroThirty: new FormControl(false),       // optional checkbox
-            note: new FormControl('', Validators.required)
+            pulse: new FormControl(null, this.laserFieldValidators()),
+            spot: new FormControl(null, this.laserFieldValidators()),
+            fluence1: new FormControl(null, this.laserFieldValidators()),
+            fluence2: new FormControl(null, this.laserFieldValidators()),
+            zimmer: new FormControl(null),          // always optional
+            zeroThirty: new FormControl(false),         // always optional
+            note: new FormControl('', Validators.required)  // always required
           });
           (this.doneServicesForm.get('dataList') as FormArray).push(serviceFormGroup);
         }
+
         this.cd.detectChanges();
         this.loadingState = false;
       },
@@ -77,35 +99,40 @@ export class AfterWorkComponent implements OnInit {
 
   private initEditMode(): void {
     this.reservationServices = [this.data.service];
+
     for (const service of this.reservationServices) {
       this.editedForm = this.fb.group({
         historyId: [this.data.historyId, Validators.required],
         service: [this.data.service, Validators.required],
-        pulse: [this.data.pulse, [Validators.required, Validators.min(0)]],
-        fluence1: [this.data.fluence1, [Validators.required, Validators.min(0)]],
-        fluence2: [this.data.fluence2, [Validators.required, Validators.min(0)]],
-        spot: [this.data.spot, [Validators.required, Validators.min(0)]],
-        zimmer: [this.data.zimmer , [Validators.required, Validators.min(0)]],    
-        zeroThirty: [this.data.zeroThirty ,[Validators.required, Validators.min(0)]],  
-        note: [this.data.note, Validators.required],
+        pulse: [this.data.pulse, this.laserFieldValidators()],
+        fluence1: [this.data.fluence1, this.laserFieldValidators()],
+        fluence2: [this.data.fluence2, this.laserFieldValidators()],
+        spot: [this.data.spot, this.laserFieldValidators()],
+        zimmer: [this.data.zimmer],                             // always optional
+        zeroThirty: [this.data.zeroThirty],                        // always optional
+        note: [this.data.note, Validators.required],   // always required
         date: [this.data.date],
         doctorName: [this.data.doctorName],
         clinic: [this.data.clinic],
       });
+
       (this.doneServicesForm.get('dataList') as FormArray).push(this.editedForm);
     }
   }
 
+  // ── FormArray accessor ───────────────────────────────────────────────────
+
   get dataListControls() {
     return (this.doneServicesForm.get('dataList') as FormArray).controls;
   }
+
+  // ── Actions ──────────────────────────────────────────────────────────────
 
   onCancel(index: number): void {
     (this.doneServicesForm.get('dataList') as FormArray).removeAt(index);
   }
 
   onSubmit(): void {
-    // Mark all fields touched to show validation errors
     this.doneServicesForm.markAllAsTouched();
     if (this.doneServicesForm.invalid) return;
 

@@ -143,6 +143,9 @@ export class DialogEventComponent implements OnInit, OnDestroy {
 
     const updateDialogRef = this.dialog.open(UpdateReservationComponent, {
       data: this.reservation,
+       width: '820px',
+  maxHeight: '90vh',  
+  panelClass: 'reservation-dialog-panel'
      });
 
     updateDialogRef.afterClosed().subscribe(result => {

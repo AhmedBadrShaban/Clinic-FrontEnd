@@ -171,9 +171,9 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   openDialog(dialogType: string, room?: Room, date?: string): void {
     const dialogConfig = {
-      width: '600px',
+      width: '820px',
       maxHeight: '90vh',
-      panelClass: 'custom-dialog-container'
+      panelClass: 'reservation-dialog-panel'
     };
 
     switch (dialogType) {
@@ -181,8 +181,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
         const roomDialogRef = this.dialog.open(AddNewRoomComponent, dialogConfig);
         roomDialogRef.afterClosed().subscribe(result => {
           console.log('🚪 Room dialog closed with result:', result);
-          // The subscription to rooms$ will handle the update automatically
-          // No need to manually call initializeRooms again
+       
         });
         break;
 
