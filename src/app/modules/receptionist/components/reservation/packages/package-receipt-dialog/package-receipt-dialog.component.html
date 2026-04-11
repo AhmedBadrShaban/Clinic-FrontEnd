@@ -1,127 +1,117 @@
-<!-- package-receipt-dialog.component.html -->
 <div class="receipt-dialog-container">
 
-  <!-- ── Loading State ── -->
   <div *ngIf="isLoading" class="state-panel">
     <mat-spinner diameter="48"></mat-spinner>
     <p class="state-label">Loading receipt…</p>
   </div>
 
-  <!-- ── Error State ── -->
   <div *ngIf="!isLoading && hasError" class="state-panel">
     <mat-icon class="state-icon error-icon">error_outline</mat-icon>
     <p class="state-label">Failed to load receipt data.</p>
     <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
   </div>
 
-  <!-- ── Receipt ── -->
-  <div *ngIf="!isLoading && !hasError && receiptData">
+  <ng-container *ngIf="!isLoading && !hasError && receiptData">
 
-    <!-- Printable / capturable receipt area -->
-    <div #receiptSection class="receipt-capture-area">
+    <div class="receipt-dialog-body">
+      <div #receiptSection class="receipt-capture-area">
 
-      <!-- Header band -->
-      <div class="receipt-header-band">
-        <div class="clinic-title">U Clinic</div>
-        <div class="receipt-subtitle">Package Reservation Receipt</div>
-        <div class="receipt-meta">
-          <span>Ref&nbsp;#{{ receiptData.reservedId }}</span>
-          <span class="meta-sep">·</span>
-          <span>{{ receiptData.reservedAt | date:'mediumDate' }}</span>
-        </div>
-      </div>
-
-      <!-- Body -->
-      <div class="receipt-body">
-
-        <!-- Patient row -->
-        <div class="receipt-section-label">Patient</div>
-        <div class="receipt-info-grid">
-          <div class="info-cell">
-            <span class="info-key">Name</span>
-            <span class="info-val">{{ receiptData.patientName }}</span>
-          </div>
-          <div class="info-cell">
-            <span class="info-key">Phone</span>
-            <span class="info-val">{{ receiptData.patientPhone }}</span>
+        <div class="receipt-header-band">
+          <div class="clinic-title">U Clinic</div>
+          <div class="receipt-subtitle">Package Reservation Receipt</div>
+          <div class="receipt-meta">
+            <span>Ref&nbsp;#{{ receiptData.reservedId }}</span>
+            <span class="meta-sep">·</span>
+            <span>{{ receiptData.reservedAt | date:'mediumDate' }}</span>
           </div>
         </div>
 
-        <div class="receipt-divider"></div>
+        <div class="receipt-body">
 
-        <!-- Package row -->
-        <div class="receipt-section-label">Package</div>
-        <div class="receipt-info-grid">
-          <div class="info-cell">
-            <span class="info-key">Package</span>
-            <span class="info-val">{{ receiptData.packageName }}</span>
-          </div>
-          <div class="info-cell">
-            <span class="info-key">Clinic</span>
-            <span class="info-val">{{ receiptData.clinicName }}</span>
-          </div>
-          <div class="info-cell">
-            <span class="info-key">Reserved</span>
-            <span class="info-val">{{ receiptData.reservedAt | date:'shortDate' }}</span>
-          </div>
-          <div class="info-cell">
-            <span class="info-key">Expires</span>
-            <span class="info-val">{{ receiptData.expire | date:'shortDate' }}</span>
-          </div>
-        </div>
-
-        <!-- Services -->
-        <div *ngIf="receiptData.services?.length" class="services-block">
-          <div class="receipt-section-label">Services Included</div>
-          <div class="services-list">
-            <div *ngFor="let s of receiptData.services" class="service-row">
-              <span class="service-name">{{ s.serviceName }}</span>
-              <span class="service-sessions">{{ s.sessions }} session{{ s.sessions !== 1 ? 's' : '' }}</span>
+          <div class="receipt-section-label">Patient</div>
+          <div class="receipt-info-grid">
+            <div class="info-cell">
+              <span class="info-key">Name</span>
+              <span class="info-val">{{ receiptData.patientName }}</span>
+            </div>
+            <div class="info-cell">
+              <span class="info-key">Phone</span>
+              <span class="info-val">{{ receiptData.patientPhone }}</span>
             </div>
           </div>
-        </div>
 
-        <div class="receipt-divider"></div>
+          <div class="receipt-divider"></div>
 
-        <!-- Payment -->
-        <div class="receipt-section-label">Payment</div>
-        <div class="payment-rows">
-          <div *ngFor="let p of getUsedPaymentMethods()" class="payment-row">
-            <span class="pay-method">{{ p.label }}</span>
-            <span class="pay-amount">{{ p.amount | currency:'EGP':'symbol':'1.0-0' }}</span>
+          <div class="receipt-section-label">Package</div>
+          <div class="receipt-info-grid">
+            <div class="info-cell">
+              <span class="info-key">Package</span>
+              <span class="info-val">{{ receiptData.packageName }}</span>
+            </div>
+            <div class="info-cell">
+              <span class="info-key">Clinic</span>
+              <span class="info-val">{{ receiptData.clinicName }}</span>
+            </div>
+            <div class="info-cell">
+              <span class="info-key">Reserved</span>
+              <span class="info-val">{{ receiptData.reservedAt | date:'shortDate' }}</span>
+            </div>
+            <div class="info-cell">
+              <span class="info-key">Expires</span>
+              <span class="info-val">{{ receiptData.expire | date:'shortDate' }}</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Total -->
-        <div class="total-row">
-          <span class="total-label">Total Paid</span>
-          <span class="total-amount">
-            {{ receiptData.paymentFactors?.totalMoney | currency:'EGP':'symbol':'1.0-0' }}
-          </span>
-        </div>
+          <div *ngIf="receiptData.services?.length" class="services-block">
+            <div class="receipt-section-label">Services Included</div>
+            <div class="services-list">
+              <div *ngFor="let s of receiptData.services" class="service-row">
+                <span class="service-name">{{ s.serviceName }}</span>
+                <span class="service-sessions">{{ s.sessions }} session{{ s.sessions !== 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+          </div>
 
-        <div class="receipt-divider"></div>
+          <div class="receipt-divider"></div>
 
-        <!-- Footer note -->
-        <div class="receipt-footer-note">
-          Thank you for choosing U Clinic!
-        </div>
+          <div class="receipt-section-label">Payment</div>
+          <div class="payment-rows">
+            <div *ngFor="let p of getUsedPaymentMethods()" class="payment-row">
+              <span class="pay-method">{{ p.label }}</span>
+              <span class="pay-amount">{{ p.amount | currency:'EGP':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
 
-      </div><!-- /receipt-body -->
-    </div><!-- /receiptSection -->
+          <div class="total-row">
+            <span class="total-label">Total Paid</span>
+            <span class="total-amount">
+              {{ receiptData.paymentFactors?.totalMoney | currency:'EGP':'symbol':'1.0-0' }}
+            </span>
+          </div>
 
-    <!-- Action bar (not captured in PDF) -->
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-footer-note">
+            Thank you for choosing U Clinic!
+          </div>
+
+        </div><!-- /receipt-body -->
+      </div><!-- /receiptSection -->
+    </div><!-- /receipt-dialog-body -->
+
+    <!-- Pinned actions OUTSIDE the scroll body, INSIDE ng-container -->
     <div class="dialog-actions no-capture">
       <button mat-stroked-button (click)="closeDialog()" class="action-btn-close">
         <mat-icon>close</mat-icon> Close
       </button>
-      <button mat-raised-button color="primary" (click)="generatePDF(false)"
-        [disabled]="isGeneratingPdf" class="action-btn-download">
+      <button mat-raised-button color="primary" (click)="generatePDF(false)" [disabled]="isGeneratingPdf"
+        class="action-btn-download">
         <mat-spinner *ngIf="isGeneratingPdf" diameter="18" class="btn-spinner"></mat-spinner>
         <mat-icon *ngIf="!isGeneratingPdf">download</mat-icon>
         {{ isGeneratingPdf ? 'Generating…' : 'Download PDF' }}
       </button>
     </div>
 
-  </div><!-- /receipt ready -->
-</div>
+  </ng-container><!-- ← this was missing! -->
+
+</div><!-- /receipt-dialog-container -->

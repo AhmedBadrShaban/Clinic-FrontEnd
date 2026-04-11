@@ -65,10 +65,7 @@ export class PackageReceiptDialogComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.cdr.markForCheck();
 
-          // Auto-download PDF after DOM renders
-          setTimeout(() => {
-            this.generatePDF(true);
-          }, 600);
+ 
         },
         error: (err) => {
           console.error('Error fetching receipt data:', err);

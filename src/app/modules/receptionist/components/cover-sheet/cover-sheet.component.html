@@ -1,138 +1,133 @@
-<!-- Enhanced Cover Sheet Template -->
-<div class="cover-sheet-container">
-  <!-- Enhanced Header -->
-  <mat-card class="header-card" elevation="3">
-    <mat-card-content class="header-content">
-      <div class="header-left">
-        <div class="logo-section">
-          <mat-icon class="logo-icon">receipt_long</mat-icon>
-          <div class="title-section">
-            <h1 class="main-title">Cover Sheet Report</h1>
-            <p class="subtitle">Financial Summary & Details</p>
-          </div>
+<div class="cs-wrap">
+
+  <!-- HEADER -->
+  <div class="cs-header">
+    <div class="cs-header-left">
+      <mat-icon class="cs-header-icon">receipt_long</mat-icon>
+      <div>
+        <h1 class="cs-title">Cover Sheet Report</h1>
+        <p class="cs-subtitle">Financial Summary &amp; Details</p>
+      </div>
+    </div>
+    <mat-form-field appearance="outline" class="cs-date-field">
+      <mat-label>Select Report Date</mat-label>
+      <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)"
+        readonly />
+      <mat-datepicker-toggle matIconSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="isLoading" class="cs-loading">
+    <mat-spinner diameter="44"></mat-spinner>
+    <p>Loading report data…</p>
+  </div>
+
+  <!-- CONTENT -->
+  <div *ngIf="listOfData && !isLoading" #reportSection id="report-Section" class="cs-body">
+
+    <!-- Info row -->
+    <div class="cs-info-row">
+      <div class="cs-fin-card cs-info-user">
+        <mat-icon>person</mat-icon>
+        <div>
+          <span class="cs-info-label">Receptionist</span>
+          <span class="cs-info-value">{{ listOfData.user }}</span>
         </div>
       </div>
-
-      <div class="header-right">
-        <mat-form-field appearance="outline" class="date-picker">
-          <mat-label>Select Report Date</mat-label>
-          <input matInput [(ngModel)]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)"
-            readonly />
-          <mat-datepicker-toggle matIconSuffix [for]="picker">
-            <mat-icon matDatepickerToggleIcon>calendar_today</mat-icon>
-          </mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+      <div class="cs-fin-card cs-info-date">
+        <mat-icon>today</mat-icon>
+        <div>
+          <span class="cs-info-label">Report Date</span>
+          <span class="cs-info-value">{{ listOfData.date }}</span>
+        </div>
       </div>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Main Content -->
-  <div *ngIf="listOfData" #reportSection id="report-Section" class="report-section">
-
-    <!-- Summary Cards -->
-    <div class="summary-section">
-      <mat-card class="summary-card user-card" elevation="2">
-        <mat-card-header>
-          <mat-icon mat-card-avatar class="user-avatar">person</mat-icon>
-          <mat-card-title>User Information</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="summary-value">{{ listOfData.user }}</div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="summary-card date-card" elevation="2">
-        <mat-card-header>
-          <mat-icon mat-card-avatar class="date-avatar">today</mat-icon>
-          <mat-card-title>Report Date</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="summary-value">{{ listOfData.date }}</div>
-        </mat-card-content>
-      </mat-card>
     </div>
 
-    <!-- Financial Summary -->
-    <mat-card class="financial-summary" elevation="2">
-      <mat-card-header>
-        <mat-icon mat-card-avatar class="financial-avatar">account_balance</mat-icon>
-        <mat-card-title>Financial Summary</mat-card-title>
-        <mat-card-subtitle>Overview of expenses, profit, and net total</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="financial-grid">
-          <div class="financial-item expenses">
-            <mat-icon class="financial-icon">trending_down</mat-icon>
-            <div class="financial-details">
-              <div class="financial-label">Total Expenses</div>
-              <div class="financial-value expense-value">{{ listOfData.expenses |
-                currency:'EGP':'symbol':'1.2-2':'en-EG' }}</div>
-            </div>
-          </div>
-
-          <div class="financial-item profit">
-            <mat-icon class="financial-icon">trending_up</mat-icon>
-            <div class="financial-details">
-              <div class="financial-label">Total Profit</div>
-              <div class="financial-value profit-value">{{ listOfData.profit | currency:'EGP':'symbol':'1.2-2':'en-EG'
-                }}</div>
-            </div>
-          </div>
-
-          <div class="financial-item net">
-            <mat-icon class="financial-icon">account_balance_wallet</mat-icon>
-            <div class="financial-details">
-              <div class="financial-label">Net Total</div>
-              <div class="financial-value net-value">{{ listOfData.net | currency:'EGP':'symbol':'1.2-2':'en-EG' }}
-              </div>
-            </div>
-          </div>
+    <!-- Financial summary -->
+    <div class="cs-section-title">Financial Summary</div>
+    <div class="cs-fin-row">
+      <div class="cs-fin-card cs-fin-expenses">
+        <mat-icon>trending_down</mat-icon>
+        <div>
+          <span class="cs-fin-label">Total Expenses</span>
+          <span class="cs-fin-value">{{ listOfData.expenses | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
         </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Laser Read Data -->
-    <mat-card class="laser-data-card" elevation="2" *ngIf="listOfData.laserRead && listOfData.laserRead.length > 0">
-      <mat-card-header>
-        <mat-icon mat-card-avatar class="laser-avatar">scanner</mat-icon>
-        <mat-card-title>Laser Read Data</mat-card-title>
-        <mat-card-subtitle>Scanned information and details</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="laser-grid">
-          <div class="laser-row" *ngFor="let item of listOfData.laserRead; let i = index">
-            <mat-chip *ngIf="i % 2 === 0" class="laser-chip even-chip">
-              <mat-icon matChipAvatar>qr_code_scanner</mat-icon>
-              {{ listOfData.laserRead[i] }}
-            </mat-chip>
-            <mat-chip *ngIf="listOfData.laserRead[i + 1] && i % 2 === 0" class="laser-chip odd-chip">
-              <mat-icon matChipAvatar>qr_code_scanner</mat-icon>
-              {{ listOfData.laserRead[i + 1] }}
-            </mat-chip>
-          </div>
+      </div>
+      <div class="cs-fin-card cs-fin-profit">
+        <mat-icon>trending_up</mat-icon>
+        <div>
+          <span class="cs-fin-label">Total Profit</span>
+          <span class="cs-fin-value">{{ listOfData.profit | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+      <div class="cs-fin-card cs-fin-net">
+        <mat-icon>account_balance_wallet</mat-icon>
+        <div>
+          <span class="cs-fin-label">Net Total</span>
+          <span class="cs-fin-value">{{ listOfData.net | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
+        </div>
+      </div>
+    </div>
 
-    <!-- Action Section -->
-    <div class="action-section">
-      <button mat-raised-button color="primary" class="print-button" (click)="generatePDF()">
-        <mat-icon>print</mat-icon>
-        Generate PDF Report
+    <!-- Payment breakdown -->
+    <div class="cs-section-title">Payment Breakdown</div>
+    <div class="cs-pay-grid">
+      <div class="cs-pay-card">
+        <span class="cs-pay-label">Cash</span>
+        <span class="cs-pay-value">{{ listOfData.cash | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
+      </div>
+      <div class="cs-pay-card">
+        <span class="cs-pay-label">Visa</span>
+        <span class="cs-pay-value">{{ listOfData.visa | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
+      </div>
+      <div class="cs-pay-card">
+        <span class="cs-pay-label">Vodafone Cash</span>
+        <span class="cs-pay-value">{{ listOfData.vodafoneCash | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
+      </div>
+      <div class="cs-pay-card">
+        <span class="cs-pay-label">Debit</span>
+        <span class="cs-pay-value">{{ listOfData.debit | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
+      </div>
+      <div class="cs-pay-card">
+        <span class="cs-pay-label">Credit</span>
+        <span class="cs-pay-value">{{ listOfData.credit | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
+      </div>
+      <div class="cs-pay-card">
+        <span class="cs-pay-label">InstaPay</span>
+        <span class="cs-pay-value">{{ listOfData.instaPay | currency:'EGP':'symbol':'1.2-2':'en-EG' }}</span>
+      </div>
+    </div>
+
+    <!-- Laser read -->
+    <ng-container *ngIf="listOfData.laserRead && listOfData.laserRead.length > 0">
+      <div class="cs-section-title">Laser Scan Data</div>
+      <div class="cs-laser-grid">
+        <div class="cs-laser-tag" *ngFor="let item of listOfData.laserRead">
+          <mat-icon>qr_code_scanner</mat-icon>{{ item }}
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Actions -->
+    <div class="cs-actions">
+      <button mat-stroked-button (click)="refreshData()">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+      <button mat-raised-button color="primary" (click)="generatePDF()">
+        <mat-icon>picture_as_pdf</mat-icon> Generate PDF
       </button>
     </div>
+
   </div>
 
-  <!-- Loading State -->
-  <div *ngIf="!listOfData" class="loading-section">
-    <mat-card elevation="1">
-      <mat-card-content>
-        <div class="loading-content">
-          <mat-spinner diameter="50"></mat-spinner>
-          <p class="loading-text">Loading report data...</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
+  <!-- EMPTY -->
+  <div *ngIf="!listOfData && !isLoading" class="cs-empty">
+    <mat-icon>inbox</mat-icon>
+    <p>No data found for this date.</p>
   </div>
+
 </div>

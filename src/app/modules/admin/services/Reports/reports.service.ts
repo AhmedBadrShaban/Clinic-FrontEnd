@@ -33,7 +33,7 @@ export class ReportsService {
     this.baseUrl = this.configService.getBaseUrl();
   }
 
-  getMonthlyReports(month?: number, year?: number): Observable<any> {
+  getMonthlyReports(month?: number, year?: number, clinic?: string): Observable<any> {
     let params = new HttpParams();
 
     if (month !== undefined) {
@@ -42,6 +42,9 @@ export class ReportsService {
 
     if (year !== undefined) {
       params = params.set('year', year.toString());
+    }
+    if (clinic) {
+      params = params.set('clinic', clinic);
     }
 
     return this.http.get<any>(`${this.baseUrl}admin/clinic-monthly-report`, { params });

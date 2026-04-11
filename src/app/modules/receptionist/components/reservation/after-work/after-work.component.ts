@@ -19,11 +19,13 @@ export class AfterWorkComponent implements OnInit {
   @Input() isActive: boolean = false;
   @Input() isLaser: boolean = false;
 
+
   userType: any;
   reservationServices: string[] = [];
   editedForm!: FormGroup;
   loadingState = false;
-
+  isSubmitting = false;
+  isUpdating = false;
   // ── Autocomplete state per service card ─────────────────────────────────
   filteredOptions: string[][] = [];   // filtered list per card index
   allServiceNames: string[] = [];     // full list from API
@@ -175,32 +177,50 @@ export class AfterWorkComponent implements OnInit {
 
   onSubmit(): void {
     this.doneServicesForm.markAllAsTouched();
-    if (this.doneServicesForm.invalid) return;
+    if (this.doneServicesForm.invalid || this.isSubmitting) return;
+
+    this.isSubmitting = true;
 
     const afterWork = this.doneServicesForm.value.dataList;
+
     this.doctorService.completeReservation(this.id!, afterWork).subscribe({
       next: (data: any) => {
+        this.isSubmitting = false;
         alert(data.message);
         this.cd.detectChanges();
         this.router.navigate(['doctor']);
       },
-      error: (error: any) => { alert(error.error.message); }
+      error: (error: any) => {
+        this.isSubmitting = false;
+        alert(error.error.message);
+      }
     });
   }
 
+
   updateHistory(): void {
     this.doneServicesForm.markAllAsTouched();
-    if (this.doneServicesForm.invalid) return;
+    if (this.doneServicesForm.invalid || this.isUpdating) return;
 
-    this.reservationsApi.updateHistory(this.editedForm.value.historyId, this.editedForm.value).subscribe({
+    this.isUpdating = true;
+
+    this.reservationsApi.updateHistory(
+      this.editedForm.value.historyId,
+      this.editedForm.value
+    ).subscribe({
       next: (data: any) => {
+        this.isUpdating = false;
         alert(data.message);
         this.closeDialog();
         this.cd.detectChanges();
       },
-      error: (error: any) => { alert(error.error.message); }
+      error: (error: any) => {
+        this.isUpdating = false;
+        alert(error.error.message);
+      }
     });
   }
+
 
   cancelUpdate(): void { this.closeDialog(); }
   closeDialog(): void { this.dialogRef.close(); }

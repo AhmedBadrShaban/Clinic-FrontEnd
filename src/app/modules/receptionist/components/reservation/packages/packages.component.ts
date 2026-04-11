@@ -98,7 +98,8 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges {
   openReceiptDialog(reservedId: string): void {
     this.dialogRef.open(PackageReceiptDialogComponent, {
       data: { reservedId },
-      width: '460px',
+      width: '440px',
+      maxWidth: '95vw',
       maxHeight: '90vh',
       panelClass: 'receipt-dialog-panel'
     });

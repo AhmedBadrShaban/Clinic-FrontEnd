@@ -2,22 +2,39 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
+export interface CoverSheet {
+  coverSheetId: number;
+  date: string;
+  profit: number;
+  expenses: number;
+  net: number;
 
+  cash: number;
+  visa: number;
+  vodafoneCash: number;
+  debit: number;
+  credit: number;
+  instaPay: number;
+
+  user: string;
+  laserRead: string[];
+}
 @Injectable({
   providedIn: 'root'
 })
 export class CoverSheetService {
+  private readonly baseUrl: string;
 
-    private readonly baseUrl ;
-  constructor(private http :HttpClient ,private configService:ConfigService  ) { 
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {
     this.baseUrl = this.configService.getBaseUrl();
-
   }
 
-  getAllSheets(date:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/get-cover-sheet-by-date-related-to-receptionist?date=${date}`);
+  getAllSheets(date: string): Observable<CoverSheet> {
+    return this.http.get<CoverSheet>(
+      `${this.baseUrl}receptionist/get-cover-sheet-by-date-related-to-receptionist?date=${date}`
+    );
   }
-  // getAllSheets():Observable<any>{
-  //   return this.http.get<any>(`${this.baseUrl}receptionist/daily-sheet`);
-  // }
 }

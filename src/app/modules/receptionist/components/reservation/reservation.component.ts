@@ -97,7 +97,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-  //console.log('Receptionist reservation component initialized');
+    //console.log('Receptionist reservation component initialized');
     this.initializeComponent();
 
     // Handle route parameters for direct navigation
@@ -122,13 +122,13 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private initializeComponent(): void {
-  //console.log('Initializing receptionist/admin component');
+    //console.log('Initializing receptionist/admin component');
 
     // Load total patients count for admin
     if (this.userType === 'ROLE_ADMIN') {
       this.reservationsService.getTotalPatients().subscribe(res => {
         this.totalPatients = res;
-      //console.log('Total patients:', res);
+        //console.log('Total patients:', res);
       });
     }
 
@@ -171,7 +171,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(subscription);
   }
-
   private transformPatientData(rawData: any[]): PatientSearchItem[] {
     if (!Array.isArray(rawData)) return [];
 
@@ -185,10 +184,14 @@ export class ReservationComponent implements OnInit, OnDestroy {
         };
       }
 
+      // Handle admin API response (uses primaryPhone) vs old API (uses phoneNumber)
+      const phone = item.primaryPhone || item.phoneNumber || '';
+      const name = item.name?.trim() || '';
+
       return {
-        displayText: `${item.name} - ${item.phoneNumber}`,
-        name: item.name || '',
-        phoneNumber: item.phoneNumber || ''
+        displayText: `${name} - ${phone}`,
+        name,
+        phoneNumber: phone
       };
     });
   }
@@ -215,9 +218,8 @@ export class ReservationComponent implements OnInit, OnDestroy {
   onPatientSelected(event: MatAutocompleteSelectedEvent): void {
     const selectedValue = event.option.value as string;
     this.searchValue = selectedValue;
-  //console.log('searchValue ', this.searchValue);
+    //console.log('searchValue ', this.searchValue);
   }
-
   private performSearch(searchTerm: any): void {
     if (!searchTerm.trim()) {
       this.filteredData = [];
@@ -226,32 +228,42 @@ export class ReservationComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    const subscription = this.reservationsService.getPatientsNamesAndPhonesAuto(searchTerm)
-      .subscribe({
-        next: (data: any) => {
-          this.allPatientsData = this.transformPatientData(data);
-          const lowerSearchTerm = searchTerm.toLowerCase();
-          const filtered = this.allPatientsData
-            .filter(item =>
-              item.name.toLowerCase().includes(lowerSearchTerm) ||
-              item.phoneNumber.includes(searchTerm)
-            )
-            .slice(0, MAX_AUTOCOMPLETE_ITEMS)
-            .map(item => item.displayText);
 
-          this.filteredData = filtered;
-        //console.log('autocomplete', this.filteredData);
+    // If admin and search term contains letters → use admin name search API
+    // Otherwise (numbers / receptionist) → use old phone API
+    const isNameSearch = this.userType === 'ROLE_ADMIN' && /[a-zA-Z\u0600-\u06FF]/.test(searchTerm);
 
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-        error: (error) => {
-          console.error('Error during search:', error);
-          this.filteredData = [];
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        }
-      });
+    const search$ = isNameSearch
+      ? this.reservationsService.getAdminPatientsSearch(searchTerm, 1, 20)
+      : this.reservationsService.getPatientsNamesAndPhonesAuto(searchTerm);
+
+    const subscription = search$.subscribe({
+      next: (data: any) => {
+        const rawData = isNameSearch
+          ? (data?.message ? [] : (data?.content ?? data))
+          : data;
+
+        this.allPatientsData = this.transformPatientData(rawData);
+
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        this.filteredData = this.allPatientsData
+          .filter(item =>
+            item.name.toLowerCase().includes(lowerSearchTerm) ||
+            item.phoneNumber.includes(searchTerm)
+          )
+          .slice(0, MAX_AUTOCOMPLETE_ITEMS)
+          .map(item => item.displayText);
+
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error during search:', error);
+        this.filteredData = [];
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
 
     this.subscriptions.add(subscription);
   }
@@ -296,7 +308,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private loadPatientInfo(phoneNumber: string): void {
-  //console.log('Loading patient info for:', phoneNumber);
+    //console.log('Loading patient info for:', phoneNumber);
     this.setTabLoading('patientInfoTab', true);
 
     const searchSubscription = this.patientService.searchPatients(phoneNumber)
@@ -388,7 +400,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
   }
 
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
-  //console.log(`${type.toUpperCase()}: ${message}`);
+    //console.log(`${type.toUpperCase()}: ${message}`);
   }
 
   trackByFn(index: number, item: string): string {
@@ -431,5 +443,10 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   get hasSelectedPatient(): boolean {
     return !!this.patientNumber;
+  }
+  get searchPlaceholder(): string {
+    return this.userType === 'ROLE_ADMIN'
+      ? 'Search by Patient name or phone number...'
+      : 'Search by Patient phone number...';
   }
 }

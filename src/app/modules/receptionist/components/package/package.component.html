@@ -24,7 +24,7 @@
       <div class="filter-divider"></div>
 
       <!-- Date filter -->
-      <div class="filter-group">
+      <!-- <div class="filter-group">
         <label class="filter-label">
           <mat-icon class="filter-label-icon">calendar_today</mat-icon>
           Date
@@ -39,7 +39,7 @@
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-      </div>
+      </div> -->
 
       <!-- Clinic autocomplete filter — admin only -->
       <ng-container *ngIf="isAdmin">
@@ -123,5 +123,10 @@
       {{ row.expire | date:'mediumDate' }}
     </span>
   </ng-template>
+  <ng-template #reservedAtTemplate let-row>
+          <mat-icon class="expire-icon">event_available</mat-icon>
+    {{ row.reservedAt | date:'mediumDate' }}
+  </ng-template>
+
 
 </div>

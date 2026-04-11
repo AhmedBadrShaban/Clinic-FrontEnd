@@ -1,7 +1,8 @@
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
 
 @Component({
@@ -9,89 +10,88 @@ import { PackageService } from 'src/app/modules/receptionist/services/package-se
   templateUrl: './update-package.component.html',
   styleUrls: ['./update-package.component.css']
 })
-export class UpdatePackageComponent {
-  allServices:any[]=[];
+export class UpdatePackageComponent implements OnInit {
+  allServices: any[] = [];
   formData: FormGroup;
-  minDate: string;
-  userType:string | null;
+  minDate: string = '';
+  userType: string | null = null;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any , public dialogRef: MatDialogRef<UpdatePackageComponent> ,
-   private fb: FormBuilder ,private pkgApi:PackageService ,private authService: AuthService) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<UpdatePackageComponent>,
+    private fb: FormBuilder,
+    private pkgApi: PackageService,
+    private authService: AuthService,
+    private snackBar: MatSnackBar        // ← inject here
+  ) {
     this.formData = this.fb.group({
-      numberOfPoints:[{ value:this.data.numberOfPoints, disabled: this.data.numberOfPoints==0 }],
-      expire:[this.data.expire],
-      packageName:[this.data.packageName],
-      reservedAt:[this.data.reservedAt],
-      reservedId:[this.data.reservedId],
-      clinicName:[this.data.clinicName],
-      amountOfExpense: [ null, [Validators.required, Validators.pattern('^[0-9]+$')]],
+      numberOfPoints: [{ value: this.data.numberOfPoints, disabled: this.data.numberOfPoints == 0 }],
+      expire: [this.data.expire],
+      packageName: [this.data.packageName],
+      reservedAt: [this.data.reservedAt],
+      reservedId: [this.data.reservedId],
+      clinicName: [this.data.clinicName],
+      amountOfExpense: [null, [Validators.required, Validators.pattern('^[0-9]+$')]],
       reservedService: this.fb.array([])
     });
     this.setReservedServices(this.data.reservedService);
-   }
+  }
 
   ngOnInit(): void {
-    //console.log('Before Package Update: :>> ', this.data);
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     this.userType = this.authService.userType;
     this.minDate = `${yyyy}-${mm}-${dd}`;
+  }
 
-   }
-   get reservedServices(): FormArray {
+  get reservedServices(): FormArray {
     return this.formData.get('reservedService') as FormArray;
   }
+
+  // ← new getter — button binds to this
+  get isExpenseInvalid(): boolean {
+    return this.formData.get('amountOfExpense')?.invalid ?? true;
+  }
+
   setReservedServices(services: any[]): void {
     const serviceFGs = services.map(service => this.fb.group({
       reservedServiceId: [service.reservedServiceId],
-      serviceName: [{ value: service.serviceName, disabled: true } , Validators.required],
+      serviceName: [{ value: service.serviceName, disabled: true }, Validators.required],
       sessions: [service.sessions, Validators.required]
     }));
-    const serviceFormArray = this.fb.array(serviceFGs);
-    this.formData.setControl('reservedService', serviceFormArray);
+    this.formData.setControl('reservedService', this.fb.array(serviceFGs));
   }
 
-  getMaxSessions(i:number): number {
-
-    //console.log('Current Service:>> ',this.data.reservedService[i]);
-    //console.log('Current Max Sessions :>> ', this.data.reservedService[i].sessions);
+  getMaxSessions(i: number): number {
     return this.data.reservedService[i].sessions;
- }
+  }
 
   update(): void {
-    if (this.formData.valid) {
-        // this.formData.value.services = selectedServices;
-       //console.log('After Package Update:', this.formData.value);
-     } else {
-        alert('Please Enter The Expense!');
-        return;
-     }
-    this.pkgApi.updatePatientPackage(this.data.reservedId,this.formData.value).subscribe({
-      next:(responed:any)=>{
-        alert(responed.message)
-        //  this.UpdateAllReservations();
-        //  this.updateAvailableSlots();
-        this.closeDialog();
+    const payload = this.formData.getRawValue();
 
-     },
-     error: (err) => {
-       alert(err.error.message);
+    this.pkgApi.updatePatientPackage(this.data.reservedId, payload).subscribe({
+      next: (response: any) => {
+        this.showToast(response.message, 'success');
+        this.closeDialog();
+      },
+      error: (err) => {
+        this.showToast(err.error.message, 'error');
       }
-    })
+    });
   }
 
-
-  // UpdateAllReservations(){
-  //   this.roomService.getAllReservations(this.data.reservationDate).subscribe((data:any)=>{
-  //     this.roomService.updateData(data);
-  //     //console.log( "data Updated : " ,data);
-  //   })
-  // }
-
-  closeDialog() {
+  closeDialog(): void {
     this.dialogRef.close();
   }
 
+  private showToast(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: type === 'success' ? ['snack-success'] : ['snack-error']
+    });
+  }
 }

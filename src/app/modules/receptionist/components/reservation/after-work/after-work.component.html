@@ -176,18 +176,26 @@
 
         <!-- Doctor: Confirm -->
         <div *ngIf="userType != 'ROLE_ADMIN' && dataListControls.length > 0" class="action-row">
-          <button type="button" class="confirm-btn" [disabled]="doneServicesForm.invalid" (click)="onSubmit()">
-            <mat-icon>check_circle</mat-icon>
-            Confirm &amp; Complete
-          </button>
+    <button type="button" class="confirm-btn" [disabled]="doneServicesForm.invalid || isSubmitting" (click)="onSubmit()">
+    
+      <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+      <mat-icon *ngIf="!isSubmitting">check_circle</mat-icon>
+    
+      {{ isSubmitting ? 'Submitting...' : 'Confirm & Complete' }}
+    </button>
+
         </div>
 
         <!-- Admin: Update / Cancel -->
         <div *ngIf="userType == 'ROLE_ADMIN' && dataListControls.length > 0" class="action-row admin-actions">
-          <button type="button" class="update-btn" [disabled]="doneServicesForm.invalid" (click)="updateHistory()">
-            <mat-icon>save</mat-icon>
-            Update History
-          </button>
+        <button type="button" class="update-btn" [disabled]="doneServicesForm.invalid || isUpdating" (click)="updateHistory()">
+        
+          <mat-spinner *ngIf="isUpdating" diameter="20"></mat-spinner>
+          <mat-icon *ngIf="!isUpdating">save</mat-icon>
+        
+          {{ isUpdating ? 'Updating...' : 'Update History' }}
+        </button>
+
           <button type="button" class="cancel-btn" (click)="cancelUpdate()">
             <mat-icon>close</mat-icon>
             Cancel

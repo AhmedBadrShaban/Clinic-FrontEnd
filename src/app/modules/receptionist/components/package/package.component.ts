@@ -19,6 +19,7 @@ import { ReportsService } from 'src/app/modules/admin/services/Reports/reports.s
 })
 export class PackageComponent implements OnInit, OnDestroy {
   @ViewChild('expireTemplate', { static: true }) expireTemplate!: TemplateRef<any>;
+  @ViewChild('reservedAtTemplate', { static: true }) reservedAtTemplate!: TemplateRef<any>;
   @ViewChild('receiptTemplate', { static: true }) receiptTemplate!: TemplateRef<any>;
 
   selectedDate: Date | null = new Date();
@@ -62,6 +63,12 @@ export class PackageComponent implements OnInit, OnDestroy {
       { key: 'patientName', label: 'Patient Name' },
       { key: 'packageName', label: 'Package' },
       { key: 'expire', label: 'Expire', template: this.expireTemplate },
+      {
+        key: 'reservedAt',
+        label: 'Reserved At',
+        template: this.reservedAtTemplate
+      }
+
     ];
   }
 

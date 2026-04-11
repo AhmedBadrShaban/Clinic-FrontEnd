@@ -56,6 +56,25 @@
             </mat-datepicker>
           </mat-form-field>
         </div>
+        <!-- Clinic Filter -->
+        <div class="filter-card">
+          <mat-form-field appearance="outline" class="month-year-picker">
+            <mat-label>Filter by Clinic</mat-label>
+            <input matInput [(ngModel)]="filterClinic" [matAutocomplete]="clinicAuto" (ngModelChange)="onClinicSearch($event)"
+              (keyup.enter)="applyClinicFilter()" placeholder="Search clinic..." />
+        
+            <button *ngIf="filterClinic" matSuffix mat-icon-button (click)="clearClinicFilter()">
+              <mat-icon>close</mat-icon>
+            </button>
+        
+            <mat-autocomplete #clinicAuto="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value)">
+              <mat-option *ngFor="let clinic of filteredClinics" [value]="clinic">
+                {{ clinic }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
     </div>
   </div>
 </div>

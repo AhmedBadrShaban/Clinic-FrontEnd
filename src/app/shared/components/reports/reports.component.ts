@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 import { ReportsService } from 'src/app/modules/admin/services/Reports/reports.service';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-reports',
@@ -19,9 +21,12 @@ import { ReportsService } from 'src/app/modules/admin/services/Reports/reports.s
     CommonModule,
     MatDatepickerModule,
     MatInputModule,
+    MatAutocompleteModule,
+    MatOptionModule,
     MatFormFieldModule,
     MatNativeDateModule,
     MatIconModule,
+    FormsModule,
     ReactiveFormsModule
   ],
   styleUrls: ['./reports.component.css']
@@ -39,26 +44,28 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   // Date picker control
   monthYearControl = new FormControl(new Date());
-
+  filterClinic: string = '';
+  activeClinic: string = '';
+  allClinics: string[] = [];
+  filteredClinics: string[] = [];
+  hasClinicFilter: boolean = false;
   constructor(
     private reportService: ReportsService,
     private cdr: ChangeDetectorRef
   ) {}
-
   ngOnInit(): void {
-    // Load initial data with current month/year
+    this.loadClinics();
     this.loadReports();
-    
-    // Subscribe to date changes
+
     this.monthYearControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(date => {
         if (date) {
-          console.log('Date changed:', date);
           this.loadReports();
         }
       });
   }
+
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -77,7 +84,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.cdr.detectChanges();
 
-    this.reportService.getMonthlyReports(month, year)
+    this.reportService.getMonthlyReports(
+      month,
+      year,
+      this.activeClinic || undefined
+    )
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -97,6 +108,46 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
       });
   }
+  private loadClinics(): void {
+    this.reportService.getAllClinics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinics) => {
+          this.allClinics = clinics || [];
+          this.filteredClinics = [...this.allClinics];
+        },
+        error: (error) => {
+          console.error('Failed to load clinics:', error);
+        }
+      });
+  } onClinicSearch(value: string): void {
+    this.filterClinic = value;
+
+    const search = value.toLowerCase().trim();
+
+    this.filteredClinics = this.allClinics.filter(clinic =>
+      clinic.toLowerCase().includes(search)
+    );
+  }
+  onClinicSelected(clinic: string): void {
+    this.filterClinic = clinic;
+    this.activeClinic = clinic;
+    this.hasClinicFilter = true;
+    this.loadReports();
+  }
+  applyClinicFilter(): void {
+    this.activeClinic = this.filterClinic.trim();
+    this.hasClinicFilter = !!this.activeClinic;
+    this.loadReports();
+  }
+  clearClinicFilter(): void {
+    this.filterClinic = '';
+    this.activeClinic = '';
+    this.hasClinicFilter = false;
+    this.filteredClinics = [...this.allClinics];
+    this.loadReports();
+  }
+
 
   // Handle month selection from datepicker
   monthSelected(normalizedMonth: Date, datepicker: any): void {

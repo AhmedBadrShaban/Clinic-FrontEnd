@@ -110,7 +110,12 @@ export class ReservationsService {
   }
 
   sendPoints(fromPhoneNumber: string, toPhoneNumber: string, qty: number) { }
-
+  getAdminPatientsSearch(query: string, page: number = 1, size: number = 20): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}admin/patients/search`,
+      { params: { query, page: page.toString(), size: size.toString() } }
+    );
+  }
   getTotalPatients(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}admin/total-patients`);
   }
