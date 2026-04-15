@@ -122,62 +122,60 @@
           </div>
 
           <mat-divider class="my-4"></mat-divider>
-
           <!-- Services -->
-<div class="form-section">
-  <div class="section-header">
-    <mat-icon class="section-icon">medical_services</mat-icon>
-    <h3>Services</h3>
-  </div>
-
-  <div formArrayName="service">
-    <div class="service-item" *ngFor="let service of Services.controls; let i = index"
-      [class.mb-3]="i < Services.controls.length - 1">
-
-      <div class="row g-3 align-items-center">
-        <div class="col-md-10">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Service {{ i + 1 }}</mat-label>
-
-            <mat-select [formControl]="service" placeholder="Select Service">
-
-              <mat-option>
-                <ngx-mat-select-search [formControl]="serviceSearchCtrl" placeholderLabel="Search services...">
-                </ngx-mat-select-search>
-              </mat-option>
-
-              <mat-option *ngFor="let serviceOption of filteredServices; trackBy: trackByService"
-                [value]="serviceOption">
-                {{ serviceOption }}
-              </mat-option>
-
-            </mat-select>
-
-            <mat-icon matSuffix>list_alt</mat-icon>
-            <mat-error *ngIf="Services.at(i)?.hasError('required')">
-              Service is required
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-2" *ngIf="i === Services.controls.length - 1">
-          <button mat-icon-button type="button" color="primary" (click)="addService()" matTooltip="Add another service"
-            class="add-service-btn">
-            <mat-icon>add_circle</mat-icon>
-          </button>
-        </div>
-
-        <div class="col-md-2" *ngIf="i > 0">
-          <button mat-icon-button type="button" color="warn" (click)="removeService(i)" matTooltip="Remove service"
-            class="remove-service-btn">
-            <mat-icon>remove_circle</mat-icon>
-          </button>
+  <div class="form-section">
+    <div class="section-header">
+      <mat-icon class="section-icon">medical_services</mat-icon>
+      <h3>Services</h3>
+    </div>
+  
+    <div formArrayName="service">
+      <div class="service-item" *ngFor="let control of Services.controls; let i = index"
+        [class.mb-3]="i < Services.controls.length - 1">
+  
+        <div class="row g-3 align-items-center">
+          <div class="col-md-10">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Service {{ i + 1 }}</mat-label>
+              <mat-select [formControlName]="i" placeholder="Select Service"
+                (openedChange)="!$event && onServicePanelClosed()">
+  
+                <!-- Search option — NO [formControl], use (input) instead -->
+                <mat-option disabled class="search-option">
+                  <input #serviceSearch type="text" placeholder="Search services..." class="service-search-input"
+                    (input)="onServiceSearch(serviceSearch.value)" (click)="$event.stopPropagation()"
+                    autocomplete="off" />
+                </mat-option>
+  
+                <mat-option *ngFor="let serviceOption of filteredServices; trackBy: trackByService"
+                  [value]="serviceOption">
+                  {{ serviceOption }}
+                </mat-option>
+  
+                <mat-option *ngIf="filteredServices.length === 0" disabled>
+                  No services found
+                </mat-option>
+  
+              </mat-select>
+            </mat-form-field>
+          </div>
+  
+          <div class="col-md-2" *ngIf="i === Services.controls.length - 1">
+            <button mat-icon-button type="button" color="primary" (click)="addService()" matTooltip="Add another service">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </div>
+  
+          <div class="col-md-2" *ngIf="i > 0">
+            <button mat-icon-button type="button" color="warn" (click)="removeService(i)" matTooltip="Remove service">
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
+ 
           <mat-divider class="my-4"></mat-divider>
 
           <!-- Time & Notes -->

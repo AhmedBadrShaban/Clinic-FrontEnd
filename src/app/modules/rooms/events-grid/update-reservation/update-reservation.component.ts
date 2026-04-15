@@ -34,8 +34,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
   // Services
   AllServices: string[] = [];
   filteredServices: string[] = [];
-  serviceSearchCtrl = new FormControl('');
-
+ 
   // Rooms
   allRooms: any[] = [];
 
@@ -90,17 +89,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadInitialData();
 
-    // Service search filtering
-    this.subscriptions.add(
-      this.serviceSearchCtrl.valueChanges
-        .pipe(debounceTime(200), distinctUntilChanged())
-        .subscribe(search => {
-          this.filteredServices = search
-            ? this.AllServices.filter(s => s.toLowerCase().includes(search.toLowerCase()))
-            : [...this.AllServices];
-          this.cdr.markForCheck();
-        })
-    );
+ 
   }
 
   ngOnDestroy(): void {
@@ -108,7 +97,17 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     this.subscriptions.unsubscribe();
   }
+  onServiceSearch(value: string): void {
+    this.filteredServices = value.trim()
+      ? this.AllServices.filter(s => s.toLowerCase().includes(value.toLowerCase()))
+      : [...this.AllServices];
+    this.cdr.markForCheck();
+  }
 
+  onServicePanelClosed(): void {
+    this.filteredServices = [...this.AllServices];
+    this.cdr.markForCheck();
+  }
   // ── Data loading ─────────────────────────────────────────────────────────
 
   private loadInitialData(): void {
@@ -394,7 +393,7 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
   closeDialog(): void {
     this.dialogRef.close();
   }
-
+ 
   // ── Debug helper ──────────────────────────────────────────────────────────
 
   private logFormErrors(group: FormGroup | FormArray, path = ''): void {

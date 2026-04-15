@@ -266,4 +266,23 @@ textarea[matInput] {
   padding: 12px 24px;
   background: #fff;
   border-top: 1px solid #e8eaf0;
+}.service-search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 4px 0;
+  font-size: 14px;
+  background: transparent;
+  color: inherit;
+}
+
+.search-option {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: white !important;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 4px 16px !important;
+  height: auto !important;
+  pointer-events: auto !important;
 }
