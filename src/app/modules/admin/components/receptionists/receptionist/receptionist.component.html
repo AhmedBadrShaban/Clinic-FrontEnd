@@ -20,7 +20,7 @@
             class="btn btn-primary"
             type="button"
             *ngIf="receptionistData?.isActive == false"
-            (click)="switchStatus(receptionistData.userName)"
+            (click)="switchStatus(receptionistData.username)"
           >
             Suspended
           </button>
@@ -29,7 +29,7 @@
             class="btn btn-primary"
             type="button"
             *ngIf="receptionistData?.isActive == true"
-            (click)="switchStatus(receptionistData.userName)"
+            (click)="switchStatus(receptionistData.username)"
           >
             Active
           </button>

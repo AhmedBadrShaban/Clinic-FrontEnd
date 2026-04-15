@@ -27,13 +27,16 @@ export class ReceptionistProfileComponent implements OnInit{
 receptionistInfo(){
   this.recpService.getReciptionist(this.receptionistId).subscribe((data)=>{
     this.receptionistData= data;
+    console.log('object :>> ', this.receptionistData);
     //console.log('data :>> ', data);
   })
 }
   switchStatus(id: any) {
+    console.log('id :>> ', id);
     this.recpService.changeStatus(id).subscribe({
       next: (responed) => {
         alert(responed.message);
+        this.receptionistInfo();
        },
       error: (err) => {
         //console.log('err :>> ', err.error.message);
