@@ -47,7 +47,7 @@ export class ReportsService {
       params = params.set('clinic', clinic);
     }
 
-    return this.http.get<any>(`${this.baseUrl}admin/clinic-monthly-report`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/clinic-monthly-report`, { params });
   }
 
   // New method for Monthly Money Report
@@ -60,11 +60,11 @@ export class ReportsService {
       params = params.set('roomName', request.roomName);
     }
 
-    return this.http.get<MonthlyReportResponse>(`${this.baseUrl}receptionist/total-money-monthly`, { params });
+    return this.http.get<MonthlyReportResponse>(`${this.baseUrl}api/v1/receptionist/total-money-monthly`, { params });
   }
 
   // Get all clinic names
   getAllClinics(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}admin/get-all-clinic-names`);
+    return this.http.get<string[]>(`${this.baseUrl}api/v1/admin/get-all-clinic-names`);
   }
 }

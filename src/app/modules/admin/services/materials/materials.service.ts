@@ -19,20 +19,20 @@ export class MaterialsService {
 
 
   getAllMaterials():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/materials`)
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/materials`)
   }
   search(searchVal:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/materialSearch?materialName=${searchVal}`)
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/materialSearch?materialName=${searchVal}`)
   }
   addMaterial(data:any){
-      return this.http.post(`${this.baseUrl}admin/add-material` , data);
+      return this.http.post(`${this.baseUrl}api/v1/admin/add-material` , data);
   }
   addProuduct(data:any){
     //console.log('data :>> ', data);
-    return this.http.post(`${this.baseUrl}receptionist/product` , data);
+    return this.http.post(`${this.baseUrl}api/v1/receptionist/product` , data);
   }
   productsReport():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/product-report`)
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/product-report`)
   }
   private listOfDataSubject = new BehaviorSubject<readonly Materials[]> ([]);
   listOfData$ = this.listOfDataSubject.asObservable();

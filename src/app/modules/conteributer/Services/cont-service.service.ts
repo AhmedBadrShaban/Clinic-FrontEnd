@@ -10,11 +10,11 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 export class ContServiceService {
 
     private readonly baseUrl ;
-  constructor(private http :HttpClient ,private configService:ConfigService ) { 
+  constructor(private http :HttpClient ,private configService:ConfigService ) {
     this.baseUrl = this.configService.getBaseUrl();
 
   }
    getMonthlyReport(year:any , month:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}admin/monthly-report?year=${year}&month=${month}`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/monthly-report?year=${year}&month=${month}`);
   }
 }

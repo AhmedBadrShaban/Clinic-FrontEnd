@@ -10,19 +10,19 @@ export class DailysheetService {
   private readonly baseUrl: string;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
-    this.baseUrl = this.configService.getBaseUrl();  
+    this.baseUrl = this.configService.getBaseUrl();
   }
 
   getAllReciptianists(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}reciptianists`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionists`);
   }
 
   getAllDoctorsNames(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}receptionist/doctors-names`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/doctors-names`);
   }
 
   getAllDailyInfo(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}receptionist/daily-sheet`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/daily-sheet`);
   }
 
   filterDailySheet(roomName?: string | null, date?: any, doctorName?: string|null, page: number = 0, size: number = 5): Observable<any> {
@@ -41,7 +41,7 @@ export class DailysheetService {
       queryParams = queryParams.set('doctorName', doctorName);
     }
 
-    return this.http.get<any>(`${this.baseUrl}receptionist/filter-daily-sheet-v2`, {
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/filter-daily-sheet-v2`, {
       params: queryParams
     });
   }

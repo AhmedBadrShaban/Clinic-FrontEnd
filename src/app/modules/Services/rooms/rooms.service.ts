@@ -36,8 +36,8 @@ export class RoomsService {
     const isReceptionist = sessionStorage.getItem('userType') === 'ROLE_RECEPTIONIST';
 
     let endpoint = isReceptionist
-      ? `${this.baseUrl}receptionist/rooms-names-to-specific-clinic-v2`
-      : `${this.baseUrl}admin/rooms/name-v2`;
+      ? `${this.baseUrl}api/v1/receptionist/rooms-names-to-specific-clinic-v2`
+      : `${this.baseUrl}api/v1/admin/rooms/name-v2`;
 
     let options = {};
 
@@ -54,43 +54,43 @@ export class RoomsService {
 
   getRoomWithReservations(roomId: number, date: string): Observable<RoomReservation> {
     return this.http.get<RoomReservation>(
-      `${this.baseUrl}receptionist/get-room-with-reservation?roomId=${roomId}&date=${date}`
+      `${this.baseUrl}api/v1/receptionist/get-room-with-reservation?roomId=${roomId}&date=${date}`
     );
   }
 
   // getAllReservationsByDate(date: string): Observable<{ [roomName: string]: any[] }> {
   //   return this.http.get<{ [roomName: string]: any[] }>(
-  //     `${this.baseUrl}receptionist/get-rooms-with-all-reservation?date=${date}`
+  //     `${this.baseUrl}api/v1/receptionist/get-rooms-with-all-reservation?date=${date}`
   //   );
   // }
 
   getAvailableSlots(roomName: string, date: string): Observable<any[]> {
     return this.http.get<any[]>(
-      `${this.baseUrl}receptionist/get-reservation-slots?roomName=${roomName}&reservedAt=${date}`
+      `${this.baseUrl}api/v1/receptionist/get-reservation-slots?roomName=${roomName}&reservedAt=${date}`
     );
   }
 
   changeReservationStatus(id: number, status: string , reason?: string): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}receptionist/roomreservationn?id=${id}&status=${status}`,
+      `${this.baseUrl}api/v1/receptionist/roomreservationn?id=${id}&status=${status}`,
       { id, status }
     );
   }
 
   addRoom(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}admin/rooms`, data);
+    return this.http.post(`${this.baseUrl}api/v1/admin/rooms`, data);
   }
 
   addClinic(data: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}admin/clinic-branch`, data);
+    return this.http.post(`${this.baseUrl}api/v1/admin/clinic-branch`, data);
   }
 
   checkOutReservation(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}receptionist/normal-payment?id=${id}`);
+    return this.http.get(`${this.baseUrl}api/v1/receptionist/normal-payment?id=${id}`);
   }
 
   allClinics(): Observable<any> {
-    return this.http.get(`${this.baseUrl}admin/get-all-clinic-names`);
+    return this.http.get(`${this.baseUrl}api/v1/admin/get-all-clinic-names`);
   }
 
   // State management with BehaviorSubjects

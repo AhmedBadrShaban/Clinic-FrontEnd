@@ -15,7 +15,7 @@ export class ContributorsService {
     }
 
   addContributer(data:any){
-    return this.http.post(`${this.baseUrl}api/auth/signup/contributor` , data);
+    return this.http.post(`${this.baseUrl}api/v1/auth/signup/contributor` , data);
 }
   // getData(): Contributor[]{
   //   return [

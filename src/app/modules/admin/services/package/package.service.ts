@@ -10,7 +10,7 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 export class PackageService {
 
     private readonly baseUrl ;
-   constructor(private http:HttpClient , private configService:ConfigService) { 
+   constructor(private http:HttpClient , private configService:ConfigService) {
      this.baseUrl = this.configService.getBaseUrl();
 
    }
@@ -20,7 +20,7 @@ export class PackageService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<any>(`${this.baseUrl}admin/packages`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/packages`, { params });
   }
 
   search(searchVal: string, page: number = 0, size: number = 10): Observable<any> {
@@ -29,14 +29,14 @@ export class PackageService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<any>(`${this.baseUrl}admin/package-search`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/package-search`, { params });
   }
 
   getAllRooms():Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/rooms-names`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/rooms-names`);
   }
   addPackage(data:any){
-      return this.http.post(`${this.baseUrl}admin/packages` , data);
+      return this.http.post(`${this.baseUrl}api/v1/admin/packages` , data);
   }
 
   private listOfDataSubject = new BehaviorSubject<readonly Package[]> ([]);
@@ -50,6 +50,6 @@ export class PackageService {
   }
   // removeServise(id: string){}
   changeStatus(id: any){
-    return this.http.patch<any>(`${this.baseUrl}admin/update-package-status?id=${id}` , id)
+    return this.http.patch<any>(`${this.baseUrl}api/v1/admin/update-package-status?id=${id}` , id)
   }
 }

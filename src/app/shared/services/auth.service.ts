@@ -22,7 +22,7 @@ export class AuthService{
 
 
   login(credentials: { username: string, password: string }): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}api/auth/signin`, credentials);
+    return this.http.post<any>(`${this.baseUrl}api/v1/auth/signin`, credentials);
   }
   logout(){
     this.isLogged =false;

@@ -15,22 +15,22 @@ export class PackageService {
   }
 
   getAllPackages(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}receptionist/packages-names`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/packages-names`);
   }
 
   getPackageDetailsById(id: string): Observable<any> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-details`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/reserved-package-details`, { params });
   }
 
    getReservedPackagePaymentDetails(id: string | number): Observable<any> {
     const params = new HttpParams().set('id', id.toString());
-    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-history-details`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/reserved-package-history-details`, { params });
   }
 
   updatePatientPackage(id: any, data: any) {
     const params = new HttpParams().set('id', id);
-    return this.http.put<any>(`${this.baseUrl}receptionist/update-reserved-package`, data, { params });
+    return this.http.put<any>(`${this.baseUrl}api/v1/receptionist/update-reserved-package`, data, { params });
   }
 
   getAllReservedPackages(
@@ -46,22 +46,22 @@ export class PackageService {
       params = params.set('branchName', branchName.trim());
     }
 
-    return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages-v2`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/reserved-packages-v2`, { params });
   }
 
 
   filterByDate(date: any): Observable<any> {
-    const url = `${this.baseUrl}receptionist/reserved-package-filter-v2`;
+    const url = `${this.baseUrl}api/v1/receptionist/reserved-package-filter-v2`;
     const queryParams = new HttpParams().set('date', date);
     return this.http.get<any>(url, { params: queryParams });
   }
 
   reservePackage(reservationData: any) {
-    return this.http.post(`${this.baseUrl}receptionist/reservepackage`, reservationData);
+    return this.http.post(`${this.baseUrl}api/v1/receptionist/reservepackage`, reservationData);
   }
 
   editPackage(packageId: number, updatedData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}packages/${packageId}`, updatedData);
+    return this.http.put(`${this.baseUrl}api/v1/packages/${packageId}`, updatedData);
   }
 
   private listOfDataSubject = new BehaviorSubject<readonly any[]>([]);

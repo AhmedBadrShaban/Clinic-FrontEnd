@@ -17,17 +17,17 @@ export class ReservationsService {
   }
 
   getPatientsNamesAndPhones(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/patients-name-with-phones`);
   }
 
   getPatientsNamesAndPhonesAuto(phone: any): Observable<any> {
     const params = new HttpParams().set('phoneNumber', phone);
-    return this.http.get<any>(`${this.baseUrl}receptionist/patients-name-with-phones-v2`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/patients-name-with-phones-v2`, { params });
   }
 
   getPatientByNumber(phoneNumber: any): Observable<any> {
     const params = new HttpParams().set('phoneNumber', phoneNumber);
-    return this.http.get<any>(`${this.baseUrl}receptionist/patients-with-phone`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/patients-with-phone`, { params });
   }
 
   /**
@@ -58,12 +58,12 @@ export class ReservationsService {
       params = params.set('service', service);
     }
 
-    return this.http.get<any>(`${this.baseUrl}receptionist/patient-history`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/patient-history`, { params });
   }
 
   updateHistory(id: number, updatedData: any): Observable<any> {
     const params = new HttpParams().set('historyId', id.toString());
-    return this.http.put<any>(`${this.baseUrl}admin/update-patient-history`, updatedData, { params });
+    return this.http.put<any>(`${this.baseUrl}api/v1/admin/update-patient-history`, updatedData, { params });
   }
 
   getPackages(phone: any, page: number = 0, size: number = 5): Observable<any> {
@@ -72,7 +72,7 @@ export class ReservationsService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<any>(`${this.baseUrl}receptionist/packages-by-phone`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/packages-by-phone`, { params });
   }
 
   getPointsHistory(phone: any, page: number = 0, size: number = 5): Observable<any> {
@@ -80,7 +80,7 @@ export class ReservationsService {
       .set('phone', phone)
       .set('page', page.toString())
       .set('size', size.toString());
-    return this.http.get<any>(`${this.baseUrl}receptionist/point-histories-v2`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/point-histories-v2`, { params });
   }
 
   getReservationsHistory(phone: string, page: number = 0, size: number = 5): Observable<any> {
@@ -89,7 +89,7 @@ export class ReservationsService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<any>(`${this.baseUrl}receptionist/room-reservation-phone`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/room-reservation-phone`, { params });
   }
 
   getPaymentHistory(phone: string, page: number = 0, size: number = 5): Observable<any> {
@@ -98,7 +98,7 @@ export class ReservationsService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    return this.http.get<any>(`${this.baseUrl}receptionist/get-patient-daily-sheet`, { params });
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/get-patient-daily-sheet`, { params });
   }
 
   extractPhoneNumberFromSearchResult(selectedRecord: any): string | null {
@@ -112,12 +112,12 @@ export class ReservationsService {
   sendPoints(fromPhoneNumber: string, toPhoneNumber: string, qty: number) { }
   getAdminPatientsSearch(query: string, page: number = 1, size: number = 20): Observable<any> {
     return this.http.get<any>(
-      `${this.baseUrl}admin/patients/search`,
+      `${this.baseUrl}api/v1/admin/patients/search`,
       { params: { query, page: page.toString(), size: size.toString() } }
     );
   }
   getTotalPatients(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}admin/total-patients`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/admin/total-patients`);
   }
 
   private phoneNumberChange = new BehaviorSubject<any>(0);

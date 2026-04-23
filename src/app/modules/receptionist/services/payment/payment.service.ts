@@ -14,10 +14,10 @@ export class PaymentService {
    }
 
   AvaillableMethods(id:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}receptionist/patient-own?id=${id}` );
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/patient-own?id=${id}` );
   }
   completePayment(id:any , data:any):Observable<any>{
-    return this.http.post<any>(`${this.baseUrl}receptionist/payment-factoring?roomReservationId=${id}` , data);
+    return this.http.post<any>(`${this.baseUrl}api/v1/receptionist/payment-factoring?roomReservationId=${id}` , data);
   }
 
  }

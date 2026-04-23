@@ -16,33 +16,33 @@ export class DoctorsService {
     }
 
   addDoctor(data:any){
-    return this.http.post(`${this.baseUrl}api/auth/signup/doctor` , data);
+    return this.http.post(`${this.baseUrl}api/v1/auth/signup/doctor` , data);
 }
 getAllDoctors():Observable<any>{
-  return this.http.get<any>(`${this.baseUrl}admin/doctors`)
+  return this.http.get<any>(`${this.baseUrl}api/v1/admin/doctors`)
 }
 DoctorsReport():Observable<any>{
-  return this.http.get<any>(`${this.baseUrl}admin/doctors-report`)
+  return this.http.get<any>(`${this.baseUrl}api/v1/admin/doctors-report`)
 }
 getDoctor(id:any):Observable<any>{
-  return this.http.get<any>(`${this.baseUrl}admin/doctor-profile?id=${id}`)
+  return this.http.get<any>(`${this.baseUrl}api/v1/admin/doctor-profile?id=${id}`)
 }
 getDoctorProfile():Observable<any>{
-  return this.http.get<any>(`${this.baseUrl}doctor/doctor-profile`)
+  return this.http.get<any>(`${this.baseUrl}api/v1/doctor/doctor-profile`)
 }
 search(searchVal:any):Observable<any>{
   //console.log('searchVal :>> ', searchVal);
-  return this.http.get<any>(`${this.baseUrl}admin/doctor-search?searchString=${searchVal}`)
+  return this.http.get<any>(`${this.baseUrl}api/v1/admin/doctor-search?searchString=${searchVal}`)
 }
 // removeServise(id: string){}
 changeStatus(userName: any){
   //console.log('userName before Sending Api :>> ', userName);
-  return this.http.patch<any>(`${this.baseUrl}api/auth/update-user-status?username=${userName}` , userName)
+  return this.http.patch<any>(`${this.baseUrl}api/v1/auth/update-user-status?username=${userName}` , userName)
 }
 updateProfile(id: string, data: any) {
   const params = new HttpParams().set('id', id);
   //console.log('data :>> ', data);
-  return this.http.put(`${this.baseUrl}admin/update-doctor-profile`, data , { params });
+  return this.http.put(`${this.baseUrl}api/v1/admin/update-doctor-profile`, data , { params });
 }
 private listOfDataSubject = new BehaviorSubject<readonly any[]> ([]);
 listOfData$ = this.listOfDataSubject.asObservable();

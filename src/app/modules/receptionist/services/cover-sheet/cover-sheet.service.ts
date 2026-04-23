@@ -34,7 +34,7 @@ export class CoverSheetService {
 
   getAllSheets(date: string): Observable<CoverSheet> {
     return this.http.get<CoverSheet>(
-      `${this.baseUrl}receptionist/get-cover-sheet-by-date-related-to-receptionist?date=${date}`
+      `${this.baseUrl}api/v1/receptionist/get-cover-sheet-by-date-related-to-receptionist?date=${date}`
     );
   }
 }

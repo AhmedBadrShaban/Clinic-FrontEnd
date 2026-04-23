@@ -9,15 +9,15 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 export class ServiceService {
 
     private readonly baseUrl ;
-  constructor(private http :HttpClient ,private configService:ConfigService ) { 
+  constructor(private http :HttpClient ,private configService:ConfigService ) {
     this.baseUrl = this.configService.getBaseUrl();
 
   }
 
   getAllServices(id:any):Observable<any>{
-    return this.http.get<any>(`${this.baseUrl}doctor/reservtionservices?id=${id}`);
+    return this.http.get<any>(`${this.baseUrl}api/v1/doctor/reservtionservices?id=${id}`);
   }
   getAvaillableService(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}receptionist/services-names`)
+    return this.http.get<any>(`${this.baseUrl}api/v1/receptionist/services-names`)
   }
 }
