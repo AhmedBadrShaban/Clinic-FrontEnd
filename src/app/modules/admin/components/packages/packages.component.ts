@@ -1,104 +1,177 @@
-import { Component } from '@angular/core';
-import {NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize} from "ng-zorro-antd/table";
-import {Package} from "../../models/package";
-import {PackageService} from "../../services/package/package.service";
-import { AddNewPackageComponent } from './add-new-package/add-new-package.component';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Package } from '../../models/package';
+import { PackageService } from '../../services/package/package.service';
+import { AddNewPackageComponent } from './add-new-package/add-new-package.component';
+import { PackageDetailsDialogComponent } from './package-details-dialog/package-details-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-packages',
   templateUrl: './packages.component.html',
   styleUrls: ['./packages.component.css']
 })
-export class PackagesComponent {
-  size: NzTableSize;
-  tableLayout: NzTableLayout;
-  position: NzTablePaginationPosition;
-  paginationType: NzTablePaginationType;
-  packages: Package[] = [];
-  AllDataToSearchIn:any[];
-  filteredData:  any[] = [];
-  searchValue?:any;
-  pageIndex: number = 1;
-  pageSize: number = 10;
-  totalItems: number = 0;
+export class PackagesComponent implements OnInit {
 
-  constructor(private pckService: PackageService,private dialogRef : MatDialog) {
-      this.size= 'small' as NzTableSize;
-      this.paginationType= 'default' as NzTablePaginationType;
-      this.tableLayout='auto' as NzTableLayout;
-      this.position= 'bottom' as NzTablePaginationPosition;
-      // this.packages = pckService.getAllPackages();
-  }
+  packages: Package[] = [];
+  allDataToSearchIn: string[] = [];
+  searchValue?: string;
+  pageIndex = 1;
+  pageSize = 10;
+  totalItems = 0;
+  isLoading = false;
+
+  constructor(
+    private pckService: PackageService,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
+  ) {}
+
   ngOnInit(): void {
     this.getAllPackages(this.pageIndex);
-    this.pckService.listOfData$.subscribe((data:any)=>{
-      this.packages =data;
-     //console.log( "Updated Data recived : " ,this.packages);
-     this.autoComplete();
-   })
-   }
-  getAllPackages(page: number = 1): void {
-    const zeroBasedPage = page - 1;
-    this.pckService.getAllPackages(zeroBasedPage, this.pageSize).subscribe((res: any) => {
-      this.packages = res.data; // assuming backend returns { data: [...], totalItems: number }
-      this.totalItems = res.totalItems;
-      this.autoComplete();
-      this.packages = this.packages.map(pkg => ({
-        ...pkg,
-        expand: pkg.services && pkg.services.length > 0
-      }));
+
+    this.pckService.listOfData$.subscribe((data: any) => {
+      this.packages = data;
+      this.buildAutocomplete();
     });
+  }
+
+  // ── Data Loading ──────────────────────────────────────────────
+
+  getAllPackages(page: number = 1): void {
+    this.isLoading = true;
+    const zeroBasedPage = page - 1;
+    this.pckService.getAllPackages(zeroBasedPage, this.pageSize).subscribe({
+      next: (res: any) => {
+        this.packages = this.mapPackages(res.data);
+        this.totalItems = res.totalItems;
+        this.buildAutocomplete();
+        this.isLoading = false;
+      },
+      error: () => { this.isLoading = false; }
+    });
+  }
+
+  search(): void {
+    if (!this.searchValue?.trim()) { this.getAllPackages(); return; }
+    this.isLoading = true;
+    this.pckService.search(this.searchValue, 0, this.pageSize).subscribe({
+      next: (res: any) => {
+        this.packages = this.mapPackages(res.data || res.content);
+        this.totalItems = res.totalItems ?? this.packages.length;
+        this.buildAutocomplete();
+        this.isLoading = false;
+      },
+      error: () => { this.isLoading = false; }
+    });
+  }
+
+  clearSearch(): void {
+    this.searchValue = undefined;
+    this.getAllPackages();
   }
 
   onPageChange(newPage: number): void {
     this.pageIndex = newPage;
     this.getAllPackages(this.pageIndex);
   }
-    switchStatus(id: any){
-      this.pckService.changeStatus(id).subscribe({
-        next:(responed)=>{
-         alert(responed.message);
-         this.getAllPackages();
-        },
-        error:(err)=>{
-          //console.log('err :>> ', err.error.message);
-        }
-      })
+
+  // ── Actions ───────────────────────────────────────────────────
+
+  switchStatus(id: any): void {
+    this.pckService.changeStatus(id).subscribe({
+      next: (res: any) => {
+        this.showMessage(res.message, 'success');
+        this.getAllPackages(this.pageIndex);
+      },
+      error: (err: any) => { this.showMessage(err.error?.message, 'error'); }
+    });
+  }
+  confirmStatusChange(pkg: Package): void {
+    const newStatus = pkg.isActive ? 'Inactive' : 'Active';
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '380px',
+      data: {
+        title: 'Change Status',
+        message: `Set "${pkg.packageName}" to <strong>${newStatus}</strong>?`
       }
-  search(page: number = 1): void {
-    const zeroBasedPage = page - 1;
-    this.pckService.search(this.searchValue, zeroBasedPage, this.pageSize).subscribe((res: any) => {
-      this.packages = res.data || res.content; // Ensure compatibility with different backend responses
-    //console.log('packages updated')
-      this.totalItems = res.totalItems || this.packages.length;
+    });
+    ref.afterClosed().subscribe(confirmed => {
+      if (confirmed) this.switchStatus(pkg.packageId);
+    });
+  }
+  // ── Dialogs ───────────────────────────────────────────────────
 
-      this.autoComplete(); // Add this line to match getAllPackages behavior
-
-      this.packages = this.packages.map(pkg => ({
-        ...pkg,
-        expand: pkg.services && pkg.services.length > 0
-      }));
+  openDialog(): void {
+    const ref = this.dialog.open(AddNewPackageComponent, {
+      width: '640px',
+      maxHeight: '90vh',
+      panelClass: 'pkg-dialog-panel',
+     });
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) this.getAllPackages(this.pageIndex);
     });
   }
 
-      clearSearch(){
-        this.getAllPackages();
-        this.searchValue=null;
-      }
-    autoComplete(){
-      this.AllDataToSearchIn =  this.packages.map(packages => `${packages.packageName}`);
-      this.filteredData=this.AllDataToSearchIn;
-      //console.log(this.filteredData);
-    }
-    onChange(value: string): void {
-      this.filteredData = this.AllDataToSearchIn.filter(AllDataToSearchIn => AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1);
-     }
-  goToForm(){}
-  openDialog(){
-
-    this.dialogRef.open(AddNewPackageComponent );
+  openEditDialog(pkg: Package): void {
+    const ref = this.dialog.open(AddNewPackageComponent, {
+      width: '640px',
+      maxHeight: '90vh',
+      panelClass: 'pkg-dialog-panel',
+      data: pkg     
+    });
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) this.getAllPackages(this.pageIndex);
+    });
   }
 
+  openDetails(pkg: Package): void {
+this.dialog.open(PackageDetailsDialogComponent, {
+  width: '700px',
+  maxHeight: '90vh',
+  data: pkg
+});
+  }
 
+  // ── Helpers ───────────────────────────────────────────────────
+
+  private mapPackages(data: any[]): Package[] {
+    return (data || []).map(pkg => ({
+      ...pkg,
+      expand: pkg.services?.length > 0
+    }));
+  }
+
+  private buildAutocomplete(): void {
+    this.allDataToSearchIn = this.packages.map(p => p.packageName);
+  }
+
+  onChange(value: string): void {
+    // optional: live filter for autocomplete if needed
+  }
+
+  min(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  getPages(): number[] {
+    const total = Math.ceil(this.totalItems / this.pageSize);
+    const pages: number[] = [];
+    const start = Math.max(1, this.pageIndex - 2);
+    const end   = Math.min(total, this.pageIndex + 2);
+    for (let i = start; i <= end; i++) pages.push(i);
+    return pages;
+  }
+  showMessage(
+    message: string,
+    type: 'success' | 'error' | 'info' = 'info'
+  ): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      panelClass: [`snackbar-${type}`]
+    });
+  }
 }

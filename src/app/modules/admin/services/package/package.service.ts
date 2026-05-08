@@ -38,7 +38,9 @@ export class PackageService {
   addPackage(data:any){
       return this.http.post(`${this.baseUrl}admin/packages` , data);
   }
-
+  updatePackage(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}admin/update-package?id=${id}`, data);
+  }
   private listOfDataSubject = new BehaviorSubject<readonly Package[]> ([]);
   listOfData$ = this.listOfDataSubject.asObservable();
   updateData(data: any[]){

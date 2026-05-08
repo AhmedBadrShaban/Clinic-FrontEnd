@@ -6,7 +6,23 @@
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
-
+:root {
+  --pri: #4c2c77;
+  --pri-light: #6b3fa0;
+  --pri-dark: #341b55;
+  --accent: #a78bfa;
+  --surface: #ffffff;
+  --bg: #f4f1f9;
+  --border: #e4ddf0;
+  --text: #1e1333;
+  --muted: #7c6fa0;
+  --green: #16a34a;
+  --green-bg: #dcfce7;
+  --amber: #b45309;
+  --amber-bg: #fef3c7;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(76,44,119,0.10);
+}
 .app-container {
   display: flex;
   height: 100vh;

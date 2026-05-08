@@ -13,10 +13,11 @@ import { ReceptionistsComponent } from './components/receptionists/receptionists
 import { ReceptionistProfileComponent } from './components/receptionists/receptionist/receptionist.component';
 import { ServicesComponent } from './components/services/services.component';
 import { PackagesComponent } from './components/packages/packages.component';
-import {NzBadgeModule} from "ng-zorro-antd/badge";
+ import {NzBadgeModule} from "ng-zorro-antd/badge";
 import {NzDropDownModule} from "ng-zorro-antd/dropdown";
 import { AddNewReceptionistComponent } from './components/receptionists/add-new-receptionist/add-new-receptionist.component';
 import { AddNewPackageComponent } from './components/packages/add-new-package/add-new-package.component';
+import { ConfirmDialogComponent } from './components/packages/confirm-dialog/confirm-dialog.component';
 import { AddNewServiceComponent } from './components/services/add-new-service/add-new-service.component';
 // import { MaterialsComponent } from './components/materials/materials.component';
 import { ReservationsComponent } from './components/reservations/reservations.component';
@@ -46,7 +47,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+ 
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       ReceptionistProfileComponent,
       ServicesComponent,
       PackagesComponent,
+      ConfirmDialogComponent,
         MonthlyMoneyReportComponent,
       AddNewReceptionistComponent,
       AddNewPackageComponent,

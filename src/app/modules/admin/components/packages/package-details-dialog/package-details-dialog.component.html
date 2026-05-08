@@ -1,0 +1,134 @@
+<div class="details-dialog">
+
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon">
+        📦
+      </div>
+
+      <div>
+        <h2 class="dialog-title">
+          {{ data.packageName }}
+        </h2>
+
+        <p class="dialog-subtitle">
+          Package Details
+        </p>
+      </div>
+    </div>
+
+    <button class="btn-close" (click)="close()">
+      ✕
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="dialog-body">
+
+    <!-- Summary -->
+    <div class="summary-grid">
+
+      <div class="summary-card">
+        <span class="summary-label">Type</span>
+
+        <span class="type-badge" [class.type-service]="isServicePackage" [class.type-points]="!isServicePackage">
+          {{ isServicePackage ? 'Service Package' : 'Points Package' }}
+        </span>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-label">Cost</span>
+        <span class="summary-value">
+          {{ data.packageCost | currency:'EGP ':'symbol':'1.0-0' }}
+        </span>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-label">Valid Days</span>
+        <span class="summary-value">
+          {{ data.validatedDays }} days
+        </span>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-label">Status</span>
+
+        <span class="status-badge" [class.status-active]="data.isActive" [class.status-inactive]="!data.isActive">
+          <span class="status-dot"></span>
+          {{ data.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Services -->
+    <div class="section" *ngIf="isServicePackage">
+
+      <div class="section-header">
+        <h3>Included Services</h3>
+
+        <span class="section-count">
+          {{ data.services.length }}
+        </span>
+      </div>
+
+      <div class="services-list">
+
+        <div class="service-item" *ngFor="let service of data.services">
+
+          <div class="service-left">
+            <div class="service-icon">
+              ⚙
+            </div>
+
+            <div>
+              <p class="service-name">
+                {{ service.serviceName || service.name }}
+              </p>
+
+              <p class="service-points">
+                {{ service.sessions || service.points || 0 }} Session
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Points Package -->
+    <div class="section" *ngIf="!isServicePackage">
+
+      <div class="points-card">
+
+        <div class="points-icon">
+          ✦
+        </div>
+
+        <div>
+          <p class="points-title">
+            Available Points
+          </p>
+
+          <p class="points-value">
+            {{ data.numberOfPoints }}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer">
+    <button class="btn-secondary" (click)="close()">
+      Close
+    </button>
+  </div>
+
+</div>

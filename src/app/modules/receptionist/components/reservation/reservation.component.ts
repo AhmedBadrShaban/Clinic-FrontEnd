@@ -234,7 +234,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     const isNameSearch = this.userType === 'ROLE_ADMIN' && /[a-zA-Z\u0600-\u06FF]/.test(searchTerm);
 
     const search$ = isNameSearch
-      ? this.reservationsService.getAdminPatientsSearch(searchTerm, 1, 20)
+      ? this.reservationsService.getAdminPatientsSearch(searchTerm, 0, 20)
       : this.reservationsService.getPatientsNamesAndPhonesAuto(searchTerm);
 
     const subscription = search$.subscribe({

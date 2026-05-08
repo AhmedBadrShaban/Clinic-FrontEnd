@@ -1,104 +1,98 @@
+<div class="pkg-dialog">
 
-<div class="border  rounded container  shadow"
-    style="width:600px; background-color: #F8F8F8;border: none;">
-
-    <form  [formGroup]="newpackageFm" (ngSubmit)="submit()">
-        <div class="row m-2 mt-4 justify-content-between">
-            <div class="col-5">
-                <div class="row">
-                    <div class="d-flex align-items-center">
-                        <!-- <i class="bi bi-person me-2 fs-4" style="margin-bottom: 7px;"></i> -->
-                        <label class="form-label w-100">Package Name</label>
-                    </div>
-                    <input type="text" formControlName="packageName" placeholder="Name" id="Name" class="form-control shadow" />
-                    <div *ngIf="newpackageFm.get('packageName')!.hasError('required') && newpackageFm.get('packageName')!.touched">
-                      Package Name is required.
-                    </div>
-                    <div *ngIf="newpackageFm.get('packageName')!.hasError('pattern') && newpackageFm.get('packageName')!.touched">
-                      Package Name must contain at least 3 alphabetical characters.
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-5">
-                <div class="row">
-                    <div class="d-flex align-items-center">
-                        <!-- <i class="bi bi-envelope me-2 fs-4" style="margin-bottom: 5px;"></i> -->
-                        <label class="form-label w-100">Cost</label>
-                    </div>
-                    <input type="number" formControlName="packageCost" placeholder="cost" id="cost" class="form-control shadow"  />
-                    <div *ngIf="newpackageFm.get('packageCost')!.hasError('required') && newpackageFm.get('packageCost')!.touched">
-                      Package Cost is required.
-                    </div>
-                    <div *ngIf="newpackageFm.get('packageCost')!.hasError('min') && newpackageFm.get('packageCost')!.touched">
-                      Package Cost must be greater than or equal to 1.
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-         <div formArrayName="services" class="row m-2 justify-content-between">
-            <div *ngFor="let service of Services.controls; let i = index">
-                <div [formGroupName]="i" class="row m-2 justify-content-between" >
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <label class="form-label w-100" style="margin-left: -31px;">Service Name</label>
-                            </div>
-                            <select class="form-select shadow" id="select-options" formControlName="serviceName" style="margin-left: -31px;">
-                                <option value="">Select Service</option>
-                                <option *ngFor="let serviceData of ServiceData" [value]="serviceData">{{ serviceData}}</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <label class="form-label w-100" style="margin-left: 36px;">Sessions</label>
-                            </div>
-                            <input type="number" formControlName="sessions" placeholder="sessions" id="status"
-                            class="form-control shadow" style="margin-left: 32px;">
-                        </div>
-                    <button type="button" style="width: 500px; margin-top: 10px; margin-left:30px; height: 30px; background-color: #ADB3BD; color: #fff; border: none; border-radius: 4px;"  (click)="addService($event)">Add Service</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="row m-2  justify-content-between">
-          <div class="col-5">
-            <div class="d-flex align-items-center">
-               <label class="form-label w-100">points</label>
-          </div>
-          <input type="number" formControlName="numberOfPoints" placeholder="points" id="points" class="form-control shadow" />
-          </div>
-          <div class="col-5">
-            <div class="d-flex align-items-center">
-               <label class="form-label w-100">Valid Dayes</label>
-          </div>
-          <input type="number" formControlName="validatedDays" placeholder="select number of Dayes" id="validDayes" class="form-control shadow" />
-          <div *ngIf="newpackageFm.get('validatedDays')?.hasError('required') && newpackageFm.get('validatedDays')?.touched">
-            Validated Days is required.
-          </div>
-          <div *ngIf="newpackageFm.get('validatedDays')?.hasError('min') && newpackageFm.get('validatedDays')?.touched">
-            Validated Days must be greater than or equal to 1.
-          </div>
-        </div>
-        </div>
-
-        <div class="mt-3 d-flex justify-content-center" style=" margin-bottom: 25px;">
-            <button type="submit"
-                style="width: 160px; height: 40px; background-color: green; color: #fff; border: none; border-radius: 4px;">Add
-                Package
-            </button>
-
-        </div>
-    </form>
-
-
-
-<!-- <div class="text-danger">
-    <h3>To be Removed [For Test]:</h3>
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="dialog-icon">{{ isEditMode ? '✎' : '+' }}</div>
     <div>
-        Form Value: {{newpackageFm.value |json}}
+      <h2 class="dialog-title">{{ isEditMode ? 'Edit Package' : 'Add New Package' }}</h2>
+      <p class="dialog-sub">{{ isEditMode ? 'Update the package details below' : 'Fill in the details to create a
+        package' }}</p>
     </div>
-</div> -->
+    <button class="dialog-close" (click)="closeDialog()">✕</button>
+  </div>
 
+  <!-- Form -->
+  <form [formGroup]="newpackageFm" (ngSubmit)="submit()" class="dialog-body">
+
+    <!-- Row 1: Name + Cost -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Package Name</label>
+        <input type="text" formControlName="packageName" placeholder="e.g. Gold Membership" class="form-input"
+          [class.input-error]="touched('packageName')" />
+        <span class="error-msg" *ngIf="hasError('packageName','required')">Package name is required.</span>
+        <span class="error-msg" *ngIf="hasError('packageName','pattern')">Must contain at least 3 alphabetical
+          characters.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Cost (EGP)</label>
+        <input type="number" formControlName="packageCost" placeholder="e.g. 500" class="form-input"
+          [class.input-error]="touched('packageCost')" />
+        <span class="error-msg" *ngIf="hasError('packageCost','required')">Cost is required.</span>
+        <span class="error-msg" *ngIf="hasError('packageCost','min')">Cost must be at least 1.</span>
+      </div>
+    </div>
+
+    <!-- Row 2: Points + Valid Days -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Points</label>
+        <input type="number" formControlName="numberOfPoints" placeholder="e.g. 100" class="form-input" />
+
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Valid Days</label>
+        <input type="number" formControlName="validatedDays" placeholder="e.g. 30" class="form-input"
+          [class.input-error]="touched('validatedDays')" />
+        <span class="error-msg" *ngIf="hasError('validatedDays','required')">Valid days is required.</span>
+        <span class="error-msg" *ngIf="hasError('validatedDays','min')">Must be at least 1 day.</span>
+      </div>
+    </div>
+
+    <!-- Services Section -->
+    <div class="services-section" formArrayName="services">
+      <div class="services-header">
+        <div>
+          <span class="services-label">Services</span>
+          <span class="services-hint">
+            Leave empty for a Points-only package
+          </span>
+        </div>
+
+        <button type="button" class="btn-clear-services" (click)="clearServices()" *ngIf="Services.length">
+          Remove All
+        </button>
+      </div>
+      <div *ngFor="let service of Services.controls; let i = index" [formGroupName]="i" class="service-row">
+        <div class="form-group flex-1">
+          <label class="form-label">Service Name</label>
+          <select formControlName="serviceName" class="form-input form-select">
+            <option value="">— Select Service —</option>
+            <option *ngFor="let s of ServiceData" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+        <div class="form-group sessions-group">
+          <label class="form-label">Sessions</label>
+          <input type="number" formControlName="sessions" placeholder="1" class="form-input" />
+        </div>
+        <button type="button" class="btn-remove-service" (click)="removeService(i)" *ngIf="Services.controls.length > 1"
+          title="Remove">✕</button>
+      </div>
+
+      <button type="button" class="btn-add-service" (click)="addService()" [disabled]="isEditMode && isPointsPackage">
+        + Add Service
+      </button>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="dialog-footer">
+      <button type="button" class="btn-cancel" (click)="closeDialog()">Cancel</button>
+      <button type="submit" class="btn-submit" [disabled]="newpackageFm.invalid">
+        {{ isEditMode ? 'Save Changes' : 'Add Package' }}
+      </button>
+    </div>
+
+  </form>
+</div>
