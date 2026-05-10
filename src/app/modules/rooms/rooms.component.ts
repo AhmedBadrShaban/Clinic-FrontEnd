@@ -79,6 +79,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
             this.selectedClinic = clinics[0].clinicName;
             this.initializeRooms(this.selectedClinic || undefined);
           }
+          this.dataLoaded = true;
           this.cdr.detectChanges();
         },
         error: (err) => {
@@ -89,7 +90,6 @@ export class RoomsComponent implements OnInit, OnDestroy {
 
   private initializeRooms(clinicName?: string): void {
     this.dataLoaded = false;
-
     this.roomsService.getAllRoomsV2(clinicName)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -181,7 +181,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
         const roomDialogRef = this.dialog.open(AddNewRoomComponent, dialogConfig);
         roomDialogRef.afterClosed().subscribe(result => {
           console.log('🚪 Room dialog closed with result:', result);
-       
+
         });
         break;
 
