@@ -1,5 +1,6 @@
 services:
   frontend:
+    image: ${IMAGE:-clinic_frontend:latest}
     build: .
     container_name: clinic_frontend
     restart: unless-stopped
