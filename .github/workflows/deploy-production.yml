@@ -68,9 +68,9 @@ jobs:
 
             cd ${{ secrets.DEPLOY_PATH }}
 
-            export IMAGE=$IMAGE
+            git pull origin production
 
             docker compose down --remove-orphans
-            docker compose up -d
+            IMAGE=$IMAGE docker compose up -d
 
             docker image prune -f
