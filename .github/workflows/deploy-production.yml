@@ -7,7 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/clinic-frontend
 
 jobs:
   build-and-push:
@@ -18,11 +17,15 @@ jobs:
       packages: write
 
     outputs:
-      image_tag: ${{ steps.meta.outputs.version }}
+      image: ${{ steps.image.outputs.name }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set lowercase image name
+        id: image
+        run: echo "name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/clinic-frontend" >> $GITHUB_OUTPUT
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -35,7 +38,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ steps.image.outputs.name }}
           tags: |
             type=sha,prefix=sha-,format=short
             type=raw,value=latest
@@ -70,21 +73,17 @@ jobs:
           script: |
             set -e
 
-            # Log in to GHCR on the server
+            IMAGE=${{ needs.build-and-push.outputs.image }}:latest
+
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Pull the latest image
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            docker pull $IMAGE
 
-            # Go to the project directory
             cd ${{ secrets.DEPLOY_PATH }}
 
-            # Update docker-compose to use the pre-built image instead of building locally
-            export IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            export IMAGE=$IMAGE
 
-            # Stop and remove old container, start new one
             docker compose down --remove-orphans
             docker compose up -d
 
-            # Remove dangling images to free disk space
             docker image prune -f
