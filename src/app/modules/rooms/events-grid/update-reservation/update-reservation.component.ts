@@ -172,9 +172,18 @@ export class UpdateReservationComponent implements OnInit, OnDestroy {
           console.log('[UpdateReservation] 🔄 Services reloaded for room', selectedRoom.roomName, ':', services);
           this.AllServices = services;
           this.filteredServices = [...services];
-          // Reset service FormArray to one empty control
-          while (this.Services.length) this.Services.removeAt(0);
-          this.Services.push(this.fb.control('', Validators.required));
+
+           for (let i = this.Services.length - 1; i >= 0; i--) {
+            const val = this.Services.at(i).value;
+            if (val && !services.includes(val)) {
+              this.Services.removeAt(i);
+            }
+          }
+
+           if (this.Services.length === 0) {
+            this.Services.push(this.fb.control('', Validators.required));
+          }
+
           this.cdr.markForCheck();
         },
         error: (err) => {
