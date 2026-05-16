@@ -7,6 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE: ghcr.io/ahmedbadrshaban/clinic-frontend:latest
 
 jobs:
   build-and-push:
@@ -16,16 +17,9 @@ jobs:
       contents: read
       packages: write
 
-    outputs:
-      image: ${{ steps.image.outputs.name }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set image name
-        id: image
-        run: echo "name=ghcr.io/${{ secrets.GHCR_REPO_OWNER }}/clinic-frontend" >> $GITHUB_OUTPUT
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -33,15 +27,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ steps.image.outputs.name }}
-          tags: |
-            type=sha,prefix=sha-,format=short
-            type=raw,value=latest
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -51,8 +36,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.IMAGE }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -63,13 +47,10 @@ jobs:
     environment: production
 
     steps:
-      - name: Debug image output
-        run: echo "IMAGE=${{ needs.build-and-push.outputs.image }}:latest"
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         env:
-          IMAGE: ${{ needs.build-and-push.outputs.image }}:latest
+          IMAGE: ${{ env.IMAGE }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -79,13 +60,15 @@ jobs:
           script: |
             set -e
 
-            echo "IMAGE is: $IMAGE"
+            echo "Deploying image: $IMAGE"
 
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
 
             docker pull $IMAGE
 
             cd ${{ secrets.DEPLOY_PATH }}
+
+            export IMAGE=$IMAGE
 
             docker compose down --remove-orphans
             docker compose up -d
