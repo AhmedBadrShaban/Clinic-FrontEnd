@@ -27,7 +27,7 @@ export class AddNewRoomComponent implements OnInit, OnDestroy {
       roomName: ['', [Validators.required]],
       isLaser: ['', [Validators.required]],
       clinicName: ['', [Validators.required]],
-      parentRoomId: ['', [Validators.required]]
+      parentRoomId: ['']
     });
   }
 
@@ -124,7 +124,7 @@ export class AddNewRoomComponent implements OnInit, OnDestroy {
   }
   // Simplified methods for AddNewRoomComponent (admin only)
   private updateRoomsAndClose(): void {
-  
+
     this.roomService.getAllRoomsV2().subscribe({
       next: (data) => {
          this.roomService.updateRooms(data);
@@ -132,16 +132,16 @@ export class AddNewRoomComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error refreshing rooms:', error);
-        this.closeDialogWithSuccess();  
+        this.closeDialogWithSuccess();
       }
     });
   }
 
-  
+
   private closeDialogWithSuccess(): void {
-    this.dialogRef.close('room-added');  
+    this.dialogRef.close('room-added');
   }
- 
+
   private markFormGroupTouched(): void {
     Object.keys(this.newRoomFm.controls).forEach(key => {
       this.newRoomFm.get(key)?.markAsTouched();
@@ -153,7 +153,7 @@ export class AddNewRoomComponent implements OnInit, OnDestroy {
       this.roomService.updateRooms(data);
     });
   }
- 
+
   closeDialog() {
     this.dialogRef.close();
   }
