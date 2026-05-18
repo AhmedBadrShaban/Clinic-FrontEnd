@@ -4,10 +4,9 @@ import { Injectable } from '@angular/core';
   providedIn :'root'
 })
 export class ConfigService{
-    private baseUrl: string ="https://clinicdeploy-production.up.railway.app/";
+    private baseUrl: string ="https://uclinic.tech/";
 
     getBaseUrl(): string {
-        this.baseUrl = "http://187.127.83.26:8080/"
         return this.baseUrl;
     }
 
