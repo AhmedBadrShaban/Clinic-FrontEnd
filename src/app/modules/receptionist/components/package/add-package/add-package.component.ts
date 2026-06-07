@@ -83,7 +83,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   isPackageLoading = false;
   AllPackages: PackageItem[] = [];
   filteredPackages: PackageItem[] = [];
-
+  debit: number = 0;
   // Form state
   isSubmitting = false;
   showReceipt = false;
@@ -578,6 +578,7 @@ const patientName = this.reservationData?.patientName
     }
     if (payments.debit && payments.debit > 0) {
       usedMethods.push({ method: 'Debit', amount: payments.debit });
+      this.debit = payments.debit;
     }
     if (payments.credit && payments.credit > 0) {
       usedMethods.push({ method: 'Credit', amount: payments.credit });

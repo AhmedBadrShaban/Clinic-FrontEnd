@@ -298,7 +298,7 @@
 
         <div class="d-flex justify-content-between">
           <span><b>Total Paid:</b></span>
-          <span class="text-success fw-bold">{{ reservationData.totalPayments | currency:'EGP':'symbol':'1.0-0' }}</span>
+          <span class="text-success fw-bold">{{ reservationData.totalPayments -  debit | currency:'EGP':'symbol':'1.0-0' }}</span>
         </div>
 
       </div>
