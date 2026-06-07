@@ -409,8 +409,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     const packageCost = this.getPackageCost();
 
     if (this.isSuper) {
-      // Super user: total payments must be exactly 0
-      if (totalPayments !== 0) {
+       if (totalPayments !== 0) {
         this.showErrorMessage("Super user reservations must have a total payment of 0!");
         return;
       }
