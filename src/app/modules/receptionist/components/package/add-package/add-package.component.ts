@@ -83,7 +83,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   isPackageLoading = false;
   AllPackages: PackageItem[] = [];
   filteredPackages: PackageItem[] = [];
-
+  debit: number = 0;
   // Form state
   isSubmitting = false;
   showReceipt = false;
@@ -409,8 +409,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     const packageCost = this.getPackageCost();
 
     if (this.isSuper) {
-      // Super user: total payments must be exactly 0
-      if (totalPayments !== 0) {
+       if (totalPayments !== 0) {
         this.showErrorMessage("Super user reservations must have a total payment of 0!");
         return;
       }
@@ -578,6 +577,7 @@ const patientName = this.reservationData?.patientName
     }
     if (payments.debit && payments.debit > 0) {
       usedMethods.push({ method: 'Debit', amount: payments.debit });
+      this.debit = payments.debit;
     }
     if (payments.credit && payments.credit > 0) {
       usedMethods.push({ method: 'Credit', amount: payments.credit });
