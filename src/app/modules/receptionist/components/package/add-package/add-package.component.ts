@@ -352,7 +352,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
       (formValues.visa || 0) +
       (formValues.credit || 0) +
       (formValues.instaPay || 0) +
-      (formValues.debit || 0);
+      // (formValues.debit || 0);
   }
 
   getPackageCost(): number {
