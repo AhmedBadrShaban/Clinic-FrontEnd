@@ -1,0 +1,446 @@
+<h2 mat-dialog-title class="summary-title">
+  <mat-icon class="title-icon">receipt_long</mat-icon>
+  Final Payment Summary
+</h2>
+
+<mat-dialog-content class="summary-content">
+
+  <!-- Patient Info -->
+  <div class="patient-info">
+    <div class="patient-field">
+      <mat-icon>person</mat-icon>
+      <span class="field-label">Patient</span>
+      <span class="field-value">{{ data.patientName }}</span>
+    </div>
+    <div class="patient-field">
+      <mat-icon>phone</mat-icon>
+      <span class="field-label">Phone</span>
+      <span class="field-value">{{ data.patientPhone }}</span>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div class="services-list">
+    <div class="service-card" *ngFor="let s of data.services; let i = index">
+
+      <!-- Service Header -->
+      <div class="service-header">
+        <div class="service-name-row">
+          <span class="service-index">{{ i + 1 }}</span>
+          <span class="service-name">{{ s.serviceName }}</span>
+        </div>
+        <div class="service-meta">
+          <span class="meta-chip">{{ s.pulses }} pulses</span>
+          <span class="meta-chip">{{ s.price | number:'1.0-0' }} EGP / pulse</span>
+          <span class="meta-chip total-chip">{{ s.totalCost | number:'1.0-0' }} EGP</span>
+        </div>
+      </div>
+
+      <!-- Payment Type Badge -->
+      <div class="payment-type-row">
+        <span class="type-badge" [ngClass]="{
+            'type-normal':   s.paymentType === 'normal',
+            'type-points':   s.paymentType === 'points',
+            'type-mixed':    s.paymentType === 'mixed',
+            'type-package':  s.paymentType === 'package'
+          }">
+          <ng-container [ngSwitch]="s.paymentType">
+            <ng-container *ngSwitchCase="'normal'">💳 Cash</ng-container>
+            <ng-container *ngSwitchCase="'points'">⭐ Points</ng-container>
+            <ng-container *ngSwitchCase="'mixed'">🔀 Mixed</ng-container>
+            <ng-container *ngSwitchCase="'package'">📦 Package</ng-container>
+          </ng-container>
+        </span>
+      </div>
+
+      <!-- Cash Breakdown -->
+      <div class="breakdown-grid" *ngIf="hasCashBreakdown(s)">
+        <div class="breakdown-chip" *ngIf="s.cash">
+          <span class="chip-label">Cash</span>
+          <span class="chip-val">{{ s.cash | number:'1.0-0' }} EGP</span>
+        </div>
+        <div class="breakdown-chip" *ngIf="s.visa">
+          <span class="chip-label">Visa</span>
+          <span class="chip-val">{{ s.visa | number:'1.0-0' }} EGP</span>
+        </div>
+        <div class="breakdown-chip" *ngIf="s.vodafoneCash">
+          <span class="chip-label">VCash</span>
+          <span class="chip-val">{{ s.vodafoneCash | number:'1.0-0' }} EGP</span>
+        </div>
+        <div class="breakdown-chip" *ngIf="s.credit">
+          <span class="chip-label">Credit</span>
+          <span class="chip-val">{{ s.credit | number:'1.0-0' }} EGP</span>
+        </div>
+        <div class="breakdown-chip" *ngIf="s.debit">
+          <span class="chip-label">Debit</span>
+          <span class="chip-val">{{ s.debit | number:'1.0-0' }} EGP</span>
+        </div>
+        <div class="breakdown-chip" *ngIf="s.instaPay">
+          <span class="chip-label">InstaPay</span>
+          <span class="chip-val">{{ s.instaPay | number:'1.0-0' }} EGP</span>
+        </div>
+      </div>
+
+      <!-- Points Used -->
+      <div class="points-used-row" *ngIf="s.pointsUsed">
+        <mat-icon class="pts-icon">stars</mat-icon>
+        <span>{{ s.pointsUsed }} points used</span>
+      </div>
+
+      <!-- Package Info -->
+      <div class="package-row" *ngIf="s.paymentType === 'package'">
+        <mat-icon class="pkg-icon">inventory_2</mat-icon>
+        <span>Paid from package —
+          <strong>{{ s.packageSessionsLeft }}</strong> session(s) remaining
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Points Summary (only if points were used at all) -->
+  <div class="final-points-bar" *ngIf="data.pointsBefore !== data.pointsAfter">
+    <mat-icon>stars</mat-icon>
+    <span class="pts-before">{{ data.pointsBefore }} pts</span>
+    <mat-icon class="arrow">arrow_forward</mat-icon>
+    <span class="pts-used">−{{ data.pointsBefore - data.pointsAfter }} used</span>
+    <mat-icon class="arrow">arrow_forward</mat-icon>
+    <span class="pts-after">{{ data.pointsAfter }} pts remaining</span>
+  </div>
+
+  <!-- Grand Total -->
+  <div class="grand-total">
+    <span class="grand-label">Total Cash Paid</span>
+    <span class="grand-value">{{ data.grandTotal | number:'1.0-0' }} EGP</span>
+  </div>
+
+  <p class="confirm-question">Confirm and complete this checkout?</p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="summary-actions">
+  <button mat-stroked-button (click)="cancel()" class="btn-cancel">
+    <mat-icon>arrow_back</mat-icon> Go Back
+  </button>
+  <button mat-raised-button color="warn" (click)="confirm()" class="btn-confirm">
+    <mat-icon>check_circle</mat-icon> Complete Payment
+  </button>
+</mat-dialog-actions>
+
+<style>
+  .summary-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #222;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 14px;
+    margin: 0;
+    padding: 20px 24px 14px;
+  }
+
+  .title-icon {
+    color: #c62828;
+  }
+
+  .summary-content {
+    padding: 0 24px 8px !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    min-width: 480px;
+  }
+
+  /* Patient Info */
+  .patient-info {
+    display: flex;
+    gap: 24px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin: 16px 0 14px;
+  }
+
+  .patient-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+  }
+
+  .patient-field mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #888;
+  }
+
+  .field-label {
+    color: #888;
+  }
+
+  .field-value {
+    font-weight: 600;
+    color: #333;
+  }
+
+  /* Services */
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .service-card {
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .service-header {
+    background: #fafafa;
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .service-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .service-index {
+    background: #6f2dbd;
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .service-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #222;
+  }
+
+  .service-meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    background: #efefef;
+    color: #555;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .total-chip {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: 700;
+  }
+
+  /* Payment Type */
+  .payment-type-row {
+    padding: 8px 14px 0;
+  }
+
+  .type-badge {
+    display: inline-block;
+    border-radius: 12px;
+    padding: 3px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .type-normal {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+
+  .type-points {
+    background: #f3e5f5;
+    color: #6f2dbd;
+  }
+
+  .type-mixed {
+    background: #fff3e0;
+    color: #e65100;
+  }
+
+  .type-package {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  /* Breakdown chips */
+  .breakdown-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 14px 10px;
+  }
+
+  .breakdown-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 4px 12px;
+    min-width: 70px;
+  }
+
+  .chip-label {
+    font-size: 0.68rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .chip-val {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #222;
+  }
+
+  /* Points used */
+  .points-used-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px 10px;
+    font-size: 0.85rem;
+    color: #6f2dbd;
+    font-weight: 500;
+  }
+
+  .pts-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Package row */
+  .package-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px 10px;
+    font-size: 0.85rem;
+    color: #2e7d32;
+  }
+
+  .pkg-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Final points bar */
+  .final-points-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(111, 45, 189, 0.07), rgba(111, 45, 189, 0.03));
+    border: 1px solid rgba(111, 45, 189, 0.2);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    font-size: 0.88rem;
+    flex-wrap: wrap;
+  }
+
+  .final-points-bar mat-icon {
+    color: #6f2dbd;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .pts-before {
+    color: #555;
+    font-weight: 600;
+  }
+
+  .pts-used {
+    color: #e53935;
+    font-weight: 700;
+  }
+
+  .pts-after {
+    color: #2e7d32;
+    font-weight: 700;
+  }
+
+  .arrow {
+    color: #bbb;
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Grand total */
+  .grand-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #212121;
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 14px;
+  }
+
+  .grand-label {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+  }
+
+  .grand-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #69f0ae;
+  }
+
+  .confirm-question {
+    text-align: center;
+    color: #777;
+    font-size: 0.85rem;
+    margin: 0 0 4px;
+  }
+
+  /* Actions */
+  .summary-actions {
+    padding: 12px 24px !important;
+    gap: 10px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .btn-cancel {
+    color: #888;
+  }
+
+  .btn-confirm {
+    min-width: 160px;
+  }
+</style>
