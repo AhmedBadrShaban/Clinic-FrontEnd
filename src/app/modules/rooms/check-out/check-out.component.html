@@ -139,9 +139,10 @@
                             [ngClass]="{ 'disabled-link': showPointsButton }">
                             Done
                           </a>
-                          <a class="btn btn-success mx-2" *ngIf="service.price && service.pulses"
-                            (click)="payUsingRemainPoints(service)" [ngClass]="{ 'disabled-link': !showPointsButton }">
-                            Remain Points</a>
+                      <a class="btn btn-success mx-2" *ngIf="service.price && service.pulses" (click)="payUsingRemainPoints(service)"
+                        [ngClass]="{ 'disabled-link': !showPointsButton }">
+                        Remain Points ({{ getRemainingPoints(service) }} pts)</a>
+
                           <a class="mx-2" *ngIf="showPointsButton" (click)="clear()"> Clear </a>
                         </div>
                       </form>
@@ -168,9 +169,8 @@
                           [ngClass]="{ 'disabled-link': showRemainCash }">
                           Done
                         </a>
-                        <a class="btn btn-success mx-2" (click)="showNormal(i)"
-                          [ngClass]="{ 'disabled-link': !showRemainCash }">
-                          Remain Cash</a>
+<a class="btn btn-success mx-2" (click)="showNormal(i)" [ngClass]="{ 'disabled-link': !showRemainCash }">
+  Remain Cash ({{ getRemainingCash(service) | number:'1.0-0' }} EGP)</a>
                       </div>
                     </div>
 

@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatButtonModule} from "@angular/material/button";
 import{MatDialogModule, MatDialogRef} from "@angular/material/dialog"
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {SharedModule} from "./shared/shared.module";
 import {NavBarComponent} from "./shared/components/nav-bar/nav-bar.component";
@@ -55,6 +56,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ConfirmPaymentDialogComponent } from './modules/rooms/check-out/confirm-payment-dialog/confirm-payment-dialog.component';
+import { FinalCheckoutSummaryDialogComponent } from './modules/rooms/check-out/final-checkout-summary-dialog/final-checkout-summary-dialog.component';
 
  
 @NgModule({
@@ -70,6 +74,8 @@ import { MatChipsModule } from '@angular/material/chips';
     ForbiddenComponent,
     CheckOutComponent,
     PaymentComponent,
+    ConfirmPaymentDialogComponent,
+    FinalCheckoutSummaryDialogComponent,
     UpdateReservationComponent
   ],
   imports: [
@@ -96,6 +102,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatTabsModule,
     MatTableModule,
     MatDividerModule,
+    MatSnackBarModule,
     MatProgressSpinnerModule,
     MatCardModule,
      MatButtonToggleModule,   // For view mode toggle
