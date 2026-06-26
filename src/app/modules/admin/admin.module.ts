@@ -32,6 +32,7 @@ import { ReceptionistModule } from '../receptionist/receptionist.module';
 import {ReportsComponent} from "../../shared/components/reports/reports.component";
 import { ContributorsComponent } from './components/contributors/contributors.component';
 import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
+
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import { TableComponent } from '../receptionist/shared/table/table.component';
 import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
@@ -47,6 +48,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
  
 
 @NgModule({
@@ -69,8 +71,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       MaterialsComponent,
       AddNewMatrialComponent,
         ContributorsComponent,
-      AddContributorComponent,
-        
+      AddContributorComponent
    ],
 
     imports: [
@@ -98,7 +99,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatSnackBarModule,
         MatTableModule,
         MatChipsModule,
-        MatTooltipModule
+        MatTooltipModule,
+      AdminSidebarComponent
     ]
 })
 export class AdminModule { }

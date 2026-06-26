@@ -1,0 +1,35 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+
+  <!-- Logo & Toggle -->
+  <div class="sidebar-header">
+    <div class="logo-wrap" *ngIf="!isCollapsed">
+      <img src="assets/Flogo.png" alt="Clinic logo" class="logo-img" />
+    </div>
+    <button class="toggle-btn" (click)="toggleSidebar()" [title]="isCollapsed ? 'Expand menu' : 'Collapse menu'">
+      <i class="bi" [ngClass]="isCollapsed ? 'bi-layout-sidebar' : 'bi-layout-sidebar-reverse'"></i>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav">
+    <ul>
+      <li *ngFor="let item of navItems">
+        <a [routerLink]="item.route" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.route === '/admin' }" [title]="isCollapsed ? item.label : ''"
+          class="nav-link">
+          <i class="bi {{ item.icon }} nav-icon"></i>
+          <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Bottom: Logout -->
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()" [title]="isCollapsed ? 'Logout' : ''">
+      <i class="bi bi-box-arrow-left nav-icon"></i>
+      <span class="nav-label" *ngIf="!isCollapsed">Logout</span>
+    </button>
+  </div>
+
+</aside>

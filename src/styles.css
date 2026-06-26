@@ -5,7 +5,170 @@
  html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+/* ═══════════════════════════════════════════════════════════════════
+   BEAUTY CLINIC — Global Design Tokens
+   Add these at the TOP of src/styles.css (before any existing rules)
+   ═══════════════════════════════════════════════════════════════════ */
 
+:root {
+  /* ── Brand palette ─────────────────────────────────────────────── */
+  --brand-purple:        #6F2DBD;
+  --brand-purple-light:  #8B45D4;
+  --brand-purple-dim:    rgba(111, 45, 189, 0.12);
+  --brand-purple-hover:  rgba(111, 45, 189, 0.18);
+
+  /* ── Page background ───────────────────────────────────────────── */
+  --page-bg:             #F5F4F8;
+
+  /* ── Sidebar tokens ────────────────────────────────────────────── */
+  --sidebar-width:          240px;
+  --sidebar-collapsed-width: 64px;
+  --sidebar-bg:             #1E1530;       /* deep dark purple-navy */
+  --sidebar-border:         rgba(255,255,255,0.07);
+  --sidebar-text-color:     rgba(255,255,255,0.65);
+  --sidebar-icon-color:     rgba(255,255,255,0.5);
+  --sidebar-hover-bg:       rgba(255,255,255,0.07);
+  --sidebar-active-bg:      rgba(111, 45, 189, 0.55);
+  --sidebar-active-color:   #fff;
+
+  /* ── Top bar ───────────────────────────────────────────────────── */
+  --topbar-bg:              #ffffff;
+
+  /* ── Text ──────────────────────────────────────────────────────── */
+  --text-primary:        #1A1523;
+  --text-secondary:      #4A4558;
+  --text-muted:          #8A8599;
+
+  /* ── Borders ───────────────────────────────────────────────────── */
+  --border-light:        #E8E6EF;
+  --border-medium:       #D0CDD9;
+
+  /* ── Surfaces (cards, panels) ──────────────────────────────────── */
+  --surface-card:        #ffffff;
+  --surface-card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+
+  /* ── Semantic colors ───────────────────────────────────────────── */
+  --color-success:       #16a34a;
+  --color-success-bg:    #f0fdf4;
+  --color-warning:       #d97706;
+  --color-warning-bg:    #fffbeb;
+  --color-danger:        #dc2626;
+  --color-danger-bg:     #fef2f2;
+  --color-info:          #0284c7;
+  --color-info-bg:       #f0f9ff;
+
+  /* ── Spacing ───────────────────────────────────────────────────── */
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:   16px;
+  --space-lg:   24px;
+  --space-xl:   32px;
+  --space-2xl:  48px;
+
+  /* ── Border radius ─────────────────────────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-full: 9999px;
+
+  /* ── Typography ────────────────────────────────────────────────── */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-xs:   11px;
+  --font-size-sm:   13px;
+  --font-size-base: 14px;
+  --font-size-md:   15px;
+  --font-size-lg:   18px;
+  --font-size-xl:   22px;
+  --font-size-2xl:  28px;
+}
+
+/* ─── Base resets ───────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background: var(--page-bg);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Shared utility classes ─────────────────────────────────────── */
+
+/* Cards */
+.clinic-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--surface-card-shadow);
+  border: 1px solid var(--border-light);
+  padding: var(--space-lg);
+}
+
+/* Page header (title + action button row) */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.page-header h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Primary action button */
+.btn-primary-clinic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: var(--brand-purple);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+
+.btn-primary-clinic:hover {
+  background: var(--brand-purple-light);
+  color: #fff;
+}
+
+/* Ghost button */
+.btn-ghost-clinic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--brand-purple);
+  border: 1px solid var(--brand-purple);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-ghost-clinic:hover {
+  background: var(--brand-purple-dim);
+}
+
+/* Badge pills */
+.badge-success { background: var(--color-success-bg); color: var(--color-success); padding: 3px 10px; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: 500; }
+.badge-warning { background: var(--color-warning-bg); color: var(--color-warning); padding: 3px 10px; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: 500; }
+.badge-danger  { background: var(--color-danger-bg);  color: var(--color-danger);  padding: 3px 10px; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: 500; }
+.badge-purple  { background: var(--brand-purple-dim); color: var(--brand-purple);  padding: 3px 10px; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: 500; }
 :root {
   --pri: #4c2c77;
   --pri-light: #6b3fa0;

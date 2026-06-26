@@ -1,3 +1,26 @@
-<app-admin-nav-bar class="mb-4"></app-admin-nav-bar>
-<app-reports></app-reports>
-<router-outlet></router-outlet>
+<div class="admin-shell" [class.sidebar-collapsed]="sidebar.isCollapsed">
+
+  <!-- Persistent sidebar -->
+  <app-admin-sidebar #sidebar></app-admin-sidebar>
+
+  <!-- Main content area -->
+  <div class="admin-main">
+
+    <!-- Top bar -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <span class="page-title">{{ sidebar.currentPageTitle }}</span>
+      </div>
+      <div class="topbar-right">
+        <span class="clinic-name">Beauty Clinic</span>
+        <div class="avatar" title="Admin">A</div>
+      </div>
+    </header>
+
+    <!-- Routed page content -->
+    <main class="admin-content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>
