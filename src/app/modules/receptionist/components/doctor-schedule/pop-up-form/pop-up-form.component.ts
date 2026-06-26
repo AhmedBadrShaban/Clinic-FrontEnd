@@ -9,22 +9,11 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { scheduleData } from '../../../models/doctor.schedule.model';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatOptionModule } from '@angular/material/core';
-import { NgFor, NgIf } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-pop-up-form',
-    templateUrl: './pop-up-form.component.html',
-    styleUrls: ['./pop-up-form.component.css'],
-    standalone: true,
-    imports: [MatIconModule, MatButtonModule, FormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, NgFor, MatOptionModule, NgIf, MatProgressSpinnerModule]
+  selector: 'app-pop-up-form',
+  templateUrl: './pop-up-form.component.html',
+  styleUrls: ['./pop-up-form.component.css']
 })
 export class PopUpFormComponent implements OnInit, OnDestroy {
 

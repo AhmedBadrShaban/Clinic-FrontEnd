@@ -1,16 +1,13 @@
 import { Component, Inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 import { RoomsService, Room } from '../../Services/rooms/rooms.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-add-new-room',
-    templateUrl: './add-new-room.component.html',
-    styleUrls: ['./add-new-room.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor]
+  selector: 'app-add-new-room',
+  templateUrl: './add-new-room.component.html',
+  styleUrls: ['./add-new-room.component.css']
 })
 export class AddNewRoomComponent implements OnInit, OnDestroy {
   newRoomFm: FormGroup;

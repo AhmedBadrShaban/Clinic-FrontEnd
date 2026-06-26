@@ -8,8 +8,8 @@ describe('AddNewPatientComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [AddNewPatientComponent]
-});
+      declarations: [AddNewPatientComponent]
+    });
     fixture = TestBed.createComponent(AddNewPatientComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

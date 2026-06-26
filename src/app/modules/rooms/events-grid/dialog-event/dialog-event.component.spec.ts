@@ -8,8 +8,8 @@ describe('DialogEventComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [DialogEventComponent]
-});
+      declarations: [DialogEventComponent]
+    });
     fixture = TestBed.createComponent(DialogEventComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

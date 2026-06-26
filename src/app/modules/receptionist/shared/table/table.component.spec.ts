@@ -11,8 +11,8 @@ describe('TableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [TableComponent]
-})
+      declarations: [ TableComponent ]
+    })
     .compileComponents();
   }));
 

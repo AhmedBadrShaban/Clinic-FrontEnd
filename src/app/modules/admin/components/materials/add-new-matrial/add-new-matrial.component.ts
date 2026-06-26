@@ -1,16 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Materials } from 'src/app/modules/admin/models/materials';
 import { MaterialsService } from 'src/app/modules/admin/services/materials/materials.service';
-import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-add-new-matrial',
-    templateUrl: './add-new-matrial.component.html',
-    styleUrls: ['./add-new-matrial.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, NgIf]
+  selector: 'app-add-new-matrial',
+  templateUrl: './add-new-matrial.component.html',
+  styleUrls: ['./add-new-matrial.component.css']
 })
 export class AddNewMatrialComponent implements OnInit {
 

@@ -7,10 +7,16 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
-import { DatePipe, NgIf, NgFor } from '@angular/common';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DatePipe } from '@angular/common';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,18 +26,6 @@ import { PatientService } from '../../services/patient-server/patient.service';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { ReservationsService } from '../../services/reservations-services/reservations.service';
 import { LaserConfirmDialogComponent } from './laser-confirm-dialog/laser-confirm-dialog.component';
-import { TextFieldModule } from '@angular/cdk/text-field';
-import { MatChipsModule } from '@angular/material/chips';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatOptionModule } from '@angular/material/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 
 interface PatientSearchItem {
   displayText: string;
@@ -43,12 +37,10 @@ const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 
 @Component({
-    selector: 'app-reservation-fm',
-    templateUrl: './reservation-fm.component.html',
-    styleUrls: ['./reservation-fm.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatIconModule, MatButtonModule, FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, NgIf, MatProgressSpinnerModule, NgFor, MatOptionModule, MatDividerModule, MatSelectModule, NgxMatSelectSearchModule, MatChipsModule, TextFieldModule, DatePipe]
+  selector: 'app-reservation-fm',
+  templateUrl: './reservation-fm.component.html',
+  styleUrls: ['./reservation-fm.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReservationFmComponent implements OnInit, OnDestroy {
   reservationFm: FormGroup;

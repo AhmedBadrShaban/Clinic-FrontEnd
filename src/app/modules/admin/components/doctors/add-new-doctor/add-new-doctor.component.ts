@@ -1,17 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Doctors } from 'src/app/modules/admin/models/doctors';
 import { DoctorsService } from 'src/app/modules/admin/services/doctors/doctors.service';
 import { IPatient } from 'src/app/modules/receptionist/models/ipatient';
-import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-add-new-doctor',
-    templateUrl: './add-new-doctor.component.html',
-    styleUrls: ['./add-new-doctor.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, NgIf]
+  selector: 'app-add-new-doctor',
+  templateUrl: './add-new-doctor.component.html',
+  styleUrls: ['./add-new-doctor.component.css']
 })
 export class AddNewDoctorComponent implements OnInit {
 

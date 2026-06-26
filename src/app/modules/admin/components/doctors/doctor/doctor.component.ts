@@ -2,15 +2,11 @@ import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DoctorsService } from '../../../services/doctors/doctors.service';
 import { Doctors } from '../../../models/doctors';
-import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-doctor',
-    templateUrl: './doctor.component.html',
-    styleUrls: ['./doctor.component.css'],
-    standalone: true,
-    imports: [NgIf, FormsModule],
+  selector: 'app-doctor',
+  templateUrl: './doctor.component.html',
+  styleUrls: ['./doctor.component.css'],
 })
 export class DoctorComponent {
   doctorId: string;

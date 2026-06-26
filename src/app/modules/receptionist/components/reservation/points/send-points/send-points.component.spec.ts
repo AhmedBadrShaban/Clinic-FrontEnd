@@ -8,8 +8,8 @@ describe('SendPointsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [SendPointsComponent]
-});
+      declarations: [SendPointsComponent]
+    });
     fixture = TestBed.createComponent(SendPointsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

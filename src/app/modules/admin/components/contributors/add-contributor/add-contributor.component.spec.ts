@@ -8,8 +8,8 @@ describe('AddContributorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [AddContributorComponent]
-});
+      declarations: [AddContributorComponent]
+    });
     fixture = TestBed.createComponent(AddContributorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

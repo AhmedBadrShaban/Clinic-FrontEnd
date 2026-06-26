@@ -11,8 +11,8 @@ describe('PackageReceiptDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [PackageReceiptDialogComponent]
-})
+      declarations: [ PackageReceiptDialogComponent ]
+    })
     .compileComponents();
   }));
 

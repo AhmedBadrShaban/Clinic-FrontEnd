@@ -8,8 +8,8 @@ describe('ReservationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ReservationComponent]
-});
+      declarations: [ReservationComponent]
+    });
     fixture = TestBed.createComponent(ReservationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

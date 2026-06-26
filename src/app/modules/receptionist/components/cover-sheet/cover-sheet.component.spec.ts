@@ -8,8 +8,8 @@ describe('CoverSheetComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [CoverSheetComponent]
-});
+      declarations: [CoverSheetComponent]
+    });
     fixture = TestBed.createComponent(CoverSheetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

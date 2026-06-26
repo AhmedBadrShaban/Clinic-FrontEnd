@@ -1,16 +1,13 @@
 import { ExpenseService } from './../../../services/expenses-service/expense.service';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Expense } from 'src/app/modules/receptionist/models/expense';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-add-expense',
-    templateUrl: './add-expense.component.html',
-    styleUrls: ['./add-expense.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, NgFor, NgIf]
+  selector: 'app-add-expense',
+  templateUrl: './add-expense.component.html',
+  styleUrls: ['./add-expense.component.css']
 })
 export class AddExpenseComponent implements OnInit{
   expenseFm: FormGroup;

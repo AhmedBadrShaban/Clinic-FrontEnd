@@ -8,8 +8,8 @@ describe('CheckOutComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [CheckOutComponent]
-});
+      declarations: [CheckOutComponent]
+    });
     fixture = TestBed.createComponent(CheckOutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

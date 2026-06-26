@@ -1,16 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Service } from 'src/app/modules/admin/models/service';
 import { ServiceService } from 'src/app/modules/admin/services/services/service.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-add-new-service',
-    templateUrl: './add-new-service.component.html',
-    styleUrls: ['./add-new-service.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor]
+  selector: 'app-add-new-service',
+  templateUrl: './add-new-service.component.html',
+  styleUrls: ['./add-new-service.component.css']
 })
 export class AddNewServiceComponent implements OnInit {
   newServiceFm: FormGroup;

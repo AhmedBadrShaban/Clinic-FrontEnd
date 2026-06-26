@@ -10,26 +10,21 @@ import {
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DatePipe, NgIf, NgFor, CurrencyPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Subscription } from 'rxjs';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export interface PackageReceiptData {
   reservedId: string | number;
 }
 
 @Component({
-    selector: 'app-package-receipt-dialog',
-    templateUrl: './package-receipt-dialog.component.html',
-    styleUrls: ['./package-receipt-dialog.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgIf, MatProgressSpinnerModule, MatIconModule, MatButtonModule, NgFor, CurrencyPipe, DatePipe]
+  selector: 'app-package-receipt-dialog',
+  templateUrl: './package-receipt-dialog.component.html',
+  styleUrls: ['./package-receipt-dialog.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PackageReceiptDialogComponent implements OnInit, OnDestroy {
   @ViewChild('receiptSection', { static: false }) receiptSection?: ElementRef;

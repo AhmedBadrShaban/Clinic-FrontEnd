@@ -11,8 +11,8 @@ describe('PackageDetailsDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [PackageDetailsDialogComponent]
-})
+      declarations: [ PackageDetailsDialogComponent ]
+    })
     .compileComponents();
   }));
 

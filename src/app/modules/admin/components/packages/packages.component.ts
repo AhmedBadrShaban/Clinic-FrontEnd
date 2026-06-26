@@ -6,16 +6,11 @@ import { AddNewPackageComponent } from './add-new-package/add-new-package.compon
 import { PackageDetailsDialogComponent } from './package-details-dialog/package-details-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-packages',
-    templateUrl: './packages.component.html',
-    styleUrls: ['./packages.component.css'],
-    standalone: true,
-    imports: [FormsModule, NgIf, NzTableModule, NgFor, CurrencyPipe]
+  selector: 'app-packages',
+  templateUrl: './packages.component.html',
+  styleUrls: ['./packages.component.css']
 })
 export class PackagesComponent implements OnInit {
 

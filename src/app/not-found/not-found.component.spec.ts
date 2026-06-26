@@ -8,8 +8,8 @@ describe('NotFoundComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [NotFoundComponent]
-});
+      declarations: [NotFoundComponent]
+    });
     fixture = TestBed.createComponent(NotFoundComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

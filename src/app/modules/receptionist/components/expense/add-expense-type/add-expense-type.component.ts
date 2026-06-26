@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ExpenseService } from 'src/app/modules/receptionist/services/expenses-service/expense.service';
 
 @Component({
-    selector: 'app-add-expense-type',
-    templateUrl: './add-expense-type.component.html',
-    styleUrls: ['./add-expense-type.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule]
+  selector: 'app-add-expense-type',
+  templateUrl: './add-expense-type.component.html',
+  styleUrls: ['./add-expense-type.component.css']
 })
 export class AddExpenseTypeComponent implements OnInit {
 

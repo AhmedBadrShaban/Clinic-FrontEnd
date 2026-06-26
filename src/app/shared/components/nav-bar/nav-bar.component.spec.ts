@@ -8,8 +8,8 @@ describe('NavBarComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [NavBarComponent]
-});
+      declarations: [NavBarComponent]
+    });
     fixture = TestBed.createComponent(NavBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

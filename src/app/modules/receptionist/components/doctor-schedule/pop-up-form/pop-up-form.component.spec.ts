@@ -8,8 +8,8 @@ describe('PopUpFormComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [PopUpFormComponent]
-});
+      declarations: [PopUpFormComponent]
+    });
     fixture = TestBed.createComponent(PopUpFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

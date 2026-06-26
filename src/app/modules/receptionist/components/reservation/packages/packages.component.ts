@@ -17,16 +17,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { PackageDetailsComponent } from './package-details/package-details.component';
 import { PackageReceiptDialogComponent } from './package-receipt-dialog/package-receipt-dialog.component';
 import { Subscription } from 'rxjs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { TableComponent } from '../../../shared/table/table.component';
 
 @Component({
-    selector: 'app-packages',
-    templateUrl: './packages.component.html',
-    styleUrls: ['./packages.component.css'],
-    standalone: true,
-    imports: [TableComponent, MatButtonModule, MatIconModule]
+  selector: 'app-packages',
+  templateUrl: './packages.component.html',
+  styleUrls: ['./packages.component.css']
 })
 export class PackagesComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('actionTemplate', { static: true }) actionTemplate!: TemplateRef<any>;

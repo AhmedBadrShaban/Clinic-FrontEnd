@@ -9,18 +9,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { PatientInfo } from 'src/app/modules/receptionist/models/patient-Info';
 
 @Component({
-    selector: 'app-patient-info',
-    templateUrl: './patient-info.component.html',
-    styleUrls: ['./patient-info.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule]
+  selector: 'app-patient-info',
+  templateUrl: './patient-info.component.html',
+  styleUrls: ['./patient-info.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
   @Input() phoneNumber: string | null = null;

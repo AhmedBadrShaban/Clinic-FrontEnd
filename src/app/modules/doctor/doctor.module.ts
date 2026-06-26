@@ -21,31 +21,36 @@ import { MatCardModule } from '@angular/material/card';
 import { DoctorReservationComponent } from './components/reservation-home-page/reservation-home-page.component';
  
 @NgModule({
-    exports: [
-        DoctorNavBarComponent,
-        MainPageComponent
-    ],
-    imports: [
-        CommonModule,
-        DoctorRoutingModule,
-        ReactiveFormsModule,
-        FormsModule,
-        ReceptionistModule,
-        // Angular Material Modules
-        MatTabsModule,
-        MatAutocompleteModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogModule,
-        MatProgressSpinnerModule,
-        MatCardModule,
-        DoctorComponent,
-        DoctorNavBarComponent,
-        DoctorProfileComponent,
-        DoctorReservationComponent,
-        MainPageComponent,
-    ]
+  declarations: [
+    DoctorComponent,
+    DoctorNavBarComponent,
+    DoctorProfileComponent,
+    DoctorReservationComponent,
+    MainPageComponent,
+  ],
+  exports: [
+    DoctorNavBarComponent,
+    MainPageComponent
+  ],
+  imports: [
+    CommonModule,
+    DoctorRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    ReceptionistModule,
+ 
+    // Angular Material Modules
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatCardModule,
+
+ 
+  ]
 })
 export class DoctorModule { }

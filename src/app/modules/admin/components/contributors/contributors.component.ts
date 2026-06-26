@@ -8,10 +8,9 @@ import {ContributorsService} from "../../services/Contributors/contributors.serv
 import {AddContributorComponent} from "./add-contributor/add-contributor.component";
 
 @Component({
-    selector: 'app-contributors',
-    templateUrl: './contributors.component.html',
-    styleUrls: ['./contributors.component.css'],
-    standalone: true
+  selector: 'app-contributors',
+  templateUrl: './contributors.component.html',
+  styleUrls: ['./contributors.component.css']
 })
 export class ContributorsComponent {
 

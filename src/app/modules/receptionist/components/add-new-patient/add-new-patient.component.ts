@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -8,23 +8,11 @@ import { PatientService } from '../../services/patient-server/patient.service';
 import { ReservationsService } from 'src/app/modules/receptionist/services/reservations-services/reservations.service';
 import { AuthService } from './../../../../shared/services/auth.service';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { NgIf, NgFor } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
-    selector: 'app-add-new-patient',
-    templateUrl: './add-new-patient.component.html',
-    styleUrls: ['./add-new-patient.component.css'],
-    standalone: true,
-    imports: [MatCardModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatIconModule, NgIf, MatSelectModule, MatOptionModule, MatDatepickerModule, NgFor, MatButtonModule, MatProgressSpinnerModule]
+  selector: 'app-add-new-patient',
+  templateUrl: './add-new-patient.component.html',
+  styleUrls: ['./add-new-patient.component.css']
 })
 export class AddNewPatientComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

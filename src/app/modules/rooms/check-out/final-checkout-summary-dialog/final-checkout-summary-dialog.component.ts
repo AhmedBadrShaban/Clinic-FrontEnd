@@ -1,8 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { NgFor, NgClass, NgSwitch, NgSwitchCase, NgIf, DecimalPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface ServicePaymentSummary {
   serviceName: string;
@@ -35,20 +32,8 @@ export interface FinalCheckoutSummaryData {
 }
 
 @Component({
-    selector: 'app-final-checkout-summary-dialog',
-    templateUrl: './final-checkout-summary-dialog.component.html',
-    standalone: true,
-    imports: [
-        MatDialogModule,
-        MatIconModule,
-        NgFor,
-        NgClass,
-        NgSwitch,
-        NgSwitchCase,
-        NgIf,
-        MatButtonModule,
-        DecimalPipe,
-    ],
+  selector: 'app-final-checkout-summary-dialog',
+  templateUrl: './final-checkout-summary-dialog.component.html',
 })
 export class FinalCheckoutSummaryDialogComponent {
   constructor(

@@ -8,8 +8,8 @@ describe('HistoryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [HistoryComponent]
-});
+      declarations: [HistoryComponent]
+    });
     fixture = TestBed.createComponent(HistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

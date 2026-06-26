@@ -11,8 +11,8 @@ describe('LaserConfirmDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [LaserConfirmDialogComponent]
-})
+      declarations: [ LaserConfirmDialogComponent ]
+    })
     .compileComponents();
   }));
 

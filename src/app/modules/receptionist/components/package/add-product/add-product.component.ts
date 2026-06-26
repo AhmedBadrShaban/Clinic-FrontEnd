@@ -7,24 +7,20 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy 
 } from '@angular/core';
-import { FormBuilder, Validators, FormControl, FormGroup, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { 
+  FormBuilder, 
+  Validators, 
+  FormControl, 
+  FormGroup, 
+  FormArray 
+} from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { MaterialsService } from 'src/app/modules/admin/services/materials/materials.service';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatOptionModule } from '@angular/material/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 
 interface PatientSearchItem {
   displayText: string;
@@ -36,12 +32,10 @@ const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 
 @Component({
-    selector: 'app-add-product',
-    templateUrl: './add-product.component.html',
-    styleUrls: ['./add-product.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatIconModule, MatButtonModule, FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, NgIf, MatProgressSpinnerModule, NgFor, MatOptionModule, MatDividerModule, MatSelectModule, CurrencyPipe]
+  selector: 'app-add-product',
+  templateUrl: './add-product.component.html',
+  styleUrls: ['./add-product.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddProductComponent implements OnInit, OnDestroy {
   addProductFm: FormGroup;

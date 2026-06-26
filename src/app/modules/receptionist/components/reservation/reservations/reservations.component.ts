@@ -15,16 +15,11 @@ import { PageEvent } from '@angular/material/paginator';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
 import { Subscription } from 'rxjs';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
-import { MatIconModule } from '@angular/material/icon';
-import { NgFor, NgIf, NgClass } from '@angular/common';
-import { TableComponent } from '../../../shared/table/table.component';
 
 @Component({
-    selector: 'app-reservations',
-    templateUrl: './reservations.component.html',
-    styleUrls: ['./reservations.component.css'],
-    standalone: true,
-    imports: [TableComponent, NgFor, NgIf, NgClass, MatIconModule]
+  selector: 'app-reservations',
+  templateUrl: './reservations.component.html',
+  styleUrls: ['./reservations.component.css']
 })
 export class ReservationsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() phoneNumber: string | null = null;
