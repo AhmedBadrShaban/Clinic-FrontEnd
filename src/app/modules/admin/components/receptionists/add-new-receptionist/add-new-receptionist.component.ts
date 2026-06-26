@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Receptionist } from 'src/app/modules/admin/models/receptionist';
 import { ReceptionistsService } from 'src/app/modules/admin/services/receptionists/receptionists.service';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-add-new-receptionist',
-  templateUrl: './add-new-receptionist.component.html',
-  styleUrls: ['./add-new-receptionist.component.css']
+    selector: 'app-add-new-receptionist',
+    templateUrl: './add-new-receptionist.component.html',
+    styleUrls: ['./add-new-receptionist.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor]
 })
 export class AddNewReceptionistComponent implements OnInit {
   selectedDate: any | undefined;

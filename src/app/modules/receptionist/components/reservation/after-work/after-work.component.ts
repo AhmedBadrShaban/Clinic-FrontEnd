@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, Input, OnInit, Optional } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DoctorReservationsService } from 'src/app/modules/doctor/Services/doctor-reservations.service';
@@ -7,11 +7,16 @@ import { ServiceService } from 'src/app/modules/doctor/Services/service.service'
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-after-work',
-  templateUrl: './after-work.component.html',
-  styleUrls: ['./after-work.component.css']
+    selector: 'app-after-work',
+    templateUrl: './after-work.component.html',
+    styleUrls: ['./after-work.component.css'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinnerModule, MatIconModule, FormsModule, ReactiveFormsModule, NgFor]
 })
 export class AfterWorkComponent implements OnInit {
   @Input() phoneNumber: string | null = null;

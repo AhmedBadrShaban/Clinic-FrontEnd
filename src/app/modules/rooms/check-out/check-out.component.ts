@@ -18,11 +18,35 @@ import {
   FinalCheckoutSummaryData,
   ServicePaymentSummary,
 } from './final-checkout-summary-dialog/final-checkout-summary-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { MatTableModule } from '@angular/material/table';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { NgIf, NgFor, NgClass, DecimalPipe, CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-check-out',
-  templateUrl: './check-out.component.html',
-  styleUrls: ['./check-out.component.css'],
+    selector: 'app-check-out',
+    templateUrl: './check-out.component.html',
+    styleUrls: ['./check-out.component.css'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatIconModule,
+        NgFor,
+        NgClass,
+        FormsModule,
+        MatCardModule,
+        MatDividerModule,
+        MatTableModule,
+        NzTableModule,
+        MatButtonModule,
+        DecimalPipe,
+        CurrencyPipe,
+        DatePipe,
+    ],
 })
 export class CheckOutComponent implements OnInit {
   id: number;

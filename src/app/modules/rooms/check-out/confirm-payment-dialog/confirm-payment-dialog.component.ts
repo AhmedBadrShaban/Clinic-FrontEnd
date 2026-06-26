@@ -1,5 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { NgSwitch, NgSwitchCase, NgFor, NgIf, DecimalPipe } from '@angular/common';
 
 export interface PaymentSummaryLine {
   label: string;
@@ -17,8 +20,19 @@ export interface ConfirmPaymentDialogData {
 }
 
 @Component({
-  selector: 'app-confirm-payment-dialog',
-  templateUrl: './confirm-payment-dialog.component.html',
+    selector: 'app-confirm-payment-dialog',
+    templateUrl: './confirm-payment-dialog.component.html',
+    standalone: true,
+    imports: [
+        MatDialogModule,
+        NgSwitch,
+        NgSwitchCase,
+        MatIconModule,
+        NgFor,
+        NgIf,
+        MatButtonModule,
+        DecimalPipe,
+    ],
 })
 export class ConfirmPaymentDialogComponent {
   constructor(

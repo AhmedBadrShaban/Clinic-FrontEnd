@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from './../../shared/shared.module';
+
 import { ConteributerRoutingModule } from './conteributer-routing.module';
 import { ConteributerComponent } from './conteributer.component';
 import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
@@ -13,18 +13,15 @@ import { NavBarContComponent } from './Components/nav-bar-cont/nav-bar-cont.comp
 
 
 @NgModule({
-  declarations: [
+    imports: [
+    CommonModule,
+    ConteributerRoutingModule,
+    NzAutocompleteModule,
+    NzTableModule,
+    ReactiveFormsModule,
+    MatFormFieldModule, MatInputModule, MatDatepickerModule, FormsModule,
     ConteributerComponent,
     NavBarContComponent
-  ],
-    imports: [
-        CommonModule,
-        ConteributerRoutingModule,
-        SharedModule,
-        NzAutocompleteModule,
-        NzTableModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,MatInputModule,MatDatepickerModule,FormsModule
-    ]
- })
+]
+})
 export class ConteributerModule { }

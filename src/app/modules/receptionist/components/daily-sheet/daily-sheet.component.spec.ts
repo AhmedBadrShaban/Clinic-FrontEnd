@@ -8,8 +8,8 @@ describe('DailySheetComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DailySheetComponent]
-    });
+    imports: [DailySheetComponent]
+});
     fixture = TestBed.createComponent(DailySheetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

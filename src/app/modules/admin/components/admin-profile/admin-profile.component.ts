@@ -2,11 +2,14 @@ import { Component, Input } from '@angular/core';
 import { Admin } from '../../models/admin';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../services/admin/admin.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-admin-profile',
-  templateUrl: './admin-profile.component.html',
-  styleUrls: ['./admin-profile.component.css']
+    selector: 'app-admin-profile',
+    templateUrl: './admin-profile.component.html',
+    styleUrls: ['./admin-profile.component.css'],
+    standalone: true,
+    imports: [FormsModule]
 })
 export class AdminProfileComponent {
 

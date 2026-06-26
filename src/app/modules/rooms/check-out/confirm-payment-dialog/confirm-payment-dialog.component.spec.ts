@@ -11,8 +11,8 @@ describe('ConfirmPaymentDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConfirmPaymentDialogComponent ]
-    })
+    imports: [ConfirmPaymentDialogComponent]
+})
     .compileComponents();
   }));
 

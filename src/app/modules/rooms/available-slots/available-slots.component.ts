@@ -1,7 +1,11 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor, NgClass } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { RoomsService } from '../../Services/rooms/rooms.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 interface TimeSlot {
   startTime: string;
@@ -11,10 +15,12 @@ interface TimeSlot {
 }
 
 @Component({
-  selector: 'app-available-slots',
-  templateUrl: './available-slots.component.html',
-  styleUrls: ['./available-slots.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-available-slots',
+    templateUrl: './available-slots.component.html',
+    styleUrls: ['./available-slots.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, MatCardModule, MatIconModule, NgFor, MatRippleModule, NgClass, MatTooltipModule, DatePipe]
 })
 export class AvailableSlotsComponent implements OnInit, OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();

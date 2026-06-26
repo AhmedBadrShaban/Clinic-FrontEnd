@@ -1,12 +1,18 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
-import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, NgTemplateOutlet, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css']
+    selector: 'app-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.css'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatSortModule, NgFor, NzTableModule, NgTemplateOutlet, MatPaginatorModule, DatePipe]
 })
 export class TableComponent implements OnChanges, AfterViewInit {
   @Input() data: any[] = [];

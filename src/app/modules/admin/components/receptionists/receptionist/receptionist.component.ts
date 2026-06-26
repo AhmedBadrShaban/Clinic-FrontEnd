@@ -3,11 +3,15 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {DoctorsService} from "../../../services/doctors/doctors.service";
 import {Receptionist} from "../../../models/receptionist";
 import {ReceptionistsService} from "../../../services/receptionists/receptionists.service";
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-receptionist',
-  templateUrl: './receptionist.component.html',
-  styleUrls: ['./receptionist.component.css']
+    selector: 'app-receptionist',
+    templateUrl: './receptionist.component.html',
+    styleUrls: ['./receptionist.component.css'],
+    standalone: true,
+    imports: [NgIf, FormsModule]
 })
 export class ReceptionistProfileComponent implements OnInit{
   receptionistData: any;

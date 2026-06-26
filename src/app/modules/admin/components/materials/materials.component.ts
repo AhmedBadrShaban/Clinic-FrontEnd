@@ -1,16 +1,21 @@
 import { Component, OnInit,ViewEncapsulation } from '@angular/core';
 import {MaterialsService} from "../../services/materials/materials.service";
 import {Materials, product} from "../../models/materials";
-import {NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize} from "ng-zorro-antd/table";
+import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize, NzTableModule } from "ng-zorro-antd/table";
 import { MatDialog } from '@angular/material/dialog';
 import { AddNewMatrialComponent } from './add-new-matrial/add-new-matrial.component';
+import { NgFor } from '@angular/common';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-materials',
-  encapsulation: ViewEncapsulation.None,
-  templateUrl: './materials.component.html',
-  styleUrls: ['./materials.component.css']
-
+    selector: 'app-materials',
+    encapsulation: ViewEncapsulation.None,
+    templateUrl: './materials.component.html',
+    styleUrls: ['./materials.component.css'],
+    standalone: true,
+    imports: [FormsModule, NzAutocompleteModule, NzTabsModule, NzTableModule, NgFor]
 })
 export class MaterialsComponent implements OnInit {
   size: NzTableSize;

@@ -2,11 +2,19 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { ReservationsService } from 'src/app/modules/receptionist/services/reservations-services/reservations.service';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { MatOptionModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 interface PatientSearchItem {
   displayText: string;
@@ -18,9 +26,11 @@ const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 
 @Component({
-  selector: 'app-send-points',
-  templateUrl: './send-points.component.html',
-  styleUrls: ['./send-points.component.css']
+    selector: 'app-send-points',
+    templateUrl: './send-points.component.html',
+    styleUrls: ['./send-points.component.css'],
+    standalone: true,
+    imports: [MatIconModule, MatButtonModule, FormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, NgIf, MatProgressSpinnerModule, NgFor, MatOptionModule]
 })
 export class SendPointsComponent implements OnInit, OnDestroy {
 

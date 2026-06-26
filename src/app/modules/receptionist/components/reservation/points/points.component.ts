@@ -18,11 +18,16 @@ import { ReservationsService } from "../../../services/reservations-services/res
 import { SendPointsComponent } from './send-points/send-points.component';
 import { PatientService } from '../../../services/patient-server/patient.service';
 import { Subscription } from 'rxjs';
+import { TableComponent } from '../../../shared/table/table.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-points',
-  templateUrl: './points.component.html',
-  styleUrls: ['./points.component.css']
+    selector: 'app-points',
+    templateUrl: './points.component.html',
+    styleUrls: ['./points.component.css'],
+    standalone: true,
+    imports: [MatIconModule, MatButtonModule, TableComponent]
 })
 export class PointsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() phoneNumber: string | null = null;

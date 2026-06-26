@@ -10,13 +10,23 @@ import { ReservationsService } from "../../../services/reservations-services/res
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { AfterWorkComponent } from '../after-work/after-work.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { TableComponent } from '../../../shared/table/table.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-history',
-  templateUrl: './history.component.html',
-  styleUrls: ['./history.component.css']
+    selector: 'app-history',
+    templateUrl: './history.component.html',
+    styleUrls: ['./history.component.css'],
+    standalone: true,
+    imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule, FormsModule, MatIconModule, MatButtonModule, NgIf, MatChipsModule, TableComponent]
 })
 export class HistoryComponent implements OnInit, OnDestroy, OnChanges {
   @Input() phoneNumber: string | null = null;

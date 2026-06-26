@@ -9,15 +9,11 @@ import {
   ViewChild,
   ElementRef
 } from '@angular/core';
-import {
-  FormBuilder,
-  Validators,
-  FormGroup
-} from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor, CurrencyPipe } from '@angular/common';
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -26,6 +22,15 @@ import { ReservationsService } from './../../../services/reservations-services/r
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatOptionModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 
 interface PatientSearchItem {
@@ -61,11 +66,13 @@ const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 
 @Component({
-  selector: 'app-add-package',
-  templateUrl: './add-package.component.html',
-  styleUrls: ['./add-package.component.css'],
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-add-package',
+    templateUrl: './add-package.component.html',
+    styleUrls: ['./add-package.component.css'],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, MatIconModule, MatButtonModule, FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatProgressSpinnerModule, NgFor, MatOptionModule, MatDividerModule, MatChipsModule, CurrencyPipe, DatePipe]
 })
 export class AddPackageComponent implements OnInit, OnDestroy {
   @ViewChild('receiptSection', { static: false }) receiptSection?: ElementRef;

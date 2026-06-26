@@ -8,8 +8,8 @@ describe('ReceptionistsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ReceptionistsComponent]
-    });
+    imports: [ReceptionistsComponent]
+});
     fixture = TestBed.createComponent(ReceptionistsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

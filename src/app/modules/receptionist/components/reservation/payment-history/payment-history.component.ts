@@ -12,11 +12,14 @@ import { PageEvent } from '@angular/material/paginator';
 import { DailySheet } from 'src/app/modules/receptionist/models/daily-sheet';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
 import { Subscription } from 'rxjs';
+import { TableComponent } from '../../../shared/table/table.component';
 
 @Component({
-  selector: 'app-payment-history',
-  templateUrl: './payment-history.component.html',
-  styleUrls: ['./payment-history.component.css']
+    selector: 'app-payment-history',
+    templateUrl: './payment-history.component.html',
+    styleUrls: ['./payment-history.component.css'],
+    standalone: true,
+    imports: [TableComponent]
 })
 export class PaymentHistoryComponent implements OnInit, OnDestroy, OnChanges {
   @Input() phoneNumber: string | null = null;

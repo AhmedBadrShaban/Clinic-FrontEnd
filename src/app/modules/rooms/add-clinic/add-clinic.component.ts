@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { RoomsService } from '../../Services/rooms/rooms.service';
 import { AddNewRoomComponent } from '../add-new-room/add-new-room.component';
 
 @Component({
-  selector: 'app-add-clinic',
-  templateUrl: './add-clinic.component.html',
-  styleUrls: ['./add-clinic.component.css']
+    selector: 'app-add-clinic',
+    templateUrl: './add-clinic.component.html',
+    styleUrls: ['./add-clinic.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule]
 })
 export class AddClinicComponent {
   newClinicFm: FormGroup;

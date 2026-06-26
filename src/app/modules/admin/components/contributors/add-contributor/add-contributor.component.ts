@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import { ContributorsService } from '../../../services/Contributors/contributors.service';
 
 @Component({
-  selector: 'app-add-contributor',
-  templateUrl: './add-contributor.component.html',
-  styleUrls: ['./add-contributor.component.css']
+    selector: 'app-add-contributor',
+    templateUrl: './add-contributor.component.html',
+    styleUrls: ['./add-contributor.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule]
 })
 export class AddContributorComponent {
 

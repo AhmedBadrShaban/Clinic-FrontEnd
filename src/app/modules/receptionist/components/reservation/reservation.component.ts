@@ -13,9 +13,21 @@ import { AddNewPatientComponent } from '../add-new-patient/add-new-patient.compo
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../services/patient-server/patient.service';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Subject, Subscription, debounceTime, distinctUntilChanged, BehaviorSubject } from 'rxjs';
+import { IdlePatientsComponent } from './idle-patients copy/idle-patients.component';
+import { PaymentHistoryComponent } from './payment-history/payment-history.component';
+import { ReservationsComponent } from './reservations/reservations.component';
+import { PointsComponent } from './points/points.component';
+import { PackagesComponent } from './packages/packages.component';
+import { HistoryComponent } from './history/history.component';
+import { PatientInfoComponent } from './patient-info/patient-info.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatOptionModule } from '@angular/material/core';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface PatientSearchItem {
   displayText: string;
@@ -34,11 +46,28 @@ const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 
 @Component({
-  selector: 'app-reservation',
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './reservation.component.html',
-  styleUrls: ['./reservation.component.css'],
+    selector: 'app-reservation',
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './reservation.component.html',
+    styleUrls: ['./reservation.component.css'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        MatAutocompleteModule,
+        NgIf,
+        NgFor,
+        MatOptionModule,
+        MatIconModule,
+        MatTabsModule,
+        PatientInfoComponent,
+        HistoryComponent,
+        PackagesComponent,
+        PointsComponent,
+        ReservationsComponent,
+        PaymentHistoryComponent,
+        IdlePatientsComponent,
+    ],
 })
 export class ReservationComponent implements OnInit, OnDestroy {
   isVisible = false;

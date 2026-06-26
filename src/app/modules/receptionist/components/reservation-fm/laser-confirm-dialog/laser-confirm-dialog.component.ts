@@ -1,5 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface LaserConfirmDialogData {
   warning: string;
@@ -7,8 +9,8 @@ export interface LaserConfirmDialogData {
 }
 
 @Component({
-  selector: 'app-laser-confirm-dialog',
-  template: `
+    selector: 'app-laser-confirm-dialog',
+    template: `
     <div class="confirm-dialog">
       <div class="confirm-dialog__header">
         <mat-icon class="warn-icon">warning_amber</mat-icon>
@@ -36,7 +38,7 @@ export interface LaserConfirmDialogData {
       </mat-dialog-actions>
     </div>
   `,
-  styles: [`
+    styles: [`
     .confirm-dialog { padding: 8px; min-width: 420px; max-width: 520px; }
 
     .confirm-dialog__header {
@@ -71,7 +73,9 @@ export interface LaserConfirmDialogData {
     .confirm-dialog__warning-card mat-icon { color: #f59e0b; flex-shrink: 0; margin-top: 2px; }
 
     .confirm-dialog__question { color: #6b7280; font-size: 0.9rem; }
-  `]
+  `],
+    standalone: true,
+    imports: [MatIconModule, MatDialogModule, MatButtonModule]
 })
 export class LaserConfirmDialogComponent {
   constructor(

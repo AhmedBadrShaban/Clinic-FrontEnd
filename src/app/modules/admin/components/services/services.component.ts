@@ -1,14 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import {ServiceService} from "../../services/services/service.service";
-import {NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize} from "ng-zorro-antd/table";
+import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize, NzTableModule } from "ng-zorro-antd/table";
  import {Service} from "../../models/service";
 import { MatDialog } from '@angular/material/dialog';
 import { AddNewServiceComponent } from './add-new-service/add-new-service.component';
+import { NgFor, NgIf } from '@angular/common';
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-services',
-  templateUrl: './services.component.html',
-  styleUrls: ['./services.component.css']
+    selector: 'app-services',
+    templateUrl: './services.component.html',
+    styleUrls: ['./services.component.css'],
+    standalone: true,
+    imports: [FormsModule, NzAutocompleteModule, NzTableModule, NgFor, NgIf]
 })
 export class ServicesComponent implements OnInit {
   size: NzTableSize;

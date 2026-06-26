@@ -1,19 +1,27 @@
 import { Router } from '@angular/router';
 import { Component, Input, OnInit, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor, NgClass } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 
 import { reservation } from '../../receptionist/models/event-reservation.model';
 import { DialogEventComponent } from './dialog-event/dialog-event.component';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
  
 @Component({
-  selector: 'app-events-grid',
-  templateUrl: './events-grid.component.html',
-  styleUrls: ['./events-grid.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-events-grid',
+    templateUrl: './events-grid.component.html',
+    styleUrls: ['./events-grid.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, MatCardModule, MatProgressSpinnerModule, NgFor, MatIconModule, MatRippleModule, NgClass, MatTooltipModule, MatButtonModule, DatePipe]
 })
 export class EventsGridComponent implements OnInit, OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();

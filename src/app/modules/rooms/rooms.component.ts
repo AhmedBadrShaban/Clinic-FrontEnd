@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor } from '@angular/common';
 import { Subject, takeUntil, BehaviorSubject, distinctUntilChanged } from 'rxjs';
 
 import { RoomsService, Room } from '../Services/rooms/rooms.service';
@@ -9,12 +9,25 @@ import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
 import { AddClinicComponent } from './add-clinic/add-clinic.component';
 import { ReservationFmComponent } from '../receptionist/components/reservation-fm/reservation-fm.component';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { EventsGridComponent } from './events-grid/events-grid.component';
+import { AvailableSlotsComponent } from './available-slots/available-slots.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-rooms',
-  templateUrl: './rooms.component.html',
-  styleUrls: ['./rooms.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-rooms',
+    templateUrl: './rooms.component.html',
+    styleUrls: ['./rooms.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, MatCardModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, MatInputModule, MatDatepickerModule, MatTabsModule, AvailableSlotsComponent, EventsGridComponent]
 })
 export class RoomsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

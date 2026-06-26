@@ -2,11 +2,15 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Doctors } from 'src/app/modules/admin/models/doctors';
 import { DoctorsService } from 'src/app/modules/admin/services/doctors/doctors.service';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-doctor-profile',
-  templateUrl: './doctor-profile.component.html',
-  styleUrls: ['./doctor-profile.component.css']
+    selector: 'app-doctor-profile',
+    templateUrl: './doctor-profile.component.html',
+    styleUrls: ['./doctor-profile.component.css'],
+    standalone: true,
+    imports: [NgIf, FormsModule]
 })
 export class DoctorProfileComponent implements OnInit {
   doctorId : string ;

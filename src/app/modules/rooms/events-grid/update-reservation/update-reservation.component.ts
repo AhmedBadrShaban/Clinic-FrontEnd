@@ -1,9 +1,9 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor } from '@angular/common';
 import {
   Component, Inject, OnInit, OnDestroy,
   ChangeDetectionStrategy, ChangeDetectorRef
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, forkJoin, Subscription, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -11,13 +11,29 @@ import { LaserConfirmDialogComponent } from 'src/app/modules/receptionist/compon
 
 import { ReservationfmService } from 'src/app/modules/receptionist/services/Reservation_Form/reservationfm.service';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
-  selector: 'app-update-reservation',
-  templateUrl: './update-reservation.component.html',
-  styleUrls: ['./update-reservation.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-update-reservation',
+    templateUrl: './update-reservation.component.html',
+    styleUrls: ['./update-reservation.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatIconModule, MatButtonModule, NgIf, MatProgressSpinnerModule, FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatDividerModule, MatAutocompleteModule, NgFor, MatOptionModule, MatSelectModule, MatTooltipModule, MatChipsModule, MatDatepickerModule, TextFieldModule, DatePipe]
 })
 export class UpdateReservationComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

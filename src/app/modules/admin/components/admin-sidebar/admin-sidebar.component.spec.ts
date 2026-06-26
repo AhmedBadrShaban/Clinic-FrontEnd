@@ -11,8 +11,8 @@ describe('AdminSidebarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminSidebarComponent ]
-    })
+    imports: [AdminSidebarComponent]
+})
     .compileComponents();
   }));
 

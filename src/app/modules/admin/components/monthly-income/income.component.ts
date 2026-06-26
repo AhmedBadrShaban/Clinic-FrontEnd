@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { startWith, debounceTime } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -8,6 +8,14 @@ import { RoomsService, Room } from 'src/app/modules/Services/rooms/rooms.service
 
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor, NgIf, CurrencyPipe } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 interface MonthOption {
   value: number;
@@ -20,9 +28,11 @@ interface ReportTypeOption {
 }
 
 @Component({
-  selector: 'app-income',
-  templateUrl: './income.component.html',
-  styleUrls: ['./income.component.css']
+    selector: 'app-income',
+    templateUrl: './income.component.html',
+    styleUrls: ['./income.component.css'],
+    standalone: true,
+    imports: [MatCardModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, NgIf, MatButtonModule, MatProgressSpinnerModule, CurrencyPipe]
 })
 export class MonthlyMoneyReportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

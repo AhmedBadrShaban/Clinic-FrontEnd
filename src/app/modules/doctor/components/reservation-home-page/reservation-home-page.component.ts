@@ -9,6 +9,12 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ReservationsService } from 'src/app/modules/receptionist/services/reservations-services/reservations.service';
+import { AfterWorkComponent } from '../../../receptionist/components/reservation/after-work/after-work.component';
+import { HistoryComponent } from '../../../receptionist/components/reservation/history/history.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { NgIf, NgFor } from '@angular/common';
 
 interface TabDataState {
   loading: boolean;
@@ -18,9 +24,9 @@ interface TabDataState {
 }
 
 @Component({
-  selector: 'app-doctor-reservation',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+    selector: 'app-doctor-reservation',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
     <div class="dr-container">
 
       <!-- Patient Header -->
@@ -100,7 +106,7 @@ interface TabDataState {
 
     </div>
   `,
-  styles: [`
+    styles: [`
  
     :host {
       display: block;
@@ -332,7 +338,9 @@ interface TabDataState {
       .patient-header { flex-wrap: wrap; padding: 14px 16px; }
       .tab-panel      { padding: 16px; }
     }
-  `]
+  `],
+    standalone: true,
+    imports: [NgIf, MatIconModule, NgFor, MatButtonModule, MatTabsModule, HistoryComponent, AfterWorkComponent]
 })
 export class DoctorReservationComponent implements OnInit, OnDestroy {
   selectedTabIndex = 0;

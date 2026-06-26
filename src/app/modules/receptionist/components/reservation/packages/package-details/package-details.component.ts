@@ -3,11 +3,15 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { ReservedPackage } from 'src/app/modules/receptionist/models/package';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
 import { UpdatePackageComponent } from './update-package/update-package.component';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-package-details',
-  templateUrl: './package-details.component.html',
-  styleUrls: ['./package-details.component.css']
+    selector: 'app-package-details',
+    templateUrl: './package-details.component.html',
+    styleUrls: ['./package-details.component.css'],
+    standalone: true,
+    imports: [NgIf, NzTableModule, NgFor]
 })
 export class PackageDetailsComponent implements OnInit {
   packID:string;

@@ -1,8 +1,8 @@
 // doctor-schedule.component.ts
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor } from '@angular/common';
 import { DoctorScheduleServiceService } from '../../services/doctor-schedule-service/doctor-schedule-service.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
+import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize, NzTableModule } from 'ng-zorro-antd/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PopUpFormComponent } from './pop-up-form/pop-up-form.component';
@@ -35,9 +35,11 @@ interface Setting {
 }
 
 @Component({
-  selector: 'app-doctor-schedule',
-  templateUrl: './doctor-schedule.component.html',
-  styleUrls: ['./doctor-schedule.component.css']
+    selector: 'app-doctor-schedule',
+    templateUrl: './doctor-schedule.component.html',
+    styleUrls: ['./doctor-schedule.component.css'],
+    standalone: true,
+    imports: [MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, FormsModule, NgIf, MatProgressBarModule, NzTableModule, NgFor]
 })
 export class DoctorScheduleComponent implements OnInit, OnDestroy {
 
@@ -254,10 +256,17 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
 // Kept inline to avoid creating a separate file for a tiny dialog
 import { Component as Comp } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Comp({
-  selector: 'app-confirm-delete-dialog',
-  template: `
+    selector: 'app-confirm-delete-dialog',
+    template: `
     <div class="confirm-dialog">
       <div class="confirm-icon">
         <mat-icon>warning_amber</mat-icon>
@@ -270,7 +279,7 @@ import { MatDialogRef } from '@angular/material/dialog';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .confirm-dialog {
       padding: 24px;
       text-align: center;
@@ -285,7 +294,9 @@ import { MatDialogRef } from '@angular/material/dialog';
     h3 { margin: 12px 0 6px; font-size: 1.1rem; font-weight: 700; color: #333; }
     p  { color: #777; margin: 0 0 20px; font-size: 0.9rem; }
     .confirm-actions { display: flex; gap: 12px; justify-content: center; }
-  `]
+  `],
+    standalone: true,
+    imports: [MatIconModule, MatButtonModule]
 })
 export class ConfirmDeleteDialogComponent {
   constructor(public dialogRef: MatDialogRef<ConfirmDeleteDialogComponent>) { }

@@ -11,8 +11,8 @@ describe('FinalCheckoutSummaryDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FinalCheckoutSummaryDialogComponent ]
-    })
+    imports: [FinalCheckoutSummaryDialogComponent]
+})
     .compileComponents();
   }));
 

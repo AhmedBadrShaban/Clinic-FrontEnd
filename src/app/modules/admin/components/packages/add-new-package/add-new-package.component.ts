@@ -1,14 +1,17 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Package } from 'src/app/modules/admin/models/package';
 import { PackageService } from 'src/app/modules/admin/services/package/package.service';
 import { ServiceService } from 'src/app/modules/admin/services/services/service.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgIf, NgFor } from '@angular/common';
 @Component({
-  selector: 'app-add-new-package',
-  templateUrl: './add-new-package.component.html',
-  styleUrls: ['./add-new-package.component.css']
+    selector: 'app-add-new-package',
+    templateUrl: './add-new-package.component.html',
+    styleUrls: ['./add-new-package.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor]
 })
 export class AddNewPackageComponent implements OnInit {
 

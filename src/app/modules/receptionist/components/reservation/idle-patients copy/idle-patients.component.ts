@@ -3,11 +3,16 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
+import { TableComponent } from '../../../shared/table/table.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-idle-patients',
-  templateUrl: './idle-patients.component.html',
-  styleUrls: ['./idle-patients.component.css']
+    selector: 'app-idle-patients',
+    templateUrl: './idle-patients.component.html',
+    styleUrls: ['./idle-patients.component.css'],
+    standalone: true,
+    imports: [NgIf, MatProgressSpinnerModule, TableComponent]
 })
 export class IdlePatientsComponent implements OnInit {
   tableColumns: Array<{ key: string, label: string, template?: any }> = [];

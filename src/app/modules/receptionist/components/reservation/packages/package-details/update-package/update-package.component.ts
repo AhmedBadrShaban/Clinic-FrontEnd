@@ -1,14 +1,17 @@
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-update-package',
-  templateUrl: './update-package.component.html',
-  styleUrls: ['./update-package.component.css']
+    selector: 'app-update-package',
+    templateUrl: './update-package.component.html',
+    styleUrls: ['./update-package.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, NgIf, NgFor]
 })
 export class UpdatePackageComponent implements OnInit {
   allServices: any[] = [];

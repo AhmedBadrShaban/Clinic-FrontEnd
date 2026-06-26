@@ -1,21 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  NzTableLayout,
-  NzTablePaginationPosition,
-  NzTablePaginationType,
-  NzTableSize,
-} from 'ng-zorro-antd/table';
+import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize, NzTableModule } from 'ng-zorro-antd/table';
 import { Doctors } from '../../models/doctors';
 import { Receptionist } from '../../models/receptionist';
 import { ReceptionistsService } from '../../services/receptionists/receptionists.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AddNewReceptionistComponent } from './add-new-receptionist/add-new-receptionist.component';
+import { NgFor, NgIf } from '@angular/common';
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-receptionists',
-  templateUrl: './receptionists.component.html',
-  styleUrls: ['./receptionists.component.css'],
+    selector: 'app-receptionists',
+    templateUrl: './receptionists.component.html',
+    styleUrls: ['./receptionists.component.css'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        NzAutocompleteModule,
+        NzTableModule,
+        NgFor,
+        NgIf,
+    ],
 })
 export class ReceptionistsComponent implements OnInit {
   size: NzTableSize;

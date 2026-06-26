@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { BasicReservationData } from '../Models/basic-reservation-data';
 import { DoctorReservationsService } from '../Services/doctor-reservations.service';
 import { Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-main-page',
-  templateUrl: './main-page.component.html',
-  styleUrls: ['./main-page.component.css']
+    selector: 'app-main-page',
+    templateUrl: './main-page.component.html',
+    styleUrls: ['./main-page.component.css'],
+    standalone: true,
+    imports: [NgFor, MatIconModule, NgIf, DatePipe]
 })
 export class MainPageComponent implements OnInit {
   reservations: BasicReservationData[] = [];

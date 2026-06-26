@@ -8,8 +8,8 @@ describe('EventsGridComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EventsGridComponent]
-    });
+    imports: [EventsGridComponent]
+});
     fixture = TestBed.createComponent(EventsGridComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

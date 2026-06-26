@@ -1,15 +1,23 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CoverSheet, CoverSheetService } from '../../services/cover-sheet/cover-sheet.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor, CurrencyPipe } from '@angular/common';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-cover-sheet',
-  templateUrl: './cover-sheet.component.html',
-  styleUrls: ['./cover-sheet.component.css']
+    selector: 'app-cover-sheet',
+    templateUrl: './cover-sheet.component.html',
+    styleUrls: ['./cover-sheet.component.css'],
+    standalone: true,
+    imports: [MatIconModule, MatFormFieldModule, MatInputModule, FormsModule, MatDatepickerModule, NgIf, MatProgressSpinnerModule, NgFor, MatButtonModule, CurrencyPipe]
 })
 export class CoverSheetComponent implements OnInit {
   selectedDate: Date | undefined;

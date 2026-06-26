@@ -1,15 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import {NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize} from "ng-zorro-antd/table";
+import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize, NzTableModule } from "ng-zorro-antd/table";
 import {Doctors} from "../../models/doctors";
 import {DoctorsService} from "../../services/doctors/doctors.service";
 import {Router} from "@angular/router";
 import { AddNewDoctorComponent } from './add-new-doctor/add-new-doctor.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NgFor, NgIf } from '@angular/common';
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-doctors',
-  templateUrl: './doctors.component.html',
-  styleUrls: ['./doctors.component.css']
+    selector: 'app-doctors',
+    templateUrl: './doctors.component.html',
+    styleUrls: ['./doctors.component.css'],
+    standalone: true,
+    imports: [FormsModule, NzAutocompleteModule, NzTableModule, NgFor, NgIf]
 })
 export class DoctorsComponent implements OnInit {
   size: NzTableSize;

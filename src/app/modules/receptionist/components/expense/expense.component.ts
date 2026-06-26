@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/c
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 
 import { Expense } from 'src/app/modules/receptionist/models/expense';
 import { ExpenseService } from '../../services/expenses-service/expense.service';
@@ -10,11 +10,19 @@ import { AddExpenseComponent } from './add-expense/add-expense.component';
 import { AddExpenseTypeComponent } from './add-expense-type/add-expense-type.component';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { PageEvent } from '@angular/material/paginator';
+import { TableComponent } from '../../shared/table/table.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-expense',
-  templateUrl: './expense.component.html',
-  styleUrls: ['./expense.component.css']
+    selector: 'app-expense',
+    templateUrl: './expense.component.html',
+    styleUrls: ['./expense.component.css'],
+    standalone: true,
+    imports: [NgIf, MatFormFieldModule, MatInputModule, FormsModule, MatDatepickerModule, MatButtonModule, TableComponent]
 })
 export class ExpenseComponent implements OnInit, OnDestroy {
   @ViewChild('imageTemplate', { static: true }) imageTemplate!: TemplateRef<any>;

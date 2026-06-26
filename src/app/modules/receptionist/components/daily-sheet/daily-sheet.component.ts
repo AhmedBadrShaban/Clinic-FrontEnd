@@ -1,15 +1,26 @@
 import { DailySheet, DailySheetStatus } from 'src/app/modules/receptionist/models/daily-sheet';
 import { DailysheetService } from './../../services/dailySheet-service/dailysheet.service';
 import { Component, OnInit, TemplateRef, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgFor, NgIf, NgClass, DecimalPipe } from '@angular/common';
 import { RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
+import { TableComponent } from '../../shared/table/table.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-daily-sheet',
-  templateUrl: './daily-sheet.component.html',
-  styleUrls: ['./daily-sheet.component.css']
+    selector: 'app-daily-sheet',
+    templateUrl: './daily-sheet.component.html',
+    styleUrls: ['./daily-sheet.component.css'],
+    standalone: true,
+    imports: [MatFormFieldModule, MatInputModule, FormsModule, MatAutocompleteModule, MatIconModule, NgFor, MatOptionModule, NgIf, MatDatepickerModule, MatButtonModule, NgClass, TableComponent, DecimalPipe]
 })
 export class DailySheetComponent implements OnInit {
 

@@ -1,11 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PaymentService } from 'src/app/modules/receptionist/services/payment/payment.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-payment',
-  templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.css']
+    selector: 'app-payment',
+    templateUrl: './payment.component.html',
+    styleUrls: ['./payment.component.css'],
+    standalone: true,
+    imports: [FormsModule]
 })
 export class PaymentComponent implements OnInit {
   resInfo:any = {
