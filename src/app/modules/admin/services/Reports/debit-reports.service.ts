@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { DebitReportResponse } from '../../components/reports/debit-report/debit-report.component';
+import { DebitReportResponse } from '../../components/reports/depit-report/debit-report.component';
  
 export interface DebitMovement {
   id: number;

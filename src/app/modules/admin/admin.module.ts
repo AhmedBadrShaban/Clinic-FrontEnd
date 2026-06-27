@@ -48,7 +48,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
-import { DebitReportComponent } from './components/reports/debit-report/debit-report.component';
+import { DebitReportComponent } from './components/reports/depit-report/debit-report.component';
 import {   } from '../receptionist/shared/table/table.component';
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
   

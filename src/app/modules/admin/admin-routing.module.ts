@@ -19,7 +19,7 @@ import { DoctorScheduleComponent } from '../receptionist/components/doctor-sched
 import { ContributorsComponent } from "./components/contributors/contributors.component";
 import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
 import { CheckOutComponent } from '../rooms/check-out/check-out.component';
-import { DebitReportComponent } from './components/reports/debit-report/debit-report.component';
+import { DebitReportComponent } from './components/reports/depit-report/debit-report.component';
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
 import { ReportsComponent } from 'src/app/shared/components/reports/reports.component';
 
