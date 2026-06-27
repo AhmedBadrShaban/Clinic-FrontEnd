@@ -1,93 +1,92 @@
-<div class="border rounded container shadow" style="width: 600px; background-color: #f8f8f8; border: none">
-  <form [formGroup]="newRoomFm" (ngSubmit)="submit()">
-    <!-- Room Name -->
-    <div class="row m-2 justify-content-between">
-      <div class="d-flex align-items-center">
-        <label class="form-label w-100">Room Name</label>
-      </div>
-      <input type="text" formControlName="roomName" placeholder="Room Name" id="name" class="form-control shadow" />
-      <div *ngIf="newRoomFm.get('roomName')?.hasError('required') && newRoomFm.get('roomName')?.touched"
-        class="text-danger mt-1">
-        Room name is required.
-      </div>
-      <div *ngIf="newRoomFm.get('roomName')?.hasError('pattern') && newRoomFm.get('roomName')?.touched"
-        class="text-danger mt-1">
-        Room name must be at least 3 letters.
-      </div>
-    </div>
+<div class="dialog-shell">
 
-    <!-- Clinic and Laser Type Row -->
-    <div class="row m-2 mt-3 justify-content-between">
-      <div class="col-5">
-        <div class="row">
-          <div class="d-flex align-items-center">
-            <i class="bi bi-house me-2 fs-4" style="margin-bottom: 7px"></i>
-            <label class="form-label w-100">Clinic</label>
-          </div>
-          <select formControlName="clinicName" id="clinic" class="form-control shadow">
-            <option value="" disabled>Select Clinic</option>
-            <option *ngFor="let clinic of clinics" [value]="clinic">{{ clinic }}</option>
-          </select>
-          <div *ngIf="newRoomFm.get('clinicName')?.hasError('required') && newRoomFm.get('clinicName')?.touched"
-            class="text-danger mt-1">
-            Clinic is required.
-          </div>
-        </div>
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <mat-icon>meeting_room</mat-icon>
       </div>
-      <div class="col-5">
-        <div class="row">
-          <div class="d-flex align-items-center">
-            <label class="form-label w-100">is Laser or Not</label>
-          </div>
-          <select class="form-select shadow" id="laser" formControlName="isLaser">
-            <option value="" disabled>Choose</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-          <div *ngIf="newRoomFm.get('isLaser')?.hasError('required') && newRoomFm.get('isLaser')?.touched"
-            class="text-danger mt-1">
-            Please select laser type.
-          </div>
-        </div>
+      <div class="header-text">
+        <span class="header-eyebrow">Admin Action</span>
+        <span class="header-title">Add New Room</span>
       </div>
     </div>
+    <button mat-icon-button class="close-btn" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
-    <!-- Parent Room Selection -->
-    <div class="row m-2 mt-3 justify-content-between">
-      <div class="d-flex align-items-center">
-        <i class="bi bi-diagram-3 me-2 fs-4" style="margin-bottom: 7px"></i>
-        <label class="form-label w-100">Parent Room</label>
-      </div>
-      <select formControlName="parentRoomId" id="parentRoom" class="form-control shadow"
-        [disabled]="!newRoomFm.get('clinicName')?.value || isLoadingParentRooms">
-        <option value="" disabled>
-          {{ isLoadingParentRooms ? 'Loading rooms...' : 'Select Parent Room' }}
-        </option>
-        <option *ngFor="let room of parentRooms" [value]="room.roomId">
-          {{ room.roomName }}
-        </option>
-      </select>
-      <div *ngIf="newRoomFm.get('parentRoomId')?.hasError('required') && newRoomFm.get('parentRoomId')?.touched"
-        class="text-danger mt-1">
-        Parent room is required.
-      </div>
-      <div *ngIf="!newRoomFm.get('clinicName')?.value" class="text-muted mt-1 small">
-        Please select a clinic first to see available parent rooms.
-      </div>
-    </div>
+  <!-- Body -->
+  <div class="dialog-body">
+    <form [formGroup]="form" (ngSubmit)="submit()">
 
-    <!-- Submit Button -->
-    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
-      <button type="submit" [disabled]="newRoomFm.invalid || isLoadingParentRooms" style="
-          width: 180px;
-          height: 40px;
-          background-color: green;
-          color: #fff;
-          border: none;
-          border-radius: 4px;
-        " [style.opacity]="newRoomFm.invalid || isLoadingParentRooms ? '0.6' : '1'">
-        {{ isLoadingParentRooms ? 'Loading...' : 'Add Room' }}
-      </button>
-    </div>
-  </form>
+      <!-- Room Name -->
+      <div class="form-section">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Room Name</mat-label>
+          <input matInput formControlName="roomName" placeholder="e.g. Laser Room A">
+          <mat-icon matSuffix>meeting_room</mat-icon>
+          <mat-error *ngIf="form.get('roomName')?.hasError('required')">Room name is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Clinic & Laser Type -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="flex-field">
+          <mat-label>Clinic</mat-label>
+          <mat-select formControlName="clinicName">
+            <mat-option value="" disabled>Select clinic</mat-option>
+            <mat-option *ngFor="let clinic of clinics" [value]="clinic">{{ clinic }}</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>business</mat-icon>
+          <mat-error *ngIf="form.get('clinicName')?.hasError('required')">Clinic is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-field">
+          <mat-label>Laser Room?</mat-label>
+          <mat-select formControlName="isLaser">
+            <mat-option value="" disabled>Choose</mat-option>
+            <mat-option value="true">Yes</mat-option>
+            <mat-option value="false">No</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>flash_on</mat-icon>
+          <mat-error *ngIf="form.get('isLaser')?.hasError('required')">Please select laser type</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Parent Room -->
+      <div class="form-section">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Parent Room <span class="optional-label">(optional)</span></mat-label>
+          <mat-select formControlName="parentRoomId"
+            [disabled]="!form.get('clinicName')?.value || isLoadingParentRooms">
+            <mat-option value="">
+              {{ isLoadingParentRooms ? 'Loading rooms…' : 'None (top-level room)' }}
+            </mat-option>
+            <mat-option *ngFor="let room of parentRooms" [value]="room.roomId">
+              {{ room.roomName }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>account_tree</mat-icon>
+        </mat-form-field>
+        <p *ngIf="!form.get('clinicName')?.value" class="hint-text">
+          <mat-icon>info</mat-icon> Select a clinic first to see available parent rooms
+        </p>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer">
+    <button mat-stroked-button type="button" (click)="closeDialog()" class="footer-btn cancel-btn">
+      <mat-icon>close</mat-icon> Cancel
+    </button>
+    <button mat-flat-button type="submit" (click)="submit()" [disabled]="form.invalid || isLoadingParentRooms"
+      class="footer-btn submit-btn">
+      <mat-icon>add</mat-icon>
+      {{ isLoadingParentRooms ? 'Loading…' : 'Add Room' }}
+    </button>
+  </div>
+
 </div>

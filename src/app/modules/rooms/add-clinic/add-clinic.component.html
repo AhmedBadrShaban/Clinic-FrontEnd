@@ -1,36 +1,44 @@
-<div
-  class="border rounded container shadow"
-  style="width: 600px; background-color: #f8f8f8; border: none"
->
-  <form [formGroup]="newClinicFm" (ngSubmit)="submit()">
-    <div class="row m-2 justify-content-between">
-      <div class="d-flex align-items-center">
-        <!-- <i class="bi bi-screwdriver me-2 fs-4" style="margin-bottom: 7px;"></i> -->
-        <label class="form-label w-100">Clinic Name</label>
+<div class="dialog-shell">
+
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <mat-icon>add_business</mat-icon>
       </div>
-      <input
-        type="text"
-        formControlName="clinicName"
-        placeholder="Clinic Name"
-        id="name"
-        class="form-control shadow"
-      />
+      <div class="header-text">
+        <span class="header-eyebrow">Admin Action</span>
+        <span class="header-title">Add New Clinic</span>
+      </div>
     </div>
-  
-    <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px">
-      <button
-        type="submit"
-        style="
-          width: 180px;
-          height: 40px;
-          background-color: green;
-          color: #fff;
-          border: none;
-          border-radius: 4px;
-        "
-      >
-        Add Clinic
-      </button>
-    </div>
-  </form>
+    <button mat-icon-button class="close-btn" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="dialog-body">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Clinic Name</mat-label>
+        <input matInput formControlName="clinicName" placeholder="e.g. Dermatology">
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-error *ngIf="form.get('clinicName')?.hasError('required')">Clinic name is required</mat-error>
+        <mat-error *ngIf="form.get('clinicName')?.hasError('pattern')">Must be at least 3 letters</mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer">
+    <button mat-stroked-button type="button" (click)="closeDialog()" class="footer-btn cancel-btn">
+      <mat-icon>close</mat-icon> Cancel
+    </button>
+    <button mat-flat-button type="submit" (click)="submit()" [disabled]="form.invalid || isSubmitting"
+      class="footer-btn submit-btn">
+      <mat-icon>add_business</mat-icon>
+      {{ isSubmitting ? 'Adding…' : 'Add Clinic' }}
+    </button>
+  </div>
+
 </div>
