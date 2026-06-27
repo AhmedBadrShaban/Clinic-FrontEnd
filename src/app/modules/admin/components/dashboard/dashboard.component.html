@@ -1,0 +1,161 @@
+<div class="dashboard-root">
+
+  <!-- ── Header ─────────────────────────────────────── -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <h1 class="dash-title">Overview</h1>
+      <p class="dash-subtitle">
+        {{ selectedMonthLabel }} {{ selectedYear }}
+        <span *ngIf="hasClinicFilter" class="clinic-badge">
+          <span class="clinic-badge-dot"></span>{{ activeClinic }}
+          <button class="clinic-badge-clear" (click)="clearClinicFilter()" title="Clear filter">
+            <i class="bi bi-x"></i>
+          </button>
+        </span>
+      </p>
+    </div>
+
+    <div class="dash-filters">
+      <!-- Year select -->
+      <div class="filter-group">
+        <label class="filter-label">Year</label>
+        <select class="filter-select" [ngModel]="selectedYear" (ngModelChange)="onYearChange($event)">
+          <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+        </select>
+      </div>
+
+      <!-- Month select -->
+      <div class="filter-group">
+        <label class="filter-label">Month</label>
+        <select class="filter-select" [ngModel]="selectedMonth" (ngModelChange)="onMonthChange($event)">
+          <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
+        </select>
+      </div>
+
+      <!-- Clinic autocomplete -->
+      <div class="filter-group filter-group--clinic">
+        <label class="filter-label">Clinic</label>
+        <div class="clinic-input-wrap">
+          <i class="bi bi-building clinic-input-icon"></i>
+          <input class="filter-input" type="text" placeholder="All clinics" [(ngModel)]="filterClinic"
+            [matAutocomplete]="clinicAuto" (ngModelChange)="onClinicSearch($event)" />
+          <button *ngIf="filterClinic" class="clinic-clear-btn" (click)="clearClinicFilter()">
+            <i class="bi bi-x"></i>
+          </button>
+          <mat-autocomplete #clinicAuto="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value)">
+            <mat-option *ngFor="let c of filteredClinics" [value]="c">{{ c }}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KPI Cards ────────────────────────────────────── -->
+  <div class="kpi-grid" [class.kpi-grid--loading]="isLoading">
+
+    <!-- New Patients -->
+    <div class="kpi-card kpi-card--patients">
+      <div class="kpi-icon-wrap">
+        <i class="bi bi-people-fill kpi-icon"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">New Patients</span>
+        <span class="kpi-value">
+          <span *ngIf="!isLoading">{{ formatNumber(newPatients) }}</span>
+          <span *ngIf="isLoading" class="kpi-skeleton"></span>
+        </span>
+        <span *ngIf="!isLoading" class="kpi-full">{{ formatFull(newPatients) }} total</span>
+      </div>
+      <div class="kpi-accent-bar"></div>
+    </div>
+
+    <!-- Income -->
+    <div class="kpi-card kpi-card--income">
+      <div class="kpi-icon-wrap">
+        <i class="bi bi-cash-stack kpi-icon"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Income</span>
+        <span class="kpi-value">
+          <span *ngIf="!isLoading">{{ formatNumber(income) }}</span>
+          <span *ngIf="isLoading" class="kpi-skeleton"></span>
+        </span>
+        <span *ngIf="!isLoading" class="kpi-full">{{ formatFull(income) }} EGP</span>
+      </div>
+      <div class="kpi-accent-bar"></div>
+    </div>
+
+    <!-- Outcome -->
+    <div class="kpi-card kpi-card--outcome">
+      <div class="kpi-icon-wrap">
+        <i class="bi bi-graph-down-arrow kpi-icon"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Outcome</span>
+        <span class="kpi-value">
+          <span *ngIf="!isLoading">{{ formatNumber(outCome) }}</span>
+          <span *ngIf="isLoading" class="kpi-skeleton"></span>
+        </span>
+        <span *ngIf="!isLoading" class="kpi-full">{{ formatFull(outCome) }} EGP</span>
+      </div>
+      <div class="kpi-accent-bar"></div>
+    </div>
+
+    <!-- Pulses -->
+    <div class="kpi-card kpi-card--pulses">
+      <div class="kpi-icon-wrap">
+        <i class="bi bi-activity kpi-icon"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Pulses</span>
+        <span class="kpi-value">
+          <span *ngIf="!isLoading">{{ formatNumber(pulses) }}</span>
+          <span *ngIf="isLoading" class="kpi-skeleton"></span>
+        </span>
+        <span *ngIf="!isLoading" class="kpi-full">{{ formatFull(pulses) }} total</span>
+      </div>
+      <div class="kpi-accent-bar"></div>
+    </div>
+
+    <!-- Reservations -->
+    <div class="kpi-card kpi-card--reservations">
+      <div class="kpi-icon-wrap">
+        <i class="bi bi-calendar2-check-fill kpi-icon"></i>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">Reservations</span>
+        <span class="kpi-value">
+          <span *ngIf="!isLoading">{{ formatNumber(reservationsNumber) }}</span>
+          <span *ngIf="isLoading" class="kpi-skeleton"></span>
+        </span>
+        <span *ngIf="!isLoading" class="kpi-full">{{ formatFull(reservationsNumber) }} booked</span>
+      </div>
+      <div class="kpi-accent-bar"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Net summary strip ─────────────────────────── -->
+  <div class="summary-strip" *ngIf="!isLoading">
+    <div class="summary-item">
+      <span class="summary-label">Net Revenue</span>
+      <span class="summary-value" [class.positive]="income - outCome >= 0" [class.negative]="income - outCome < 0">
+        {{ income - outCome >= 0 ? '+' : '' }}{{ formatNumber(income - outCome) }} EGP
+      </span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-item">
+      <span class="summary-label">Avg. per Patient</span>
+      <span class="summary-value neutral">
+        {{ newPatients > 0 ? formatNumber(income / newPatients) : '—' }} EGP
+      </span>
+    </div>
+ 
+    <div class="summary-divider"></div>
+    <div class="summary-item">
+      <span class="summary-label">Period</span>
+      <span class="summary-value neutral">{{ selectedMonthLabel }} {{ selectedYear }}</span>
+    </div>
+  </div>
+
+</div>

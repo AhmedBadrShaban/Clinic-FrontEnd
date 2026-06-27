@@ -17,16 +17,16 @@ import { AdminHomeComponent } from './components/admin-home/admin-home.component
 import { ReceptionistProfileComponent } from './components/receptionists/receptionist/receptionist.component';
 import { DoctorScheduleComponent } from '../receptionist/components/doctor-schedule/doctor-schedule.component';
 import { ContributorsComponent } from "./components/contributors/contributors.component";
-import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
+import { MonthlyMoneyReportComponent } from './components/reports/monthly-income/income.component';
 import { CheckOutComponent } from '../rooms/check-out/check-out.component';
 import { DebitReportComponent } from './components/reports/depit-report/debit-report.component';
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
-import { ReportsComponent } from 'src/app/shared/components/reports/reports.component';
-
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+ 
 const routes: Routes = [
   {
     path: '', component: AdminComponent, children: [
-      { path: '', component: ReportsComponent },
+      { path: '', component: DashboardComponent },
       { path: 'adminProfile', component: AdminProfileComponent },
       { path: 'rooms', component: RoomsComponent, pathMatch: 'full' },
       { path: 'rooms/check-out/:id', component: CheckOutComponent, pathMatch: 'full' },

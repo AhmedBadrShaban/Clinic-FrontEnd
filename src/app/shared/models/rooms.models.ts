@@ -49,7 +49,9 @@ export interface TimeSlot {
     reservation?: any;   
 }
 export interface Clinic {
+    clinicId?:number;
     clinicName: string;
+
 }
 
 export interface RoomsHeaderState {

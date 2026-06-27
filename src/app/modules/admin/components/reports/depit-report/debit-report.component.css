@@ -206,7 +206,122 @@
   color: var(--brand-purple-light);
   text-decoration: underline;
 }
+/* ── Keep your existing debit-report.component.css and ADD these rules ── */
 
+/* Clinic search input (matches dashboard style) */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.clinic-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 240px;
+}
+
+.clinic-input-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 15px;
+  color: var(--text-muted, #8A8599);
+  pointer-events: none;
+}
+
+.filter-input {
+  height: 38px;
+  width: 100%;
+  padding: 0 36px 0 32px;
+  border: 1.5px solid var(--border-light, #E8E6EF);
+  border-radius: var(--radius-sm, 6px);
+  background: #fff;
+  font-size: 14px;
+  color: var(--text-primary, #1A1523);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.filter-input::placeholder { color: var(--text-muted, #8A8599); }
+.filter-input:focus { border-color: var(--brand-purple, #6F2DBD); }
+
+.clinic-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted, #8A8599);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.15s;
+}
+.clinic-clear-btn:hover { color: var(--text-primary, #1A1523); }
+
+ .clinic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-purple-dim, rgba(111,45,189,0.10));
+  color: var(--brand-purple, #6F2DBD);
+  border: 1px solid rgba(111,45,189,0.20);
+  border-radius: 999px;
+  padding: 2px 8px 2px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.clinic-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-purple, #6F2DBD);
+  flex-shrink: 0;
+}
+
+.clinic-badge-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--brand-purple, #6F2DBD);
+  padding: 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.clinic-badge-clear:hover { opacity: 1; }
+
+/* Table meta row */
+.table-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 14px;
+  border-bottom: 1px solid var(--border-light, #E8E6EF);
+  margin-bottom: 8px;
+}
+
+.table-meta__count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1A1523);
+}
+
+.table-meta__hint {
+  font-size: 12px;
+  color: var(--text-muted, #8A8599);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 /* ── Responsive ──────────────────────────────── */
 @media (max-width: 960px) {
   .summary-grid {
@@ -231,4 +346,121 @@
   .filter-input {
     width: 160px;
   }
+}
+/* ── Keep your existing debit-report.component.css and ADD these rules ── */
+
+/* Clinic search input (matches dashboard style) */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.clinic-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 240px;
+}
+
+.clinic-input-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 15px;
+  color: var(--text-muted, #8A8599);
+  pointer-events: none;
+}
+
+.filter-input {
+  height: 38px;
+  width: 100%;
+  padding: 0 36px 0 32px;
+  border: 1.5px solid var(--border-light, #E8E6EF);
+  border-radius: var(--radius-sm, 6px);
+  background: #fff;
+  font-size: 14px;
+  color: var(--text-primary, #1A1523);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.filter-input::placeholder { color: var(--text-muted, #8A8599); }
+.filter-input:focus { border-color: var(--brand-purple, #6F2DBD); }
+
+.clinic-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted, #8A8599);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.15s;
+}
+.clinic-clear-btn:hover { color: var(--text-primary, #1A1523); }
+
+/* Active clinic badge in subtitle */
+.clinic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-purple-dim, rgba(111,45,189,0.10));
+  color: var(--brand-purple, #6F2DBD);
+  border: 1px solid rgba(111,45,189,0.20);
+  border-radius: 999px;
+  padding: 2px 8px 2px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.clinic-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-purple, #6F2DBD);
+  flex-shrink: 0;
+}
+
+.clinic-badge-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--brand-purple, #6F2DBD);
+  padding: 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.clinic-badge-clear:hover { opacity: 1; }
+
+/* Table meta row */
+.table-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 14px;
+  border-bottom: 1px solid var(--border-light, #E8E6EF);
+  margin-bottom: 8px;
+}
+
+.table-meta__count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1A1523);
+}
+
+.table-meta__hint {
+  font-size: 12px;
+  color: var(--text-muted, #8A8599);
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }

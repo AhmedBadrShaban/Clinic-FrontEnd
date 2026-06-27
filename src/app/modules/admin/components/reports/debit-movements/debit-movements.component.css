@@ -41,18 +41,139 @@
   color: var(--text-muted);
 }
 
-/* ── Filter panel ────────────────────────────── */
+/* ── Active filter badges in subtitle ───────── */
+.active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 2px 8px 2px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 8px;
+  background: var(--brand-purple-dim, rgba(111,45,189,0.10));
+  color: var(--brand-purple, #6F2DBD);
+  border: 1px solid rgba(111,45,189,0.20);
+}
+
+.active-badge__dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--brand-purple, #6F2DBD);
+  flex-shrink: 0;
+}
+
+.active-badge__clear {
+  background: none; border: none; cursor: pointer;
+  color: var(--brand-purple, #6F2DBD);
+  padding: 0; font-size: 14px;
+  display: flex; align-items: center;
+  opacity: 0.7; transition: opacity 0.15s;
+}
+.active-badge__clear:hover { opacity: 1; }
+
+/* ── Filter panel card ───────────────────────── */
 .filter-panel {
+  padding: 0;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+/* ── Collapsible header bar ──────────────────── */
+.filter-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px var(--space-lg);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--border-light, #E8E6EF);
+  transition: background 0.15s;
+  border-radius: inherit; /* follow card radius when collapsed */
+}
+
+.filter-panel__header:hover {
+  background: var(--brand-purple-dim, rgba(111,45,189,0.04));
+}
+
+.filter-panel--collapsed .filter-panel__header {
+  border-bottom-color: transparent;
+}
+
+.filter-panel__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-panel__header-icon {
+  font-size: 14px;
+  color: var(--brand-purple, #6F2DBD);
+}
+
+.filter-panel__header-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Active-count pill (visible when collapsed) */
+.filter-count-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--brand-purple, #6F2DBD);
+  color: #fff;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.filter-panel__chevron {
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
+/* ── Collapsible body ────────────────────────── */
+.filter-panel__body {
   padding: var(--space-lg);
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: var(--space-md);
-  margin-bottom: var(--space-md);
+
+  /* smooth open/close */
+  max-height: 400px;
+  overflow: hidden;
+  transition: max-height 0.28s ease, padding 0.28s ease, opacity 0.2s ease;
+  opacity: 1;
 }
 
+.filter-panel--collapsed .filter-panel__body {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Filter rows ─────────────────────────────── */
+.filter-row {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-end; /* align inputs to bottom so labels differ in height gracefully */
+}
+
+/* Row 1: patient (flex:2) + clinic (flex:1) + receptionist (flex:1) */
+.filter-row--main .filter-field--patient { flex: 2; min-width: 0; }
+.filter-row--main .filter-field           { flex: 1; min-width: 0; }
+
+/* Row 2: movement type (flex:1) + date range (flex:2) + actions (auto) */
+.filter-row--actions .filter-field               { flex: 1; min-width: 0; }
+.filter-row--actions .filter-field--daterange    { flex: 2; min-width: 0; }
+.filter-row--actions .filter-field--actions      { flex: 0 0 auto; }
+
+/* ── Field wrapper ───────────────────────────── */
 .filter-field {
   display: flex;
   flex-direction: column;
@@ -65,63 +186,137 @@
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.4px;
-}
-
-.filter-input,
-.filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  background: var(--surface-card);
-  outline: none;
-  transition: border-color 0.15s;
-  width: 100%;
-}
-
-.filter-input:focus,
-.filter-select:focus {
-  border-color: var(--brand-purple);
-  box-shadow: 0 0 0 3px var(--brand-purple-dim);
-}
-
-/* sort row */
-.sort-row {
-  display: flex;
-  gap: var(--space-xs);
-}
-
-.sort-row .filter-select {
-  flex: 1;
-}
-
-.sort-dir-btn {
-  padding: 8px 10px;
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  background: var(--surface-card);
-  color: var(--brand-purple);
-  font-size: 16px;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  transition: background 0.15s, border-color 0.15s;
-  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.sort-dir-btn:hover {
-  background: var(--brand-purple-dim);
-  border-color: var(--brand-purple);
-}
-
-/* filter actions */
-.filter-actions {
+/* ── Clinic-style input wrapper ──────────────── */
+.filter-input-wrap {
+  position: relative;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+}
+
+.filter-input-wrap--active .filter-input {
+  border-color: var(--brand-purple, #6F2DBD);
+  background: var(--brand-purple-dim, rgba(111,45,189,0.04));
+}
+
+.filter-input-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 14px;
+  color: var(--text-muted, #8A8599);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.filter-input {
+  height: 38px;
+  width: 100%;
+  padding: 0 36px 0 32px;
+  border: 1.5px solid var(--border-light, #E8E6EF);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface-card, #fff);
+  font-size: 14px;
+  color: var(--text-primary, #1A1523);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+
+.filter-input::placeholder { color: var(--text-muted, #8A8599); }
+
+.filter-input:focus {
+  border-color: var(--brand-purple, #6F2DBD);
+  box-shadow: 0 0 0 3px var(--brand-purple-dim, rgba(111,45,189,0.12));
+}
+
+/* Select */
+.filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 32px;
+}
+
+.filter-select-chevron {
+  position: absolute;
+  right: 10px;
+  font-size: 12px;
+  color: var(--text-muted, #8A8599);
+  pointer-events: none;
+}
+
+/* Clear ×  inside input */
+.filter-clear-btn {
+  position: absolute;
+  right: 8px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted, #8A8599);
+  font-size: 16px;
+  display: flex; align-items: center;
+  padding: 0;
+  transition: color 0.15s;
+  z-index: 1;
+}
+.filter-clear-btn:hover { color: var(--text-primary, #1A1523); }
+
+/* Spinner */
+.filter-spin-icon {
+  position: absolute;
+  right: 10px;
+  font-size: 14px;
+  color: var(--brand-purple, #6F2DBD);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Merged date range ───────────────────────── */
+.daterange-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.daterange-half {
+  flex: 1;
+  min-width: 0;
+}
+
+.daterange-half .filter-input { padding-right: 10px; }
+
+.daterange-sep {
+  font-size: 13px;
+  color: var(--text-muted, #8A8599);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Date-range clear sits outside inputs */
+.daterange-clear {
+  position: static;
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--border-light, #E8E6EF);
+  justify-content: center;
+  color: var(--text-secondary, #5C5470);
+}
+.daterange-clear:hover {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* ── Row-2 action buttons ────────────────────── */
+.row-actions {
+  display: flex;
+  align-items: center;
   gap: var(--space-sm);
-  border-top: 1px solid var(--border-light);
-  padding-top: var(--space-md);
+  height: 38px; /* match input height so buttons sit flush */
 }
 
 /* ── Table card ──────────────────────────────── */
@@ -131,20 +326,12 @@
   width: 100%;
 }
 
-.table-card app-table,
-.table-card .table-container {
-  width: 100%;
-  display: block;
-}
-
-.table-card mat-table,
-.table-card table {
-  width: 100% !important;
-}
-
 .table-meta {
   padding: var(--space-sm) var(--space-lg);
   border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .table-meta__count {
@@ -153,18 +340,11 @@
   font-weight: 500;
 }
 
-.table-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .table-meta__hint {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: var(--font-size-xs);
-  color: var(--text-muted);
   background: var(--brand-purple-dim);
   color: var(--brand-purple);
   padding: 3px 10px;
@@ -173,24 +353,12 @@
 }
 
 /* ── Delta cell ──────────────────────────────── */
-.delta-cell {
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-}
+.delta-cell { font-weight: 600; font-size: var(--font-size-sm); }
+.delta--positive { color: var(--color-danger); }
+.delta--negative { color: var(--color-success); }
+.delta--zero     { color: var(--text-muted); }
 
-.delta--positive {
-  color: var(--color-danger);   /* patient owes more → red */
-}
-
-.delta--negative {
-  color: var(--color-success);  /* patient paid → green */
-}
-
-.delta--zero {
-  color: var(--text-muted);
-}
-
-/* ── Movement type badges ────────────────────── */
+/* ── Type badges ─────────────────────────────── */
 .type-badge {
   display: inline-block;
   padding: 3px 10px;
@@ -199,63 +367,42 @@
   font-weight: 600;
   white-space: nowrap;
 }
+.type-badge--package { background: var(--brand-purple-dim);  color: var(--brand-purple); }
+.type-badge--product { background: var(--color-info-bg);      color: var(--color-info); }
+.type-badge--payment { background: var(--color-success-bg);   color: var(--color-success); }
+.type-badge--manual  { background: var(--color-warning-bg);   color: var(--color-warning); }
 
-.type-badge--package {
-  background: var(--brand-purple-dim);
-  color: var(--brand-purple);
-}
-
-.type-badge--product {
-  background: var(--color-info-bg);
-  color: var(--color-info);
-}
-
-.type-badge--payment {
-  background: var(--color-success-bg);
-  color: var(--color-success);
-}
-
-.type-badge--manual {
-  background: var(--color-warning-bg);
-  color: var(--color-warning);
-}
-
-/* ── Description cell ────────────────────────── */
+/* ── Description / Date ──────────────────────── */
 .description-cell {
-  display: block;
-  max-width: 280px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  cursor: default;
+  display: block; max-width: 280px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: var(--font-size-sm); color: var(--text-secondary); cursor: default;
 }
-
-/* ── Date cell ───────────────────────────────── */
 .date-cell {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  white-space: nowrap;
+  font-size: var(--font-size-sm); color: var(--text-secondary); white-space: nowrap;
 }
 
 /* ── Responsive ──────────────────────────────── */
-@media (max-width: 768px) {
-  .movements-page {
-    padding: var(--space-md);
+@media (max-width: 1024px) {
+  .filter-row--main,
+  .filter-row--actions {
+    flex-wrap: wrap;
   }
 
-  .filter-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+  .filter-row--main .filter-field--patient { flex: 1 1 100%; }
+  .filter-row--main .filter-field           { flex: 1 1 calc(50% - var(--space-md)); }
+
+  .filter-row--actions .filter-field--daterange { flex: 1 1 100%; order: -1; }
+  .filter-row--actions .filter-field             { flex: 1 1 calc(50% - var(--space-md)); }
+  .filter-row--actions .filter-field--actions    { flex: 1 1 100%; }
+  .row-actions { justify-content: flex-end; }
 }
 
-@media (max-width: 480px) {
-  .filter-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 768px) {
+  .movements-page { padding: var(--space-md); }
 
-  .filter-actions {
-    flex-direction: column;
-  }
+  .filter-row--main .filter-field,
+  .filter-row--actions .filter-field { flex: 1 1 100%; }
+
+  .row-actions { flex-direction: row; }
 }

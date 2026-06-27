@@ -6,64 +6,171 @@
       <i class="bi bi-arrow-left-right header-icon"></i>
       <div>
         <h2>Debit Movements</h2>
-        <span class="page-header__sub">Full history of debit changes across all patients</span>
+        <span class="page-header__sub">
+          Full history of debit changes across all patients
+
+          <span *ngIf="hasPatientFilter" class="active-badge active-badge--patient">
+            <i class="bi bi-person-fill"></i>
+            {{ selectedPatientLabel }}
+            <button class="active-badge__clear" (click)="clearPatientFilter()" title="Clear patient filter">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+
+          <span *ngIf="hasClinicFilter" class="active-badge active-badge--clinic">
+            <span class="active-badge__dot"></span>
+            {{ activeClinic }}
+            <button class="active-badge__clear" (click)="clearClinicSearch()" title="Clear clinic filter">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+        </span>
       </div>
     </div>
   </div>
 
   <!-- ── Filter Panel ── -->
-  <div class="clinic-card filter-panel">
-    <div class="filter-grid">
+  <div class="clinic-card filter-panel" [class.filter-panel--collapsed]="filtersCollapsed">
 
-      <!-- Patient ID -->
-      <div class="filter-field">
-        <label class="filter-label">Patient ID</label>
-        <input class="filter-input" type="number" placeholder="e.g. 5698" [(ngModel)]="filters.patientId" />
-      </div>
-
-      <!-- Clinic ID -->
-      <div class="filter-field">
-        <label class="filter-label">Clinic ID</label>
-        <input class="filter-input" type="number" placeholder="e.g. 2" [(ngModel)]="filters.clinicId" />
-      </div>
-
-      <!-- Receptionist ID -->
-      <div class="filter-field">
-        <label class="filter-label">Receptionist ID</label>
-        <input class="filter-input" type="number" placeholder="e.g. 3" [(ngModel)]="filters.createdBy" />
-      </div>
-
-      <!-- Movement Type -->
-      <div class="filter-field">
-        <label class="filter-label">Movement Type</label>
-        <select class="filter-select" [(ngModel)]="filters.movementType">
-          <option *ngFor="let t of movementTypes" [value]="t.value">{{ t.label }}</option>
-        </select>
-      </div>
-
-      <!-- From Date -->
-      <div class="filter-field">
-        <label class="filter-label">From Date</label>
-        <input class="filter-input" type="date" [(ngModel)]="fromDateInput" />
-      </div>
-
-      <!-- To Date -->
-      <div class="filter-field">
-        <label class="filter-label">To Date</label>
-        <input class="filter-input" type="date" [(ngModel)]="toDateInput" />
-      </div>
-
+    <!-- Collapsible header bar -->
+    <div class="filter-panel__header" (click)="filtersCollapsed = !filtersCollapsed">
+      <span class="filter-panel__header-left">
+        <i class="bi bi-funnel-fill filter-panel__header-icon"></i>
+        <span class="filter-panel__header-title">Filters</span>
+        <!-- Active-filter count pill shown when collapsed -->
+        <span *ngIf="filtersCollapsed && activeFilterCount > 0" class="filter-count-pill">
+          {{ activeFilterCount }} active
+        </span>
+      </span>
+      <i class="bi filter-panel__chevron" [class.bi-chevron-up]="!filtersCollapsed"
+        [class.bi-chevron-down]="filtersCollapsed"></i>
     </div>
 
-    <!-- Actions -->
-    <div class="filter-actions">
-      <button class="btn-ghost-clinic" (click)="clearFilters()">
-        <i class="bi bi-x-circle"></i> Clear
-      </button>
-      <button class="btn-primary-clinic" (click)="loadMovements(true)">
-        <i class="bi bi-funnel"></i> Apply Filters
-      </button>
-    </div>
+    <!-- Collapsible body -->
+    <div class="filter-panel__body">
+
+      <!-- Row 1: Patient (×2) · Clinic · Receptionist ID -->
+      <div class="filter-row filter-row--main">
+
+        <div class="filter-field filter-field--patient">
+          <label class="filter-label">
+            <i class="bi bi-person-fill" style="margin-right:4px;"></i>Patient
+          </label>
+          <div class="filter-input-wrap" [class.filter-input-wrap--active]="hasPatientFilter">
+            <i class="bi bi-person filter-input-icon"></i>
+            <input class="filter-input" type="text" placeholder="Search by name or phone…"
+              [ngModel]="patientSearchInput" [matAutocomplete]="patientAuto"
+              (ngModelChange)="onPatientSearchInput($event)" />
+            <i *ngIf="patientSearchLoading" class="bi bi-arrow-repeat filter-spin-icon"></i>
+            <button *ngIf="patientSearchInput && !patientSearchLoading" class="filter-clear-btn"
+              (click)="clearPatientFilter()">
+              <i class="bi bi-x"></i>
+            </button>
+            <mat-autocomplete #patientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event.option.value)">
+              <mat-option *ngFor="let p of patientResults" [value]="p"
+                style="font-size:13px; line-height:36px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                {{ p.patientName }} — {{ p.primaryPhone }}
+              </mat-option>
+              <mat-option *ngIf="patientResults.length === 0 && !patientSearchLoading && patientSearchInput.length >= 2"
+                disabled>No patients found</mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+
+        <div class="filter-field">
+          <label class="filter-label">
+            <i class="bi bi-building" style="margin-right:4px;"></i>Clinic
+          </label>
+          <div class="filter-input-wrap" [class.filter-input-wrap--active]="hasClinicFilter">
+            <i class="bi bi-building filter-input-icon"></i>
+            <input class="filter-input" type="text" placeholder="Search clinic…" [(ngModel)]="clinicNameSearch"
+              [matAutocomplete]="clinicAuto" (ngModelChange)="onClinicSearch($event)" />
+            <button *ngIf="clinicNameSearch" class="filter-clear-btn" (click)="clearClinicSearch()">
+              <i class="bi bi-x"></i>
+            </button>
+            <!-- value = Clinic object; display label via clinicName -->
+            <mat-autocomplete #clinicAuto="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value)">
+              <mat-option *ngFor="let c of filteredClinics" [value]="c">{{ c.clinicName }}</mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+
+        <div class="filter-field">
+          <label class="filter-label">
+            <i class="bi bi-person-badge" style="margin-right:4px;"></i>Receptionist
+          </label>
+          <div class="filter-input-wrap" [class.filter-input-wrap--active]="hasReceptionistFilter">
+            <i class="bi bi-person-badge filter-input-icon"></i>
+            <input class="filter-input" type="text" placeholder="Search receptionist…" [(ngModel)]="receptionistSearch"
+              [matAutocomplete]="receptionistAuto" (ngModelChange)="onReceptionistSearch($event)" />
+            <i *ngIf="receptionistSearchLoading" class="bi bi-arrow-repeat filter-spin-icon"></i>
+            <button *ngIf="receptionistSearch" class="filter-clear-btn" (click)="clearReceptionistFilter()">
+              <i class="bi bi-x"></i>
+            </button>
+            <mat-autocomplete #receptionistAuto="matAutocomplete"
+              (optionSelected)="onReceptionistSelected($event.option.value)">
+              <mat-option *ngFor="let r of filteredReceptionists" [value]="r" style="font-size:13px; line-height:36px;">
+                {{ r.name }} <span style="color:var(--text-muted); font-size:11px;">#{{ r.receptionistId }}</span>
+              </mat-option>
+              <mat-option
+                *ngIf="filteredReceptionists.length === 0 && !receptionistSearchLoading && receptionistSearch.length >= 1"
+                disabled>No receptionists found</mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 2: Movement Type · Date Range · [Clear all] [Apply] -->
+      <div class="filter-row filter-row--actions">
+
+        <div class="filter-field">
+          <label class="filter-label">Movement Type</label>
+          <div class="filter-input-wrap filter-input-wrap--select">
+            <i class="bi bi-tag filter-input-icon"></i>
+            <select class="filter-input filter-select" [(ngModel)]="filters.movementType">
+              <option *ngFor="let t of movementTypes" [value]="t.value">{{ t.label }}</option>
+            </select>
+            <i class="bi bi-chevron-down filter-select-chevron"></i>
+          </div>
+        </div>
+
+        <div class="filter-field filter-field--daterange">
+          <label class="filter-label">
+            <i class="bi bi-calendar-range" style="margin-right:4px;"></i>Date Range
+          </label>
+          <div class="daterange-wrap">
+            <div class="filter-input-wrap daterange-half">
+              <i class="bi bi-calendar filter-input-icon"></i>
+              <input class="filter-input" type="date" [(ngModel)]="fromDateInput" [max]="toDateInput || ''" />
+            </div>
+            <span class="daterange-sep"><i class="bi bi-arrow-right"></i></span>
+            <div class="filter-input-wrap daterange-half">
+              <i class="bi bi-calendar filter-input-icon"></i>
+              <input class="filter-input" type="date" [(ngModel)]="toDateInput" [min]="fromDateInput || ''" />
+            </div>
+            <button *ngIf="fromDateInput || toDateInput" class="filter-clear-btn daterange-clear"
+              (click)="clearDateRange()" title="Clear dates">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action buttons pinned to end of row 2 -->
+        <div class="filter-field filter-field--actions">
+          <label class="filter-label">&nbsp;</label><!-- spacer to align with inputs -->
+          <div class="row-actions">
+            <button class="btn-ghost-clinic" (click)="clearFilters()">
+              <i class="bi bi-x-circle"></i> Clear all
+            </button>
+            <button class="btn-primary-clinic" (click)="loadMovements(true)">
+              <i class="bi bi-funnel"></i> Apply Filters
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /filter-panel__body -->
   </div>
 
   <!-- ── Table ── -->
@@ -85,7 +192,6 @@
 </div>
 
 <!-- ── Cell Templates ── -->
-
 <ng-template #deltaTpl let-row>
   <span class="delta-cell" [ngClass]="deltaClass(row.delta)">
     {{ deltaPrefix(row.delta) }}{{ row.delta | number:'1.0-2' }} EGP

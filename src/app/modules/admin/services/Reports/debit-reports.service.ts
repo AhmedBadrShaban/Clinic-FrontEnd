@@ -31,7 +31,7 @@ export interface DebitMovementsResponse {
 
 export interface DebitMovementsFilter {
   patientId?: number | null;
-  clinicId?: number | null;
+  clinicId?: number | string | null;
   createdBy?: number | null;
   movementType?: string | null;
   fromDate?: string | null;
@@ -50,10 +50,12 @@ export class DebitReportsService {
     this.baseUrl = this.configService.getBaseUrl();
   }
 
-  getDebitReport(page: number = 0, size: number = 20, clinicName?: string): Observable<DebitReportResponse> {
+  getDebitReport(page: number = 0, size: number = 20, sortBy:string = 'patientName' ,  sortDir:'asc'|'desc' = 'asc' ,  clinicName?: string): Observable<DebitReportResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
+      .set('size', size.toString())
+      .set('sortBy', sortBy.toString())
+        .set('sortDir', sortDir.toString());
 
     if (clinicName && clinicName.trim()) {
       params = params.set('clinicName', clinicName.trim());

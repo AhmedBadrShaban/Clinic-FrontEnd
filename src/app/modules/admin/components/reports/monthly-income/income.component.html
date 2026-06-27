@@ -1,0 +1,198 @@
+<div class="income-page">
+
+  <!-- ── Page Header ── -->
+  <div class="page-header">
+    <div class="page-header__title">
+      <i class="bi bi-bar-chart-line-fill header-icon"></i>
+      <div>
+        <h2>Monthly Money Report</h2>
+        <span class="page-header__sub">Generate detailed income reports by room or packages</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Configuration Panel ── -->
+  <div class="clinic-card filter-panel" [class.filter-panel--collapsed]="filtersCollapsed">
+
+    <div class="filter-panel__header" (click)="filtersCollapsed = !filtersCollapsed">
+      <span class="filter-panel__header-left">
+        <i class="bi bi-sliders filter-panel__header-icon"></i>
+        <span class="filter-panel__header-title">Report Configuration</span>
+      </span>
+      <i class="bi filter-panel__chevron" [class.bi-chevron-up]="!filtersCollapsed"
+        [class.bi-chevron-down]="filtersCollapsed"></i>
+    </div>
+
+    <div class="filter-panel__body">
+      <form [formGroup]="reportForm">
+
+        <div class="filter-row filter-row--main">
+
+          <!-- Report Type -->
+          <div class="filter-field">
+            <label class="filter-label">
+              <i class="bi bi-grid-1x2" style="margin-right:4px;"></i>Report Type
+            </label>
+            <div class="filter-input-wrap filter-input-wrap--select">
+              <i class="bi bi-collection filter-input-icon"></i>
+              <select class="filter-input filter-select" formControlName="reportType">
+                <option *ngFor="let type of reportTypes" [value]="type.value">{{ type.name }}</option>
+              </select>
+              <i class="bi bi-chevron-down filter-select-chevron"></i>
+            </div>
+          </div>
+
+          <!-- Room — searchable autocomplete, same pattern as clinic in debit-movements -->
+          <div class="filter-field" *ngIf="!isPackageReport">
+            <label class="filter-label">
+              <i class="bi bi-door-open" style="margin-right:4px;"></i>Room
+            </label>
+            <div class="clinic-input-wrap" [class.filter-input-wrap--active]="hasRoomFilter">
+              <i class="bi bi-door-closed clinic-input-icon"></i>
+              <input class="filter-input" type="text" placeholder="Search room…" [(ngModel)]="roomSearchInput"
+                [ngModelOptions]="{ standalone: true }" [matAutocomplete]="roomAuto"
+                (ngModelChange)="onRoomSearch($event)" />
+              <button *ngIf="roomSearchInput" class="clinic-clear-btn" type="button" (click)="clearRoomFilter()">
+                <i class="bi bi-x"></i>
+              </button>
+              <mat-autocomplete #roomAuto="matAutocomplete" (optionSelected)="onRoomSelected($event.option.value)">
+                <mat-option *ngFor="let room of filteredRooms" [value]="room" style="font-size:13px; line-height:36px;">
+                  {{ room.roomName }}
+                  <span *ngIf="room.clinicName" style="color:var(--text-muted); font-size:11px;"> — {{ room.clinicName
+                    }}</span>
+                </mat-option>
+                <mat-option *ngIf="filteredRooms.length === 0 && roomSearchInput" disabled>
+                  No rooms found
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+            <span class="filter-error"
+              *ngIf="reportForm.get('room')?.touched && reportForm.get('room')?.hasError('required')">
+              Please select a room
+            </span>
+          </div>
+
+          <!-- Month -->
+          <div class="filter-field">
+            <label class="filter-label">
+              <i class="bi bi-calendar3" style="margin-right:4px;"></i>Month
+            </label>
+            <div class="filter-input-wrap filter-input-wrap--select">
+              <i class="bi bi-calendar filter-input-icon"></i>
+              <select class="filter-input filter-select" formControlName="month">
+                <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+              </select>
+              <i class="bi bi-chevron-down filter-select-chevron"></i>
+            </div>
+          </div>
+
+          <!-- Year -->
+          <div class="filter-field">
+            <label class="filter-label">
+              <i class="bi bi-calendar-range" style="margin-right:4px;"></i>Year
+            </label>
+            <div class="filter-input-wrap filter-input-wrap--select">
+              <i class="bi bi-calendar2 filter-input-icon"></i>
+              <select class="filter-input filter-select" formControlName="year">
+                <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+              </select>
+              <i class="bi bi-chevron-down filter-select-chevron"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Buttons -->
+<div class="filter-row filter-row--actions">
+  <div class="filter-field filter-field--actions">
+    <div class="row-actions">
+      <button class="btn-ghost-clinic" type="button" (click)="onResetForm()" [disabled]="loading">
+        <i class="bi bi-arrow-counterclockwise"></i> Reset
+      </button>
+
+      <!-- NEW: Export PDF button, only shown after report is generated -->
+      <button
+        *ngIf="reportData && !loading"
+        class="btn-outline-export"
+        type="button"
+        (click)="onExportPdf()"
+        [disabled]="loading">
+        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+      </button>
+
+      <button class="btn-primary-clinic" type="button" (click)="onGenerateReport()"
+        [disabled]="loading || isGenerateDisabled">
+        <span *ngIf="!loading"><i class="bi bi-play-fill"></i> Generate Report</span>
+        <span *ngIf="loading"><i class="bi bi-arrow-repeat spin-icon"></i> Generating…</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Loading ── -->
+  <div *ngIf="loading" class="clinic-card loading-card">
+    <i class="bi bi-arrow-repeat loading-spinner"></i>
+    <span>Generating your report…</span>
+  </div>
+
+  <!-- ── Result ── -->
+<div *ngIf="reportData && !loading" class="report-results" #reportSection>
+
+    <div class="summary-cards">
+
+      <!-- Total Income -->
+      <div class="summary-card">
+        <div class="summary-card__icon-wrap">
+          <i class="bi bi-cash-coin summary-card__icon"></i>
+        </div>
+        <div class="summary-card__body">
+          <span class="summary-card__label">Total Income</span>
+          <span class="summary-card__value">{{ reportData.totalMoney | currency:'EGP':'symbol':'1.2-2' }}</span>
+          <span class="summary-card__period">{{ selectedMonth }} {{ reportData.year }}</span>
+        </div>
+      </div>
+
+      <!-- Report Scope -->
+      <div class="summary-card summary-card--info">
+        <div class="summary-card__icon-wrap">
+          <i class="bi bi-tag summary-card__icon"></i>
+        </div>
+        <div class="summary-card__body">
+          <span class="summary-card__label">Report Type</span>
+          <span class="summary-card__value summary-card__value--md">
+            {{ reportData.roomName ? 'Room Income' : 'Packages Income' }}
+          </span>
+          <span class="summary-card__period">
+            {{ reportData.roomName ? reportData.roomName : 'All Packages' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Period -->
+      <div class="summary-card summary-card--success">
+        <div class="summary-card__icon-wrap">
+          <i class="bi bi-calendar-check summary-card__icon"></i>
+        </div>
+        <div class="summary-card__body">
+          <span class="summary-card__label">Period</span>
+          <span class="summary-card__value summary-card__value--md">{{ selectedMonth }}</span>
+          <span class="summary-card__period">{{ reportData.year }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Empty State ── -->
+  <div *ngIf="!reportData && !loading" class="clinic-card empty-state">
+    <i class="bi bi-bar-chart empty-state__icon"></i>
+    <h3 class="empty-state__title">No Report Generated</h3>
+    <p class="empty-state__desc">Configure the report parameters above and click "Generate Report" to view your data.
+    </p>
+  </div>
+
+</div>

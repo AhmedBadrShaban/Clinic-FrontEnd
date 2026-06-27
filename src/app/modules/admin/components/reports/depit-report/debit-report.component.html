@@ -6,18 +6,31 @@
       <i class="bi bi-wallet2 header-icon"></i>
       <div>
         <h2>Debit Report</h2>
-        <span class="page-header__sub">Outstanding patient balances</span>
+        <span class="page-header__sub">
+          Outstanding patient balances
+          <span *ngIf="hasClinicFilter" class="clinic-badge">
+            <span class="clinic-badge-dot"></span>{{ activeClinic }}
+            <button class="clinic-badge-clear" (click)="clearFilter()" title="Clear filter">
+              <i class="bi bi-x"></i>
+            </button>
+          </span>
+        </span>
       </div>
     </div>
 
+    <!-- Clinic search -->
     <div class="filter-row">
-      <div class="filter-input-wrap">
-        <i class="bi bi-search filter-icon"></i>
-        <input class="filter-input" type="text" placeholder="Filter by clinic…" [(ngModel)]="clinicNameFilter"
-          (keyup.enter)="loadReport(true)" />
-        <button *ngIf="clinicNameFilter" class="filter-clear" (click)="clearFilter()" title="Clear filter">
+      <div class="clinic-input-wrap">
+        <i class="bi bi-building clinic-input-icon"></i>
+        <input class="filter-input" type="text" placeholder="Search by clinic…" [(ngModel)]="clinicNameFilter"
+          [matAutocomplete]="clinicAuto" (ngModelChange)="onClinicSearch($event)"
+          (keyup.enter)="onClinicSelected(clinicNameFilter)" />
+        <button *ngIf="clinicNameFilter" class="clinic-clear-btn" (click)="clearFilter()" title="Clear">
           <i class="bi bi-x"></i>
         </button>
+        <mat-autocomplete #clinicAuto="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value)">
+          <mat-option *ngFor="let c of filteredClinics" [value]="c">{{ c }}</mat-option>
+        </mat-autocomplete>
       </div>
       <button class="btn-primary-clinic" (click)="loadReport(true)">
         <i class="bi bi-funnel"></i> Apply
@@ -29,19 +42,15 @@
   <div class="summary-grid">
 
     <div class="summary-card summary-card--purple">
-      <div class="summary-card__icon">
-        <i class="bi bi-people-fill"></i>
-      </div>
+      <div class="summary-card__icon"><i class="bi bi-people-fill"></i></div>
       <div class="summary-card__body">
-        <span class="summary-card__value">{{ summary.patientsWithDebit }}</span>
+        <span class="summary-card__value">{{ summary.patientsWithDebit | number:'1.0-0' }}</span>
         <span class="summary-card__label">Patients with balance</span>
       </div>
     </div>
 
     <div class="summary-card summary-card--danger">
-      <div class="summary-card__icon">
-        <i class="bi bi-arrow-up-circle-fill"></i>
-      </div>
+      <div class="summary-card__icon"><i class="bi bi-arrow-up-circle-fill"></i></div>
       <div class="summary-card__body">
         <span class="summary-card__value">{{ summary.totalDebitIn | number:'1.0-0' }} EGP</span>
         <span class="summary-card__label">Total debit added</span>
@@ -49,9 +58,7 @@
     </div>
 
     <div class="summary-card summary-card--success">
-      <div class="summary-card__icon">
-        <i class="bi bi-arrow-down-circle-fill"></i>
-      </div>
+      <div class="summary-card__icon"><i class="bi bi-arrow-down-circle-fill"></i></div>
       <div class="summary-card__body">
         <span class="summary-card__value">{{ summary.totalDebitPaid | number:'1.0-0' }} EGP</span>
         <span class="summary-card__label">Total collected</span>
@@ -59,9 +66,7 @@
     </div>
 
     <div class="summary-card summary-card--warning">
-      <div class="summary-card__icon">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-      </div>
+      <div class="summary-card__icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
       <div class="summary-card__body">
         <span class="summary-card__value">{{ summary.remainingDebit | number:'1.0-0' }} EGP</span>
         <span class="summary-card__label">Outstanding balance</span>
@@ -72,16 +77,18 @@
 
   <!-- ── Table ── -->
   <div class="clinic-card table-card">
+    
+
     <app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
       [currentPage]="currentPage + 1" [isLoading]="isLoading" emptyTitle="No outstanding balances"
       emptyMessage="All patients are settled — no debit records found for the selected filter."
-      (onPageChange)="onPageChange($event)">
+      (onPageChange)="onPageChange($event)" (onSortChange)="onSortChange($event)">
     </app-table>
   </div>
 
 </div>
 
-<!-- ── Custom cell templates ── -->
+<!-- ── Cell Templates ── -->
 <ng-template #remainingTpl let-row>
   <span class="badge-danger balance-badge">
     {{ row.remainingDebit | number:'1.0-0' }} EGP

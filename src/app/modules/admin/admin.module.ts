@@ -30,7 +30,7 @@ import { ReceptionistModule } from '../receptionist/receptionist.module';
 import { ContributorsComponent } from './components/contributors/contributors.component';
 import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
 import { NzTabsModule } from "ng-zorro-antd/tabs";
-import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
+import { MonthlyMoneyReportComponent } from './components/reports/monthly-income/income.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,7 +45,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
 import { DebitReportComponent } from './components/reports/depit-report/debit-report.component';
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
- import { ReportsComponent } from '../../shared/components/reports/reports.component';
+ import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -69,8 +69,8 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
     ContributorsComponent,
     AddContributorComponent,
     DebitReportComponent,
-    DebitMovementsComponent
-    
+    DebitMovementsComponent,
+    DashboardComponent
   ],
 
   imports: [
@@ -99,7 +99,6 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
     MatChipsModule,
     MatTooltipModule,
     AdminSidebarComponent,
-     ReportsComponent,
-  ]
+   ]
 })
 export class AdminModule { }

@@ -53,6 +53,11 @@
                   "inline": false
                 }
               }
+            ,
+             "styles": {
+      "minify": true,
+      "inlineCritical": false
+    }
             },
             "development": {
               "buildOptimizer": false,

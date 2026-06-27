@@ -31,21 +31,21 @@ export class AdminSidebarComponent implements OnInit {
       label: 'Reports',
       icon: 'bi-bar-chart-line',
       children: [
+        { label: 'Monthly Income', icon: 'bi-graph-up-arrow', route: '/admin/monthly-income' },
         { label: 'Outstanding Debit', icon: 'bi-wallet2', route: '/admin/reports/debit-report' },
         { label: 'Debit Movements', icon: 'bi-arrow-left-right', route: '/admin/reports/debit-movements' },
       ]
     },
     { label: 'Rooms', icon: 'bi-door-open', route: '/admin/rooms' },
     { label: 'Patients', icon: 'bi-people', route: '/admin/patients' },
+    { label: 'Receptionists', icon: 'bi-headset', route: '/admin/receptionists' },
     { label: 'Doctors', icon: 'bi-person-badge', route: '/admin/doctors' },
     { label: 'Doctor Schedule', icon: 'bi-calendar3', route: '/admin/doctor-schedular' },
-    { label: 'Receptionists', icon: 'bi-headset', route: '/admin/receptionists' },
     { label: 'Services', icon: 'bi-stars', route: '/admin/services' },
     { label: 'Packages', icon: 'bi-box-seam', route: '/admin/admin-package' },
     { label: 'Reserved Packages', icon: 'bi-bookmark-check', route: '/admin/reserved-packages' },
     { label: 'Materials', icon: 'bi-droplet', route: '/admin/materials' },
     { label: 'Expenses', icon: 'bi-receipt', route: '/admin/expense' },
-    { label: 'Monthly Income', icon: 'bi-graph-up-arrow', route: '/admin/monthly-income' },
     { label: 'Contributors', icon: 'bi-person-lines-fill', route: '/admin/contributors' },
 
   ];

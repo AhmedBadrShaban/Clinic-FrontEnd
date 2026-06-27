@@ -1,14 +1,18 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   ChangeDetectorRef,
   TemplateRef,
   ViewChild
 } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { DebitReportsService, DebitMovement, DebitMovementsFilter } from '../../../services/reports/debit-reports.service';
- 
+import { ReportsService, ReceptionistIdAndName } from '../../../services/reports/reports.service';
+import { Clinic } from 'src/app/shared/models/rooms.models';
+
 export const MOVEMENT_TYPE_LABELS: Record<string, string> = {
   PACKAGE_RESERVED: 'Package Reserved',
   PRODUCT_RESERVED: 'Product Reserved',
@@ -16,24 +20,69 @@ export const MOVEMENT_TYPE_LABELS: Record<string, string> = {
   MANUAL_ADJUSTMENT: 'Manual Adjustment',
 };
 
+const SORT_KEY_MAP: Record<string, string> = {
+  createdAt: 'createdAt',
+  patientName: 'patientName',
+  patientPhone: 'patientName',
+  clinicName: 'clinicName',
+  createdByName: 'createdByName',
+  movementType: 'movementType',
+  delta: 'delta',
+  balanceAfter: 'balanceAfter',
+  description: 'createdAt',
+};
+
+// Matches GET /admin/patients/search-v2 response item shape
+export interface PatientSearchResult {
+  patientId: number;
+  patientName: string;
+  primaryPhone: string;
+}
+
+// ReceptionistIdAndName is imported from reports.service.ts
+// shape: { receptionistId: number; name: string }
 @Component({
   selector: 'app-debit-movements',
   templateUrl: './debit-movements.component.html',
   styleUrls: ['./debit-movements.component.css']
 })
-export class DebitMovementsComponent implements OnInit {
+export class DebitMovementsComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private patientSearch$ = new Subject<string>();
+
   @ViewChild('deltaTpl', { static: true }) deltaTpl!: TemplateRef<any>;
   @ViewChild('typeTpl', { static: true }) typeTpl!: TemplateRef<any>;
   @ViewChild('descriptionTpl', { static: true }) descriptionTpl!: TemplateRef<any>;
   @ViewChild('dateTpl', { static: true }) dateTpl!: TemplateRef<any>;
 
+  /* ── collapse state ── */
+  filtersCollapsed = false;
+
   /* ── filters ── */
-  filters: DebitMovementsFilter = {
-    sortBy: 'createdAt',
-    sortDir: 'desc'
-  };
+  filters: DebitMovementsFilter = { sortBy: 'createdAt', sortDir: 'desc' };
   fromDateInput = '';
   toDateInput = '';
+
+  /* ── clinic autocomplete ── */
+  clinicNameSearch = '';
+  activeClinic = '';
+  hasClinicFilter = false;
+  allClinics: Clinic[] = [];
+  filteredClinics: Clinic[] = [];
+
+  /* ── receptionist autocomplete ── */
+  receptionistSearch = '';
+  hasReceptionistFilter = false;
+  receptionistSearchLoading = false;
+  allReceptionists: ReceptionistIdAndName[] = [];
+  filteredReceptionists: ReceptionistIdAndName[] = [];
+
+  /* ── patient autocomplete ── */
+  patientSearchInput = '';
+  selectedPatientLabel = '';
+  hasPatientFilter = false;
+  patientResults: PatientSearchResult[] = [];
+  patientSearchLoading = false;
 
   readonly movementTypes = [
     { value: '', label: 'All Types' },
@@ -45,19 +94,6 @@ export class DebitMovementsComponent implements OnInit {
 
   readonly movementLabels = MOVEMENT_TYPE_LABELS;
 
-  // column key → backend sortBy value mapping
-  private readonly sortKeyMap: Record<string, string> = {
-    createdAt: 'createdAt',
-    patientName: 'patientName',
-    patientPhone: 'patientName',   // no backend sort for phone, fallback
-    clinicName: 'clinicName',
-    createdByName: 'createdByName',
-    movementType: 'movementType',
-    delta: 'delta',
-    balanceAfter: 'balanceAfter',
-    description: 'createdAt',     // no backend sort for description, fallback
-  };
-
   /* ── table ── */
   tableColumns: Array<{ key: string; label: string; template?: any }> = [];
   dataSource = new MatTableDataSource<DebitMovement>();
@@ -67,7 +103,8 @@ export class DebitMovementsComponent implements OnInit {
   isLoading = false;
 
   constructor(
-    private reportsService: DebitReportsService,
+    private debitService: DebitReportsService,
+    private reportsService: ReportsService,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -84,9 +121,179 @@ export class DebitMovementsComponent implements OnInit {
       { key: 'description', label: 'Description', template: this.descriptionTpl },
     ];
 
+    this.loadClinics();
+    this.loadReceptionists();
+    this.setupPatientSearch();
     this.loadMovements();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /* ── active filter count (for collapsed pill) ── */
+  get activeFilterCount(): number {
+    let count = 0;
+    if (this.hasPatientFilter) count++;
+    if (this.hasClinicFilter) count++;
+    if (this.hasReceptionistFilter) count++;
+    if (this.filters.movementType) count++;
+    if (this.fromDateInput || this.toDateInput) count++;
+    return count;
+  }
+
+  /* ── patient search ── */
+  private setupPatientSearch(): void {
+    this.patientSearch$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(query => {
+          if (!query || query.trim().length < 2) {
+            this.patientResults = [];
+            this.patientSearchLoading = false;
+            this.cd.detectChanges();
+            return of(null);
+          }
+          this.patientSearchLoading = true;
+          this.cd.detectChanges();
+          return this.reportsService.searchPatientsV2(query.trim(), 0, 15);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            this.patientResults = res.data;
+          }
+          this.patientSearchLoading = false;
+          this.cd.detectChanges();
+        },
+        error: () => {
+          this.patientSearchLoading = false;
+          this.cd.detectChanges();
+        }
+      });
+  }
+
+  onPatientSearchInput(value: string): void {
+    this.patientSearchInput = value;
+    if (!value.trim()) { this.clearPatientFilter(); return; }
+    this.patientSearch$.next(value);
+  }
+
+  onPatientSelected(patient: PatientSearchResult): void {
+    this.selectedPatientLabel = `${patient.patientName} — ${patient.primaryPhone}`;
+    this.patientSearchInput = this.selectedPatientLabel;
+    this.filters.patientId = patient.patientId;
+    this.hasPatientFilter = true;
+    this.patientResults = [];
+    this.loadMovements(true);
+  }
+
+  clearPatientFilter(): void {
+    this.patientSearchInput = '';
+    this.selectedPatientLabel = '';
+    this.hasPatientFilter = false;
+    this.patientResults = [];
+    this.filters.patientId = undefined;
+    this.loadMovements(true);
+  }
+
+  patientDisplayFn(patient: PatientSearchResult): string {
+    return patient ? `${patient.patientName} — ${patient.primaryPhone}` : '';
+  }
+
+  /* ── clinic helpers ── */
+  private loadClinics(): void {
+    this.reportsService.getAllClinicsList()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clinics) => {
+          this.allClinics = clinics || [];
+          this.filteredClinics = [...this.allClinics];
+        },
+        error: (err) => console.error('Failed to load clinics:', err)
+      });
+  }
+
+  onClinicSearch(value: string): void {
+    this.clinicNameSearch = value;
+    // If user clears manually, drop the active filter
+    if (!value.trim()) { this.clearClinicSearch(); return; }
+    const q = value.toLowerCase().trim();
+    this.filteredClinics = this.allClinics.filter(c => c.clinicName.toLowerCase().includes(q));
+  }
+
+  onClinicSelected(clinic: Clinic): void {
+    this.clinicNameSearch = clinic.clinicName;   // show the name in the input
+    this.activeClinic = clinic.clinicName;
+    this.hasClinicFilter = true;
+    this.filters.clinicId = clinic.clinicId;     // send the ID to the API
+    this.loadMovements(true);
+  }
+
+  clearClinicSearch(): void {
+    this.clinicNameSearch = '';
+    this.activeClinic = '';
+    this.hasClinicFilter = false;
+    this.filteredClinics = [...this.allClinics];
+    this.filters.clinicId = undefined;
+    this.loadMovements(true);
+  }
+
+  /* ── receptionist helpers ── */
+  private loadReceptionists(): void {
+    this.receptionistSearchLoading = true;
+    this.reportsService.getReceptionistIdAndName()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (list) => {
+          this.allReceptionists = list || [];
+          this.filteredReceptionists = [...this.allReceptionists];
+          this.receptionistSearchLoading = false;
+          this.cd.detectChanges();
+        },
+        error: (err) => {
+          console.error('Failed to load receptionists:', err);
+          this.receptionistSearchLoading = false;
+          this.cd.detectChanges();
+        }
+      });
+  }
+
+  onReceptionistSearch(value: string): void {
+    this.receptionistSearch = value;
+    if (!value.trim()) { this.clearReceptionistFilter(); return; }
+    const q = value.toLowerCase().trim();
+    this.filteredReceptionists = this.allReceptionists.filter(
+      r => r.name.toLowerCase().includes(q) || r.receptionistId.toString().includes(q)
+    );
+  }
+
+  onReceptionistSelected(receptionist: ReceptionistIdAndName): void {
+    this.receptionistSearch = receptionist.name;
+    this.hasReceptionistFilter = true;
+    this.filters.createdBy = receptionist.receptionistId;
+    this.loadMovements(true);
+  }
+
+  clearReceptionistFilter(): void {
+    this.receptionistSearch = '';
+    this.hasReceptionistFilter = false;
+    this.filteredReceptionists = [...this.allReceptionists];
+    this.filters.createdBy = undefined;
+    this.loadMovements(true);
+  }
+
+  /* ── date range ── */
+  clearDateRange(): void {
+    this.fromDateInput = '';
+    this.toDateInput = '';
+  }
+
+  /* ── data ── */
   loadMovements(resetPage = false): void {
     if (resetPage) this.currentPage = 0;
 
@@ -99,8 +306,9 @@ export class DebitMovementsComponent implements OnInit {
 
     this.isLoading = true;
 
-    this.reportsService
+    this.debitService
       .getDebitMovements(this.currentPage, this.pageSize, this.filters)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
           this.dataSource.data = [...res.data];
@@ -115,10 +323,9 @@ export class DebitMovementsComponent implements OnInit {
       });
   }
 
-  // Called by app-table's (onSortChange) — column header click
   onSortChange(event: { column: string; direction: string }): void {
-    this.filters.sortBy = this.sortKeyMap[event.column] ?? 'createdAt';
-    this.filters.sortDir = (event.direction === 'asc' ? 'asc' : 'desc');
+    this.filters.sortBy = SORT_KEY_MAP[event.column] ?? 'createdAt';
+    this.filters.sortDir = event.direction === 'asc' ? 'asc' : 'desc';
     this.loadMovements(true);
   }
 
@@ -132,18 +339,31 @@ export class DebitMovementsComponent implements OnInit {
     this.filters = { sortBy: 'createdAt', sortDir: 'desc' };
     this.fromDateInput = '';
     this.toDateInput = '';
+    // clinic
+    this.clinicNameSearch = '';
+    this.activeClinic = '';
+    this.hasClinicFilter = false;
+    this.filteredClinics = [...this.allClinics];
+    // receptionist
+    this.receptionistSearch = '';
+    this.hasReceptionistFilter = false;
+    this.filteredReceptionists = [...this.allReceptionists];
+    // patient
+    this.patientSearchInput = '';
+    this.selectedPatientLabel = '';
+    this.hasPatientFilter = false;
+    this.patientResults = [];
     this.loadMovements(true);
   }
 
+  /* ── cell helpers ── */
   deltaClass(delta: number): string {
     if (delta > 0) return 'delta--positive';
     if (delta < 0) return 'delta--negative';
     return 'delta--zero';
   }
 
-  deltaPrefix(delta: number): string {
-    return delta > 0 ? '+' : '';
-  }
+  deltaPrefix(delta: number): string { return delta > 0 ? '+' : ''; }
 
   typeClass(type: string): string {
     const map: Record<string, string> = {
