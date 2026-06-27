@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
  import { RoomsService, Room } from 'src/app/modules/Services/rooms/rooms.service';
-import { MonthlyReportResponse, ReportsService } from '../../../services/reports/reports.service';
-import jsPDF from 'jspdf';
+  import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { MonthlyReportResponse, ReportsService } from '../../../services/reports.service';
 interface MonthOption { value: number; name: string; }
 interface ReportTypeOption { value: string; name: string; }
 

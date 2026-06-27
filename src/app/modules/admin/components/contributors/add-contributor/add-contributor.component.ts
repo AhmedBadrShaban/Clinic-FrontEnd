@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
-import { ContributorsService } from '../../../services/Contributors/contributors.service';
+import { ContributorsService } from '../../../services/contributers/contributors.service';
 
 @Component({
   selector: 'app-add-contributor',

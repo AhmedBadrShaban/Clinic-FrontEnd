@@ -9,10 +9,9 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
-import { DebitReportsService } from '../../../services/reports/debit-reports.service';
-import { ReportsService } from '../../../services/reports/reports.service';
-
-export interface DebitSummary {
+import { DebitReportsService } from '../../../services/debit-reports/debit-reports.service';
+import { ReportsService } from '../../../services/reports.service';
+ export interface DebitSummary {
   totalDebitIn: number;
   totalDebitPaid: number;
   remainingDebit: number;

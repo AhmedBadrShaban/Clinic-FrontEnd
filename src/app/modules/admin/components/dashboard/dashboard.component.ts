@@ -1,14 +1,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+ 
 import { Subject, takeUntil } from 'rxjs';
-import { ReportsService } from 'src/app/modules/admin/services/reports/reports.service';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
-
+import { ReportsService } from '../../services/reports.service';
+ 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',

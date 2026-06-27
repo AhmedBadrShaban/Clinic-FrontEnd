@@ -9,9 +9,10 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
-import { DebitReportsService, DebitMovement, DebitMovementsFilter } from '../../../services/reports/debit-reports.service';
-import { ReportsService, ReceptionistIdAndName } from '../../../services/reports/reports.service';
+import { DebitReportsService, DebitMovement, DebitMovementsFilter } from '../../../services/debit-reports/debit-reports.service';
+ 
 import { Clinic } from 'src/app/shared/models/rooms.models';
+import { ReceptionistIdAndName, ReportsService } from '../../../services/reports.service';
 
 export const MOVEMENT_TYPE_LABELS: Record<string, string> = {
   PACKAGE_RESERVED: 'Package Reserved',
