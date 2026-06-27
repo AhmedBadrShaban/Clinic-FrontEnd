@@ -10,7 +10,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { DebitReportsService, DebitMovement, DebitMovementsFilter } from '../../../services/debit-reports/debit-reports.service';
-import { ReportsService, ReceptionistIdAndName } from '../../../services/reports/reports.service';
+import { ReportsService, ReceptionistIdAndName } from 'src/app/modules/admin/services/reports/reports.service';
+
 import { Clinic } from 'src/app/shared/models/rooms.models';
 
 export const MOVEMENT_TYPE_LABELS: Record<string, string> = {
