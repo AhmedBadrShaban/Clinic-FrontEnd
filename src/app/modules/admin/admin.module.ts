@@ -70,6 +70,7 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
     AddContributorComponent,
     DebitReportComponent,
     DebitMovementsComponent
+    
   ],
 
   imports: [
