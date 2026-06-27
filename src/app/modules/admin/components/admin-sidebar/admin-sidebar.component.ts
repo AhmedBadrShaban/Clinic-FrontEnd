@@ -31,10 +31,10 @@ export class AdminSidebarComponent implements OnInit {
       label: 'Reports',
       icon: 'bi-bar-chart-line',
       children: [
-        { label: 'Monthly Income', icon: 'bi-graph-up-arrow', route: '/admin/monthly-income' },
+        { label: 'Monthly Income', icon: 'bi-graph-up-arrow', route: '/admin/reports/monthly-income' },
         { label: 'Outstanding Debit', icon: 'bi-wallet2', route: '/admin/reports/debit-report' },
         { label: 'Debit Movements', icon: 'bi-arrow-left-right', route: '/admin/reports/debit-movements' },
-      ]
+        { label: 'WhatsApp Messages', icon: 'bi-whatsapp', route: '/admin/reports/whatsapp-messages' },      ]
     },
     { label: 'Rooms', icon: 'bi-door-open', route: '/admin/rooms' },
     { label: 'Patients', icon: 'bi-people', route: '/admin/patients' },

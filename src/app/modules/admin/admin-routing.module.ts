@@ -22,6 +22,7 @@ import { CheckOutComponent } from '../rooms/check-out/check-out.component';
 import { DebitReportComponent } from './components/reports/depit-report/debit-report.component';
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
  
 const routes: Routes = [
   {
@@ -41,7 +42,6 @@ const routes: Routes = [
       { path: 'admin-package', component: PackagesComponent, pathMatch: 'full' },
       { path: 'reserved-packages', component: PackageComponent, pathMatch: 'full' }, // ← NEW
       { path: 'materials', component: MaterialsComponent },
-      { path: 'monthly-income', component: MonthlyMoneyReportComponent },
       { path: 'reservations', component: ReservationsComponent },
       { path: 'reservation/:phone', component: ReservationComponent, pathMatch: 'full' },
       { path: 'doctor-schedular', component: DoctorScheduleComponent },
@@ -51,6 +51,8 @@ const routes: Routes = [
         children: [
           { path: 'debit-report', component: DebitReportComponent },
           { path: 'debit-movements', component: DebitMovementsComponent }, 
+          { path: 'monthly-income', component: MonthlyMoneyReportComponent },
+          { path: 'whatsapp-messages', component: WhatsAppMessagesComponent }, 
         ]
       },
     ]
