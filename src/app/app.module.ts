@@ -42,8 +42,7 @@ import { AuthService } from './shared/services/auth.service';
 import { AuthInterceptor } from './shared/services/auth.interceptor';
 import { CheckOutComponent } from './modules/rooms/check-out/check-out.component';
 import { PaymentComponent } from './modules/rooms/check-out/payment/payment.component';
-import {ReportsComponent} from "./shared/components/reports/reports.component";
-import { UpdateReservationComponent } from './modules/rooms/events-grid/update-reservation/update-reservation.component';
+ import { UpdateReservationComponent } from './modules/rooms/events-grid/update-reservation/update-reservation.component';
 import { MatIconModule } from "@angular/material/icon";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -105,8 +104,7 @@ import { SlotPickerComponent } from './modules/rooms/slot-picker/slot-picker.com
     NzSelectModule,
     AutoCompleteComponent,
     RouterLink,
-    ReportsComponent,
-    MatIconModule,
+     MatIconModule,
     MatTabsModule,
     MatTableModule,
     MatDividerModule,

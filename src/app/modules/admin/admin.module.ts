@@ -29,8 +29,7 @@ import { AdminNavBarComponent } from './components/admin-nav-bar/admin-nav-bar.c
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { ReceptionistModule } from '../receptionist/receptionist.module';
-import {ReportsComponent} from "../../shared/components/reports/reports.component";
-import { ContributorsComponent } from './components/contributors/contributors.component';
+ import { ContributorsComponent } from './components/contributors/contributors.component';
 import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
 
 import {NzTabsModule} from "ng-zorro-antd/tabs";
@@ -49,8 +48,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
 import { DebitReportComponent } from './components/reports/depit-report/debit-report.component';
-import {   } from '../receptionist/shared/table/table.component';
-import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
+ import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
   
 
 @NgModule({
@@ -94,8 +92,7 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
         ReceptionistModule,
       CommonModule,
       FormsModule,
-        ReportsComponent,
-        NzTabsModule,
+         NzTabsModule,
         MatCardModule,
         MatButtonModule,
         MatIconModule,
