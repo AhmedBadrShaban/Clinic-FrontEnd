@@ -1,0 +1,95 @@
+<div class="debit-report-page">
+
+  <!-- ── Page Header ── -->
+  <div class="page-header">
+    <div class="page-header__title">
+      <i class="bi bi-wallet2 header-icon"></i>
+      <div>
+        <h2>Debit Report</h2>
+        <span class="page-header__sub">Outstanding patient balances</span>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-input-wrap">
+        <i class="bi bi-search filter-icon"></i>
+        <input class="filter-input" type="text" placeholder="Filter by clinic…" [(ngModel)]="clinicNameFilter"
+          (keyup.enter)="loadReport(true)" />
+        <button *ngIf="clinicNameFilter" class="filter-clear" (click)="clearFilter()" title="Clear filter">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <button class="btn-primary-clinic" (click)="loadReport(true)">
+        <i class="bi bi-funnel"></i> Apply
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Summary Cards ── -->
+  <div class="summary-grid">
+
+    <div class="summary-card summary-card--purple">
+      <div class="summary-card__icon">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.patientsWithDebit }}</span>
+        <span class="summary-card__label">Patients with balance</span>
+      </div>
+    </div>
+
+    <div class="summary-card summary-card--danger">
+      <div class="summary-card__icon">
+        <i class="bi bi-arrow-up-circle-fill"></i>
+      </div>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.totalDebitIn | number:'1.0-0' }} EGP</span>
+        <span class="summary-card__label">Total debit added</span>
+      </div>
+    </div>
+
+    <div class="summary-card summary-card--success">
+      <div class="summary-card__icon">
+        <i class="bi bi-arrow-down-circle-fill"></i>
+      </div>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.totalDebitPaid | number:'1.0-0' }} EGP</span>
+        <span class="summary-card__label">Total collected</span>
+      </div>
+    </div>
+
+    <div class="summary-card summary-card--warning">
+      <div class="summary-card__icon">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+      </div>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.remainingDebit | number:'1.0-0' }} EGP</span>
+        <span class="summary-card__label">Outstanding balance</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="clinic-card table-card">
+    <app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+      [currentPage]="currentPage + 1" [isLoading]="isLoading" emptyTitle="No outstanding balances"
+      emptyMessage="All patients are settled — no debit records found for the selected filter."
+      (onPageChange)="onPageChange($event)">
+    </app-table>
+  </div>
+
+</div>
+
+<!-- ── Custom cell templates ── -->
+<ng-template #remainingTpl let-row>
+  <span class="badge-danger balance-badge">
+    {{ row.remainingDebit | number:'1.0-0' }} EGP
+  </span>
+</ng-template>
+
+<ng-template #phoneTpl let-row>
+  <a class="phone-link" href="tel:{{ row.phone }}">
+    <i class="bi bi-telephone-fill"></i> {{ row.phone }}
+  </a>
+</ng-template>

@@ -1,0 +1,51 @@
+<div class="rooms-header clinic-card">
+
+  <div class="header-row">
+
+    <!-- Left: action buttons -->
+    <div class="action-group">
+      <button *ngIf="isAdmin" class="btn-primary-clinic" (click)="addRoom.emit()">
+        <i class="bi bi-plus-lg"></i>
+        Add room
+      </button>
+
+      <button *ngIf="isAdmin" class="btn-ghost-clinic" (click)="addClinic.emit()">
+        <i class="bi bi-building-add"></i>
+        Add clinic
+      </button>
+
+      <button class="btn-primary-clinic btn-accent" (click)="newReservation.emit()" [disabled]="!activeRoom">
+        <i class="bi bi-calendar-plus"></i>
+        New reservation
+      </button>
+
+      <button class="btn-ghost-clinic" (click)="viewSlots.emit()" [disabled]="!activeRoom">
+        <i class="bi bi-calendar-week"></i>
+        {{ slotPickerOpen ? 'Close Slots' : 'View Available Slots' }}
+      </button>
+    </div>
+
+    <!-- Right: clinic selector + date picker -->
+    <div class="control-group">
+
+      <mat-form-field *ngIf="isAdmin && clinics.length" appearance="outline" class="clinic-field">
+        <mat-label>Clinic</mat-label>
+        <mat-select [value]="selectedClinic" (selectionChange)="onClinicSelect($event.value)">
+          <mat-option *ngFor="let clinic of clinics" [value]="clinic">
+            {{ clinic }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>business</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>Date</mat-label>
+        <input matInput [value]="dateValue" [matDatepicker]="picker" (dateChange)="onDatePickerChange($event)" readonly>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+    </div>
+  </div>
+
+</div>

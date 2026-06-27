@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { filter } from 'rxjs/operators';
 
-interface NavItem {
+export interface NavItem {
   label: string;
-  route: string;
   icon: string;
+  route?: string;
+  exact?: boolean;
+  children?: NavItem[];
 }
 
 @Component({
@@ -21,37 +23,97 @@ export class AdminSidebarComponent implements OnInit {
   isCollapsed = false;
   currentPageTitle = 'Dashboard';
 
+  @Output() isCollapsedChange = new EventEmitter<boolean>();
+
   navItems: NavItem[] = [
-    { label: 'Dashboard', route: '/admin', icon: 'bi-grid-1x2' },
-    { label: 'Rooms', route: '/admin/rooms', icon: 'bi-door-open' },
-    { label: 'Patients', route: '/admin/patients', icon: 'bi-people' },
-    { label: 'Doctors', route: '/admin/doctors', icon: 'bi-person-badge' },
-    { label: 'Doctor Schedule', route: '/admin/doctor-schedular', icon: 'bi-calendar3' },
-    { label: 'Receptionists', route: '/admin/receptionists', icon: 'bi-headset' },
-    { label: 'Services', route: '/admin/services', icon: 'bi-stars' },
-    { label: 'Packages', route: '/admin/admin-package', icon: 'bi-box-seam' },
-    { label: 'Reserved Packages', route: '/admin/reserved-packages', icon: 'bi-bookmark-check' },
-    { label: 'Materials', route: '/admin/materials', icon: 'bi-droplet' },
-    { label: 'Expenses', route: '/admin/expense', icon: 'bi-receipt' },
-    { label: 'Monthly Income', route: '/admin/monthly-income', icon: 'bi-graph-up-arrow' },
-    { label: 'Contributors', route: '/admin/contributors', icon: 'bi-person-lines-fill' },
+    { label: 'Dashboard', icon: 'bi-grid-1x2', route: '/admin', exact: true },
+    {
+      label: 'Reports',
+      icon: 'bi-bar-chart-line',
+      children: [
+        { label: 'Outstanding Debit', icon: 'bi-wallet2', route: '/admin/reports/debit-report' },
+        { label: 'Debit Movements', icon: 'bi-arrow-left-right', route: '/admin/reports/debit-movements' },
+      ]
+    },
+    { label: 'Rooms', icon: 'bi-door-open', route: '/admin/rooms' },
+    { label: 'Patients', icon: 'bi-people', route: '/admin/patients' },
+    { label: 'Doctors', icon: 'bi-person-badge', route: '/admin/doctors' },
+    { label: 'Doctor Schedule', icon: 'bi-calendar3', route: '/admin/doctor-schedular' },
+    { label: 'Receptionists', icon: 'bi-headset', route: '/admin/receptionists' },
+    { label: 'Services', icon: 'bi-stars', route: '/admin/services' },
+    { label: 'Packages', icon: 'bi-box-seam', route: '/admin/admin-package' },
+    { label: 'Reserved Packages', icon: 'bi-bookmark-check', route: '/admin/reserved-packages' },
+    { label: 'Materials', icon: 'bi-droplet', route: '/admin/materials' },
+    { label: 'Expenses', icon: 'bi-receipt', route: '/admin/expense' },
+    { label: 'Monthly Income', icon: 'bi-graph-up-arrow', route: '/admin/monthly-income' },
+    { label: 'Contributors', icon: 'bi-person-lines-fill', route: '/admin/contributors' },
+
   ];
 
-  constructor(private authService: AuthService, private router: Router) { }
+  // tracks open state per group label e.g. { 'Reports': true }
+  openGroups: Record<string, boolean> = {};
+
+  constructor(private authService: AuthService, private router: Router, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => {
-        const matched = this.navItems.find(item =>
-          item.route !== '/admin' && this.router.url.startsWith(item.route)
-        ) || (this.router.url === '/admin' ? this.navItems[0] : null);
-        this.currentPageTitle = matched?.label ?? 'Admin';
+        this.updatePageTitle();
+        this.syncOpenGroups();
       });
+
+    this.updatePageTitle();
+    this.syncOpenGroups();
+  }
+
+  private updatePageTitle(): void {
+    const url = this.router.url;
+
+    // Check children of group items first
+    for (const item of this.navItems) {
+      if (item.children) {
+        const matchedChild = item.children.find(c => c.route && url.startsWith(c.route));
+        if (matchedChild) {
+          this.currentPageTitle = matchedChild.label;
+          return;
+        }
+      }
+    }
+
+    // Then check leaf items
+    const matched = this.navItems.find(item =>
+      item.route && (item.exact ? url === item.route : url.startsWith(item.route))
+    );
+    this.currentPageTitle = matched?.label ?? 'Admin';
+  }
+
+  private syncOpenGroups(): void {
+    const url = this.router.url;
+    this.navItems.forEach(item => {
+      if (item.children) {
+        const anyChildActive = item.children.some(c => c.route && url.startsWith(c.route));
+        if (anyChildActive) {
+          this.openGroups[item.label] = true;
+        }
+      }
+    });
+  }
+
+  toggleGroup(item: NavItem): void {
+    if (!this.isCollapsed) {
+      this.openGroups[item.label] = !this.openGroups[item.label];
+    }
+  }
+
+  isGroupOpen(item: NavItem): boolean {
+    return !!this.openGroups[item.label];
   }
 
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
+    this.isCollapsedChange.emit(this.isCollapsed);
+    this.cd.markForCheck();
   }
 
   logout(): void {

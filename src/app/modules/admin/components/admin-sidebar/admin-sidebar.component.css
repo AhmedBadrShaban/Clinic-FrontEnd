@@ -100,6 +100,10 @@
   white-space: nowrap;
   transition: background 0.15s, color 0.15s;
   cursor: pointer;
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
 }
 
 .nav-link:hover {
@@ -125,9 +129,83 @@
   line-height: 1;
 }
 
+.nav-icon--sub {
+  font-size: 15px;
+}
+
 .nav-label {
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+}
+
+/* ─── Collapsible group trigger ──────────────────────────────────── */
+.nav-group {
+  position: relative;
+}
+
+.nav-group-trigger {
+  /* inherits .nav-link, just needs the chevron pushed to the right */
+}
+
+.nav-group-trigger.group-open {
+  background: var(--sidebar-hover-bg);
+  color: var(--sidebar-active-color);
+}
+
+.nav-group-chevron {
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  margin-left: auto;
+  color: var(--sidebar-icon-color);
+}
+
+/* ─── Sub-menu (expanded sidebar) ────────────────────────────────── */
+.nav-sub {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+
+  /* collapsed by default */
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-sub.open {
+  max-height: 400px; /* tall enough for any realistic sub-list */
+}
+
+.nav-sub-link {
+  padding-left: 40px; /* indent under parent icon */
+  font-size: 13px;
+}
+
+.nav-sub-link .nav-icon--sub {
+  color: var(--sidebar-icon-color);
+}
+
+.nav-sub-link.active .nav-icon--sub {
+  color: var(--sidebar-active-color);
+}
+
+/* ─── Collapsed flyout (icon-only mode) ──────────────────────────── */
+.nav-sub-flyout {
+  display: none; /* shown via JS/collapsed logic below */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* When sidebar is collapsed the flyout icons sit below the group trigger */
+.collapsed .nav-sub-flyout {
+  display: flex;
 }
 
 /* ─── Footer / Logout ────────────────────────────────────────────── */

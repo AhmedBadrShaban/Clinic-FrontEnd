@@ -10,7 +10,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
-import { ReportsService } from 'src/app/modules/admin/services/Reports/reports.service';
+import { ReportsService } from 'src/app/modules/admin/services/reports/reports.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({

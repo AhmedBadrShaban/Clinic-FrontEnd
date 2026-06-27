@@ -1,0 +1,84 @@
+<!-- Backdrop -->
+<div class="sp-backdrop" [class.sp-backdrop--visible]="isOpen" (click)="closed.emit()"></div>
+
+<!-- Side panel -->
+<div class="sp-panel" [class.sp-panel--open]="isOpen">
+
+  <!-- Header -->
+  <div class="sp-header">
+    <div class="sp-header-left">
+      <div class="sp-header-icon">
+        <i class="bi bi-calendar-week"></i>
+      </div>
+      <div class="sp-header-text">
+        <span class="sp-title">Slot Picker</span>
+        <span class="sp-subtitle">{{ date | date:'EEE, MMM d' }} · {{ roomName }}</span>
+      </div>
+    </div>
+    <button class="sp-close-btn" (click)="closed.emit()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <!-- Stats strip (clickable filters) -->
+  <div class="sp-stats">
+    <button class="sp-stat sp-stat--available" [class.sp-stat--active]="filterMode === 'available'"
+      (click)="setFilter('available')"
+      [title]="filterMode === 'available' ? 'Click to show all' : 'Show available only'">
+      <i class="bi bi-check-circle-fill"></i>
+      {{ availableCount }} available
+      <i class="bi sp-filter-icon" [class.bi-funnel-fill]="filterMode === 'available'"
+        [class.bi-funnel]="filterMode !== 'available'"></i>
+    </button>
+
+    <button class="sp-stat sp-stat--reserved" [class.sp-stat--active]="filterMode === 'reserved'"
+      (click)="setFilter('reserved')" [title]="filterMode === 'reserved' ? 'Click to show all' : 'Show reserved only'">
+      <i class="bi bi-x-circle-fill"></i>
+      {{ reservedCount }} reserved
+      <i class="bi sp-filter-icon" [class.bi-funnel-fill]="filterMode === 'reserved'"
+        [class.bi-funnel]="filterMode !== 'reserved'"></i>
+    </button>
+  </div>
+
+  <!-- Active filter label -->
+  <div class="sp-filter-bar" *ngIf="filterMode !== 'all'">
+    <i class="bi bi-funnel-fill"></i>
+    Showing {{ filterMode }} slots only
+    <button class="sp-filter-clear" (click)="setFilter(filterMode)">
+      <i class="bi bi-x"></i> Clear
+    </button>
+  </div>
+
+   
+
+  <!-- Slots body -->
+  <div class="sp-body">
+    <ng-container *ngFor="let hour of activeHours">
+      <div class="sp-hour-row" *ngIf="hasAnySlotsInHour(hour)">
+        <div class="sp-hour-label">{{ formatHour(hour) }}</div>
+        <div class="sp-slots-grid">
+          <div *ngFor="let slot of getSlotsForHour(hour); trackBy: trackBySlot" class="sp-slot"
+            [class.sp-slot--available]="slot.available" [class.sp-slot--reserved]="!slot.available"
+            (click)="slot.available ? onAvailableClick(slot) : onReservedClick(slot)"
+            [title]="formatTime(slot.startTime) + ' – ' + formatTime(slot.endTime)">
+            <i class="bi sp-slot-icon" [class.bi-plus-circle]="slot.available"
+              [class.bi-person-fill]="!slot.available"></i>
+            <span class="sp-slot-time">{{ formatTime(slot.startTime) }}</span>
+            <span class="sp-slot-end">{{ formatTime(slot.endTime) }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Empty state -->
+    <div class="sp-empty" *ngIf="filteredSlots.length === 0">
+      <i class="bi bi-calendar-x"></i>
+      <p *ngIf="filterMode === 'all'">No slots found for this date.</p>
+      <p *ngIf="filterMode !== 'all'">No {{ filterMode }} slots for this date.</p>
+      <button *ngIf="filterMode !== 'all'" class="sp-filter-clear sp-filter-clear--lg" (click)="setFilter(filterMode)">
+        Show all slots
+      </button>
+    </div>
+  </div>
+
+</div>

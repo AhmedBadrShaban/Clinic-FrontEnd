@@ -1,0 +1,107 @@
+<div class="movements-page">
+
+  <!-- ── Page Header ── -->
+  <div class="page-header">
+    <div class="page-header__title">
+      <i class="bi bi-arrow-left-right header-icon"></i>
+      <div>
+        <h2>Debit Movements</h2>
+        <span class="page-header__sub">Full history of debit changes across all patients</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Filter Panel ── -->
+  <div class="clinic-card filter-panel">
+    <div class="filter-grid">
+
+      <!-- Patient ID -->
+      <div class="filter-field">
+        <label class="filter-label">Patient ID</label>
+        <input class="filter-input" type="number" placeholder="e.g. 5698" [(ngModel)]="filters.patientId" />
+      </div>
+
+      <!-- Clinic ID -->
+      <div class="filter-field">
+        <label class="filter-label">Clinic ID</label>
+        <input class="filter-input" type="number" placeholder="e.g. 2" [(ngModel)]="filters.clinicId" />
+      </div>
+
+      <!-- Receptionist ID -->
+      <div class="filter-field">
+        <label class="filter-label">Receptionist ID</label>
+        <input class="filter-input" type="number" placeholder="e.g. 3" [(ngModel)]="filters.createdBy" />
+      </div>
+
+      <!-- Movement Type -->
+      <div class="filter-field">
+        <label class="filter-label">Movement Type</label>
+        <select class="filter-select" [(ngModel)]="filters.movementType">
+          <option *ngFor="let t of movementTypes" [value]="t.value">{{ t.label }}</option>
+        </select>
+      </div>
+
+      <!-- From Date -->
+      <div class="filter-field">
+        <label class="filter-label">From Date</label>
+        <input class="filter-input" type="date" [(ngModel)]="fromDateInput" />
+      </div>
+
+      <!-- To Date -->
+      <div class="filter-field">
+        <label class="filter-label">To Date</label>
+        <input class="filter-input" type="date" [(ngModel)]="toDateInput" />
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <div class="filter-actions">
+      <button class="btn-ghost-clinic" (click)="clearFilters()">
+        <i class="bi bi-x-circle"></i> Clear
+      </button>
+      <button class="btn-primary-clinic" (click)="loadMovements(true)">
+        <i class="bi bi-funnel"></i> Apply Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="clinic-card table-card">
+    <div class="table-meta" *ngIf="!isLoading && totalItems > 0">
+      <span class="table-meta__count">{{ totalItems }} movements found</span>
+      <span class="table-meta__hint">
+        <i class="bi bi-info-circle"></i> Click a column header to sort
+      </span>
+    </div>
+
+    <app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
+      [currentPage]="currentPage + 1" [isLoading]="isLoading" emptyTitle="No debit movements"
+      emptyMessage="No records match the selected filters." (onPageChange)="onPageChange($event)"
+      (onSortChange)="onSortChange($event)">
+    </app-table>
+  </div>
+
+</div>
+
+<!-- ── Cell Templates ── -->
+
+<ng-template #deltaTpl let-row>
+  <span class="delta-cell" [ngClass]="deltaClass(row.delta)">
+    {{ deltaPrefix(row.delta) }}{{ row.delta | number:'1.0-2' }} EGP
+  </span>
+</ng-template>
+
+<ng-template #typeTpl let-row>
+  <span [ngClass]="typeClass(row.movementType)">
+    {{ movementLabels[row.movementType] || row.movementType }}
+  </span>
+</ng-template>
+
+<ng-template #descriptionTpl let-row>
+  <span class="description-cell" [title]="row.description">{{ row.description }}</span>
+</ng-template>
+
+<ng-template #dateTpl let-row>
+  <span class="date-cell">{{ row.createdAt | date:'dd MMM yyyy, h:mm a' }}</span>
+</ng-template>

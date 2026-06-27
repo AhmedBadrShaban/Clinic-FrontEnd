@@ -1,0 +1,79 @@
+.rooms-header {
+  /* .clinic-card from global tokens gives white bg + border + shadow */
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+/* ── Action buttons ──────────────────────────────────────────────── */
+.action-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.btn-accent {
+  background: #e91e8c !important; /* pink accent for "New reservation" */
+}
+
+.btn-accent:hover {
+  background: #c2177a !important;
+}
+
+.btn-accent:disabled {
+  background: var(--border-medium) !important;
+  color: var(--text-muted) !important;
+  cursor: not-allowed;
+}
+
+/* ── Controls ────────────────────────────────────────────────────── */
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.clinic-field {
+  min-width: 200px;
+}
+
+.date-field {
+  min-width: 180px;
+}
+
+/* Remove default mat-form-field bottom margin in this context */
+.control-group mat-form-field {
+  margin-bottom: -1.25em;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .header-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .action-group,
+  .control-group {
+    justify-content: stretch;
+  }
+
+  .action-group .btn-primary-clinic,
+  .action-group .btn-ghost-clinic {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .clinic-field,
+  .date-field {
+    flex: 1;
+    min-width: 0;
+  }
+}

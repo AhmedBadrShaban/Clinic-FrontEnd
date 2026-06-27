@@ -1,0 +1,87 @@
+<div class="res-card" [ngClass]="statusClass" [style.animation-delay.ms]="animationDelay"
+  (click)="cardClicked.emit(reservation)" matRipple>
+
+  <!-- Status badge -->
+  <div class="res-status-bar">
+    <mat-icon>{{ statusIcon }}</mat-icon>
+    <span>{{ statusLabel }}</span>
+    <span *ngIf="reservation.hasDebit" class="debit-pill">Debit</span>
+  </div>
+
+  <!-- Body -->
+  <div class="res-body">
+
+    <!-- Patient -->
+    <div class="res-section">
+      <p class="section-label">
+        <mat-icon>person</mat-icon> Patient
+      </p>
+      <div class="info-row">
+        <mat-icon>badge</mat-icon>
+        <span class="info-label">Name</span>
+        <span class="info-val">{{ reservation.patientName }}</span>
+      </div>
+      <div class="info-row">
+        <mat-icon>phone</mat-icon>
+        <span class="info-label">Phone</span>
+        <span class="info-val">{{ reservation.patientPhone }}</span>
+      </div>
+      <div class="info-row">
+        <mat-icon>medical_services</mat-icon>
+        <span class="info-label">Doctor</span>
+        <span class="info-val">{{ reservation.doctorName }}</span>
+      </div>
+    </div>
+
+    <!-- Time -->
+    <div class="res-time">
+      <mat-icon>schedule</mat-icon>
+      {{ formatTime(reservation.reservationStart) }} –
+      {{ formatTime(reservation.reservationEnd) }}
+    </div>
+
+    <!-- Services -->
+    <div class="res-section" *ngIf="reservation.services?.length">
+      <p class="section-label">
+        <mat-icon>spa</mat-icon> Services
+      </p>
+      <p class="services-text">{{ servicesSummary }}</p>
+    </div>
+
+    <!-- Notes -->
+    <div class="res-note cancellation" *ngIf="reservation.note && reservation.status === 'CANCELLED'">
+      <p class="section-label"><mat-icon>cancel</mat-icon> Cancellation reason</p>
+      <p class="note-text">{{ reservation.note }}</p>
+    </div>
+
+    <div class="res-note general" *ngIf="reservation.generalNote">
+      <p class="section-label"><mat-icon>description</mat-icon> General note</p>
+      <p class="note-text">{{ reservation.generalNote }}</p>
+    </div>
+
+    <div class="res-note" *ngIf="reservation.note && reservation.status !== 'CANCELLED'">
+      <p class="section-label"><mat-icon>note</mat-icon> Note</p>
+      <p class="note-text">{{ reservation.note }}</p>
+    </div>
+
+  </div>
+
+  <!-- Actions footer -->
+  <div class="res-actions">
+    <button mat-icon-button class="action-icon" matTooltip="View details"
+      (click)="cardClicked.emit(reservation); $event.stopPropagation()">
+      <mat-icon>visibility</mat-icon>
+    </button>
+
+    <button *ngIf="isWaitingOrInProgress" mat-icon-button class="action-icon action-icon--primary" matTooltip="Confirm"
+      (click)="onConfirm($event)">
+      <mat-icon>check</mat-icon>
+    </button>
+
+    <button *ngIf="isDone" mat-icon-button class="action-icon action-icon--primary" matTooltip="Checkout"
+      (click)="onCheckout($event)">
+      <mat-icon>payment</mat-icon>
+    </button>
+  </div>
+
+</div>

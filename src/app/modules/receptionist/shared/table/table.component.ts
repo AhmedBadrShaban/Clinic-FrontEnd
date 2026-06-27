@@ -39,14 +39,15 @@ export class TableComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // sort is always in DOM now — safe to attach once here
     if (!this.isServerSideSort) {
+      // Client-side: hand the sort to the dataSource and it handles everything
       this.dataSource.sort = this.sort;
     } else {
+      // Server-side: emit every sort change to the parent, parent reloads data
       this.sort.sortChange.subscribe((sortState: Sort) => {
         this.onSortChange.emit({
           column: sortState.active,
-          direction: sortState.direction
+          direction: sortState.direction || 'desc'
         });
       });
     }

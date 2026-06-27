@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { startWith, debounceTime } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ReportsService, MonthlyReportResponse } from '../../services/Reports/reports.service';
+import { ReportsService, MonthlyReportResponse } from '../../services/reports/reports.service';
 import { RoomsService, Room } from 'src/app/modules/Services/rooms/rooms.service';
 
 import jsPDF from 'jspdf';

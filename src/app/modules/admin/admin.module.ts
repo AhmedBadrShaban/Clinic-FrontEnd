@@ -34,8 +34,7 @@ import { ContributorsComponent } from './components/contributors/contributors.co
 import { AddContributorComponent } from './components/contributors/add-contributor/add-contributor.component';
 
 import {NzTabsModule} from "ng-zorro-antd/tabs";
-import { TableComponent } from '../receptionist/shared/table/table.component';
-import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
+ import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -49,7 +48,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
- 
+import { DebitReportComponent } from './components/reports/debit-report/debit-report.component';
+import {   } from '../receptionist/shared/table/table.component';
+import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
+  
 
 @NgModule({
   declarations: [
@@ -71,8 +73,11 @@ import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.
       MaterialsComponent,
       AddNewMatrialComponent,
         ContributorsComponent,
-      AddContributorComponent
-   ],
+      AddContributorComponent,
+    DebitReportComponent,
+    DebitMovementsComponent
+    
+    ],
 
     imports: [
         CommonModule,
@@ -87,6 +92,8 @@ import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.
         NzDropDownModule,
         NzAutocompleteModule,
         ReceptionistModule,
+      CommonModule,
+      FormsModule,
         ReportsComponent,
         NzTabsModule,
         MatCardModule,
@@ -100,7 +107,10 @@ import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.
         MatTableModule,
         MatChipsModule,
         MatTooltipModule,
-      AdminSidebarComponent
+      AdminSidebarComponent,
+
+       
+       
     ]
 })
 export class AdminModule { }

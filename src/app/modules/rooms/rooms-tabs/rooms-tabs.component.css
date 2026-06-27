@@ -1,0 +1,57 @@
+.room-tabs-wrapper {
+  overflow: hidden;
+}
+
+/* ── Tab header ──────────────────────────────────────────────────── */
+::ng-deep .room-tabs-wrapper .mat-mdc-tab-header {
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-light);
+  /* allow horizontal scroll when many rooms */
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-medium) transparent;
+}
+
+::ng-deep .room-tabs-wrapper .mat-mdc-tab-header::-webkit-scrollbar {
+  height: 4px;
+}
+
+::ng-deep .room-tabs-wrapper .mat-mdc-tab-header::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 2px;
+}
+
+::ng-deep .room-tabs-wrapper .mat-mdc-tab-label-container {
+  flex-shrink: 0;
+}
+
+::ng-deep .room-tabs-wrapper .mat-mdc-tab {
+  min-width: 120px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0;
+}
+
+::ng-deep .room-tabs-wrapper .mat-mdc-tab.mdc-tab--active {
+  color: var(--brand-purple);
+}
+
+::ng-deep .room-tabs-wrapper .mdc-tab-indicator__content--underline {
+  border-color: var(--brand-purple) !important;
+}
+
+/* ── Tab body — never wider than container ───────────────────────── */
+::ng-deep .room-tabs-wrapper .mat-mdc-tab-body-wrapper {
+  overflow-x: hidden;
+}
+
+/* ── Tab content area ────────────────────────────────────────────── */
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  overflow-x: hidden;
+  width: 100%;
+}

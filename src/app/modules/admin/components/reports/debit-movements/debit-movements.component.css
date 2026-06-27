@@ -1,0 +1,261 @@
+/* ═══════════════════════════════════════════════
+   Debit Movements — scoped styles
+   ═══════════════════════════════════════════════ */
+
+.movements-page {
+  padding: var(--space-lg);
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ── Page header ─────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.page-header__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.header-icon {
+  font-size: 28px;
+  color: var(--brand-purple);
+}
+
+.page-header__title h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+}
+
+.page-header__sub {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* ── Filter panel ────────────────────────────── */
+.filter-panel {
+  padding: var(--space-lg);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.filter-input,
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  background: var(--surface-card);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  border-color: var(--brand-purple);
+  box-shadow: 0 0 0 3px var(--brand-purple-dim);
+}
+
+/* sort row */
+.sort-row {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.sort-row .filter-select {
+  flex: 1;
+}
+
+.sort-dir-btn {
+  padding: 8px 10px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  background: var(--surface-card);
+  color: var(--brand-purple);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.sort-dir-btn:hover {
+  background: var(--brand-purple-dim);
+  border-color: var(--brand-purple);
+}
+
+/* filter actions */
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  border-top: 1px solid var(--border-light);
+  padding-top: var(--space-md);
+}
+
+/* ── Table card ──────────────────────────────── */
+.table-card {
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.table-card app-table,
+.table-card .table-container {
+  width: 100%;
+  display: block;
+}
+
+.table-card mat-table,
+.table-card table {
+  width: 100% !important;
+}
+
+.table-meta {
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.table-meta__count {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.table-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-meta__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  background: var(--brand-purple-dim);
+  color: var(--brand-purple);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+}
+
+/* ── Delta cell ──────────────────────────────── */
+.delta-cell {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.delta--positive {
+  color: var(--color-danger);   /* patient owes more → red */
+}
+
+.delta--negative {
+  color: var(--color-success);  /* patient paid → green */
+}
+
+.delta--zero {
+  color: var(--text-muted);
+}
+
+/* ── Movement type badges ────────────────────── */
+.type-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.type-badge--package {
+  background: var(--brand-purple-dim);
+  color: var(--brand-purple);
+}
+
+.type-badge--product {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.type-badge--payment {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.type-badge--manual {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+/* ── Description cell ────────────────────────── */
+.description-cell {
+  display: block;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  cursor: default;
+}
+
+/* ── Date cell ───────────────────────────────── */
+.date-cell {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .movements-page {
+    padding: var(--space-md);
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+}

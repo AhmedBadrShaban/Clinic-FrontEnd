@@ -1,243 +1,402 @@
-/* ============================
-   Reservation Form UI Upgrade
-   ============================ */
+/* ══════════════════════════════════════════════
+   Reservation Form  –  matches slot-picker style
+   Purple gradient header · clean card sections
+   ══════════════════════════════════════════════ */
 
-/* ---- Global container ---- */
-.reservation-form-container {
-  font-family: "Roboto", sans-serif;
-  background: #f9fafc;
-  padding: 0;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-/* ---- Header ---- */
-.form-header {
-  padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #1976d2, #2196f3);
-  color: white;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.form-header h2 {
-  font-weight: 500;
-}
-
-.header-icon {
-  font-size: 2.2rem;
-}
-
-.close-btn {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  transition: background 0.2s ease;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* ---- Section styling ---- */
-.form-section {
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.02);
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.section-icon {
-  color: #1976d2;
-}
-
-/* ---- Material field tweaks ---- */
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  border-radius: 8px;
-}
-
-.mat-form-field:hover .mat-form-field-outline {
-  border-color: #2196f3 !important;
-}
-
-.mat-form-field.mat-focused .mat-form-field-outline {
-  border-color: #1976d2 !important;
-  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
-}
-
-/* ---- Autocomplete options ---- */
-.modern-autocomplete .mat-option {
-  padding: 0.5rem 1rem;
-}
-
-.patient-option,
-.doctor-option {
-  transition: background 0.2s ease;
-}
-
-.patient-option:hover,
-.doctor-option:hover {
-  background: rgba(25, 118, 210, 0.08);
-  border-radius: 6px;
-}
-
-.patient-avatar,
-.doctor-avatar {
-  width: 36px;
-  height: 36px;
-  background: #e3f2fd;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.patient-name,
-.doctor-name {
-  font-weight: 500;
-}
-
-/* ---- Services section ---- */
-.add-service-btn,
-.remove-service-btn {
-  background-color: #e3f2fd;
-  border-radius: 50%;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.add-service-btn:hover,
-.remove-service-btn:hover {
-  transform: scale(1.1);
-  background-color: #bbdefb;
-}
-
-/* ---- Time duration chip ---- */
-.time-duration mat-chip-option {
-  background: linear-gradient(135deg, #4caf50, #81c784);
-  color: white !important;
-  font-weight: 500;
-}
-
-/* ---- Notes field ---- */
-textarea[matInput] {
-  border-radius: 8px;
-}
-
-/* ---- Form status ---- */
-.valid-form {
-  background: linear-gradient(135deg, #4caf50, #81c784) !important;
-  color: white !important;
-}
-
-.invalid-form {
-  background: linear-gradient(135deg, #f44336, #e57373) !important;
-  color: white !important;
-}
-
-/* ---- Action buttons ---- */
-.action-buttons button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.submit-btn {
-  background: linear-gradient(135deg, #1976d2, #42a5f5) !important;
-  color: white !important;
-  font-weight: 500;
-  border-radius: 8px;
-}
-
-.submit-btn:disabled {
-  background: #b0bec5 !important;
-  color: #eceff1 !important;
-}
-
-/* ---- Loading overlay ---- */
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  z-index: 999;
-}
-
-.loading-content p {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #333;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-}
-.patient-details{
-    display:flex;
-    gap:0.5rem;
-}
-.section-header h3{
-    margin-bottom:0;
-}
-.mat-icon{
-    margin-right:0 !important;
-}
-/* ---- Scroll fix ---- */
-.reservation-form-container {
+/* ── Container ──────────────────────────────── */
+.rf-container {
   display: flex;
   flex-direction: column;
   height: 90vh;
   max-height: 90vh;
+  background: #f8fafc;
+  border-radius: 16px;
   overflow: hidden;
+  font-family: "Inter", "Roboto", sans-serif;
+  position: relative;
 }
 
-.form-header {
+/* ── Header  (mirrors .sp-header) ───────────── */
+.rf-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #6c3fc5, #8b5cf6);
   flex-shrink: 0;
 }
 
-.reservation-form {
-  flex: 1 1 0;
+.rf-header-icon {
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rf-header-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rf-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.rf-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.rf-close-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.rf-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Scrollable body ─────────────────────────── */
+.rf-body {
+  flex: 1;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 20px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   scrollbar-width: thin;
-  scrollbar-color: #1976d2 #e3f2fd;
+  scrollbar-color: #8b5cf6 #ede9fe;
 }
+.rf-body::-webkit-scrollbar { width: 5px; }
+.rf-body::-webkit-scrollbar-track { background: #ede9fe; border-radius: 3px; }
+.rf-body::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 3px; }
 
-.reservation-form::-webkit-scrollbar {
-  width: 6px;
-}
-
-.reservation-form::-webkit-scrollbar-track {
-  background: #e3f2fd;
-  border-radius: 99px;
-}
-
-.reservation-form::-webkit-scrollbar-thumb {
-  background: #1976d2;
-  border-radius: 99px;
-}
-
-.reservation-form::-webkit-scrollbar-thumb:hover {
-  background: #1565c0;
-}
-
-.form-actions {
-  flex-shrink: 0;
+/* ── Section card ───────────────────────────── */
+.rf-section {
   background: #fff;
-  border-top: 1px solid #e8eaf0;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+/* Section label (replaces .sp-legend-item feel) */
+.rf-section-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6c3fc5;
+  margin-bottom: 12px;
+}
+.rf-section-label i {
+  font-size: 13px;
+}
+
+.rf-label-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #94a3b8;
+  font-size: 11px;
+  margin-left: 2px;
+}
+
+/* ── Two-column section (patient + doctor) ── */
+.rf-section--row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.rf-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Material form fields ────────────────────── */
+.rf-field {
+  width: 100%;
+}
+
+.rf-field-icon {
+  color: #94a3b8;
+  font-size: 18px !important;
+}
+
+/* Purple focus ring */
+.rf-field.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #6c3fc5 !important;
+}
+
+/* ── Autocomplete options ────────────────────── */
+.rf-autocomplete-option {
+  padding: 6px 12px !important;
+}
+
+.rf-option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rf-option-icon {
+  font-size: 14px;
+  color: #6c3fc5;
+}
+
+.rf-option-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.rf-option-sub {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.rf-option-empty {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ── Services list ───────────────────────────── */
+.rf-services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rf-service-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rf-service-field {
+  flex: 1;
+}
+
+.rf-service-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.rf-icon-btn {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px;
+  border-radius: 50% !important;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, background 0.15s;
+  background: transparent;
+}
+
+.rf-icon-btn--add {
+  color: #6c3fc5;
+  font-size: 20px;
+}
+.rf-icon-btn--add:hover {
+  background: #ede9fe;
+  transform: scale(1.1);
+}
+
+.rf-icon-btn--remove {
+  color: #ef4444;
+  font-size: 20px;
+}
+.rf-icon-btn--remove:hover {
+  background: #fee2e2;
+  transform: scale(1.1);
+}
+
+/* ── Time inputs ─────────────────────────────── */
+.rf-time-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rf-time-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rf-time-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rf-time-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.rf-time-input:focus {
+  border-color: #6c3fc5;
+  box-shadow: 0 0 0 3px rgba(108, 63, 197, 0.15);
+  background: #fff;
+}
+
+.rf-time-error {
+  font-size: 11px;
+  color: #ef4444;
+}
+
+.rf-time-divider {
+  font-size: 16px;
+  color: #94a3b8;
+  padding-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* Duration badge */
+.rf-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #ede9fe;
+  color: #6c3fc5;
+  width: fit-content;
+}
+.rf-duration--error {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* ── Notes field ─────────────────────────────── */
+.rf-notes-field textarea {
+  resize: none;
+}
+
+/* ── Footer ──────────────────────────────────── */
+.rf-footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 24px;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.rf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rf-btn--ghost {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
+}
+.rf-btn--ghost:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.rf-btn--primary {
+  background: linear-gradient(135deg, #6c3fc5, #8b5cf6);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(108, 63, 197, 0.35);
+}
+.rf-btn--primary:hover:not(:disabled) {
+  box-shadow: 0 6px 18px rgba(108, 63, 197, 0.45);
+  transform: translateY(-1px);
+}
+.rf-btn--primary:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.rf-spinner {
+  display: inline-block;
+}
+
+/* ── Loading overlay ─────────────────────────── */
+.rf-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 10;
+}
+.rf-overlay p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c3fc5;
+  margin: 0;
 }

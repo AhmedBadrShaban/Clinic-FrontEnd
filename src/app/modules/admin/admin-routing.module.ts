@@ -19,11 +19,14 @@ import { DoctorScheduleComponent } from '../receptionist/components/doctor-sched
 import { ContributorsComponent } from "./components/contributors/contributors.component";
 import { MonthlyMoneyReportComponent } from './components/monthly-income/income.component';
 import { CheckOutComponent } from '../rooms/check-out/check-out.component';
+import { DebitReportComponent } from './components/reports/debit-report/debit-report.component';
+import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
+import { ReportsComponent } from 'src/app/shared/components/reports/reports.component';
 
 const routes: Routes = [
   {
     path: '', component: AdminComponent, children: [
-      { path: '', component: AdminHomeComponent },
+      { path: '', component: ReportsComponent },
       { path: 'adminProfile', component: AdminProfileComponent },
       { path: 'rooms', component: RoomsComponent, pathMatch: 'full' },
       { path: 'rooms/check-out/:id', component: CheckOutComponent, pathMatch: 'full' },
@@ -42,7 +45,14 @@ const routes: Routes = [
       { path: 'reservations', component: ReservationsComponent },
       { path: 'reservation/:phone', component: ReservationComponent, pathMatch: 'full' },
       { path: 'doctor-schedular', component: DoctorScheduleComponent },
-      { path: 'contributors', component: ContributorsComponent },
+       { path: 'contributors', component: ContributorsComponent },
+      {
+        path: 'reports',
+        children: [
+          { path: 'debit-report', component: DebitReportComponent },
+          { path: 'debit-movements', component: DebitMovementsComponent }, 
+        ]
+      },
     ]
   },
 ];

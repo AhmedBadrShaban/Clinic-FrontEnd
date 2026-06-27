@@ -1,89 +1,44 @@
-<div class="rooms-container" *ngIf="dataLoaded; else loadingTemplate">
-  <!-- Header -->
-  <mat-card class="header-card">
-    <mat-card-content>
-      <div class="header-actions">
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-          <div class="add-actions">
-<button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openDialog('room')" class="action-btn">
-  <mat-icon>add</mat-icon>
-  Add Room
-</button>
-<button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openDialog('clinic')" class="action-btn">
-  <mat-icon>add_business</mat-icon>
-  Add Clinic
-</button>
-<button mat-raised-button color="accent" (click)="openDialog('reservation', activeRoom, selectedDate)"
-  [disabled]="!activeRoom" class="action-btn">
-  <mat-icon>event_available</mat-icon>
-  New Reservation
-</button>
-          </div>
-          <mat-form-field *ngIf="isAdmin" appearance="outline" class="clinic-select">
-            <mat-label>Select Clinic</mat-label>
-            <mat-select [(value)]="selectedClinic" (selectionChange)="onClinicChange($event.value)">
-              <mat-option *ngFor="let clinic of clinics" [value]="clinic">
-                {{ clinic }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+<div class="rooms-shell" *ngIf="dataLoaded; else loadingTpl">
 
-        </div>
-        <!-- Date Picker -->
-        <mat-form-field appearance="outline" class="date-picker">
-          <mat-label>Select Date</mat-label>
-          <input matInput [value]="selectedDate" [matDatepicker]="picker" (dateChange)="onDateChange($event)" readonly>
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <!-- Header: clinic selector, date picker, action buttons -->
+  <app-rooms-header [clinics]="clinics" [selectedClinic]="selectedClinic" [selectedDate]="selectedDate"
+    [activeRoom]="activeRoom" [isAdmin]="isAdmin" [slotPickerOpen]="slotPickerOpen"
+    (clinicChanged)="onClinicChanged($event)" (dateChanged)="onDateChanged($event)" (addRoom)="openAddRoomDialog()"
+    (addClinic)="openAddClinicDialog()" (newReservation)="openNewReservationDialog()" (viewSlots)="onViewSlots()">
+  </app-rooms-header>
 
-  <!-- Main Content -->
-  <div>
-    <!-- Tabs for Rooms -->
-    <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)" class="room-tabs"
-      dynamicHeight animationDuration="300ms">
-      <mat-tab *ngFor="let room of rooms; trackBy: trackByRoomId" [label]="room.roomName">
-        <!-- Lazy load tab content - Only render active tab -->
-        <ng-container *ngIf="isActiveRoom(room.roomId)">
-          <!-- Tab Content -->
-          <div class="tab-content">
-             <app-available-slots [roomName]="room.roomName" [reservedAt]="selectedDate"
-              [refreshTrigger]="refreshTrigger">
-            </app-available-slots>
+  <!-- Room tabs — no slot picker logic here anymore -->
+  <app-room-tabs [rooms]="rooms" [selectedIndex]="selectedTabIndex" [selectedDate]="selectedDate"
+    [refreshTrigger]="refreshTrigger" (tabChanged)="onTabChanged($event)" (roomDataUpdated)="onRoomDataUpdated($event)"
+    (openReservationWithSlot)="onOpenReservationWithSlot($event)" (viewReservation)="onViewReservation($event)">
+  </app-room-tabs>
 
-            <!-- Events Grid - Let it fetch its own data -->
-            <app-events-grid [roomName]="room.roomName" [roomId]="room.roomId" [date]="selectedDate"
-              [refreshTrigger]="refreshTrigger" (dataUpdated)="refreshRoomData(room.roomId)" class="events-grid">
-            </app-events-grid>
-          </div>
-        </ng-container>
-      </mat-tab>
-    </mat-tab-group>
-
-    <!-- Empty State -->
-    <div *ngIf="rooms.length === 0" class="empty-state">
-      <mat-icon class="empty-icon">meeting_room</mat-icon>
-      <h3>No Rooms Available</h3>
-      <p>Add a new room to start managing reservations.</p>
-      <button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openDialog('room')">
-        <mat-icon>add</mat-icon>
-        Add First Room
-      </button>
-    </div>
+  <!-- Empty state -->
+  <div *ngIf="rooms.length === 0" class="empty-state">
+    <i class="bi bi-door-open empty-icon"></i>
+    <h3>No rooms available</h3>
+    <p>Add a room to start managing reservations.</p>
+    <button *ngIf="isAdmin" class="btn-primary-clinic" (click)="openAddRoomDialog()">
+      <i class="bi bi-plus-lg"></i> Add first room
+    </button>
   </div>
+
 </div>
 
-<!-- Loading Skeleton -->
-<ng-template #loadingTemplate>
-  <mat-card class="loading-card">
-    <mat-card-content class="loading-content">
-      <div class="loading-skeleton">
-        <div class="skeleton-bar" *ngFor="let item of [1,2,3,4,5]"></div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+<!-- Loading skeleton -->
+<ng-template #loadingTpl>
+  <div class="shell-loading">
+    <div class="skeleton-header"></div>
+    <div class="skeleton-tabs"></div>
+    <div class="skeleton-body">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]"></div>
+    </div>
+  </div>
 </ng-template>
+
+<!-- Slot picker — owned at rooms level, rendered outside tab context -->
+<app-slot-picker [isOpen]="slotPickerOpen" [reservedSlots]="activeRoomSlots" [reservations]="activeRoomReservations"
+  [roomName]="activeRoom?.roomName ?? ''" [roomId]="activeRoom?.roomId ?? 0" [date]="selectedDate"
+  (closed)="onSlotPickerClosed()" (slotSelected)="onSlotSelected($event)"
+  (reservationClicked)="onViewReservation($event)">
+</app-slot-picker>

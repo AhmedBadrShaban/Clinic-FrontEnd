@@ -25,6 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {DatePickerComponent} from "./shared/components/date-picker/date-picker.component";
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import { DialogEventComponent } from './modules/rooms/events-grid/dialog-event/dialog-event.component';
+
  import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import {AutoCompleteComponent} from "./shared/components/auto-complete/auto-complete.component";
@@ -33,8 +34,7 @@ import {LoginComponent} from "./modules/login/login.component";
  import {Route, RouterLink, RouterModule, Routes} from '@angular/router';
   import { DatePipe } from '@angular/common';
 import { AddNewRoomComponent } from './modules/rooms/add-new-room/add-new-room.component';
-import { AvailableSlotsComponent } from './modules/rooms/available-slots/available-slots.component';
-import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.component';
+ import { AddClinicComponent } from './modules/rooms/add-clinic/add-clinic.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
@@ -59,6 +59,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmPaymentDialogComponent } from './modules/rooms/check-out/confirm-payment-dialog/confirm-payment-dialog.component';
 import { FinalCheckoutSummaryDialogComponent } from './modules/rooms/check-out/final-checkout-summary-dialog/final-checkout-summary-dialog.component';
+import { ReservationCardComponent } from './modules/rooms/events-grid/reservation-card/reservation-card.component';
+import { RoomsHeaderComponent } from './modules/rooms/rooms-header/rooms-header.component';
+import { RoomTabsComponent } from './modules/rooms/rooms-tabs/rooms-tabs.component';
+import { SlotPickerComponent } from './modules/rooms/slot-picker/slot-picker.component';
 
  
 @NgModule({
@@ -68,15 +72,19 @@ import { FinalCheckoutSummaryDialogComponent } from './modules/rooms/check-out/f
     EventsGridComponent,
     LoginComponent,
     AddNewRoomComponent,
-    AvailableSlotsComponent,
-    AddClinicComponent,
+     AddClinicComponent,
     NotFoundComponent,
     ForbiddenComponent,
     CheckOutComponent,
     PaymentComponent,
     ConfirmPaymentDialogComponent,
     FinalCheckoutSummaryDialogComponent,
-    UpdateReservationComponent
+    UpdateReservationComponent,
+    ReservationCardComponent,
+    RoomsHeaderComponent,
+    RoomTabsComponent,
+    SlotPickerComponent
+
   ],
   imports: [
     BrowserModule,
@@ -86,7 +94,7 @@ import { FinalCheckoutSummaryDialogComponent } from './modules/rooms/check-out/f
     FormsModule,
     DatePipe,
     ReactiveFormsModule,
-    MatButtonModule, MatNativeDateModule, MatAutocompleteModule, MatCheckboxModule,MatChipsModule ,  MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatDialogModule,
+    MatButtonModule, MatNativeDateModule, MatAutocompleteModule, MatCheckboxModule,MatChipsModule ,  MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatDialogModule, MatIconModule ,
     SharedModule,
     NavBarComponent,
     BrowserAnimationsModule,
@@ -105,9 +113,9 @@ import { FinalCheckoutSummaryDialogComponent } from './modules/rooms/check-out/f
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatCardModule,
-     MatButtonToggleModule,   // For view mode toggle
-    MatTooltipModule,        // For slot tooltips
-    MatRippleModule,         // For ripple effects on slots
+     MatButtonToggleModule,   
+    MatTooltipModule,        
+    MatRippleModule,        
   ],
   exports:[
     // ExpenseComponent,

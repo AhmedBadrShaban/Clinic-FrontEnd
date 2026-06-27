@@ -1,14 +1,27 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy,
+  ChangeDetectionStrategy, ChangeDetectorRef
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
-import { Subject, takeUntil, BehaviorSubject, distinctUntilChanged } from 'rxjs';
+import { Subject, BehaviorSubject, distinctUntilChanged, takeUntil, forkJoin } from 'rxjs';
 
-import { RoomsService, Room } from '../Services/rooms/rooms.service';
-import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
-import { AddClinicComponent } from './add-clinic/add-clinic.component';
-import { ReservationFmComponent } from '../receptionist/components/reservation-fm/reservation-fm.component';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { AddClinicComponent } from './add-clinic/add-clinic.component';
+import { AddNewRoomComponent } from './add-new-room/add-new-room.component';
+import { Room, RoomsService } from 'src/app/modules/Services/rooms/rooms.service';
+import { TimeSlot } from 'src/app/shared/models/rooms.models';
+import { ReservationFmComponent } from 'src/app/modules/receptionist/components/reservation-fm/reservation-fm.component';
+import { DialogEventComponent } from './events-grid/dialog-event/dialog-event.component';
+
+const DIALOG_CONFIG = {
+  width: '820px',
+  maxHeight: '90vh',
+  panelClass: 'reservation-dialog-panel'
+};
+
+const STORAGE_KEY = 'rooms_selected_tab';
 
 @Component({
   selector: 'app-rooms',
@@ -18,23 +31,24 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 })
 export class RoomsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  private readonly STORAGE_KEY = 'rooms_selected_tab';
 
-  // Reactive state
   private selectedDateSubject = new BehaviorSubject<string>(
-    this.datePipe.transform(new Date(), 'yyyy-MM-dd') || ''
+    this.datePipe.transform(new Date(), 'yyyy-MM-dd') ?? ''
   );
   private selectedTabIndexSubject = new BehaviorSubject<number>(0);
   private refreshTriggerSubject = new BehaviorSubject<number>(0);
 
-  // Main data
   rooms: Room[] = [];
-  clinics: any[] = [];   // store clinics
-  selectedClinic: string | null = null; // current selected clinic
-  dataLoaded: boolean = false;
-  searchValue = '';
+  clinics: string[] = [];
+  selectedClinic: string | null = null;
+  dataLoaded = false;
 
-  // Streams
+  // ── Slot picker state (owned here, not in room-tabs) ──────────────────────
+  slotPickerOpen = false;
+  activeRoomSlots: TimeSlot[] = [];
+  activeRoomReservations: any[] = [];
+  isSlotLoading = false;
+
   selectedDate$ = this.selectedDateSubject.asObservable();
   selectedTabIndex$ = this.selectedTabIndexSubject.asObservable();
   refreshTrigger$ = this.refreshTriggerSubject.asObservable();
@@ -44,214 +58,241 @@ export class RoomsComponent implements OnInit, OnDestroy {
     private router: Router,
     private roomsService: RoomsService,
     public authService: AuthService,
-    public dialog: MatDialog,
+    private dialog: MatDialog,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
+
+  // ── Lifecycle ───────────────────────────────────────────────────────────────
 
   ngOnInit(): void {
     this.roomsService.rooms$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(rooms => {
-        this.rooms = rooms;
-        this.cdr.detectChanges();
-      });
+      .subscribe(rooms => { this.rooms = rooms; this.cdr.detectChanges(); });
 
-    if (this.isAdmin) {
-      this.loadClinics();
-    } else {
-      this.initializeRooms();
-    }
-    this.setupReactiveStreams();
+    this.isAdmin ? this.loadClinics() : this.loadRooms();
+    this.listenToDateChanges();
   }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  /** 🔹 Fetch clinics for admins */
+  // ── Data loading ────────────────────────────────────────────────────────────
+
   private loadClinics(): void {
     this.roomsService.allClinics()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (clinics) => {
-          this.clinics = clinics;
-          if (clinics.length > 0) {
-            this.selectedClinic = clinics[0].clinicName;
-            this.initializeRooms(this.selectedClinic || undefined);
+          this.clinics = clinics.map((c: any) => c.clinicName ?? c);
+          if (this.clinics.length) {
+            this.selectedClinic = this.clinics[0];
+            this.loadRooms(this.selectedClinic);
           }
           this.dataLoaded = true;
           this.cdr.detectChanges();
         },
-        error: (err) => {
-          console.error('Error loading clinics:', err);
-        }
+        error: (err) => console.error('Error loading clinics:', err)
       });
   }
 
-  private initializeRooms(clinicName?: string): void {
+  private loadRooms(clinicName?: string): void {
     this.dataLoaded = false;
-    this.roomsService.getAllRoomsV2(clinicName)
+    this.roomsService.getAllRoomsV2(clinicName ?? undefined)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (rooms) => {
           this.rooms = rooms;
           this.dataLoaded = true;
-
-          // ✅ Restore saved tab HERE — rooms are guaranteed to exist now
-          const savedRoomId = localStorage.getItem(this.STORAGE_KEY);
-          if (savedRoomId) {
-            const savedIndex = this.rooms.findIndex(r => r.roomId === +savedRoomId);
-            if (savedIndex !== -1) {
-              this.selectedTabIndexSubject.next(savedIndex);
-            }
-          }
-
+          this.restoreSavedTab();
           this.cdr.detectChanges();
         },
-        error: (error) => {
-          console.error('Error loading rooms:', error);
+        error: (err) => {
+          console.error('Error loading rooms:', err);
           this.dataLoaded = true;
           this.cdr.detectChanges();
         }
       });
   }
 
-  /** 🔹 Triggered when clinic changes */
-  onClinicChange(clinicName: string): void {
-    this.selectedClinic = clinicName;
-    this.initializeRooms(clinicName);
+  private restoreSavedTab(): void {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    const idx = this.rooms.findIndex(r => r.roomId === +saved);
+    if (idx !== -1) this.selectedTabIndexSubject.next(idx);
   }
 
-
-  private setupReactiveStreams(): void {
-    // Listen for date changes and trigger refresh
+  private listenToDateChanges(): void {
     this.selectedDate$
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((date) => {
-      //console.log('Date changed:', date);
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.closeSlotPicker();   // reset panel when date changes
         this.triggerRefresh();
       });
   }
 
   private triggerRefresh(): void {
-    // Increment trigger value to signal child components to refresh
     this.refreshTriggerSubject.next(this.refreshTriggerSubject.value + 1);
   }
 
-   onTabChange(index: number): void {
-    if (index >= 0 && index < this.rooms.length) {
-      this.selectedTabIndexSubject.next(index);
+  private closeSlotPicker(): void {
+    this.slotPickerOpen = false;
+    this.activeRoomSlots = [];
+    this.activeRoomReservations = [];
+  }
 
-       const room = this.rooms[index];
-      if (room) {
-        localStorage.setItem(this.STORAGE_KEY, String(room.roomId));
-      }
+  // ── Slot picker ─────────────────────────────────────────────────────────────
+
+  onViewSlots(): void {
+    const room = this.activeRoom;
+    if (!room) return;
+
+    // Toggle close
+    if (this.slotPickerOpen) {
+      this.closeSlotPicker();
+      this.cdr.detectChanges();
+      return;
     }
-  }
 
-  onDateChange(event: any): void {
-    const newDate = this.datePipe.transform(event.value, 'yyyy-MM-dd');
-    if (newDate && newDate !== this.selectedDateSubject.value) {
-      this.selectedDateSubject.next(newDate);
-    }
-  }
+    this.slotPickerOpen = true;
+    this.isSlotLoading = true;
+    this.cdr.detectChanges();
 
-  // Refresh specific room data (called after updates)
-  refreshRoomData(roomId?: number): void {
-    this.triggerRefresh();
-  }
-
-  // Refresh all room data (called after major changes)
-  refreshAllRoomData(): void {
-    this.triggerRefresh();
-  }
-
-  openDialog(dialogType: string, room?: Room, date?: string): void {
-    const dialogConfig = {
-      width: '820px',
-      maxHeight: '90vh',
-      panelClass: 'reservation-dialog-panel'
-    };
-
-    switch (dialogType) {
-      case 'room':
-        const roomDialogRef = this.dialog.open(AddNewRoomComponent, dialogConfig);
-        roomDialogRef.afterClosed().subscribe(result => {
-          console.log('🚪 Room dialog closed with result:', result);
-
-        });
-        break;
-
-      case 'clinic':
-        const clinicDialogRef = this.dialog.open(AddClinicComponent, dialogConfig);
-        clinicDialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.refreshAllRoomData();
-          }
-        });
-        break;
-
-      case 'reservation':
-        const currentRoom = this.rooms[this.selectedTabIndexSubject.value];
-        if (currentRoom) {
-          const reservationData = {
-            activeRoom: currentRoom,
-            date: date || this.selectedDateSubject.value
-          };
-          const reservationDialogRef = this.dialog.open(ReservationFmComponent, {
-            ...dialogConfig,
-            data: reservationData
-          });
-          reservationDialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              this.refreshRoomData(currentRoom.roomId);
-            }
-          });
+    forkJoin({
+      slots: this.roomsService.getAvailableSlots(room.roomName, this.selectedDate),
+      roomData: this.roomsService.getRoomWithReservations(room.roomId, this.selectedDate)
+    })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ slots, roomData }) => {
+          this.activeRoomSlots = slots;
+          this.activeRoomReservations = Object.values(roomData).flat() as any[];
+          this.isSlotLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error loading slot picker data:', err);
+          this.closeSlotPicker();
+          this.isSlotLoading = false;
+          this.cdr.detectChanges();
         }
-        break;
+      });
+  }
+
+  onSlotPickerClosed(): void {
+    this.closeSlotPicker();
+    this.cdr.detectChanges();
+  }
+
+  onSlotSelected(slot: { startTime: string; endTime: string }): void {
+    this.closeSlotPicker();
+    this.onOpenReservationWithSlot({
+      ...slot,
+      roomId: this.activeRoom?.roomId ?? 0,
+      roomName: this.activeRoom?.roomName ?? '',
+      date: this.selectedDate
+    });
+  }
+
+  // ── Event handlers ──────────────────────────────────────────────────────────
+
+  onClinicChanged(clinicName: string): void {
+    this.selectedClinic = clinicName;
+    this.loadRooms(clinicName);
+  }
+
+  onDateChanged(date: string): void {
+    if (date && date !== this.selectedDateSubject.value) {
+      this.selectedDateSubject.next(date);
     }
   }
-  search(searchTerm: string): void {
-    this.searchValue = searchTerm;
-    // Implement search logic if needed
+
+  onTabChanged(index: number): void {
+    if (index < 0 || index >= this.rooms.length) return;
+    this.selectedTabIndexSubject.next(index);
+    this.closeSlotPicker();   // close panel when switching tabs
+    this.cdr.detectChanges();
+    const room = this.rooms[index];
+    if (room) localStorage.setItem(STORAGE_KEY, String(room.roomId));
   }
 
-  trackByRoomId(index: number, room: Room): number {
-    return room.roomId;
+  onRoomDataUpdated(roomId?: number): void {
+    this.triggerRefresh();
   }
 
-  // Getters for template
-  get selectedDate(): string {
-    return this.selectedDateSubject.value;
+  // ── Dialog launchers ────────────────────────────────────────────────────────
+
+  openAddRoomDialog(): void {
+    this.dialog.open(AddNewRoomComponent, DIALOG_CONFIG);
   }
 
-  get selectedTabIndex(): number {
-    return this.selectedTabIndexSubject.value;
+  openAddClinicDialog(): void {
+    this.dialog.open(AddClinicComponent, DIALOG_CONFIG)
+      .afterClosed().subscribe(result => { if (result) this.triggerRefresh(); });
   }
+
+  openNewReservationDialog(): void {
+    const currentRoom = this.activeRoom;
+    if (!currentRoom) return;
+
+    this.dialog.open(ReservationFmComponent, {
+      ...DIALOG_CONFIG,
+      data: { activeRoom: currentRoom, date: this.selectedDate }
+    }).afterClosed().subscribe(result => {
+      if (result) this.triggerRefresh();
+    });
+  }
+
+  onOpenReservationWithSlot(data: { startTime: string; endTime: string; roomId: number; roomName: string; date: string }): void {
+    const room = this.rooms.find(r => r.roomId === data.roomId);
+    if (!room) return;
+
+    const startHHmm = data.startTime.substring(0, 5);
+    const endHHmm = data.endTime.substring(0, 5);
+
+    this.dialog.open(ReservationFmComponent, {
+      ...DIALOG_CONFIG,
+      data: {
+        activeRoom: room,
+        date: data.date,
+        prefilledStart: startHHmm,
+        prefilledEnd: endHHmm
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) this.triggerRefresh();
+    });
+  }
+
+  onViewReservation(reservation: any): void {
+    const activeRoom = this.activeRoom;
+    this.closeSlotPicker();
+    this.dialog.open(DialogEventComponent, {
+      width: '700px',
+      maxHeight: '90vh',
+      data: { ...reservation, roomName: activeRoom?.roomName, roomId: activeRoom?.roomId },
+      panelClass: 'custom-dialog-container'
+    }).afterClosed().subscribe(result => {
+      if (result === 'updated') this.triggerRefresh();
+    });
+  }
+
+  // ── Computed getters ────────────────────────────────────────────────────────
+
+  get selectedDate(): string { return this.selectedDateSubject.value; }
+  get selectedTabIndex(): number { return this.selectedTabIndexSubject.value; }
+  get refreshTrigger(): number { return this.refreshTriggerSubject.value; }
+  get isAdmin(): boolean { return this.authService.userType === 'ROLE_ADMIN'; }
 
   get activeRoom(): Room | undefined {
-    const index = this.selectedTabIndexSubject.value;
-    return this.rooms[index];
+    return this.rooms[this.selectedTabIndexSubject.value];
   }
 
-  get activeRoomId(): number | undefined {
-    const index = this.selectedTabIndexSubject.value;
-    return this.rooms[index]?.roomId;
-  }
-
-  get isAdmin(): boolean {
-    return this.authService.userType === 'ROLE_ADMIN';
-  }
-
-  get refreshTrigger(): number {
-    return this.refreshTriggerSubject.value;
-  }
-
-  // Helper method to check if a room is the active one
   isActiveRoom(roomId: number): boolean {
-    return this.activeRoomId === roomId;
+    return this.activeRoom?.roomId === roomId;
+  }
+
+  trackByRoomId(_: number, room: Room): number {
+    return room.roomId;
   }
 }

@@ -149,7 +149,7 @@ import { LaserConfirmDialogComponent } from './components/reservation-fm/laser-c
     ReservationsComponent,
     ReservationComponent,
     AddNewPatientComponent,
-
+    TableComponent,
     // Export Angular Material modules so they're available to importing modules
     MatTabsModule,
     MatAutocompleteModule,

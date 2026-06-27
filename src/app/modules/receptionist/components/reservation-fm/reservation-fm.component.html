@@ -1,283 +1,208 @@
 <!-- reservation-fm.component.html -->
-<div class="reservation-form-container">
-  <!-- Modern Header -->
-  <div class="form-header">
-    <div class="d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center gap-4 me-3">
-        <mat-icon class="header-icon me-3">event_note</mat-icon>
-        <div>
-          <h2 class="mb-0">Create Reservation</h2>
-          <small class="text-muted">{{ roomName }} • {{ date | date:'mediumDate' }}</small>
-        </div>
-      </div>
-      <button mat-icon-button (click)="closeDialog()" class="close-btn">
-        <mat-icon>close</mat-icon>
-      </button>
+<div class="rf-container">
+
+  <!-- Header -->
+  <div class="rf-header">
+    <div class="rf-header-icon">
+      <i class="bi bi-calendar-plus"></i>
     </div>
+    <div class="rf-header-text">
+      <h2 class="rf-title">New Reservation</h2>
+      <span class="rf-subtitle">{{ roomName }} · {{ date | date:'EEE, MMM d, y' }}</span>
+    </div>
+    <button class="rf-close-btn" type="button" (click)="closeDialog()">
+      <i class="bi bi-x-lg"></i>
+    </button>
   </div>
 
-  <!-- Enhanced Form -->
-  <form [formGroup]="reservationFm" (ngSubmit)="submit()" class="reservation-form">
-    <mat-card class="form-card">
-      <mat-card-content>
+  <!-- Form -->
+  <form [formGroup]="reservationFm" (ngSubmit)="submit()" class="rf-body" autocomplete="off">
 
-        <!-- Patient Selection Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">person</mat-icon>
-            <h3>Patient Information</h3>
-          </div>
+    <!-- ── Patient + Doctor (same row) ───────────── -->
+    <div class="rf-section rf-section--row">
 
-          <div class="row g-3">
-            <div class="col-12">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Search Patient</mat-label>
-                <input matInput formControlName="patientPhone" [matAutocomplete]="PatientAuto"
-                  (input)="onPatientSearch($event)" placeholder="Type patient's name or phone number"
-                  autocomplete="off">
-
-                <!-- Loading spinner for patient search -->
-                <mat-spinner *ngIf="isPatientLoading" matSuffix diameter="20"></mat-spinner>
-
-                <!-- Search icon -->
-                <mat-icon *ngIf="!isPatientLoading" matSuffix>search</mat-icon>
-
-                <!-- Validation errors -->
-                <mat-error *ngIf="reservationFm.get('patientPhone')?.hasError('required')">
-                  Patient selection is required
-                </mat-error>
-                <mat-error *ngIf="reservationFm.get('patientPhone')?.hasError('pattern')">
-                  Please select a valid patient
-                </mat-error>
-
-                <!-- Enhanced Autocomplete -->
-                <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)"
-                  class="modern-autocomplete">
-                  <mat-option *ngFor="let patient of filteredPatients; trackBy: trackByPatient" [value]="patient"
-                    class="patient-option">
-                    <div class="d-flex align-items-center">
-                      <!-- <div class="patient-avatar me-3">
-                        <mat-icon>person</mat-icon>
-                      </div> -->
-                      <div class="patient-details">
-                        <small class="patient-phone text-muted">
-                          <mat-icon class="small-icon">phone</mat-icon>
-                          {{ extractPatientPhone(patient) }}
-                        </small>
-                        <div class="patient-name">{{ extractPatientName(patient) }}</div>
-
-                      </div>
-                    </div>
-                  </mat-option>
-
-                  <!-- No results -->
-                  <mat-option *ngIf="filteredPatients.length === 0 && patientSearchValue && !isPatientLoading" disabled>
-                    <div class="text-center py-3">
-                      <mat-icon class="text-muted">person_search</mat-icon>
-                      <p class="mb-0 mt-2">No patients found</p>
-                    </div>
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
-          </div>
+      <!-- Patient -->
+      <div class="rf-col">
+        <div class="rf-section-label">
+          <i class="bi bi-person-circle"></i>
+          Patient
         </div>
-
-        <mat-divider class="my-4"></mat-divider>
-
-        <!-- Doctor Selection Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">medical_services</mat-icon>
-            <h3>Doctor Assignment</h3>
-          </div>
-
-          <div class="row g-3">
-            <div class="col-12">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Select Doctor</mat-label>
-                <input matInput formControlName="doctorName" [matAutocomplete]="DoctorAuto"
-                  (input)="onDoctorSearch($event)" placeholder="Type doctor's name" autocomplete="off">
-
-                <!-- Loading spinner for doctor search -->
-                <mat-spinner *ngIf="isDoctorLoading" matSuffix diameter="20"></mat-spinner>
-
-                <!-- Doctor icon -->
-                <mat-icon *ngIf="!isDoctorLoading" matSuffix>medical_services</mat-icon>
-
-                <!-- Validation errors -->
-                <mat-error *ngIf="reservationFm.get('doctorName')?.hasError('required')">
-                  Doctor selection is required
-                </mat-error>
-
-                <!-- Doctor Autocomplete -->
-                <mat-autocomplete #DoctorAuto="matAutocomplete" class="modern-autocomplete">
-                  <mat-option *ngFor="let doctor of filteredDoctors; trackBy: trackByDoctor" [value]="doctor"
-                    class="doctor-option">
-                    <div class="d-flex align-items-center">
-                      <div class="doctor-avatar me-3">
-                        <mat-icon>medical_services</mat-icon>
-                      </div>
-                      <div class="doctor-name">Dr. {{ doctor }}</div>
-                    </div>
-                  </mat-option>
-
-                  <!-- No results -->
-                  <mat-option *ngIf="filteredDoctors.length === 0 && doctorSearchValue && !isDoctorLoading" disabled>
-                    <div class="text-center py-3">
-                      <mat-icon class="text-muted">search</mat-icon>
-                      <p class="mb-0 mt-2">No doctors found</p>
-                    </div>
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
-            </div>
-          </div>
-        </div>
-
-        <mat-divider class="my-4"></mat-divider>
-
-        <!-- Services Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">medical_services</mat-icon>
-            <h3>Services</h3>
-          </div>
-
-          <div formArrayName="service">
-            <div class="service-item" *ngFor="let service of Services.controls; let i = index"
-              [class.mb-3]="i < Services.controls.length - 1">
-
-              <div class="row g-3 align-items-center">
-                <div class="col-md-10">
-                  <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Service {{ i + 1 }}</mat-label>
-                    <mat-select [formControlName]="i" placeholder="Select Service">
-
-                      <!-- ✅ Search box -->
-                      <mat-option>
-                        <ngx-mat-select-search  [formControl]="serviceSearchCtrl" placeholderLabel="" ></ngx-mat-select-search>
-                      </mat-option>
-                      <mat-option *ngFor="let serviceOption of filteredServices" [value]="serviceOption">
-                        {{ serviceOption }}
-                      </mat-option>
-                    </mat-select>
-                    <mat-icon matSuffix>list_alt</mat-icon>
-                  </mat-form-field>
-                </div>
-
-                <div class="col-md-2" *ngIf="i === Services.controls.length - 1">
-                  <button mat-icon-button type="button" color="primary" (click)="addService()"
-                    matTooltip="Add another service" class="add-service-btn">
-                    <mat-icon>add_circle</mat-icon>
-                  </button>
-                </div>
-
-                <div class="col-md-2" *ngIf="i > 0">
-                  <button mat-icon-button type="button" color="warn" (click)="removeService(i)"
-                    matTooltip="Remove service" class="remove-service-btn">
-                    <mat-icon>remove_circle</mat-icon>
-                  </button>
-                </div>
+        <mat-form-field appearance="outline" class="rf-field">
+          <mat-label>Search by name or phone</mat-label>
+          <input matInput formControlName="patientPhone" [matAutocomplete]="PatientAuto"
+            (input)="onPatientSearch($event)" placeholder="e.g. Ahmed Hassan or 010…" autocomplete="off">
+          <mat-spinner *ngIf="isPatientLoading" matSuffix diameter="18"></mat-spinner>
+          <mat-icon *ngIf="!isPatientLoading" matSuffix class="rf-field-icon">search</mat-icon>
+          <mat-error *ngIf="reservationFm.get('patientPhone')?.hasError('required')">
+            Patient is required
+          </mat-error>
+          <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)">
+            <mat-option *ngFor="let patient of filteredPatients; trackBy: trackByPatient" [value]="patient"
+              class="rf-autocomplete-option">
+              <div class="rf-option-row">
+                <span class="rf-option-name">{{ extractPatientName(patient) }}</span>
+                <span class="rf-option-sub">
+                  <i class="bi bi-telephone"></i>
+                  {{ extractPatientPhone(patient) }}
+                </span>
               </div>
-            </div>
-          </div>
+            </mat-option>
+            <mat-option *ngIf="filteredPatients.length === 0 && patientSearchValue && !isPatientLoading" disabled>
+              <span class="rf-option-empty">No patients found</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
 
+      <!-- Doctor -->
+      <div class="rf-col">
+        <div class="rf-section-label">
+          <i class="bi bi-person-badge"></i>
+          Doctor
         </div>
-
-        <mat-divider class="my-4"></mat-divider>
-
-        <!-- Time and Notes Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">schedule</mat-icon>
-            <h3>Time & Details</h3>
-          </div>
-
-          <div class="row g-3">
-            <!-- Time Selection -->
-            <div class="col-md-6">
-              <div class="time-section">
-                <h4 class="time-title">Appointment Time</h4>
-
-                <div class="row g-3">
-                  <!-- Start Time -->
-                  <div>
-                    <label class="form-label w-100 text-center" for="startTime">Start Time</label>
-                    <input id="startTime" type="time" class="form-control" formControlName="start" />
-                    <div *ngIf="reservationFm.get('start')?.hasError('required')"
-                      class="text-danger small mt-1 text-center">
-                      Start time is required
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row g-3">
-                  <!-- End Time -->
-                  <div>
-                    <label class="form-label w-100 text-center" for="endTime">End Time</label>
-                    <input id="endTime" type="time" class="form-control" formControlName="end" />
-                    <div *ngIf="reservationFm.get('end')?.hasError('required')"
-                      class="text-danger small mt-1 text-center">
-                      End time is required
-                    </div>
-                  </div>
-                </div>
-                <!-- Time Duration Display -->
-                <div class="time-duration" *ngIf="getTimeDuration()">
-                  <mat-chip-listbox>
-                    <mat-chip-option selected>
-                      <mat-icon>timer</mat-icon>
-                      Duration: {{ getTimeDuration() }}
-                    </mat-chip-option>
-                  </mat-chip-listbox>
-                </div>
+        <mat-form-field appearance="outline" class="rf-field">
+          <mat-label>Search by doctor name</mat-label>
+          <input matInput formControlName="doctorName" [matAutocomplete]="DoctorAuto" (input)="onDoctorSearch($event)"
+            placeholder="e.g. Dr. Mohamed" autocomplete="off">
+          <mat-spinner *ngIf="isDoctorLoading" matSuffix diameter="18"></mat-spinner>
+          <mat-icon *ngIf="!isDoctorLoading" matSuffix class="rf-field-icon">search</mat-icon>
+          <mat-error *ngIf="reservationFm.get('doctorName')?.hasError('required')">
+            Doctor is required
+          </mat-error>
+          <mat-autocomplete #DoctorAuto="matAutocomplete">
+            <mat-option *ngFor="let doctor of filteredDoctors; trackBy: trackByDoctor" [value]="doctor"
+              class="rf-autocomplete-option">
+              <div class="rf-option-row">
+                <i class="bi bi-person-badge rf-option-icon"></i>
+                <span class="rf-option-name">Dr. {{ doctor }}</span>
               </div>
-            </div>
+            </mat-option>
+            <mat-option *ngIf="filteredDoctors.length === 0 && doctorSearchValue && !isDoctorLoading" disabled>
+              <span class="rf-option-empty">No doctors found</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
 
-            <!-- Notes Section -->
-            <div class="col-md-6">
-              <mat-form-field appearance="outline" class="w-100 h-100">
-                <mat-label>Notes</mat-label>
-                <textarea matInput formControlName="note" placeholder="Add any special notes or instructions..."
-                  rows="6" cdkTextareaAutosize cdkAutosizeMinRows="6" cdkAutosizeMaxRows="8"></textarea>
-                <mat-icon matSuffix>note</mat-icon>
-                <mat-hint>Optional: Special instructions or requirements</mat-hint>
-              </mat-form-field>
-            </div>
+    </div>
+
+    <!-- ── Services ───────────────────────────────── -->
+    <div class="rf-section">
+      <div class="rf-section-label">
+        <i class="bi bi-clipboard2-pulse"></i>
+        Services
+      </div>
+
+      <div formArrayName="service" class="rf-services-list">
+        <div *ngFor="let service of Services.controls; let i = index" class="rf-service-row">
+          <mat-form-field appearance="outline" class="rf-field rf-service-field">
+            <mat-label>Service {{ i + 1 }}</mat-label>
+            <mat-select [formControlName]="i">
+              <mat-option>
+                <ngx-mat-select-search [formControl]="serviceSearchCtrl"
+                  placeholderLabel="Search…"></ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let s of filteredServices" [value]="s">{{ s }}</mat-option>
+            </mat-select>
+            <mat-icon matSuffix class="rf-field-icon">medical_services</mat-icon>
+            <mat-error>Service is required</mat-error>
+          </mat-form-field>
+
+          <div class="rf-service-actions">
+            <button *ngIf="i === Services.controls.length - 1" mat-icon-button type="button" (click)="addService()"
+              class="rf-icon-btn rf-icon-btn--add" matTooltip="Add service">
+              <i class="bi bi-plus-circle-fill"></i>
+            </button>
+            <button *ngIf="i > 0" mat-icon-button type="button" (click)="removeService(i)"
+              class="rf-icon-btn rf-icon-btn--remove" matTooltip="Remove service">
+              <i class="bi bi-dash-circle-fill"></i>
+            </button>
           </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Form Actions -->
-    <div class="form-actions">
-      <div class="m-3 d-flex justify-content-center align-items-center">
-
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-          <button mat-stroked-button type="button" (click)="closeDialog()" class="me-3">
-            <mat-icon>cancel</mat-icon>
-            Cancel
-          </button>
-
-          <button mat-raised-button color="primary" type="submit" [disabled]="reservationFm.invalid || isSubmitting"
-            class="submit-btn">
-            <mat-icon>{{ isSubmitting ? '' : 'event_available' }}</mat-icon>
-            <mat-spinner *ngIf="isSubmitting" diameter="20" class="me-2"></mat-spinner>
-            {{ isSubmitting ? 'Creating...' : 'Create Reservation' }}
-          </button>
         </div>
       </div>
     </div>
+
+    <!-- ── Time (single row) ──────────────────────── -->
+    <div class="rf-section">
+      <div class="rf-section-label">
+        <i class="bi bi-clock"></i>
+        Time
+      </div>
+
+      <div class="rf-time-row">
+        <div class="rf-time-field">
+          <label class="rf-time-label">Start</label>
+          <input type="time" class="rf-time-input" formControlName="start" />
+          <span class="rf-time-error"
+            *ngIf="reservationFm.get('start')?.touched && reservationFm.get('start')?.hasError('required')">
+            Required
+          </span>
+        </div>
+
+        <div class="rf-time-divider">
+          <i class="bi bi-arrow-right"></i>
+        </div>
+
+        <div class="rf-time-field">
+          <label class="rf-time-label">End</label>
+          <input type="time" class="rf-time-input" formControlName="end" />
+          <span class="rf-time-error"
+            *ngIf="reservationFm.get('end')?.touched && reservationFm.get('end')?.hasError('required')">
+            Required
+          </span>
+        </div>
+
+        <!-- Duration badge inline -->
+        <div class="rf-duration" *ngIf="getTimeDuration() && getTimeDuration() !== 'Invalid time range'">
+          <i class="bi bi-stopwatch"></i>
+          {{ getTimeDuration() }}
+        </div>
+        <div class="rf-duration rf-duration--error" *ngIf="getTimeDuration() === 'Invalid time range'">
+          <i class="bi bi-exclamation-triangle"></i>
+          Invalid range
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Notes ──────────────────────────────────── -->
+    <div class="rf-section">
+      <div class="rf-section-label">
+        <i class="bi bi-card-text"></i>
+        Notes
+        <span class="rf-label-optional">(optional)</span>
+      </div>
+
+      <mat-form-field appearance="outline" class="rf-field rf-notes-field">
+        <mat-label>Special instructions</mat-label>
+        <textarea matInput formControlName="note" placeholder="Any requirements or special notes…" rows="3"
+          cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5">
+        </textarea>
+      </mat-form-field>
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────── -->
+    <div class="rf-footer">
+      <button type="button" class="rf-btn rf-btn--ghost" (click)="closeDialog()">
+        <i class="bi bi-x"></i>
+        Cancel
+      </button>
+      <button type="submit" class="rf-btn rf-btn--primary" [disabled]="reservationFm.invalid || isSubmitting">
+        <ng-container *ngIf="!isSubmitting">
+          <i class="bi bi-calendar-check"></i>
+          Create Reservation
+        </ng-container>
+        <ng-container *ngIf="isSubmitting">
+          <mat-spinner diameter="16" class="rf-spinner"></mat-spinner>
+          Creating…
+        </ng-container>
+      </button>
+    </div>
+
   </form>
 
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" *ngIf="isSubmitting">
-    <div class="loading-content">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p class="mt-3">Creating your reservation...</p>
-    </div>
+  <!-- Loading overlay -->
+  <div class="rf-overlay" *ngIf="isSubmitting">
+    <mat-spinner diameter="44"></mat-spinner>
+    <p>Creating reservation…</p>
   </div>
 </div>

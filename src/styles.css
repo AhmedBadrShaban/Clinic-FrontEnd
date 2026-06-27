@@ -163,7 +163,7 @@ body {
 .btn-ghost-clinic:hover {
   background: var(--brand-purple-dim);
 }
-
+ 
 /* Badge pills */
 .badge-success { background: var(--color-success-bg); color: var(--color-success); padding: 3px 10px; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: 500; }
 .badge-warning { background: var(--color-warning-bg); color: var(--color-warning); padding: 3px 10px; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: 500; }
