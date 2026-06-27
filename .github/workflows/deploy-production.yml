@@ -37,6 +37,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE }}
+          no-cache: true 
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
