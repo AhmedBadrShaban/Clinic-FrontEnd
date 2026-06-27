@@ -46,6 +46,7 @@ import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.
 import { DebitReportComponent } from './components/reports/depit-report/debit-report.component';
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
  import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
     AddContributorComponent,
     DebitReportComponent,
     DebitMovementsComponent,
+    WhatsAppMessagesComponent,
     DashboardComponent
   ],
 
