@@ -10,8 +10,8 @@ import { PackageService } from '../../services/package-service/package.service';
 import { AddProductComponent } from './add-product/add-product.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { ReportsService } from 'src/app/modules/admin/services/reports/reports.service';
- 
+import { ReportsService } from 'src/app/modules/admin/services/reports.service';
+  
 @Component({
   selector: 'app-package',
   templateUrl: './package.component.html',

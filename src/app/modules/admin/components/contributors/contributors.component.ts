@@ -4,7 +4,7 @@ import {Materials} from "../../models/materials";
 import {MaterialsService} from "../../services/materials/materials.service";
 import {MatDialog} from "@angular/material/dialog";
 import {Contributor} from "../../models/contributor";
-import {ContributorsService} from "../../services/Contributors/contributors.service";
+import { ContributorsService } from "../../services/contributers/contributors.service";
 import {AddContributorComponent} from "./add-contributor/add-contributor.component";
 
 @Component({
