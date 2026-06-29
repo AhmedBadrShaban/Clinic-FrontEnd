@@ -1,7 +1,7 @@
 <div class="admin-shell" [class.sidebar-collapsed]="sidebar.isCollapsed">
 
   <!-- Persistent sidebar -->
-  <app-admin-sidebar #sidebar></app-admin-sidebar>
+  <app-admin-sidebar #sidebar (isCollapsedChange)="onSidebarToggle($event)"></app-admin-sidebar>
 
   <!-- Main content area -->
   <div class="admin-main">
@@ -9,6 +9,10 @@
     <!-- Top bar -->
     <header class="admin-topbar">
       <div class="topbar-left">
+        <!-- Hamburger: mobile only -->
+        <button class="hamburger-btn" (click)="sidebar.mobileOpen = true" title="Open menu">
+          <i class="bi bi-list"></i>
+        </button>
         <span class="page-title">{{ sidebar.currentPageTitle }}</span>
       </div>
       <div class="topbar-right">

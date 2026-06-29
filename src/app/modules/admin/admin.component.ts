@@ -21,7 +21,9 @@ export class AdminComponent {
   ];
 
   constructor(private router: Router) { }
-
+  onSidebarToggle(collapsed: boolean): void {
+    // shell class binding handles layout automatically
+  }
   GoTo(id: number) {
     this.router.navigate(['admin', this.pages[id]]);
   }

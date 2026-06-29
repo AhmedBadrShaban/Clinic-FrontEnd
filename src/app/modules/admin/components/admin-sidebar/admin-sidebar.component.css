@@ -1,4 +1,26 @@
-/* ─── Sidebar shell ─────────────────────────────────────────────── */
+/* ─── Backdrop (mobile only) ─────────────────────────────────────── */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+@media (max-width: 768px) {
+  .sidebar-backdrop {
+    display: block;
+    pointer-events: none;
+  }
+  .sidebar-backdrop.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+/* ─── Sidebar shell ──────────────────────────────────────────────── */
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -6,7 +28,8 @@
   min-height: 100vh;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--sidebar-border);
-  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: fixed;
   top: 0;
   left: 0;
@@ -15,8 +38,56 @@
   overflow: hidden;
 }
 
+/* Desktop collapsed */
 .sidebar.collapsed {
   width: var(--sidebar-collapsed-width, 64px);
+}
+
+/* ─── Mobile: hidden off-canvas by default ───────────────────────── */
+@media (max-width: 768px) {
+  .sidebar {
+    width: var(--sidebar-width, 240px) !important; /* always full width on mobile */
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Hide desktop edge toggle on mobile */
+  .sidebar-edge-toggle {
+    display: none !important;
+  }
+}
+
+/* ─── Edge collapse toggle (desktop only) ────────────────────────── */
+.sidebar-edge-toggle {
+  position: absolute;
+  top: 72px;                      /* just below the header */
+  right: -13px;                   /* half outside the sidebar border */
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sidebar-bg);
+  border: 1.5px solid var(--sidebar-border);
+  color: var(--sidebar-active-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+  z-index: 101;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.sidebar-edge-toggle:hover {
+  background: var(--brand-purple);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(111, 45, 189, 0.35);
 }
 
 /* ─── Header ─────────────────────────────────────────────────────── */
@@ -24,7 +95,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 12px;
+  padding: 16px 14px;
   min-height: 68px;
   border-bottom: 1px solid var(--sidebar-border);
   flex-shrink: 0;
@@ -41,31 +112,44 @@
 }
 
 .logo-img {
-  height: auto;
+  height: 36px;
   width: auto;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-.toggle-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--sidebar-icon-color);
-  font-size: 18px;
-  padding: 6px;
-  border-radius: var(--radius-sm);
+.logo-icon-only {
+  color: var(--sidebar-active-color);
+  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
-  line-height: 1;
 }
 
-.toggle-btn:hover {
-  background: var(--sidebar-hover-bg);
+/* Mobile close button — hidden on desktop */
+.mobile-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
   color: var(--sidebar-active-color);
+  font-size: 18px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.mobile-close-btn:hover {
+  background: var(--sidebar-hover-bg);
+}
+
+@media (max-width: 768px) {
+  .mobile-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 /* ─── Navigation list ────────────────────────────────────────────── */
@@ -139,15 +223,7 @@
   flex: 1;
 }
 
-/* ─── Collapsible group trigger ──────────────────────────────────── */
-.nav-group {
-  position: relative;
-}
-
-.nav-group-trigger {
-  /* inherits .nav-link, just needs the chevron pushed to the right */
-}
-
+/* ─── Group trigger ──────────────────────────────────────────────── */
 .nav-group-trigger.group-open {
   background: var(--sidebar-hover-bg);
   color: var(--sidebar-active-color);
@@ -161,7 +237,7 @@
   color: var(--sidebar-icon-color);
 }
 
-/* ─── Sub-menu (expanded sidebar) ────────────────────────────────── */
+/* ─── Sub-menu ───────────────────────────────────────────────────── */
 .nav-sub {
   list-style: none;
   margin: 0;
@@ -169,19 +245,17 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-
-  /* collapsed by default */
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-sub.open {
-  max-height: 400px; /* tall enough for any realistic sub-list */
+  max-height: 400px;
 }
 
 .nav-sub-link {
-  padding-left: 40px; /* indent under parent icon */
+  padding-left: 40px;
   font-size: 13px;
 }
 
@@ -193,9 +267,9 @@
   color: var(--sidebar-active-color);
 }
 
-/* ─── Collapsed flyout (icon-only mode) ──────────────────────────── */
+/* ─── Collapsed flyout ───────────────────────────────────────────── */
 .nav-sub-flyout {
-  display: none; /* shown via JS/collapsed logic below */
+  display: none;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -203,7 +277,6 @@
   gap: 1px;
 }
 
-/* When sidebar is collapsed the flyout icons sit below the group trigger */
 .collapsed .nav-sub-flyout {
   display: flex;
 }
@@ -233,8 +306,8 @@
 }
 
 .logout-btn:hover {
-  background: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
+  background: rgba(220, 53, 69, 0.15);
+  color: #ff6b7a;
 }
 
 .collapsed .logout-btn {

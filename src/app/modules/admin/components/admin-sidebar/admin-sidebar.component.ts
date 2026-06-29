@@ -21,39 +21,42 @@ export interface NavItem {
 })
 export class AdminSidebarComponent implements OnInit {
   isCollapsed = false;
+  mobileOpen = false;
   currentPageTitle = 'Dashboard';
 
   @Output() isCollapsedChange = new EventEmitter<boolean>();
 
   navItems: NavItem[] = [
-    { label: 'Dashboard', icon: 'bi-grid-1x2', route: '/admin', exact: true },
+    { label: 'Dashboard',        icon: 'bi-grid-1x2',         route: '/admin', exact: true },
     {
-      label: 'Reports',
-      icon: 'bi-bar-chart-line',
+      label: 'Reports', icon: 'bi-bar-chart-line',
       children: [
-        { label: 'Monthly Income', icon: 'bi-graph-up-arrow', route: '/admin/reports/monthly-income' },
-        { label: 'Outstanding Debit', icon: 'bi-wallet2', route: '/admin/reports/debit-report' },
-        { label: 'Debit Movements', icon: 'bi-arrow-left-right', route: '/admin/reports/debit-movements' },
-        { label: 'WhatsApp Messages', icon: 'bi-whatsapp', route: '/admin/reports/whatsapp-messages' },      ]
+        { label: 'Monthly Income',     icon: 'bi-graph-up-arrow',  route: '/admin/reports/monthly-income' },
+        { label: 'Outstanding Debit',  icon: 'bi-wallet2',         route: '/admin/reports/debit-report' },
+        { label: 'Debit Movements',    icon: 'bi-arrow-left-right', route: '/admin/reports/debit-movements' },
+        { label: 'WhatsApp Messages',  icon: 'bi-whatsapp',        route: '/admin/reports/whatsapp-messages' },
+      ]
     },
-    { label: 'Rooms', icon: 'bi-door-open', route: '/admin/rooms' },
-    { label: 'Patients', icon: 'bi-people', route: '/admin/patients' },
-    { label: 'Receptionists', icon: 'bi-headset', route: '/admin/receptionists' },
-    { label: 'Doctors', icon: 'bi-person-badge', route: '/admin/doctors' },
-    { label: 'Doctor Schedule', icon: 'bi-calendar3', route: '/admin/doctor-schedular' },
-    { label: 'Services', icon: 'bi-stars', route: '/admin/services' },
-    { label: 'Packages', icon: 'bi-box-seam', route: '/admin/admin-package' },
-    { label: 'Reserved Packages', icon: 'bi-bookmark-check', route: '/admin/reserved-packages' },
-    { label: 'Materials', icon: 'bi-droplet', route: '/admin/materials' },
-    { label: 'Expenses', icon: 'bi-receipt', route: '/admin/expense' },
-    { label: 'Contributors', icon: 'bi-person-lines-fill', route: '/admin/contributors' },
-
+    { label: 'Rooms',            icon: 'bi-door-open',        route: '/admin/rooms' },
+    { label: 'Patients',         icon: 'bi-people',           route: '/admin/patients' },
+    { label: 'Receptionists',    icon: 'bi-headset',          route: '/admin/receptionists' },
+    { label: 'Doctors',          icon: 'bi-person-badge',     route: '/admin/doctors' },
+    { label: 'Doctor Schedule',  icon: 'bi-calendar3',        route: '/admin/doctor-schedular' },
+    { label: 'Services',         icon: 'bi-stars',            route: '/admin/services' },
+    { label: 'Packages',         icon: 'bi-box-seam',         route: '/admin/admin-package' },
+    { label: 'Reserved Packages',icon: 'bi-bookmark-check',   route: '/admin/reserved-packages' },
+    { label: 'Materials',        icon: 'bi-droplet',          route: '/admin/materials' },
+    { label: 'Expenses',         icon: 'bi-receipt',          route: '/admin/expense' },
+    { label: 'Contributors',     icon: 'bi-person-lines-fill', route: '/admin/contributors' },
   ];
 
-  // tracks open state per group label e.g. { 'Reports': true }
   openGroups: Record<string, boolean> = {};
 
-  constructor(private authService: AuthService, private router: Router, private cd: ChangeDetectorRef) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.router.events
@@ -61,6 +64,8 @@ export class AdminSidebarComponent implements OnInit {
       .subscribe(() => {
         this.updatePageTitle();
         this.syncOpenGroups();
+        // Auto-close drawer on navigation (mobile)
+        this.mobileOpen = false;
       });
 
     this.updatePageTitle();
@@ -70,7 +75,6 @@ export class AdminSidebarComponent implements OnInit {
   private updatePageTitle(): void {
     const url = this.router.url;
 
-    // Check children of group items first
     for (const item of this.navItems) {
       if (item.children) {
         const matchedChild = item.children.find(c => c.route && url.startsWith(c.route));
@@ -81,7 +85,6 @@ export class AdminSidebarComponent implements OnInit {
       }
     }
 
-    // Then check leaf items
     const matched = this.navItems.find(item =>
       item.route && (item.exact ? url === item.route : url.startsWith(item.route))
     );
@@ -113,6 +116,11 @@ export class AdminSidebarComponent implements OnInit {
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
     this.isCollapsedChange.emit(this.isCollapsed);
+    this.cd.markForCheck();
+  }
+
+  closeMobile(): void {
+    this.mobileOpen = false;
     this.cd.markForCheck();
   }
 
