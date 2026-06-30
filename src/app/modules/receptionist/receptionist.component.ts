@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./receptionist.component.css']
 })
 export class ReceptionistComponent {
-
+  onSidebarToggle(collapsed: boolean): void {
+   }
 }
