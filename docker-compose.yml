@@ -1,7 +1,7 @@
 services:
   frontend:
     image: ${IMAGE}
-    container_name: clinic_frontend
+    container_name: clinic_frontend${ENV_NAME:+_${ENV_NAME}}
     restart: unless-stopped
     ports:
-      - "8081:80"
+      - "${FRONTEND_PORT:-8081}:80"
