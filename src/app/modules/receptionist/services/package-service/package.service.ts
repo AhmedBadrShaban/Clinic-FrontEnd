@@ -3,6 +3,31 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 
+export interface ReservePackagesRequestItem {
+  packageName: string;
+  quantity: number;
+}
+
+export interface ReservePackagesRequestTotal {
+  cash: number;
+  visa: number;
+  vodafoneCash: number;
+  debit: number;
+  credit: number;
+  instaPay: number;
+ }
+
+export interface ReservePackagesRequest {
+  patientPhone: string | null;
+  packages: ReservePackagesRequestItem[];
+  total: ReservePackagesRequestTotal;
+}
+
+export interface ReservePackagesResponse {
+  message: string;
+  reservedIds: number[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +48,7 @@ export class PackageService {
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-details`, { params });
   }
 
-   getReservedPackagePaymentDetails(id: string | number): Observable<any> {
+  getReservedPackagePaymentDetails(id: string | number): Observable<any> {
     const params = new HttpParams().set('id', id.toString());
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-history-details`, { params });
   }
@@ -49,7 +74,6 @@ export class PackageService {
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages-v2`, { params });
   }
 
-
   filterByDate(date: any): Observable<any> {
     const url = `${this.baseUrl}receptionist/reserved-package-filter-v2`;
     const queryParams = new HttpParams().set('date', date);
@@ -58,6 +82,10 @@ export class PackageService {
 
   reservePackage(reservationData: any) {
     return this.http.post(`${this.baseUrl}receptionist/reservepackage`, reservationData);
+  }
+
+  reservePackages(reservationData: ReservePackagesRequest): Observable<ReservePackagesResponse> {
+    return this.http.post<ReservePackagesResponse>(`${this.baseUrl}receptionist/reservepackages`, reservationData);
   }
 
   editPackage(packageId: number, updatedData: any): Observable<any> {

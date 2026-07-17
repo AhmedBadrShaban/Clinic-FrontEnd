@@ -353,6 +353,7 @@
 .delta-pair {
   display: inline-flex;
   align-items: center;
+  width: 120px;
   gap: 4px;
   font-size: var(--font-size-sm);
 }
