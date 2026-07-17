@@ -48,6 +48,7 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
  import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
 import { PackageMovementsComponent } from './components/reports/package-movements/package-movements.component';
+import { PriceEditDialogComponent } from './components/packages/price-edit-dialog/price-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { PackageMovementsComponent } from './components/reports/package-movement
     MonthlyMoneyReportComponent,
     AddNewReceptionistComponent,
     AddNewPackageComponent,
+    PriceEditDialogComponent,
     AddNewServiceComponent,
     ReservationsComponent,
     AdminProfileComponent,

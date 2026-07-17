@@ -202,7 +202,26 @@
 .btn-add-service:hover {
   background: #f3eeff;
 }
+.btn-clear-services {
+  background: transparent;
+  border: none;
+  color: var(--error);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
 
+.btn-clear-services:hover {
+  background: #fee2e2;
+}
+
+.btn-clear-services:focus-visible {
+  outline: 2px solid var(--error);
+  outline-offset: 2px;
+}
 /* ─── Footer ────────────────────────────────────── */
 .dialog-footer {
   display: flex;
