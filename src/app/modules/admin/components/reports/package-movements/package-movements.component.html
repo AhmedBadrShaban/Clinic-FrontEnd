@@ -1,54 +1,7 @@
-<div class="messages-page">
-
- 
-  <!-- ── Stats Summary Cards ── -->
-  <div class="stats-row">
-
-    <div class="stat-card stat-card--sent">
-      <div class="stat-card__icon-wrap">
-        <i class="bi bi-check-circle-fill stat-card__icon"></i>
-      </div>
-      <div class="stat-card__body">
-        <span class="stat-card__label">Sent</span>
-        <span class="stat-card__value" *ngIf="!statsLoading">{{ totalSent | number }}</span>
-        <span class="stat-card__value stat-card__value--loading" *ngIf="statsLoading">
-          <i class="bi bi-arrow-repeat spin-icon"></i>
-        </span>
-      </div>
-    </div>
-
-    <div class="stat-card stat-card--failed">
-      <div class="stat-card__icon-wrap">
-        <i class="bi bi-x-circle-fill stat-card__icon"></i>
-      </div>
-      <div class="stat-card__body">
-        <span class="stat-card__label">Failed / Abandoned</span>
-        <span class="stat-card__value" *ngIf="!statsLoading">{{ totalFailed | number }}</span>
-        <span class="stat-card__value stat-card__value--loading" *ngIf="statsLoading">
-          <i class="bi bi-arrow-repeat spin-icon"></i>
-        </span>
-      </div>
-    </div>
-
-    <div class="stat-card stat-card--retrying">
-      <div class="stat-card__icon-wrap">
-        <i class="bi bi-arrow-repeat stat-card__icon"></i>
-      </div>
-      <div class="stat-card__body">
-        <span class="stat-card__label">In-Flight</span>
-        <span class="stat-card__value" *ngIf="!statsLoading">{{ totalRetrying | number }}</span>
-        <span class="stat-card__value stat-card__value--loading" *ngIf="statsLoading">
-          <i class="bi bi-arrow-repeat spin-icon"></i>
-        </span>
-      </div>
-    </div>
-
-  </div>
-
+ <div class="movements-page">
   <!-- ── Filter Panel ── -->
   <div class="clinic-card filter-panel" [class.filter-panel--collapsed]="filtersCollapsed">
 
-    <!-- Collapsible header bar -->
     <div class="filter-panel__header" (click)="filtersCollapsed = !filtersCollapsed">
       <span class="filter-panel__header-left">
         <i class="bi bi-funnel-fill filter-panel__header-icon"></i>
@@ -61,10 +14,9 @@
         [class.bi-chevron-down]="filtersCollapsed"></i>
     </div>
 
-    <!-- Collapsible body -->
     <div class="filter-panel__body">
 
-      <!-- Row 1: Patient · Clinic · Receptionist -->
+      <!-- Row 1: Patient (×2) · Clinic · Receptionist -->
       <div class="filter-row filter-row--main">
 
         <div class="filter-field filter-field--patient">
@@ -74,12 +26,12 @@
           <div class="filter-input-wrap" [class.filter-input-wrap--active]="hasPatientFilter">
             <i class="bi bi-person filter-input-icon"></i>
             <input class="filter-input" type="text" placeholder="Search by name or phone…"
-              [ngModel]="patientSearchInput" [matAutocomplete]="patientAuto"
+              [ngModel]="patientSearchInput" [matAutocomplete]="patientAuto" [readonly]="patientLocked"
               (ngModelChange)="onPatientSearchInput($event)" />
             <i *ngIf="patientSearchLoading" class="bi bi-arrow-repeat filter-spin-icon"></i>
             <button *ngIf="patientSearchInput && !patientSearchLoading" class="filter-clear-btn"
-              (click)="clearPatientFilter()">
-              <i class="bi bi-x"></i>
+              (click)="clearPatientFilter()" [title]="patientLocked ? 'Unlock patient filter' : 'Clear'">
+              <i class="bi" [ngClass]="patientLocked ? 'bi-unlock' : 'bi-x'"></i>
             </button>
             <mat-autocomplete #patientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event.option.value)">
               <mat-option *ngFor="let p of patientResults" [value]="p"
@@ -124,8 +76,7 @@
             <mat-autocomplete #receptionistAuto="matAutocomplete"
               (optionSelected)="onReceptionistSelected($event.option.value)">
               <mat-option *ngFor="let r of filteredReceptionists" [value]="r" style="font-size:13px; line-height:36px;">
-                {{ r.name }}
-                <span style="color:var(--text-muted); font-size:11px;">#{{ r.receptionistId }}</span>
+                {{ r.name }} <span style="color:var(--text-muted); font-size:11px;">#{{ r.receptionistId }}</span>
               </mat-option>
               <mat-option
                 *ngIf="filteredReceptionists.length === 0 && !receptionistSearchLoading && receptionistSearch.length >= 1"
@@ -136,30 +87,46 @@
 
       </div>
 
-      <!-- Row 2: Message Type · Status · Date Range · Actions -->
+      <!-- Row 2: Movement Type · Package name · Service name -->
+      <div class="filter-row filter-row--secondary">
+
+        <div class="filter-field">
+          <label class="filter-label">Movement Type</label>
+          <div class="filter-input-wrap filter-input-wrap--select">
+            <i class="bi bi-tag filter-input-icon"></i>
+            <select class="filter-input filter-select" [(ngModel)]="filters.movementType">
+              <option *ngFor="let t of movementTypes" [value]="t.value">{{ t.label }}</option>
+            </select>
+            <i class="bi bi-chevron-down filter-select-chevron"></i>
+          </div>
+        </div>
+
+        <div class="filter-field">
+          <label class="filter-label">Package Name</label>
+          <div class="filter-input-wrap">
+            <i class="bi bi-box filter-input-icon"></i>
+            <input class="filter-input" type="text" placeholder="Search package…" [(ngModel)]="packageNameSearch" />
+            <button *ngIf="packageNameSearch" class="filter-clear-btn" (click)="packageNameSearch = ''">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-field">
+          <label class="filter-label">Service Name</label>
+          <div class="filter-input-wrap">
+            <i class="bi bi-heart-pulse filter-input-icon"></i>
+            <input class="filter-input" type="text" placeholder="Search service…" [(ngModel)]="serviceNameSearch" />
+            <button *ngIf="serviceNameSearch" class="filter-clear-btn" (click)="serviceNameSearch = ''">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 3: Date Range · [Clear all] [Apply] -->
       <div class="filter-row filter-row--actions">
-
-        <div class="filter-field">
-          <label class="filter-label">Message Type</label>
-          <div class="filter-input-wrap filter-input-wrap--select">
-            <i class="bi bi-chat-dots filter-input-icon"></i>
-            <select class="filter-input filter-select" [(ngModel)]="filters.messageType">
-              <option *ngFor="let t of messageTypes" [value]="t.value">{{ t.label }}</option>
-            </select>
-            <i class="bi bi-chevron-down filter-select-chevron"></i>
-          </div>
-        </div>
-
-        <div class="filter-field">
-          <label class="filter-label">Status</label>
-          <div class="filter-input-wrap filter-input-wrap--select">
-            <i class="bi bi-circle-half filter-input-icon"></i>
-            <select class="filter-input filter-select" [(ngModel)]="filters.status">
-              <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
-            </select>
-            <i class="bi bi-chevron-down filter-select-chevron"></i>
-          </div>
-        </div>
 
         <div class="filter-field filter-field--daterange">
           <label class="filter-label">
@@ -188,7 +155,7 @@
             <button class="btn-ghost-clinic" (click)="clearFilters()">
               <i class="bi bi-x-circle"></i> Clear all
             </button>
-            <button class="btn-primary-clinic" (click)="loadMessages(true); loadStats()">
+            <button class="btn-primary-clinic" (click)="loadMovements(true)">
               <i class="bi bi-funnel"></i> Apply Filters
             </button>
           </div>
@@ -201,14 +168,14 @@
   <!-- ── Table ── -->
   <div class="clinic-card table-card">
     <div class="table-meta" *ngIf="!isLoading && totalItems > 0">
-      <span class="table-meta__count">{{ totalItems }} messages found</span>
+      <span class="table-meta__count">{{ totalItems }} movements found</span>
       <span class="table-meta__hint">
         <i class="bi bi-info-circle"></i> Click a column header to sort
       </span>
     </div>
 
     <app-table [data]="dataSource.data" [columns]="tableColumns" [totalItems]="totalItems" [pageSize]="pageSize"
-      [currentPage]="currentPage + 1" [isLoading]="isLoading" emptyTitle="No WhatsApp messages"
+      [currentPage]="currentPage + 1" [isLoading]="isLoading" emptyTitle="No package movements found"
       emptyMessage="No records match the selected filters." (onPageChange)="onPageChange($event)"
       (onSortChange)="onSortChange($event)">
     </app-table>
@@ -221,57 +188,40 @@
   <span class="date-cell">{{ row.createdAt | date:'dd MMM yyyy, h:mm a' }}</span>
 </ng-template>
 
+<ng-template #serviceTpl let-row>
+  <span>{{ row.serviceName || '-' }}</span>
+</ng-template>
+
+<ng-template #deltaSessionsTpl let-row>
+  <span class="delta-pair">
+    <span class="delta-cell" [ngClass]="deltaClass(row.sessionsDelta)">
+      {{ deltaPrefix(row.sessionsDelta) }}{{ row.sessionsDelta }}
+    </span>
+    <i class="bi bi-arrow-right delta-arrow"></i>
+    <span class="delta-after">{{ row.sessionsAfter }}</span>
+  </span>
+</ng-template>
+
+<ng-template #deltaPointsTpl let-row>
+  <span class="delta-pair">
+    <span class="delta-cell" [ngClass]="deltaClass(row.pointsDelta)">
+      {{ deltaPrefix(row.pointsDelta) }}{{ row.pointsDelta }}
+    </span>
+    <i class="bi bi-arrow-right delta-arrow"></i>
+    <span class="delta-after">{{ row.pointsAfter }}</span>
+  </span>
+</ng-template>
+
 <ng-template #typeTpl let-row>
-  <span [ngClass]="typeClass(row.messageType)">
-    {{  row.messageType }}
+  <span [ngClass]="typeClass(row.movementType)">
+    {{ movementLabels[row.movementType] || row.movementType }}
   </span>
 </ng-template>
 
-<ng-template #statusTpl let-row>
-  <div class="status-cell">
-    <span [ngClass]="statusClass(row.status)">
-      {{   row.status }}
-    </span>
-    <span *ngIf="row.status === 'FAILED' && row.nextRetryAt" class="next-retry-hint"
-      [title]="'Next retry: ' + (row.nextRetryAt | date:'dd MMM yyyy, h:mm a')">
-      <i class="bi bi-clock"></i>
-      {{ row.nextRetryAt | date:'h:mm a' }}
-    </span>
-  </div>
+<ng-template #doctorRoomTpl let-row>
+  <span>{{ doctorRoomLabel(row) }}</span>
 </ng-template>
 
-<ng-template #retryCountTpl let-row>
-  <span class="retry-count" [class.retry-count--warn]="row.retryCount > 0">
-    {{ row.retryCount }}
-  </span>
-</ng-template>
-
-<ng-template #failureTpl let-row>
-  <span *ngIf="row.failureReason; else noFailure" class="failure-cell" [title]="row.failureReason">
-    {{ row.failureReason }}
-  </span>
-  <ng-template #noFailure>
-    <span class="text-muted-cell">—</span>
-  </ng-template>
-</ng-template>
-
-<ng-template #pdfTpl let-row>
-  <a *ngIf="row.pdfUrl; else noPdf" [href]="row.pdfUrl" target="_blank" rel="noopener noreferrer" class="receipt-link"
-    title="View receipt PDF">
-    <i class="bi bi-file-earmark-pdf"></i> View
-  </a>
-  <ng-template #noPdf>
-    <span class="text-muted-cell">—</span>
-  </ng-template>
-</ng-template>
-
-<ng-template #actionsTpl let-row>
-  <button class="retry-btn" [class.retry-btn--loading]="retryingRowId === row.id"
-    [disabled]="!canRetry(row.status) || retryingRowId !== null" (click)="onRetry(row)"
-    [title]="canRetry(row.status) ? 'Retry now' : 'Cannot retry ' + row.status">
-    <i class="bi" [class.bi-arrow-clockwise]="retryingRowId !== row.id"
-      [class.bi-arrow-repeat]="retryingRowId === row.id" [class.spin-icon]="retryingRowId === row.id"></i>
-    <span *ngIf="retryingRowId !== row.id">Retry</span>
-    <span *ngIf="retryingRowId === row.id">Retrying…</span>
-  </button>
+<ng-template #descriptionTpl let-row>
+  <span class="description-cell" [title]="row.description">{{ row.description }}</span>
 </ng-template>

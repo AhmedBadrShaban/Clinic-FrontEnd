@@ -13,7 +13,13 @@
         <button class="hamburger-btn" (click)="sidebar.mobileOpen = true" title="Open menu">
           <i class="bi bi-list"></i>
         </button>
-        <span class="page-title">{{ sidebar.currentPageTitle }}</span>
+
+        <!-- Page identity: icon + title + description, driven by the active sidebar nav item -->
+        <i class="bi topbar-page-icon" [ngClass]="sidebar.currentPageIcon" *ngIf="sidebar.currentPageIcon"></i>
+        <div class="topbar-page-text">
+          <span class="page-title">{{ sidebar.currentPageTitle }}</span>
+          <span class="page-subtitle" *ngIf="sidebar.currentPageDescription">{{ sidebar.currentPageDescription }}</span>
+        </div>
       </div>
       <div class="topbar-right">
         <span class="clinic-name">U Clinic</span>

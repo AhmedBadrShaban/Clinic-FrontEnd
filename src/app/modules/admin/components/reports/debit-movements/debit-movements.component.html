@@ -1,33 +1,6 @@
 <div class="movements-page">
 
-  <!-- ── Page Header ── -->
-  <div class="page-header">
-    <div class="page-header__title">
-      <i class="bi bi-arrow-left-right header-icon"></i>
-      <div>
-        <h2>Debit Movements</h2>
-        <span class="page-header__sub">
-          Full history of debit changes across all patients
-
-          <span *ngIf="hasPatientFilter" class="active-badge active-badge--patient">
-            <i class="bi bi-person-fill"></i>
-            {{ selectedPatientLabel }}
-            <button class="active-badge__clear" (click)="clearPatientFilter()" title="Clear patient filter">
-              <i class="bi bi-x"></i>
-            </button>
-          </span>
-
-          <span *ngIf="hasClinicFilter" class="active-badge active-badge--clinic">
-            <span class="active-badge__dot"></span>
-            {{ activeClinic }}
-            <button class="active-badge__clear" (click)="clearClinicSearch()" title="Clear clinic filter">
-              <i class="bi bi-x"></i>
-            </button>
-          </span>
-        </span>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- ── Filter Panel ── -->
   <div class="clinic-card filter-panel" [class.filter-panel--collapsed]="filtersCollapsed">

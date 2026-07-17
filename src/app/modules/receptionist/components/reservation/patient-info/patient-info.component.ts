@@ -1,4 +1,4 @@
-// Updated patient-info.component.ts with lazy loading support
+// Updated patient-info.component.ts with lazy loading support + debit history link
 import {
   Component,
   Input,
@@ -13,6 +13,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { PatientInfo } from 'src/app/modules/receptionist/models/patient-Info';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-patient-info',
@@ -32,20 +33,27 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
   hasError = false;
   errorMessage = '';
 
+  /** View/edit mode for the main info fields. Starts in view (read-only) mode so a patient's
+   *  data can't be accidentally changed and saved — fields only become editable after the
+   *  user explicitly clicks "Edit". */
+  isEditMode = false;
+
   private hasInitialized = false;
   private subscriptions = new Subscription();
 
   constructor(
     private fb: FormBuilder,
     private patientService: PatientService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
+
   ) {
     // Initialize empty form to prevent errors
     this.initEmptyForm();
   }
 
   ngOnInit(): void {
-  //console.log('PatientInfoComponent initialized, waiting to become active');
+    //console.log('PatientInfoComponent initialized, waiting to become active');
     // Don't load data here - wait for component to become active
   }
 
@@ -73,7 +81,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
 
   private handleActiveStateChange(): void {
     if (this.isActive && !this.hasInitialized) {
-    //console.log('PatientInfoComponent becoming active');
+      //console.log('PatientInfoComponent becoming active');
 
       // If we already have info data from parent, use it
       if (this.info) {
@@ -104,6 +112,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     this.initEmptyForm();
     this.hasError = false;
     this.errorMessage = '';
+    this.isEditMode = false;
   }
 
   private loadAdditionalPatientData(): void {
@@ -115,7 +124,7 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     this.hasError = false;
     this.cdr.markForCheck();
 
-  //console.log(`Loading additional patient data for: ${this.phoneNumber}`);
+    //console.log(`Loading additional patient data for: ${this.phoneNumber}`);
 
     // Only call this if you need additional data beyond what's passed in 'info'
     // If 'info' contains all needed data, you can skip this API call
@@ -169,7 +178,8 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     this.oldInfo = { ...info };
-  //console.log('Form initialized with patient data:', this.oldInfo);
+    this.isEditMode = false;
+    //console.log('Form initialized with patient data:', this.oldInfo);
   }
 
   updateInfo(): void {
@@ -179,13 +189,14 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     const formValue = this.formData.value;
-  //console.log('Updating patient info:', formValue);
+    //console.log('Updating patient info:', formValue);
 
     const subscription = this.patientService.updatePatient(this.oldInfo.primaryPhone, formValue)
       .subscribe({
         next: (data) => {
           alert(data.message);
           this.oldInfo = { ...formValue };
+          this.isEditMode = false;
           this.cdr.markForCheck();
         },
         error: (err) => {
@@ -235,12 +246,45 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
   cancel(): void {
     if (this.oldInfo) {
       this.formData.patchValue(this.oldInfo);
-    //console.log('Cancelled - form reset to:', this.oldInfo);
+      //console.log('Cancelled - form reset to:', this.oldInfo);
     }
+    this.isEditMode = false;
+  }
+
+  /** Unlocks the main info fields for editing. Called from the "Edit" button in view mode. */
+  enterEditMode(): void {
+    if (!this.isDataReady) return;
+    this.isEditMode = true;
   }
 
   // Helper getter for template
   get isDataReady(): boolean {
     return this.hasInitialized && !this.isLoading && !!this.oldInfo;
   }
+
+  /** CSS class for the debit balance display — mirrors the delta coloring used on the
+   *  debit-movements report (positive = owes money = danger, negative/zero = success/muted). */
+  get debitBalanceClass(): string {
+    const debit = this.oldInfo?.debit ?? 0;
+    if (debit > 0) return 'delta--positive';
+    if (debit < 0) return 'delta--negative';
+    return 'delta--zero';
+  }
+
+  /** Query params for the "View debit history" link. Null (hides the link) until a patient
+   *  is loaded. We already know the patientId here, so it's sent directly — the debit
+   *  movements report filters by it right away, no phone lookup needed. patientName/
+   *  patientPhone are sent along purely to pre-fill the report's patient search field label. */
+  get debitHistoryQueryParams(): { patientId: number; patientName?: string; patientPhone?: string } | null {
+    const id = this.oldInfo?.patient_id;
+    if (!id) return null;
+
+    const params: { patientId: number; patientName?: string; patientPhone?: string } = { patientId: id };
+    if (this.oldInfo?.name) params.patientName = this.oldInfo.name;
+    if (this.oldInfo?.primaryPhone) params.patientPhone = this.oldInfo.primaryPhone;
+    return params;
+  }
+    get isAdmin(): boolean {
+      return this.authService.userType === 'ROLE_ADMIN';
+    }
 }

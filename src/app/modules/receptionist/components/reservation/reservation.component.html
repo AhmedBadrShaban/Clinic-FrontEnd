@@ -1,74 +1,64 @@
-<div class="content">
+<div class="rsv-page">
 
-  <!-- Search Section -->
-  <div class="search-container w-75 mx-auto mb-4">
-    <div class="search-row d-flex justify-content-center align-items-center" style="min-height: 60px;">
+  <!-- ── Search Card ── -->
+  <div class="clinic-card rsv-search-card">
+    <div class="rsv-search-card__row">
 
-      <!-- Search Input with Loading State -->
-      <div class="search-input-container position-relative w-50 mx-2">
-        <input class="form-control h-100 bg-light search-input" [class.is-loading]="isLoading" id="patient-search"
-         [placeholder]="searchPlaceholder"
-         type="search" [(ngModel)]="searchValue"
-          (ngModelChange)="onSearchValueChange($event)" [matAutocomplete]="PatientAuto" [disabled]="isLoading"
-          autocomplete="off" />
+      <div class="rsv-search-field">
+        <i class="bi bi-search rsv-search-field__icon" *ngIf="!isLoading"></i>
+        <i class="bi bi-arrow-repeat rsv-search-field__icon rsv-spin" *ngIf="isLoading"></i>
 
-        <!-- Loading Spinner -->
-        <div *ngIf="isLoading" class="loading-spinner position-absolute">
-          <i class="fas fa-spinner fa-spin"></i>
-        </div>
+        <input class="rsv-search-input" id="patient-search" [placeholder]="searchPlaceholder" type="search"
+          [(ngModel)]="searchValue" (ngModelChange)="onSearchValueChange($event)" [matAutocomplete]="PatientAuto"
+          [disabled]="isLoading" (keyup.enter)="searchPatient()" autocomplete="off" />
 
-        <!-- Search Icon -->
-        <div *ngIf="!isLoading" class="search-icon position-absolute">
-          <i class="bi bi-search text-muted"></i>
-        </div>
+        <button *ngIf="searchValue && !isLoading" class="rsv-search-clear-btn" type="button" (click)="clearSearch()"
+          title="Clear search">
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
 
-        <!-- Material Autocomplete -->
         <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)">
           <mat-option *ngFor="let option of filteredData; trackBy: trackByFn" [value]="option">
-            <div class="autocomplete-item">
-              <i class="bi bi-person-fill me-2 text-primary"></i>
+            <div class="rsv-autocomplete-item">
+              <i class="bi bi-person-fill"></i>
               {{ option }}
             </div>
+          </mat-option>
+          <mat-option *ngIf="hasNoResults" disabled class="rsv-autocomplete-empty">
+            <i class="bi bi-emoji-frown"></i> No matching patients found
           </mat-option>
         </mat-autocomplete>
       </div>
 
-      <!-- Search Button -->
-      <div class="mx-2">
-        <button (click)="searchPatient()" type="button" class="btn btn-primary search-btn h-100 px-4"
-          [disabled]="!searchValue || isLoading" [class.btn-loading]="isLoading">
-          <i class="bi bi-search me-2"></i>
-          <span>Search</span>
-        </button>
-      </div>
+      <button (click)="searchPatient()" type="button" class="btn-primary-clinic rsv-search-btn"
+        [disabled]="!searchValue || isLoading">
+        <i class="bi bi-search"></i>
+        <span>Search</span>
+      </button>
 
-      <!-- Add New Patient Button -->
-      <div *ngIf="canAddNewPatient" class="mx-2">
-        <button (click)="openDialog()" class="btn btn-success add-patient-btn" style="height: 50px; min-width: 180px;"
-          [disabled]="isLoading">
-          <i class="bi bi-person-plus me-2"></i>
-          <span>New Patient</span>
-        </button>
-      </div>
+      <button *ngIf="canAddNewPatient" (click)="openDialog()" class="rsv-add-patient-btn" type="button"
+        [disabled]="isLoading">
+        <i class="bi bi-person-plus-fill"></i>
+        <span>New Patient</span>
+      </button>
+    </div>
+  </div>
 
-      <div *ngIf="canAddNewPatient" class="card text-white shadow m-3"
-        style="background-color: rgba(111, 45, 189, 0.6);">
-        <div class="card-body p-3">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h4 class="mb-0 fw-bold">{{ totalPatients }} Patient</h4>
-              <small class="opacity-75">In the System</small>
-            </div>
-            <div class="ms-3">
-              <mat-icon style="font-size: 32px; width: 32px; height: 32px; opacity: 0.5;">person</mat-icon>
-            </div>
-          </div>
-        </div>
+  <!-- ── Stat pill (admin only) ── -->
+  <div class="rsv-stats-row" *ngIf="canAddNewPatient">
+    <div class="rsv-stat-pill">
+      <div class="rsv-stat-pill__icon">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="rsv-stat-pill__text">
+        <span class="rsv-stat-pill__value">{{ totalPatients }}</span>
+        <span class="rsv-stat-pill__label">Patients in the system</span>
       </div>
     </div>
   </div>
 
-  <div class="tabs-container">
+  <!-- ── Tabs ── -->
+  <div class="clinic-card rsv-tabs-card">
     <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabSelectChange($event)"
       class="patient-tabs" mat-align-tabs="center" backgroundColor="accent" color="primary">
 
@@ -79,13 +69,13 @@
             [info]="PatientInfo" [isActive]="isTabActive('patientInfoTab')">
           </app-patient-info>
 
-          <div *ngIf="tabDataStates['patientInfoTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading patient information...
+          <div *ngIf="tabDataStates['patientInfoTab'].loading" class="rsv-tab-loading">
+            <i class="bi bi-arrow-repeat rsv-spin"></i> Loading patient information…
           </div>
 
-          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
-            <i class="bi bi-person-exclamation"></i>
-            <p>Please search and select a patient to view information</p>
+          <div *ngIf="!hasSelectedPatient" class="rsv-tab-empty">
+            <i class="bi bi-person-exclamation rsv-tab-empty__icon"></i>
+            <p class="rsv-tab-empty__text">Search and select a patient to view information</p>
           </div>
         </div>
       </mat-tab>
@@ -97,13 +87,13 @@
             [isActive]="isTabActive('historyTab')">
           </app-history>
 
-          <div *ngIf="tabDataStates['historyTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading history...
+          <div *ngIf="tabDataStates['historyTab'].loading" class="rsv-tab-loading">
+            <i class="bi bi-arrow-repeat rsv-spin"></i> Loading history…
           </div>
 
-          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
-            <i class="bi bi-clock-history"></i>
-            <p>Please search and select a patient to view history</p>
+          <div *ngIf="!hasSelectedPatient" class="rsv-tab-empty">
+            <i class="bi bi-clock-history rsv-tab-empty__icon"></i>
+            <p class="rsv-tab-empty__text">Search and select a patient to view history</p>
           </div>
         </div>
       </mat-tab>
@@ -115,13 +105,13 @@
             [isActive]="isTabActive('packagesTab')">
           </app-packages>
 
-          <div *ngIf="tabDataStates['packagesTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading packages...
+          <div *ngIf="tabDataStates['packagesTab'].loading" class="rsv-tab-loading">
+            <i class="bi bi-arrow-repeat rsv-spin"></i> Loading packages…
           </div>
 
-          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
-            <i class="bi bi-box"></i>
-            <p>Please search and select a patient to view packages</p>
+          <div *ngIf="!hasSelectedPatient" class="rsv-tab-empty">
+            <i class="bi bi-box-seam rsv-tab-empty__icon"></i>
+            <p class="rsv-tab-empty__text">Search and select a patient to view packages</p>
           </div>
         </div>
       </mat-tab>
@@ -133,13 +123,13 @@
             [isActive]="isTabActive('pointsTab')">
           </app-points>
 
-          <div *ngIf="tabDataStates['pointsTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading points...
+          <div *ngIf="tabDataStates['pointsTab'].loading" class="rsv-tab-loading">
+            <i class="bi bi-arrow-repeat rsv-spin"></i> Loading points…
           </div>
 
-          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
-            <i class="bi bi-star"></i>
-            <p>Please search and select a patient to view points</p>
+          <div *ngIf="!hasSelectedPatient" class="rsv-tab-empty">
+            <i class="bi bi-star rsv-tab-empty__icon"></i>
+            <p class="rsv-tab-empty__text">Search and select a patient to view points</p>
           </div>
         </div>
       </mat-tab>
@@ -151,13 +141,13 @@
             [isActive]="isTabActive('reservationsTab')">
           </app-reservations>
 
-          <div *ngIf="tabDataStates['reservationsTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading reservations...
+          <div *ngIf="tabDataStates['reservationsTab'].loading" class="rsv-tab-loading">
+            <i class="bi bi-arrow-repeat rsv-spin"></i> Loading reservations…
           </div>
 
-          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
-            <i class="bi bi-calendar"></i>
-            <p>Please search and select a patient to view reservations</p>
+          <div *ngIf="!hasSelectedPatient" class="rsv-tab-empty">
+            <i class="bi bi-calendar-event rsv-tab-empty__icon"></i>
+            <p class="rsv-tab-empty__text">Search and select a patient to view reservations</p>
           </div>
         </div>
       </mat-tab>
@@ -169,13 +159,13 @@
             [phoneNumber]="patientNumber" [isActive]="isTabActive('paymentHistoryTab')">
           </app-payment-history>
 
-          <div *ngIf="tabDataStates['paymentHistoryTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading payment history...
+          <div *ngIf="tabDataStates['paymentHistoryTab'].loading" class="rsv-tab-loading">
+            <i class="bi bi-arrow-repeat rsv-spin"></i> Loading payment history…
           </div>
 
-          <div *ngIf="!hasSelectedPatient" class="text-center p-4 text-muted">
-            <i class="bi bi-credit-card"></i>
-            <p>Please search and select a patient to view payment history</p>
+          <div *ngIf="!hasSelectedPatient" class="rsv-tab-empty">
+            <i class="bi bi-credit-card rsv-tab-empty__icon"></i>
+            <p class="rsv-tab-empty__text">Search and select a patient to view payment history</p>
           </div>
         </div>
       </mat-tab>
@@ -186,8 +176,8 @@
           <app-idle-patients *ngIf="isTabActive('idlePatientsTab')" [isActive]="isTabActive('idlePatientsTab')">
           </app-idle-patients>
 
-          <div *ngIf="tabDataStates['idlePatientsTab'].loading" class="text-center p-4">
-            <i class="fas fa-spinner fa-spin"></i> Loading idle patients...
+          <div *ngIf="tabDataStates['idlePatientsTab'].loading" class="rsv-tab-loading">
+            <i class="bi bi-arrow-repeat rsv-spin"></i> Loading idle patients…
           </div>
         </div>
       </mat-tab>

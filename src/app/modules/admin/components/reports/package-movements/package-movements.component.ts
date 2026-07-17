@@ -10,60 +10,60 @@ import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
-import { DebitReportsService, DebitMovement, DebitMovementsFilter } from '../../../services/debit-reports/debit-reports.service';
 
 import { Clinic } from 'src/app/shared/models/rooms.models';
 import { ReceptionistIdAndName, ReportsService } from '../../../services/reports.service';
+import { PackageMovementsFilter, PackageMovement, PackageReportsService } from '../../../services/package-movments.service';
 
-export const MOVEMENT_TYPE_LABELS: Record<string, string> = {
-  PACKAGE_RESERVED: 'Package Reserved',
-  PRODUCT_RESERVED: 'Product Reserved',
-  PAYMENT_ADDED: 'Payment Added',
-  MANUAL_ADJUSTMENT: 'Manual Adjustment',
+export const PACKAGE_MOVEMENT_TYPE_LABELS: Record<string, string> = {
+  PACKAGE_RESERVED: 'Package reserved',
+  CHECKOUT_SESSION_DEDUCTED: 'Checkout – session deducted',
+  CHECKOUT_POINTS_DEDUCTED: 'Checkout – points deducted',
+  MANUAL_SESSION_ADJUSTMENT: 'Manual session adjustment',
+  MANUAL_POINTS_ADJUSTMENT: 'Manual points adjustment',
+  PACKAGE_REMOVED: 'Package removed',
 };
 
-const SORT_KEY_MAP: Record<string, string> = {
-  createdAt: 'createdAt',
-  patientName: 'patientName',
-  patientPhone: 'patientName',
-  clinicName: 'clinicName',
-  createdByName: 'createdByName',
-  movementType: 'movementType',
-  delta: 'delta',
-  balanceAfter: 'balanceAfter',
-  description: 'createdAt',
-};
+// Fields the backend accepts for sortBy (per API doc) — anything else falls back to createdAt
+const SORTABLE_FIELDS = new Set([
+  'createdAt', 'movementType', 'sessionsDelta', 'sessionsAfter',
+  'pointsDelta', 'pointsAfter', 'packageName', 'serviceName',
+  'patientName', 'patientPhone', 'clinicName', 'createdByName'
+]);
 
-// Matches GET /admin/patients/search-v2 response item shape
+// Matches GET /admin/patients/search-v2 response item shape (same as Debit Movements)
 export interface PatientSearchResult {
   patientId: number;
   patientName: string;
   primaryPhone: string;
 }
 
-// ReceptionistIdAndName is imported from reports.service.ts
-// shape: { receptionistId: number; name: string }
 @Component({
-  selector: 'app-debit-movements',
-  templateUrl: './debit-movements.component.html',
-  styleUrls: ['./debit-movements.component.css']
+  selector: 'app-package-movements',
+  templateUrl: './package-movements.component.html',
+  styleUrls: ['./package-movements.component.css']
 })
-export class DebitMovementsComponent implements OnInit, OnDestroy {
+export class PackageMovementsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private patientSearch$ = new Subject<string>();
 
-  @ViewChild('deltaTpl', { static: true }) deltaTpl!: TemplateRef<any>;
-  @ViewChild('typeTpl', { static: true }) typeTpl!: TemplateRef<any>;
-  @ViewChild('descriptionTpl', { static: true }) descriptionTpl!: TemplateRef<any>;
   @ViewChild('dateTpl', { static: true }) dateTpl!: TemplateRef<any>;
+  @ViewChild('serviceTpl', { static: true }) serviceTpl!: TemplateRef<any>;
+  @ViewChild('deltaSessionsTpl', { static: true }) deltaSessionsTpl!: TemplateRef<any>;
+  @ViewChild('deltaPointsTpl', { static: true }) deltaPointsTpl!: TemplateRef<any>;
+  @ViewChild('typeTpl', { static: true }) typeTpl!: TemplateRef<any>;
+  @ViewChild('doctorRoomTpl', { static: true }) doctorRoomTpl!: TemplateRef<any>;
+  @ViewChild('descriptionTpl', { static: true }) descriptionTpl!: TemplateRef<any>;
 
   /* ── collapse state ── */
   filtersCollapsed = true;
 
   /* ── filters ── */
-  filters: DebitMovementsFilter = { sortBy: 'createdAt', sortDir: 'desc' };
+  filters: PackageMovementsFilter = { sortBy: 'createdAt', sortDir: 'desc' };
   fromDateInput = '';
   toDateInput = '';
+  packageNameSearch = '';
+  serviceNameSearch = '';
 
   /* ── clinic autocomplete ── */
   clinicNameSearch = '';
@@ -85,31 +85,33 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
   hasPatientFilter = false;
   patientResults: PatientSearchResult[] = [];
   patientSearchLoading = false;
-  /** true when this page was opened pre-scoped to one patient, e.g. from the patient-info
-   *  page via queryParams: { patientPhone } (resolved to a patientId via phone search),
-   *  or directly via queryParams: { patientId, patientName? }. */
+  /** true when this page was opened pre-scoped to one patient, e.g. from the patient profile
+   *  via queryParams: { patientId, patientName?, patientPhone? }, or resolved from a
+   *  patientPhone query param via a phone search. */
   patientLocked = false;
 
   readonly movementTypes = [
     { value: '', label: 'All Types' },
-    { value: 'PACKAGE_RESERVED', label: 'Package Reserved' },
-    { value: 'PRODUCT_RESERVED', label: 'Product Reserved' },
-    { value: 'PAYMENT_ADDED', label: 'Payment Added' },
-    { value: 'MANUAL_ADJUSTMENT', label: 'Manual Adjustment' },
+    { value: 'PACKAGE_RESERVED', label: 'Package reserved' },
+    { value: 'CHECKOUT_SESSION_DEDUCTED', label: 'Checkout – session deducted' },
+    { value: 'CHECKOUT_POINTS_DEDUCTED', label: 'Checkout – points deducted' },
+    { value: 'MANUAL_SESSION_ADJUSTMENT', label: 'Manual session adjustment' },
+    { value: 'MANUAL_POINTS_ADJUSTMENT', label: 'Manual points adjustment' },
+    { value: 'PACKAGE_REMOVED', label: 'Package removed' },
   ];
 
-  readonly movementLabels = MOVEMENT_TYPE_LABELS;
+  readonly movementLabels = PACKAGE_MOVEMENT_TYPE_LABELS;
 
   /* ── table ── */
   tableColumns: Array<{ key: string; label: string; template?: any }> = [];
-  dataSource = new MatTableDataSource<DebitMovement>();
+  dataSource = new MatTableDataSource<PackageMovement>();
   totalItems = 0;
   pageSize = 20;
   currentPage = 0;
   isLoading = false;
 
   constructor(
-    private debitService: DebitReportsService,
+    private packageReportsService: PackageReportsService,
     private reportsService: ReportsService,
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef
@@ -121,10 +123,13 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
       { key: 'patientName', label: 'Patient' },
       { key: 'patientPhone', label: 'Phone' },
       { key: 'clinicName', label: 'Clinic' },
-      { key: 'createdByName', label: 'Receptionist' },
+      { key: 'packageName', label: 'Package' },
+      { key: 'serviceName', label: 'Service', template: this.serviceTpl },
+      { key: 'sessionsDelta', label: 'Sessions', template: this.deltaSessionsTpl },
+      { key: 'pointsDelta', label: 'Points', template: this.deltaPointsTpl },
       { key: 'movementType', label: 'Type', template: this.typeTpl },
-      { key: 'delta', label: 'Delta (EGP)', template: this.deltaTpl },
-      { key: 'balanceAfter', label: 'Balance After (EGP)' },
+      { key: 'createdByName', label: 'Created By' },
+      { key: 'doctorName', label: 'Doctor / Room', template: this.doctorRoomTpl },
       { key: 'description', label: 'Description', template: this.descriptionTpl },
     ];
 
@@ -151,6 +156,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
    *   - patientId (+ optional patientName): scope directly to a known patient, no search needed.
    *   - patientPhone (no patientId): resolve to a patientId by searching patients by phone and
    *     taking the first match.
+   *   - packageName: pre-fill the package name filter.
    * Returns true if this method already kicked off (and will complete) an async patient
    * resolution that itself calls loadMovements() — in that case the caller should NOT also
    * call loadMovements() immediately.
@@ -159,17 +165,19 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
     const qp = this.route.snapshot.queryParamMap;
     const patientId = qp.get('patientId');
     const patientPhone = qp.get('patientPhone');
+    const packageName = qp.get('packageName');
+
+    if (packageName) {
+      this.packageNameSearch = packageName;
+      this.filtersCollapsed = false;
+    }
 
     if (patientId) {
       const name = qp.get('patientName');
-      const phone = qp.get('patientPhone');
       this.filters.patientId = +patientId;
-       this.hasPatientFilter = true;
+      this.hasPatientFilter = true;
       this.patientLocked = true;
-      this.filtersCollapsed = false;
-      this.selectedPatientLabel = name && phone
-        ? `${name} — ${phone}`
-        : (name || (phone ? `Patient — ${phone}` : `Patient #${patientId}`));
+      this.selectedPatientLabel = name ? name : `Patient #${patientId}`;
       this.patientSearchInput = this.selectedPatientLabel;
       return false;
     }
@@ -184,7 +192,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
 
   /** Search patients by phone (GET /admin/patients/search-v2), take the first match, and use
    *  its patientId as the patient filter. If nothing matches, the patient filter is left
-   *  cleared and movements load filtered only by the other active filters. */
+   *  cleared and movements load filtered only by the other active filters (e.g. packageName). */
   private resolvePatientByPhone(phone: string): void {
     this.patientSearchLoading = true;
     this.patientSearchInput = phone;
@@ -232,6 +240,8 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
     if (this.hasClinicFilter) count++;
     if (this.hasReceptionistFilter) count++;
     if (this.filters.movementType) count++;
+    if (this.packageNameSearch) count++;
+    if (this.serviceNameSearch) count++;
     if (this.fromDateInput || this.toDateInput) count++;
     return count;
   }
@@ -257,9 +267,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (res) => {
-          if (res) {
-            this.patientResults = res.data;
-          }
+          if (res) this.patientResults = res.data;
           this.patientSearchLoading = false;
           this.cd.detectChanges();
         },
@@ -315,17 +323,16 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
 
   onClinicSearch(value: string): void {
     this.clinicNameSearch = value;
-    // If user clears manually, drop the active filter
     if (!value.trim()) { this.clearClinicSearch(); return; }
     const q = value.toLowerCase().trim();
     this.filteredClinics = this.allClinics.filter(c => c.clinicName.toLowerCase().includes(q));
   }
 
   onClinicSelected(clinic: Clinic): void {
-    this.clinicNameSearch = clinic.clinicName;   // show the name in the input
+    this.clinicNameSearch = clinic.clinicName;
     this.activeClinic = clinic.clinicName;
     this.hasClinicFilter = true;
-    this.filters.clinicId = clinic.clinicId;     // send the ID to the API
+    this.filters.clinicId = clinic.clinicId;
     this.loadMovements(true);
   }
 
@@ -398,11 +405,13 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
     this.filters.toDate = this.toDateInput
       ? new Date(this.toDateInput + 'T23:59:59').toISOString().slice(0, 19)
       : null;
+    this.filters.packageName = this.packageNameSearch.trim() || null;
+    this.filters.serviceName = this.serviceNameSearch.trim() || null;
 
     this.isLoading = true;
 
-    this.debitService
-      .getDebitMovements(this.currentPage, this.pageSize, this.filters)
+    this.packageReportsService
+      .getPackageMovements(this.currentPage, this.pageSize, this.filters)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
@@ -419,7 +428,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(event: { column: string; direction: string }): void {
-    this.filters.sortBy = SORT_KEY_MAP[event.column] ?? 'createdAt';
+    this.filters.sortBy = SORTABLE_FIELDS.has(event.column) ? event.column : 'createdAt';
     this.filters.sortDir = event.direction === 'asc' ? 'asc' : 'desc';
     this.loadMovements(true);
   }
@@ -434,15 +443,20 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
     this.filters = { sortBy: 'createdAt', sortDir: 'desc' };
     this.fromDateInput = '';
     this.toDateInput = '';
+    this.packageNameSearch = '';
+    this.serviceNameSearch = '';
+
     // clinic
     this.clinicNameSearch = '';
     this.activeClinic = '';
     this.hasClinicFilter = false;
     this.filteredClinics = [...this.allClinics];
+
     // receptionist
     this.receptionistSearch = '';
     this.hasReceptionistFilter = false;
     this.filteredReceptionists = [...this.allReceptionists];
+
     // patient — keep the scope if it was locked in from another page
     if (!this.patientLocked) {
       this.patientSearchInput = '';
@@ -450,6 +464,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
       this.hasPatientFilter = false;
       this.patientResults = [];
     }
+
     this.loadMovements(true);
   }
 
@@ -464,11 +479,18 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
 
   typeClass(type: string): string {
     const map: Record<string, string> = {
-      PACKAGE_RESERVED: 'type-badge type-badge--package',
-      PRODUCT_RESERVED: 'type-badge type-badge--product',
-      PAYMENT_ADDED: 'type-badge type-badge--payment',
-      MANUAL_ADJUSTMENT: 'type-badge type-badge--manual',
+      PACKAGE_RESERVED: 'type-badge type-badge--reserved',
+      CHECKOUT_SESSION_DEDUCTED: 'type-badge type-badge--checkout',
+      CHECKOUT_POINTS_DEDUCTED: 'type-badge type-badge--checkout',
+      MANUAL_SESSION_ADJUSTMENT: 'type-badge type-badge--manual',
+      MANUAL_POINTS_ADJUSTMENT: 'type-badge type-badge--manual',
+      PACKAGE_REMOVED: 'type-badge type-badge--removed',
     };
     return map[type] ?? 'type-badge';
+  }
+
+  doctorRoomLabel(row: PackageMovement): string {
+    const parts = [row.doctorName, row.roomName].filter(Boolean);
+    return parts.length ? parts.join(' · ') : '-';
   }
 }

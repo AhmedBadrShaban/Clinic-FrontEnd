@@ -19,4 +19,8 @@
     style="min-width: 110px;" matTooltip="Download payment receipt as PDF">
     <mat-icon>receipt_long</mat-icon> Receipt
   </button>
+  <button *ngIf="isAdmin" mat-button color="warn" (click)="openPackageMovements(row)" style="min-width: 170px;">
+    <mat-icon>history</mat-icon>
+    Package Movements
+  </button>
 </ng-template>

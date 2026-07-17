@@ -1,0 +1,298 @@
+/* ═══════════════════════════════════════════════
+   Patient Info — scoped styles
+   (mirrors the clinic-card / filter-input design
+   language used across the reports pages)
+   ═══════════════════════════════════════════════ */
+
+.patient-info-wrap {
+  width: 100%;
+}
+
+.patient-info-card {
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.patient-info-card--loading {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* ── Header ─────────────────────────────────── */
+.patient-info-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-light, #E8E6EF);
+}
+
+.patient-info-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.patient-info-card__icon {
+  font-size: 24px;
+  color: var(--brand-purple, #6F2DBD);
+  flex-shrink: 0;
+}
+
+.patient-info-card__title {
+  font-size: var(--font-size-md, 16px);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.patient-info-card__sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+
+/* ── Status pills ───────────────────────────── */
+.pi-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full, 999px);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pi-status--loading {
+  background: var(--brand-purple-dim, rgba(111,45,189,0.10));
+  color: var(--brand-purple, #6F2DBD);
+}
+
+.pi-status--error {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.pi-spin {
+  animation: pi-spin 0.8s linear infinite;
+}
+
+@keyframes pi-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Empty state ────────────────────────────── */
+.pi-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 48px var(--space-lg);
+  text-align: center;
+}
+
+.pi-empty__icon {
+  font-size: 32px;
+  color: var(--border-light, #E8E6EF);
+}
+
+.pi-empty__text {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Form layout ────────────────────────────── */
+.patient-info-form {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.pi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md) var(--space-lg);
+}
+
+.pi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pi-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pi-label i {
+  font-size: 12px;
+  color: var(--brand-purple, #6F2DBD);
+}
+
+.pi-input {
+  height: 40px;
+  width: 100%;
+  padding: 0 var(--space-sm);
+  border: 1.5px solid var(--border-light, #E8E6EF);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface-card, #fff);
+  font-size: 14px;
+  color: var(--text-primary, #1A1523);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+
+.pi-input::placeholder { color: var(--text-muted, #8A8599); }
+
+.pi-input:focus {
+  border-color: var(--brand-purple, #6F2DBD);
+  box-shadow: 0 0 0 3px var(--brand-purple-dim, rgba(111,45,189,0.12));
+}
+
+.pi-input:disabled {
+  background: var(--border-light, #E8E6EF);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* ── Read-only (view mode) look ──────────────── */
+.pi-input--readonly {
+  border-color: transparent;
+  background: transparent;
+  padding-left: 0;
+  color: var(--text-primary, #1A1523);
+  font-weight: 500;
+  cursor: default;
+  /* belt-and-braces: readonly already blocks typing, but some browsers still allow
+     opening the native date picker on a readonly date input — this blocks that too */
+  pointer-events: none;
+}
+
+.pi-input--readonly:focus {
+  box-shadow: none;
+}
+
+.pi-input--readonly::placeholder {
+  color: var(--text-muted, #8A8599);
+  font-weight: 400;
+}
+
+/* ── Header edit button ──────────────────────── */
+.pi-edit-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Actions row ─────────────────────────────── */
+.pi-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-light, #E8E6EF);
+}
+
+/* ── Debit panel ─────────────────────────────── */
+.pi-debit-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--brand-purple-dim, rgba(111,45,189,0.04));
+  border: 1px solid rgba(111,45,189,0.15);
+  border-radius: var(--radius-sm, 6px);
+}
+
+.pi-debit-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.pi-debit-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pi-debit-balance__label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.pi-debit-balance__value {
+  font-size: var(--font-size-lg, 20px);
+  font-weight: 700;
+}
+
+.delta--positive { color: var(--color-danger); }
+.delta--negative { color: var(--color-success); }
+.delta--zero     { color: var(--text-muted); }
+
+.pi-history-link {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pi-debit-panel__adjust {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pi-debit-adjust-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.pi-debit-adjust-row .pi-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .pi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-info-form {
+    padding: var(--space-md);
+  }
+
+  .patient-info-card__header {
+    padding: var(--space-sm) var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .pi-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pi-debit-adjust-row {
+    flex-direction: column;
+  }
+}

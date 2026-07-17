@@ -23,7 +23,8 @@ import { DebitReportComponent } from './components/reports/depit-report/debit-re
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
- 
+import { PackageMovementsComponent } from './components/reports/package-movements/package-movements.component';
+
 const routes: Routes = [
   {
     path: '', component: AdminComponent, children: [
@@ -45,14 +46,16 @@ const routes: Routes = [
       { path: 'reservations', component: ReservationsComponent },
       { path: 'reservation/:phone', component: ReservationComponent, pathMatch: 'full' },
       { path: 'doctor-schedular', component: DoctorScheduleComponent },
-       { path: 'contributors', component: ContributorsComponent },
+      { path: 'contributors', component: ContributorsComponent },
       {
         path: 'reports',
         children: [
           { path: 'debit-report', component: DebitReportComponent },
-          { path: 'debit-movements', component: DebitMovementsComponent }, 
+          { path: 'debit-movements', component: DebitMovementsComponent },
+          { path: 'package-movements', component: PackageMovementsComponent },
+
           { path: 'monthly-income', component: MonthlyMoneyReportComponent },
-          { path: 'whatsapp-messages', component: WhatsAppMessagesComponent }, 
+          { path: 'whatsapp-messages', component: WhatsAppMessagesComponent },
         ]
       },
     ]
