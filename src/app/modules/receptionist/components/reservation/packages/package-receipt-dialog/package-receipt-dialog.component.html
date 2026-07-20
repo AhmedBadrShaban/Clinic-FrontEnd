@@ -54,11 +54,23 @@
             </div>
             <div class="info-cell">
               <span class="info-key">Reserved</span>
-              <span class="info-val">{{ receiptData.reservedAt | date:'shortDate' }}</span>
+              <span class="info-val">{{ receiptData.reservedAt | date:'mediumDate' }}</span>
             </div>
             <div class="info-cell">
               <span class="info-key">Expires</span>
-              <span class="info-val">{{ receiptData.expire | date:'shortDate' }}</span>
+              <span class="info-val">{{ receiptData.expire | date:'mediumDate' }}</span>
+            </div>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="services-block">
+            <div class="receipt-section-label">Points Included</div>
+            <div class="services-list">
+              <div class="service-row">
+                <span class="service-name">Package Points</span>
+                <span class="service-sessions">{{ receiptData.numberOfPoints }} pts</span>
+              </div>
             </div>
           </div>
 
@@ -71,16 +83,18 @@
               </div>
             </div>
           </div>
-
           <div class="receipt-divider"></div>
 
           <div class="receipt-section-label">Payment</div>
-          <div class="payment-rows">
+          <div class="payment-rows" *ngIf="getUsedPaymentMethods().length; else noPayment">
             <div *ngFor="let p of getUsedPaymentMethods()" class="payment-row">
               <span class="pay-method">{{ p.label }}</span>
               <span class="pay-amount">{{ p.amount | currency:'EGP':'symbol':'1.0-0' }}</span>
             </div>
           </div>
+          <ng-template #noPayment>
+            <p class="state-label" style="margin: 4px 0;">No payment recorded.</p>
+          </ng-template>
 
           <div class="total-row">
             <span class="total-label">Total Paid</span>

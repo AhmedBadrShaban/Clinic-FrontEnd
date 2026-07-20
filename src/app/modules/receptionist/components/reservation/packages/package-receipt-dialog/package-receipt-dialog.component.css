@@ -7,10 +7,10 @@
   color: #1a1a2e;
   display: flex;
   flex-direction: column;
-  height: 85vh;        /* fixed height, not max-height */
+  height: auto;         
+  max-height: 85vh;    
   overflow: hidden;
 }
-
 .receipt-dialog-body {
   flex: 1 1 auto;      /* was 1 1 0 — auto lets it actually grow */
   min-height: 0;
@@ -26,16 +26,7 @@
 .receipt-dialog-body::-webkit-scrollbar-thumb { background: #1565c0; border-radius: 99px; }
 .receipt-dialog-body::-webkit-scrollbar-thumb:hover { background: #0d47a1; }
 
-.dialog-actions {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: #fff;
-  border-top: 1px solid #e8eaf0;
-}
+ 
 /* ── Loading / Error panels ── */
 .state-panel {
   display: flex;
@@ -249,15 +240,13 @@
   padding-top: 4px;
 }
 
-/* ── Dialog action bar ── */
-.dialog-actions {
+ .dialog-actions {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
   padding: 14px 4px 4px;
 }
-
 .action-btn-close {
   min-width: 90px;
 }
