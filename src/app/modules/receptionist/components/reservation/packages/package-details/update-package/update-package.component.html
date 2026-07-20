@@ -1,59 +1,83 @@
-<div class="container">
-  <div class="Header text-center">
-    Update Package
-  </div>
+<div class="pkg-modal">
+  <header class="pkg-modal__crown">
+    <span class="pkg-modal__crown-icon" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V7Z"
+          stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M14 5v14" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2.5 2.5" />
+      </svg>
+    </span>
+    <div class="pkg-modal__heading">
+      <h2 class="pkg-modal__title">Update Package</h2>
+      <p class="pkg-modal__subtitle" *ngIf="data.packageName">{{ data.packageName }}</p>
+    </div>
+    <button type="button" class="pkg-modal__close" (click)="closeDialog()" aria-label="Close dialog">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+      </svg>
+    </button>
+  </header>
 
-  <div class="row">
-    <form [formGroup]="formData" (ngSubmit)="update()" role="form">
-      <div class="row m-2 mt-3 justify-content-between">
-        <div class="form-group col-6">
-          <label for="points" class="form-label w-100">Number Of Points</label><br>
-          <input  class="form-control" type="number" id="points"   formControlName="numberOfPoints" [min]="0" [max]="data.numberOfPoints" />
-        </div>
-        <div  *ngIf="userType == 'ROLE_ADMIN'" class="form-group col-6">
-          <label class="form-label w-100">Expire Date:</label>
-          <input class="form-control" type="date" formControlName="expire"   [min]="minDate"
-          />
-        </div>
+  <form [formGroup]="formData" (ngSubmit)="update()" class="pkg-modal__form" role="form">
+
+    <div class="pkg-ticket" [class.pkg-ticket--single]="userType !== 'ROLE_ADMIN'">
+      <div class="pkg-ticket__stat">
+        <label for="points" class="pkg-ticket__label">Points remaining</label>
+        <input id="points" class="pkg-ticket__value" type="number" formControlName="numberOfPoints" [min]="0"
+          [max]="data.numberOfPoints" />
       </div>
-      <div class="Content">
-        <div class="my-1">
-          <div formArrayName="reservedService">
-            <div *ngFor="let service of reservedServices.controls; let i = index" [formGroupName]="i">
-              <div class="row  m-2 mt-3">
-                <div class="form-group col-6">
-                  <label class="form-label w-100">Service Name</label>
-                  <input  class="form-control" formControlName="serviceName"/>
-                </div>
-                <div class="form-group col-6">
-                  <label class="form-label w-100">Sessions</label>
-                  <input class="form-control" formControlName="sessions" type="number" [min]="0"  [max]="getMaxSessions(i)"
-                  />
-                </div>
+
+      <div class="pkg-ticket__stat" *ngIf="userType === 'ROLE_ADMIN'">
+        <label class="pkg-ticket__label">Expires on</label>
+        <input class="pkg-ticket__value pkg-ticket__value--date" type="date" formControlName="expire" [min]="minDate" />
+      </div>
+
+      <div class="pkg-ticket__perforation">
+        <span class="pkg-ticket__notch pkg-ticket__notch--left"></span>
+        <span class="pkg-ticket__notch pkg-ticket__notch--right"></span>
+      </div>
+    </div>
+
+    <div class="pkg-modal__body">
+      <section class="pkg-section">
+        <p class="pkg-section__label">Services in this package</p>
+
+        <div formArrayName="reservedService" class="pkg-service-list">
+          <div *ngFor="let service of reservedServices.controls; let i = index" [formGroupName]="i"
+            class="pkg-service-row">
+            <div class="pkg-service-row__name">
+              <span class="pkg-chip">{{ service.get('serviceName')?.value }}</span>
+              <input formControlName="serviceName" class="pkg-visually-hidden" tabindex="-1" />
+            </div>
+
+            <div class="pkg-service-row__sessions">
+              <label class="pkg-service-row__sessions-label">Sessions</label>
+              <div class="pkg-sessions-field">
+                <input type="number" formControlName="sessions" [min]="0" [max]="getMaxSessions(i)" />
+                <span class="pkg-sessions-field__max">/ {{ getMaxSessions(i) }}</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row m-2 mt-3 justify-content-between">
-        <div class="col-12">
-          <label for="expense" class="form-label w-100">Enter The Expense :</label>
-          <input  class="form-control" type="number" id="expense"   formControlName="amountOfExpense"/>
+      </section>
 
-          <div *ngIf="formData.get('amountOfExpense')?.invalid && (formData.get('amountOfExpense')?.touched || formData.get('amountOfExpense')?.dirty)">
-            <small class="text-danger">Expense is required and must be a number.</small>
-          </div>
+      <section class="pkg-section pkg-section--expense">
+        <label for="expense" class="pkg-section__label">Expense to record</label>
+        <div class="pkg-expense-field">
+          <span class="pkg-expense-field__currency">EGP</span>
+          <input id="expense" type="number" formControlName="amountOfExpense" placeholder="0.00" />
         </div>
-      </div>
-      <div class="d-flex m-2 mt-3 justify-content-center">
-        <div>
-<button type="submit" class="btn btn-primary" [disabled]="isExpenseInvalid">
-  Save Changes
-</button>        </div>
-        <div>
-          <a (click)="closeDialog()" class="btn btn-danger mx-2">Cancel</a>
-        </div>
-      </div>
-    </form>
-  </div>
+        <p class="pkg-field-error"
+          *ngIf="formData.get('amountOfExpense')?.invalid && (formData.get('amountOfExpense')?.touched || formData.get('amountOfExpense')?.dirty)">
+          Enter a valid amount to continue.
+        </p>
+      </section>
+    </div>
+
+    <footer class="pkg-modal__footer">
+      <button type="button" class="pkg-btn pkg-btn--ghost" (click)="closeDialog()">Cancel</button>
+      <button type="submit" class="pkg-btn pkg-btn--primary" [disabled]="isExpenseInvalid">Save changes</button>
+    </footer>
+  </form>
 </div>

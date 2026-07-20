@@ -1,49 +1,71 @@
-<div  class="Header w-100">
-  Package Information
-</div>
-<div  *ngIf="packDetails"  class="Content">
-  <table>
-    <tr>
-      <th scope="col"> Number of Points</th>
-      <td> {{packDetails.numberOfPoints}}</td>
-    </tr>
-    <tr>
-      <th> Clinic </th>
-      <td> {{packDetails.clinicName}} </td>
-    </tr>
-    <tr>
-      <th>Expire</th>
-      <td>{{packDetails.expire}}</td>
-    </tr>
-    <tr>
-      <th>Date Of Reservation</th>
-      <td>{{packDetails.reservedAt}}</td>
-    </tr>
-  </table>
-  <div class="header-Service"  *ngIf="servicePack">
-    Package Services
-  </div>
-  <div class="my-2 ">
-    <table  *ngIf="servicePack">
-      <thead>
-        <tr>
-          <th class="me-4">Service Name</th>
-          <th>Sessions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let service of packDetails.reservedService" >
-          <td class="me-4">{{service.serviceName}}</td>
-          <td>{{service.sessions}}</td>
-        </tr>
-      </tbody>
-   </table>
-  </div>
+<div class="pkg-modal">
+  <header class="pkg-modal__crown">
+    <span class="pkg-modal__crown-icon" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V7Z"
+          stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M14 5v14" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2.5 2.5" />
+      </svg>
+    </span>
+    <div class="pkg-modal__heading">
+      <h2 class="pkg-modal__title">Package Information</h2>
+      <p class="pkg-modal__subtitle" *ngIf="packDetails?.clinicName">{{ packDetails.clinicName }}</p>
+    </div>
+    <button type="button" class="pkg-modal__close" (click)="closeDialog()" aria-label="Close dialog">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+      </svg>
+    </button>
+  </header>
 
+  <ng-container *ngIf="packDetails">
+    <div class="pkg-ticket">
+      <div class="pkg-ticket__stat">
+        <span class="pkg-ticket__label">Points remaining</span>
+        <span class="pkg-ticket__value">{{ packDetails.numberOfPoints }}</span>
+      </div>
 
- <div class="d-flex justify-content-around" >
-  <button   style="font-size:12px;" class="btn btn-info m-2" (click)="openUpdatePackage()">Update</button>
-  <button   style="font-size:12px;" class="btn btn-danger m-2" (click)="closeDialog()">Close</button>
+      <div class="pkg-ticket__stat">
+        <span class="pkg-ticket__label">Expires on</span>
+        <span class="pkg-ticket__value pkg-ticket__value--date">{{ packDetails.expire }}</span>
+      </div>
 
-</div>
+      <div class="pkg-ticket__stat">
+        <span class="pkg-ticket__label">Reserved on</span>
+        <span class="pkg-ticket__value pkg-ticket__value--date">{{ packDetails.reservedAt }}</span>
+      </div>
+
+      <div class="pkg-ticket__perforation">
+        <span class="pkg-ticket__notch pkg-ticket__notch--left"></span>
+        <span class="pkg-ticket__notch pkg-ticket__notch--right"></span>
+      </div>
+    </div>
+
+    <div class="pkg-modal__body">
+      <section class="pkg-section" *ngIf="servicePack">
+        <p class="pkg-section__label">Package services</p>
+
+        <div class="pkg-service-list">
+          <div class="pkg-service-row" *ngFor="let service of packDetails.reservedService">
+            <div class="pkg-service-row__name">
+              <span class="pkg-chip">{{ service.serviceName }}</span>
+            </div>
+
+            <div class="pkg-service-row__sessions">
+              <span class="pkg-service-row__sessions-label">Sessions</span>
+              <div class="pkg-sessions-field">
+                <span>{{ service.sessions }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-container>
+
+  <footer class="pkg-modal__footer">
+    <button type="button" class="pkg-btn pkg-btn--ghost" (click)="closeDialog()">Close</button>
+    <button type="button" class="pkg-btn pkg-btn--primary" (click)="openUpdatePackage()">Update</button>
+  </footer>
 </div>
