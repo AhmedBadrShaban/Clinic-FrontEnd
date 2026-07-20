@@ -106,13 +106,19 @@
         </div>
 
         <div class="pi-debit-panel__adjust">
-          <label class="pi-label"><i class="bi bi-plus-slash-minus"></i>Adjust Debit</label>
-          <div class="pi-debit-adjust-row">
-            <input class="pi-input" type="number" formControlName="debit" placeholder="Amount (+/-)" />
-            <button type="button" class="btn-primary-clinic" (click)="updateDepit()">
-              <i class="bi bi-arrow-repeat"></i> Update
-            </button>
-          </div>
+<label class="pi-label">
+  <i class="bi bi-plus-slash-minus"></i>
+  Update Debit
+</label>
+
+<div class="pi-debit-adjust-row">
+  <input class="pi-input" type="number" min="0" [max]="oldInfo?.debit!" formControlName="debit" placeholder="Amount" />
+
+  <button type="button" class="btn-primary-clinic" (click)="confirmDebitUpdate()">
+    <i class="bi bi-arrow-repeat"></i>
+    Update Debit
+  </button>
+</div>
         </div>
       </div>
 

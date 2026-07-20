@@ -14,7 +14,9 @@ import { Subscription } from 'rxjs';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { PatientInfo } from 'src/app/modules/receptionist/models/patient-Info';
 import { AuthService } from 'src/app/shared/services/auth.service';
-
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DebitConfirmDialogComponent } from './debit-confirm-dialog/debit-confirm-dialog.component';
 @Component({
   selector: 'app-patient-info',
   templateUrl: './patient-info.component.html',
@@ -45,7 +47,9 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     private fb: FormBuilder,
     private patientService: PatientService,
     private cdr: ChangeDetectorRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
 
   ) {
     // Initialize empty form to prevent errors
@@ -208,41 +212,98 @@ export class PatientInfoComponent implements OnInit, OnDestroy, OnChanges {
     this.subscriptions.add(subscription);
   }
 
-  updateDepit(): void {
+  confirmDebitUpdate(): void {
+
     if (!this.oldInfo?.primaryPhone) {
-      alert('No patient selected');
       return;
     }
 
-    const debitControl = this.formData.get('debit')?.value;
+    const amount = Number(this.formData.get('debit')?.value);
 
-    if (!debitControl) {
-      alert('Please enter a debit amount');
+    if (!amount || amount <= 0) {
+      this.snackBar.open(
+        'Please enter a valid debit amount.',
+        'Close',
+        {
+          duration: 3000, horizontalPosition: 'center',  
+          verticalPosition: 'top',   }
+      );
       return;
     }
 
-    if (confirm(`Are you sure you want to update debit by: ${debitControl}?`)) {
-      const subscription = this.patientService.updatePatientDepit(this.oldInfo.primaryPhone, debitControl)
-        .subscribe({
-          next: (data) => {
-            alert(data.message);
-            // Instead of location.reload(), update the form data
-            if (this.oldInfo) {
-              this.oldInfo.debit = (this.oldInfo.debit || 0) + Number(debitControl);
-              this.formData.patchValue({ debit: null }); // Reset debit input
-              this.cdr.markForCheck();
-            }
-          },
-          error: (err) => {
-            alert(err.error?.message || 'Debit update failed');
-            console.error('Debit update error:', err);
-          }
-        });
-
-      this.subscriptions.add(subscription);
+    if (amount > (this.oldInfo.debit ?? 0)) {
+      this.snackBar.open(
+        'Amount cannot exceed the current debit.',
+        'Close',
+        {
+          duration: 3000, horizontalPosition: 'center',
+          verticalPosition: 'top',
+}
+      );
+      return;
     }
+
+    this.dialog.open(DebitConfirmDialogComponent, {
+      width: '420px',
+      disableClose: true,
+      data: { amount }
+    })
+      .afterClosed()
+      .subscribe(result => {
+
+        if (result) {
+          this.updateDepit(amount);
+        }
+
+      });
+
   }
 
+  updateDepit(amount: number): void {
+
+    const subscription = this.patientService
+      .updatePatientDepit(this.oldInfo!.primaryPhone, amount)
+      .subscribe({
+
+        next: (data) => {
+
+          this.oldInfo!.debit =
+            (this.oldInfo!.debit || 0) - amount;
+
+          this.formData.patchValue({
+            debit: null
+          });
+
+          this.snackBar.open(
+            data.message,
+            'Close',
+            {
+              duration: 3000, horizontalPosition: 'center',
+              verticalPosition: 'top',
+}
+          );
+
+          this.cdr.markForCheck();
+        },
+
+        error: (err) => {
+
+          this.snackBar.open(
+            err.error?.message || 'Failed to update debit.',
+            'Close',
+            {
+              duration: 4000, horizontalPosition: 'center',
+              verticalPosition: 'top',
+}
+          );
+
+        }
+
+      });
+
+    this.subscriptions.add(subscription);
+
+  }
   cancel(): void {
     if (this.oldInfo) {
       this.formData.patchValue(this.oldInfo);

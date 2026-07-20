@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Update Debit</h2>
+
+<mat-dialog-content>
+  <p>
+    Are you sure you want to deduct
+    <strong>{{ data.amount }} EGP</strong>
+    from the patient's debit?
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+  <button mat-button (click)="dialogRef.close(false)">
+    Cancel
+  </button>
+
+  <button mat-raised-button color="primary" (click)="dialogRef.close(true)">
+    Update
+  </button>
+
+</mat-dialog-actions>

@@ -62,6 +62,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { PackageReceiptDialogComponent } from './components/reservation/packages/package-receipt-dialog/package-receipt-dialog.component';
 import { LaserConfirmDialogComponent } from './components/reservation-fm/laser-confirm-dialog/laser-confirm-dialog.component';
+import { DebitConfirmDialogComponent } from './components/reservation/patient-info/debit-confirm-dialog/debit-confirm-dialog.component';
 
 
 @NgModule({
@@ -94,7 +95,8 @@ import { LaserConfirmDialogComponent } from './components/reservation-fm/laser-c
     PackageDetailsComponent,
     PackageReceiptDialogComponent,
     UpdatePackageComponent,
-    LaserConfirmDialogComponent
+    LaserConfirmDialogComponent,
+    DebitConfirmDialogComponent
   ],
   imports: [
     CommonModule,
