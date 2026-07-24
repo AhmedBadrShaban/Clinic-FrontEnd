@@ -10,7 +10,7 @@
           <!-- <span class="modal-eyebrow">Reservation Ticket {{ previewTicketCode }}</span> -->
           <h2 class="modal-title">New Package Reservation</h2>
         </div>
-      
+
       </div>
 
       <!-- Stepper rail -->
@@ -116,7 +116,7 @@
             <!-- Right: ticket -->
             <div class="step-aside">
               <div class="ticket">
- 
+
                 <h4 class="ticket-heading">Your Ticket</h4>
 
                 <div class="ticket-empty" *ngIf="cart.length === 0">
@@ -166,74 +166,85 @@
 
             <div class="step-main">
               <div class="hero-total">
-                <span class="hero-total-label">Cart Total</span>
-                <span class="hero-total-amount">{{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
+                <span class="hero-total-label" *ngIf="!hasPromotion">Cart Total</span>
+                <span class="hero-total-label" *ngIf="hasPromotion">Amount Due (after discount)</span>
+
+                <span class="hero-total-amount" *ngIf="!hasPromotion">
+                  {{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}
+                </span>
+                <span class="hero-total-amount" *ngIf="hasPromotion">
+                  {{ getPayableTotal() | currency:'EGP':'symbol':'1.2-2' }}
+                </span>
+
+                <span class="hero-total-original" *ngIf="hasPromotion">
+                  Original: {{ getCartTotal() | currency:'EGP':'symbol':'1.0-0' }}
+                </span>
               </div>
 
               <div class="field-block">
                 <label class="field-label"><mat-icon class="field-label-icon">payments</mat-icon>Payment Methods</label>
 
-                <div class="pay-grid">
-                  <label class="pay-tile">
-                    <mat-icon class="pay-tile-icon">payments</mat-icon>
-                    <span class="pay-tile-body">
-                      <span class="pay-tile-label">Cash</span>
-                      <input type="number" formControlName="cash" (input)="updatePaymentSummary()" placeholder="0.00"
-                        min="0" step="0.01">
-                    </span>
-                  </label>
-
-                  <label class="pay-tile">
-                    <mat-icon class="pay-tile-icon">phone_android</mat-icon>
-                    <span class="pay-tile-body">
-                      <span class="pay-tile-label">Vodafone Cash</span>
-                      <input type="number" formControlName="vodafoneCash" (input)="updatePaymentSummary()"
-                        placeholder="0.00" min="0" step="0.01">
-                    </span>
-                  </label>
-
-                  <label class="pay-tile">
-                    <mat-icon class="pay-tile-icon">credit_card</mat-icon>
-                    <span class="pay-tile-body">
-                      <span class="pay-tile-label">Visa</span>
-                      <input type="number" formControlName="visa" (input)="updatePaymentSummary()" placeholder="0.00"
-                        min="0" step="0.01">
-                    </span>
-                  </label>
-
-                  <label class="pay-tile">
-                    <mat-icon class="pay-tile-icon">credit_score</mat-icon>
-                    <span class="pay-tile-body">
-                      <span class="pay-tile-label">Credit</span>
-                      <input type="number" formControlName="credit" (input)="updatePaymentSummary()" placeholder="0.00"
-                        min="0" step="0.01">
-                    </span>
-                  </label>
-
-                  <label class="pay-tile">
-                    <mat-icon class="pay-tile-icon">flash_on</mat-icon>
-                    <span class="pay-tile-body">
-                      <span class="pay-tile-label">InstaPay</span>
-                      <input type="number" formControlName="instaPay" (input)="updatePaymentSummary()"
-                        placeholder="0.00" min="0" step="0.01">
-                    </span>
-                  </label>
-
-                  <label class="pay-tile">
-                    <mat-icon class="pay-tile-icon">account_balance_wallet</mat-icon>
-                    <span class="pay-tile-body">
-                      <span class="pay-tile-label">Debit</span>
-                      <input type="number" formControlName="debit" (input)="updatePaymentSummary()" placeholder="0.00"
-                        min="0" step="0.01">
-                    </span>
-                  </label>
-                </div>
+                    <div class="pay-grid">
+                      <label class="pay-tile">
+                        <mat-icon class="pay-tile-icon">payments</mat-icon>
+                        <span class="pay-tile-body">
+                          <span class="pay-tile-label">Cash</span>
+                          <input type="number" formControlName="cash" (input)="updatePaymentSummary()" placeholder="0.00" min="0"
+                            step="0.01">
+                        </span>
+                      </label>
+                    
+                      <label class="pay-tile">
+                        <mat-icon class="pay-tile-icon">phone_android</mat-icon>
+                        <span class="pay-tile-body">
+                          <span class="pay-tile-label">Vodafone Cash</span>
+                          <input type="number" formControlName="vodafoneCash" (input)="updatePaymentSummary()" placeholder="0.00" min="0"
+                            step="0.01">
+                        </span>
+                      </label>
+                    
+                      <label class="pay-tile">
+                        <mat-icon class="pay-tile-icon">credit_card</mat-icon>
+                        <span class="pay-tile-body">
+                          <span class="pay-tile-label">Visa</span>
+                          <input type="number" formControlName="visa" (input)="updatePaymentSummary()" placeholder="0.00" min="0"
+                            step="0.01">
+                        </span>
+                      </label>
+                    
+                      <label class="pay-tile">
+                        <mat-icon class="pay-tile-icon">credit_score</mat-icon>
+                        <span class="pay-tile-body">
+                          <span class="pay-tile-label">Credit</span>
+                          <input type="number" formControlName="credit" (input)="updatePaymentSummary()" placeholder="0.00" min="0"
+                            step="0.01">
+                        </span>
+                      </label>
+                    
+                      <label class="pay-tile">
+                        <mat-icon class="pay-tile-icon">flash_on</mat-icon>
+                        <span class="pay-tile-body">
+                          <span class="pay-tile-label">InstaPay</span>
+                          <input type="number" formControlName="instaPay" (input)="updatePaymentSummary()" placeholder="0.00" min="0"
+                            step="0.01">
+                        </span>
+                      </label>
+                    
+                      <label class="pay-tile">
+                        <mat-icon class="pay-tile-icon">account_balance_wallet</mat-icon>
+                        <span class="pay-tile-body">
+                          <span class="pay-tile-label">Debit</span>
+                          <input type="number" formControlName="debit" (input)="updatePaymentSummary()" placeholder="0.00" min="0"
+                            step="0.01">
+                        </span>
+                      </label>
+                    </div>
               </div>
             </div>
 
             <div class="step-aside">
               <div class="ticket">
- 
+
                 <h4 class="ticket-heading">Your Ticket</h4>
 
                 <div class="ticket-rows compact">
@@ -245,6 +256,37 @@
 
                 <div class="ticket-perforation"></div>
 
+                <!-- Promotion status, checked before payment entry -->
+                <div class="promo-block promo-loading" *ngIf="isPromotionLoading">
+                  <mat-spinner diameter="18"></mat-spinner>
+                  <span>Checking for promotions...</span>
+                </div>
+
+                <div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
+                  <mat-icon>local_offer</mat-icon>
+                  <div class="promo-block-body">
+                    <span class="promo-block-title">
+                      {{ promotionPreview?.discountPercentage }}% discount applied
+                    </span>
+                    <span class="promo-block-detail">
+                      Patient owes {{ promotionPreview?.discountedTotal | currency:'EGP':'symbol':'1.0-0' }}
+                      instead of {{ promotionPreview?.originalTotal | currency:'EGP':'symbol':'1.0-0' }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="promo-block promo-none" *ngIf="!isPromotionLoading && !hasPromotion && !promotionError">
+                  <mat-icon>info</mat-icon>
+                  <span>No promotion applies to this order</span>
+                </div>
+
+                <div class="promo-block promo-error" *ngIf="!isPromotionLoading && promotionError">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>{{ promotionError }}</span>
+                </div>
+
+                <div class="ticket-perforation"></div>
+
                 <div class="balance-block">
                   <div class="balance-bar">
                     <div class="balance-bar-fill" [ngClass]="getBalanceClass()" [style.width.%]="getPaidPercent()">
@@ -252,7 +294,7 @@
                   </div>
                   <div class="balance-figures">
                     <span>Paid: <b>{{ getTotalPayments() | currency:'EGP':'symbol':'1.0-0' }}</b></span>
-                    <span>Total: <b>{{ getCartTotal() | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                    <span>Due: <b>{{ getPayableTotal() | currency:'EGP':'symbol':'1.0-0' }}</b></span>
                   </div>
                   <div class="balance-status-pill" [ngClass]="getBalanceClass()">
                     <mat-icon>{{ getBalanceIcon() }}</mat-icon>
@@ -265,119 +307,130 @@
 
           </div>
         </div>
-
         <!-- ============ STEP 3: REVIEW ============ -->
         <div class="step-panel" *ngIf="currentStep === 3">
-          <div class="review-layout">
+          <div class="step-grid review-grid">
 
-            <div class="ticket ticket-wide">
-     
+            <!-- Left: patient, items, payments -->
+            <div class="step-main review-main">
 
-              <div class="review-patient">
-                <mat-icon>person</mat-icon>
-                <div>
+              <div class="review-card">
+                <div class="review-card-header">
+                  <mat-icon>person</mat-icon>
+                  <span>Patient</span>
+                  <button type="button" class="edit-link" (click)="goToStep(1)">Edit</button>
+                </div>
+                <div class="review-patient">
                   <div class="review-patient-name">{{ extractPatientName(patientSearchValue) }}</div>
                   <small>{{ extractPatientPhone(patientSearchValue) }}</small>
                 </div>
-                <button type="button" class="edit-link" (click)="goToStep(1)">Edit</button>
               </div>
 
-              <div class="ticket-perforation"></div>
-
-              <div class="review-items">
-                <div class="review-items-header">
-                  <span>Package</span>
-                  <span>Qty</span>
-                  <span>Unit</span>
-                  <span>Total</span>
+              <div class="review-card">
+                <div class="review-card-header">
+                  <mat-icon>spa</mat-icon>
+                  <span>Packages</span>
+                  <button type="button" class="edit-link" (click)="goToStep(1)">Edit</button>
                 </div>
-                <div class="review-items-row" *ngFor="let row of cart; trackBy: trackByCartRow">
-                  <span>{{ row.packageName }}</span>
-                  <span>{{ row.quantity }}</span>
-                  <span>{{ row.unitCost | currency:'EGP':'symbol':'1.0-0' }}</span>
-                  <span><b>{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                <div class="review-items">
+                  <div class="review-items-header">
+                    <span>Package</span>
+                    <span>Qty</span>
+                    <span>Unit</span>
+                    <span>Total</span>
+                  </div>
+                  <div class="review-items-row" *ngFor="let row of cart; trackBy: trackByCartRow">
+                    <span>{{ row.packageName }}</span>
+                    <span>{{ row.quantity }}</span>
+                    <span>{{ row.unitCost | currency:'EGP':'symbol':'1.0-0' }}</span>
+                    <span><b>{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                  </div>
                 </div>
-                <button type="button" class="edit-link edit-link-block" (click)="goToStep(1)">
-                  <mat-icon class="small-icon">edit</mat-icon> Edit packages
-                </button>
               </div>
 
-              <div class="ticket-perforation"></div>
-
-              <div class="review-payments">
-                <div class="review-payments-row" *ngFor="let payment of [
-                  {label:'Cash', value: packageFm.value.cash},
-                  {label:'Vodafone Cash', value: packageFm.value.vodafoneCash},
-                  {label:'Visa', value: packageFm.value.visa},
-                  {label:'Credit', value: packageFm.value.credit},
-                  {label:'InstaPay', value: packageFm.value.instaPay},
-                  {label:'Debit', value: packageFm.value.debit}
-                ]">
-                  <ng-container *ngIf="payment.value && payment.value > 0">
-                    <span>{{ payment.label }}</span>
-                    <b>{{ payment.value | currency:'EGP':'symbol':'1.0-0' }}</b>
-                  </ng-container>
+              <div class="review-card">
+                <div class="review-card-header">
+                  <mat-icon>payments</mat-icon>
+                  <span>Payment</span>
+                  <button type="button" class="edit-link" (click)="goToStep(2)">Edit</button>
                 </div>
-                <button type="button" class="edit-link edit-link-block" (click)="goToStep(2)">
-                  <mat-icon class="small-icon">edit</mat-icon> Edit payment
-                </button>
+                <div class="review-payments">
+                  <div class="review-payments-row" *ngFor="let payment of [
+            {label:'Cash', value: packageFm.value.cash},
+            {label:'Vodafone Cash', value: packageFm.value.vodafoneCash},
+            {label:'Visa', value: packageFm.value.visa},
+            {label:'Credit', value: packageFm.value.credit},
+            {label:'InstaPay', value: packageFm.value.instaPay},
+            {label:'Debit', value: packageFm.value.debit}
+          ]">
+                    <ng-container *ngIf="payment.value && payment.value > 0">
+                      <span>{{ payment.label }}</span>
+                      <b>{{ payment.value | currency:'EGP':'symbol':'1.0-0' }}</b>
+                    </ng-container>
+                  </div>
+                </div>
               </div>
 
-              <div class="ticket-perforation"></div>
-
-              <div class="review-grand-total">
-                <span>Total to Reserve</span>
-                <span class="hero-total-amount">{{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
-              </div>
-
-              <div class="ticket-perforation"></div>
-              
-              <div class="promo-block" *ngIf="isPromotionLoading">
-                <mat-spinner diameter="18"></mat-spinner>
-                <span>Checking for promotions...</span>
-              </div>
-              
-        <div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
-          <mat-icon>local_offer</mat-icon>
-          <div class="promo-block-body">
-            <span class="promo-block-title">
-              Promotion applied — {{ promotionPreview?.discountPercentage }}% off
-            </span>
-            <span class="promo-block-detail">
-              You save {{ promotionPreview?.discountAmount | currency:'EGP':'symbol':'1.0-0' }}
-            </span>
-            <span class="promo-block-detail" *ngIf="promotionPreview?.bonusPoints">
-              + {{ promotionPreview?.bonusPoints }} bonus points
-            </span>
-        
-            <!-- Applied rules -->
-            <div class="promo-rules" *ngIf="hasAppliedRules">
-              <span class="promo-subheading">Applied rules</span>
-              <span class="promo-rule-chip" *ngFor="let rule of promotionPreview?.appliedRuleIds">
-                {{ rule.ruleName }}
-              </span>
             </div>
-        
-            <!-- Free services -->
-            <div class="promo-free-services" *ngIf="hasFreeServices">
-              <span class="promo-subheading">Free services included</span>
-              <div class="promo-free-service-row" *ngFor="let service of promotionPreview?.eligibleFreeServices">
-                <mat-icon class="small-icon">redeem</mat-icon>
-                <span>{{ service.serviceName }}</span>
-                <small>Valid until {{ service.expireDate | date:'mediumDate' }}</small>
-              </div>
-            </div>
-          </div>
-        </div>
-              
-              <div class="promo-block promo-none" *ngIf="!isPromotionLoading && !hasPromotion && !promotionError">
-                <mat-icon>info</mat-icon>
-                <span>No promotion applies to this order</span>
-              </div>
-              
-              <div class="promo-block promo-error" *ngIf="!isPromotionLoading && promotionError">
-                <mat-icon>error_outline</mat-icon>
-                <span>{{ promotionError }}</span>
+
+            <!-- Right: sticky summary + promo -->
+            <div class="step-aside review-aside">
+              <div class="ticket review-summary">
+
+                <div class="review-grand-total">
+                  <span>Total to Reserve</span>
+                  <span class="hero-total-amount">{{ getPayableTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
+                </div>
+
+                <div class="ticket-perforation"></div>
+
+                <div class="promo-block promo-loading" *ngIf="isPromotionLoading">
+                  <mat-spinner diameter="18"></mat-spinner>
+                  <span>Checking for promotions...</span>
+                </div>
+
+                <div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
+                  <mat-icon>local_offer</mat-icon>
+                  <div class="promo-block-body">
+                    <span class="promo-block-title">
+                      Promotion applied — {{ promotionPreview?.discountPercentage }}% off
+                    </span>
+                    <span class="promo-block-detail">
+                      You save {{ promotionPreview?.discountAmount | currency:'EGP':'symbol':'1.0-0' }}
+                    </span>
+                    <span class="promo-block-detail" *ngIf="promotionPreview?.bonusPoints">
+                      + {{ promotionPreview?.bonusPoints }} bonus points
+                    </span>
+
+                    <div class="promo-rules" *ngIf="hasAppliedRules">
+                      <span class="promo-subheading">Applied rules</span>
+                      <span class="promo-rule-chip" *ngFor="let rule of promotionPreview?.appliedRuleIds">
+                        {{ rule.ruleName }}
+                      </span>
+                    </div>
+
+                    <div class="promo-free-services" *ngIf="hasFreeServices">
+                      <span class="promo-subheading">Free services included</span>
+                      <div class="promo-free-service-row"
+                        *ngFor="let service of promotionPreview?.eligibleFreeServices">
+                        <mat-icon class="small-icon">redeem</mat-icon>
+                        <span>{{ service.serviceName }}</span>
+                        <small>Valid until {{ service.expireDate | date:'mediumDate' }}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="promo-block promo-none" *ngIf="!isPromotionLoading && !hasPromotion && !promotionError">
+                  <mat-icon>info</mat-icon>
+                  <span>No promotion applies to this order</span>
+                </div>
+
+                <div class="promo-block promo-error" *ngIf="!isPromotionLoading && promotionError">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>{{ promotionError }}</span>
+                </div>
+
               </div>
             </div>
 

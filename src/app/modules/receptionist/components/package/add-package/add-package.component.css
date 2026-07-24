@@ -544,7 +544,12 @@ mat-card { padding: 0 !important; }
   background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.08));
   border: 1px solid rgba(102,126,234,0.2);
 }
-
+.hero-total-original {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  text-decoration: line-through;
+  margin-left: 8px;
+}
 .hero-total-label {
   font-size: 0.78rem;
   font-weight: 600;
@@ -661,27 +666,62 @@ mat-card { padding: 0 !important; }
   width: 18px;
   height: 18px;
 }
-
-/* ============ Step 3: review ============ */
-.review-layout {
-  display: flex;
-  justify-content: center;
+ /* ============ Step 3: review ============ */
+.review-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  align-items: start;
 }
 
-.review-patient {
+.review-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.review-aside {
+  position: sticky;
+  top: 0;
+}
+
+/* ---- Cards on the left ---- */
+.review-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.review-card-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-bottom: 12px;
 }
-.review-patient mat-icon {
+
+.review-card-header mat-icon {
   color: var(--accent-end);
   background: rgba(102,126,234,0.1);
   border-radius: 50%;
-  padding: 8px;
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  padding: 6px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.review-card-header .edit-link {
+  margin-left: auto;
+}
+
+/* ---- Patient card ---- */
+.review-patient {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 .review-patient-name {
   font-weight: 700;
@@ -692,7 +732,6 @@ mat-card { padding: 0 !important; }
 }
 
 .edit-link {
-  margin-left: auto;
   background: none;
   border: none;
   color: var(--primary);
@@ -707,18 +746,17 @@ mat-card { padding: 0 !important; }
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-left: 0;
-  margin-top: 8px;
+  margin-top: 10px;
   padding: 0;
 }
 
+/* ---- Items table ---- */
 .review-items-header,
-.review-items-row,
-.review-payments-row {
+.review-items-row {
   display: grid;
   grid-template-columns: 2fr 0.6fr 1fr 1fr;
-  gap: 6px;
-  padding: 6px 0;
+  gap: 8px;
+  padding: 8px 0;
   font-size: 0.86rem;
 }
 .review-items-header {
@@ -728,19 +766,170 @@ mat-card { padding: 0 !important; }
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.review-items-row {
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+.review-items-row:last-child {
+  border-bottom: none;
 }
 
+/* ---- Payments list ---- */
 .review-payments-row {
-  grid-template-columns: 1fr auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 0.86rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+.review-payments-row:last-child {
+  border-bottom: none;
+}
+
+/* ---- Summary card on the right ---- */
+.review-summary {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .review-grand-total {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 4px;
+}
+.review-grand-total span:first-child {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.review-grand-total .hero-total-amount {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.4rem;
   color: var(--ink);
+}
+
+/* ---- Promotion block ---- */
+.promo-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 0;
+  font-size: 0.85rem;
+}
+
+.promo-block mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.promo-block-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.promo-block-title {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.promo-block-detail {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+}
+
+.promo-applied mat-icon {
+  color: #22a06b;
+  background: rgba(34,160,107,0.1);
+  border-radius: 50%;
+  padding: 6px;
+}
+
+.promo-none {
+  color: var(--ink-soft);
+}
+.promo-none mat-icon {
+  color: var(--ink-soft);
+}
+
+.promo-error {
+  color: #d64545;
+}
+.promo-error mat-icon {
+  color: #d64545;
+}
+
+.promo-loading {
+  align-items: center;
+  color: var(--ink-soft);
+}
+
+/* ---- Applied rules chips ---- */
+.promo-rules,
+.promo-free-services {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.promo-subheading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+.promo-rule-chip {
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(102,126,234,0.1);
+  color: var(--accent-end);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.promo-free-service-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+.promo-free-service-row .small-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--accent-end);
+}
+.promo-free-service-row small {
+  margin-left: auto;
+  color: var(--ink-soft);
+}
+
+/* ---- Stack on narrow screens ---- */
+@media (max-width: 768px) {
+  .review-grid {
+    grid-template-columns: 1fr;
+  }
+  .review-aside {
+    position: static;
+  }
 }
 
 /* ============ Footer ============ */
@@ -847,40 +1036,3 @@ mat-card { padding: 0 !important; }
   .receipt-container { background: white; box-shadow: none; }
 }
 
-.promo-rules,
-.promo-free-services {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.promo-subheading {
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  opacity: 0.7;
-  margin-top: 4px;
-}
-
-.promo-rule-chip {
-  display: inline-block;
-  width: fit-content;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: rgba(0,0,0,0.06);
-  font-size: 0.78rem;
-}
-
-.promo-free-service-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-}
-
-.promo-free-service-row small {
-  margin-left: auto;
-  opacity: 0.65;
-}

@@ -296,12 +296,21 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   get hasPromotion(): boolean {
     return !!this.promotionPreview && this.promotionPreview.discountAmount > 0;
   }
+
+  get hasAppliedRules(): boolean {
+    return !!this.promotionPreview?.appliedRuleIds?.length;
+  }
+
   get hasFreeServices(): boolean {
     return !!this.promotionPreview?.eligibleFreeServices?.length;
   }
 
-  get hasAppliedRules(): boolean {
-    return !!this.promotionPreview?.appliedRuleIds?.length;
+  // The total the patient actually owes right now — discounted if a promo applies
+  getPayableTotal(): number {
+    if (this.hasPromotion && this.promotionPreview) {
+      return this.round2(this.promotionPreview.discountedTotal);
+    }
+    return this.getCartTotal();
   }
   // Patient search methods
   onPatientSearch(event: any): void {
@@ -464,7 +473,13 @@ getCartTotal(): number {
   }
 
   getBalance(): number {
-    return this.round2(this.getCartTotal() - this.getTotalPayments());
+    return this.round2(this.getPayableTotal() - this.getTotalPayments());
+  }
+
+  getPaidPercent(): number {
+    const total = this.getPayableTotal();
+    if (total <= 0) return this.getTotalPayments() > 0 ? 100 : 0;
+    return Math.min(100, Math.max(0, (this.getTotalPayments() / total) * 100));
   }
 
   getBalanceClass(): string {
@@ -488,11 +503,7 @@ getCartTotal(): number {
     return 'Paid in Full';
   }
 
-  getPaidPercent(): number {
-    const total = this.getCartTotal();
-    if (total <= 0) return this.getTotalPayments() > 0 ? 100 : 0;
-    return Math.min(100, Math.max(0, (this.getTotalPayments() / total) * 100));
-  }
+ 
 
   updatePaymentSummary(): void {
     this.cdr.markForCheck();
@@ -526,6 +537,7 @@ getCartTotal(): number {
         return;
       }
       this.currentStep = 2;
+      this.fetchPromotionPreview();
     } else if (this.currentStep === 2) {
       if (!this.canProceedToReview()) {
         if (this.isSuper) {
@@ -541,14 +553,16 @@ getCartTotal(): number {
         return;
       }
       this.currentStep = 3;
-      this.fetchPromotionPreview();
-
     }
     this.cdr.markForCheck();
   }
-
   prevStep(): void {
     if (this.currentStep > 1) {
+      if (this.currentStep === 2) {
+        // going back to edit the cart — promo total is now stale
+        this.promotionPreview = undefined;
+        this.promotionError = '';
+      }
       this.currentStep = (this.currentStep - 1) as WizardStep;
       this.cdr.markForCheck();
     }
@@ -557,16 +571,19 @@ getCartTotal(): number {
   goToStep(step: WizardStep): void {
     if (step === this.currentStep) return;
     if (step < this.currentStep) {
+      if (step === 1) {
+        this.promotionPreview = undefined;
+        this.promotionError = '';
+      }
       this.currentStep = step;
       this.cdr.markForCheck();
       return;
     }
     if (step === 2 && this.canProceedToPayment()) {
       this.currentStep = 2;
+      this.fetchPromotionPreview();
     } else if (step === 3 && this.canProceedToPayment() && this.canProceedToReview()) {
       this.currentStep = 3;
-      this.fetchPromotionPreview();
-
     }
     this.cdr.markForCheck();
   }
