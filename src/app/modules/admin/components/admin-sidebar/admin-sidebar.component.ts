@@ -70,6 +70,7 @@ export class AdminSidebarComponent implements OnInit {
     { label: 'Services', icon: 'bi-stars', route: '/admin/services' },
     { label: 'Packages', icon: 'bi-box-seam', route: '/admin/admin-package' },
     { label: 'Reserved Packages', icon: 'bi-bookmark-check', route: '/admin/reserved-packages' },
+    { label: 'Promotions', icon: 'bi-bookmark-check', route: '/admin/promotions' },
     { label: 'Materials', icon: 'bi-droplet', route: '/admin/materials' },
     { label: 'Expenses', icon: 'bi-receipt', route: '/admin/expense' },
     { label: 'Contributors', icon: 'bi-person-lines-fill', route: '/admin/contributors' },

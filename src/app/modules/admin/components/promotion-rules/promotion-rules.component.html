@@ -1,0 +1,82 @@
+<div class="promotion-rules-page">
+
+  <div class="page-header">
+    <mat-form-field appearance="outline" class="clinic-filter">
+      <mat-label>Clinic</mat-label>
+      <mat-select [ngModel]="selectedClinicId()" (ngModelChange)="onClinicFilterChange($event)">
+        <mat-option [value]="null">All clinics</mat-option>
+        <mat-option *ngFor="let clinic of clinics()" [value]="clinic.clinicId">
+          {{ clinic.clinicName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="openCreateForm()">
+      <mat-icon>add</mat-icon>
+      New Promotion Rule
+    </button>
+  </div>
+
+  <div class="loading-row" *ngIf="loading()">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <table mat-table [dataSource]="rules()" class="rules-table" *ngIf="!loading()">
+
+    <ng-container matColumnDef="ruleName">
+      <th mat-header-cell *matHeaderCellDef>Rule Name</th>
+      <td mat-cell *matCellDef="let rule">{{ rule.ruleName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let rule">
+        <mat-chip-listbox>
+          <mat-chip [class]="'type-chip type-' + rule.type.toLowerCase()">
+            {{ typeLabel(rule.type) }}
+          </mat-chip>
+        </mat-chip-listbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="clinicName">
+      <th mat-header-cell *matHeaderCellDef>Clinic</th>
+      <td mat-cell *matCellDef="let rule">{{ rule.clinicName || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="active">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let rule">
+        <mat-slide-toggle [checked]="rule.active" matTooltip="Toggle active / inactive" (change)="toggleActive(rule)">
+          {{ rule.active ? 'Active' : 'Inactive' }}
+        </mat-slide-toggle>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="updatedAt">
+      <th mat-header-cell *matHeaderCellDef>Last Updated</th>
+      <td mat-cell *matCellDef="let rule">{{ rule.updatedAt | date: 'medium' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let rule">
+        <button mat-icon-button matTooltip="Edit" (click)="openEditForm(rule)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <!-- Delete: hidden until a real DELETE endpoint exists — see PromotionRulesService.delete() -->
+        <button *ngIf="showDelete" mat-icon-button color="warn" matTooltip="Delete" (click)="deleteRule(rule)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <p class="empty-state" *ngIf="!loading() && rules().length === 0">
+    No promotion rules yet. Click "New Promotion Rule" to create one.
+  </p>
+
+</div>

@@ -24,6 +24,7 @@ import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs'
 
 import { ReservationsService } from './../../../services/reservations-services/reservations.service';
 import {
+  PackagePromotionPreviewResponse,
   PackageService,
   ReservePackagesRequest,
   ReservePackagesRequestItem,
@@ -124,7 +125,9 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   showReceipt = false;
   reservationData?: ReservationData;
   generatedAt: Date = new Date();
-
+  promotionPreview?: PackagePromotionPreviewResponse;
+  isPromotionLoading = false;
+  promotionError = '';
   private patientSearchSubject = new Subject<string>();
   private packageSearchSubject = new Subject<string>();
   private subscriptions = new Subscription();
@@ -261,7 +264,45 @@ export class AddPackageComponent implements OnInit, OnDestroy {
       };
     });
   }
+  private fetchPromotionPreview(): void {
+    const total = this.getCartTotal();
+    if (total <= 0) {
+      this.promotionPreview = undefined;
+      return;
+    }
 
+    this.isPromotionLoading = true;
+    this.promotionError = '';
+    this.cdr.markForCheck();
+
+    const subscription = this.packageservice.previewPackagePromotions(total)
+      .subscribe({
+        next: (data) => {
+          this.promotionPreview = data;
+          this.isPromotionLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.promotionPreview = undefined;
+          this.isPromotionLoading = false;
+          this.promotionError = err.error?.message || 'Unable to check promotions right now';
+          this.cdr.markForCheck();
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
+  get hasPromotion(): boolean {
+    return !!this.promotionPreview && this.promotionPreview.discountAmount > 0;
+  }
+  get hasFreeServices(): boolean {
+    return !!this.promotionPreview?.eligibleFreeServices?.length;
+  }
+
+  get hasAppliedRules(): boolean {
+    return !!this.promotionPreview?.appliedRuleIds?.length;
+  }
   // Patient search methods
   onPatientSearch(event: any): void {
     const value = event.target.value;
@@ -500,6 +541,8 @@ getCartTotal(): number {
         return;
       }
       this.currentStep = 3;
+      this.fetchPromotionPreview();
+
     }
     this.cdr.markForCheck();
   }
@@ -522,6 +565,8 @@ getCartTotal(): number {
       this.currentStep = 2;
     } else if (step === 3 && this.canProceedToPayment() && this.canProceedToReview()) {
       this.currentStep = 3;
+      this.fetchPromotionPreview();
+
     }
     this.cdr.markForCheck();
   }
@@ -793,6 +838,8 @@ getCartTotal(): number {
     this.cart = [];
     this.packageFm.reset();
     this.previewTicketCode = this.generateTicketCode();
+    this.promotionPreview = undefined;
+    this.promotionError = '';
     this.cdr.markForCheck();
   }
 }

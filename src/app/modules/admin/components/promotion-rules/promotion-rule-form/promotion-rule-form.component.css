@@ -1,0 +1,102 @@
+.promotion-rule-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+  min-width: 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.half-width {
+  flex: 1;
+  min-width: 0;
+}
+
+.active-toggle {
+  margin: 4px 0 16px;
+}
+
+.type-section {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.type-section h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-heading h3 {
+  margin: 0;
+}
+
+.tier-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tier-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.service-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -8px 0 12px;
+}
+
+.service-option {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.no-results {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 4px 0;
+}
+
+.selected-services {
+  margin-top: 4px;
+}
+
+.services-error {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.optional-tag {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.45);
+  margin-left: 4px;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+::ng-deep .mat-mdc-dialog-actions {
+  padding: 8px 0 0;
+}

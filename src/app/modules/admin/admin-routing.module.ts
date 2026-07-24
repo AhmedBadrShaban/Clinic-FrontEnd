@@ -24,6 +24,7 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
 import { PackageMovementsComponent } from './components/reports/package-movements/package-movements.component';
+import { PromotionRulesComponent } from './components/promotion-rules/promotion-rules.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,7 @@ const routes: Routes = [
       { path: 'receptionists', component: ReceptionistsComponent },
       { path: 'receptionist/:id', component: ReceptionistProfileComponent },
       { path: 'services', component: ServicesComponent },
+      { path: 'promotions', component: PromotionRulesComponent },
       { path: 'admin-package', component: PackagesComponent, pathMatch: 'full' },
       { path: 'reserved-packages', component: PackageComponent, pathMatch: 'full' }, // ← NEW
       { path: 'materials', component: MaterialsComponent },

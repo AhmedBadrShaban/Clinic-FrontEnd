@@ -1,3 +1,4 @@
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -49,6 +50,8 @@ import { DebitMovementsComponent } from './components/reports/debit-movements/de
 import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
 import { PackageMovementsComponent } from './components/reports/package-movements/package-movements.component';
 import { PriceEditDialogComponent } from './components/packages/price-edit-dialog/price-edit-dialog.component';
+import { PromotionRulesComponent } from './components/promotion-rules/promotion-rules.component';
+import { PromotionRuleFormComponent } from './components/promotion-rules/promotion-rule-form/promotion-rule-form.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +79,9 @@ import { PriceEditDialogComponent } from './components/packages/price-edit-dialo
     DebitMovementsComponent,
     PackageMovementsComponent,
     WhatsAppMessagesComponent,
-    DashboardComponent
+    DashboardComponent,
+    PromotionRulesComponent ,
+    PromotionRuleFormComponent
   ],
 
   imports: [
@@ -101,6 +106,7 @@ import { PriceEditDialogComponent } from './components/packages/price-edit-dialo
     MatInputModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatSlideToggleModule ,
     MatTableModule,
     MatChipsModule,
     MatTooltipModule,

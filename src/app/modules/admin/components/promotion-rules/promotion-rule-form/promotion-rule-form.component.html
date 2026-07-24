@@ -1,0 +1,154 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Promotion Rule' : 'New Promotion Rule' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="promotion-rule-form">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Rule Name</mat-label>
+      <input matInput formControlName="ruleName" placeholder="e.g. Summer 10% off mid packages">
+      <mat-error *ngIf="form.get('ruleName')?.hasError('required')">Rule name is required.</mat-error>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="PERCENTAGE">Percentage</mat-option>
+          <mat-option value="FREE_SERVICES">Free Services</mat-option>
+          <mat-option value="FREE_PULSES">Free Pulses</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Clinic</mat-label>
+        <mat-select formControlName="clinicId">
+          <mat-option *ngFor="let clinic of data.clinics" [value]="clinic.clinicId">
+            {{ clinic.clinicName }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('clinicId')?.hasError('required')">Clinic is required.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-slide-toggle formControlName="active" class="active-toggle">
+      {{ form.get('active')?.value ? 'Active' : 'Inactive' }}
+    </mat-slide-toggle>
+
+    <!-- PERCENTAGE -->
+    <div class="type-section" *ngIf="form.get('type')?.value === 'PERCENTAGE'" formArrayName="tiers">
+      <div class="section-heading">
+        <h3>Tiers</h3>
+        <button mat-icon-button type="button" matTooltip="Add tier" (click)="addTier()">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+
+      <div class="tier-row" *ngFor="let tier of tiers.controls; let i = index" [formGroupName]="i">
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>From (EGP)</mat-label>
+          <input matInput type="number" formControlName="from">
+          <mat-error *ngIf="tier.get('from')?.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="tier.get('from')?.hasError('min')">Must be ≥ 0</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>To (EGP)</mat-label>
+          <input matInput type="number" formControlName="to" placeholder="Open-ended">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>Percentage (%)</mat-label>
+          <input matInput type="number" formControlName="percentage">
+          <mat-error *ngIf="tier.get('percentage')?.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="tier.get('percentage')?.hasError('min') || tier.get('percentage')?.hasError('max')">Must be
+            0–100</mat-error>
+        </mat-form-field>
+
+        <button mat-icon-button type="button" color="warn" matTooltip="Remove tier" [disabled]="tiers.length === 1"
+          (click)="removeTier(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- FREE_SERVICES -->
+    <div class="type-section" *ngIf="form.get('type')?.value === 'FREE_SERVICES'" formGroupName="freeServices">
+      <h3>Free Services</h3>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>From (EGP)</mat-label>
+          <input matInput type="number" formControlName="from">
+          <mat-error *ngIf="form.get('freeServices.from')?.hasError('required')">Required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>To (EGP)</mat-label>
+          <input matInput type="number" formControlName="to">
+          <mat-error *ngIf="form.get('freeServices.to')?.hasError('required')">Required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Search services</mat-label>
+        <input matInput [ngModel]="serviceFilter()" [ngModelOptions]="{standalone: true}"
+          (ngModelChange)="onServiceFilterChange($event)" placeholder="Type to filter...">
+        <mat-spinner matSuffix *ngIf="loadingServices()" diameter="18"></mat-spinner>
+      </mat-form-field>
+
+      <div class="service-options" *ngIf="serviceFilter()">
+        <button type="button" mat-stroked-button class="service-option" *ngFor="let service of filteredServices()"
+          (click)="addService(service)">
+          {{ service.serviceName }}
+        </button>
+        <span class="no-results" *ngIf="filteredServices().length === 0">No matching services.</span>
+      </div>
+
+      <div class="selected-services">
+        <mat-chip-listbox>
+          <mat-chip *ngFor="let id of selectedServiceIds" [removable]="true" (removed)="removeService(id)">
+            {{ serviceName(id) }}
+            <button matChipRemove type="button"><mat-icon>cancel</mat-icon></button>
+          </mat-chip>
+        </mat-chip-listbox>
+        <mat-error class="services-error"
+          *ngIf="form.get('freeServices.serviceIds')?.touched && form.get('freeServices.serviceIds')?.hasError('required')">
+          Select at least one service.
+        </mat-error>
+      </div>
+    </div>
+
+    <!-- FREE_PULSES -->
+    <div class="type-section" *ngIf="form.get('type')?.value === 'FREE_PULSES'" formGroupName="freePulses">
+      <h3>Free Pulses</h3>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Pulses</mat-label>
+        <input matInput type="number" formControlName="pulses">
+        <mat-error *ngIf="form.get('freePulses.pulses')?.hasError('required')">Required</mat-error>
+        <mat-error *ngIf="form.get('freePulses.pulses')?.hasError('min')">Must be at least 1</mat-error>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>From (EGP) <span class="optional-tag">optional</span></mat-label>
+          <input matInput type="number" formControlName="from">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>To (EGP) <span class="optional-tag">optional</span></mat-label>
+          <input matInput type="number" formControlName="to">
+        </mat-form-field>
+      </div>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()" [disabled]="saving()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="saving()">
+      <mat-spinner *ngIf="saving()" diameter="18" class="btn-spinner"></mat-spinner>
+      <span *ngIf="!saving()">{{ isEdit ? 'Save Changes' : 'Create Rule' }}</span>
+    </button>
+  </mat-dialog-actions>
+</form>

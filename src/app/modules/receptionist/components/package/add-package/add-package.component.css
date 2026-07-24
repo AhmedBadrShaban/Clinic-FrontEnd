@@ -846,3 +846,41 @@ mat-card { padding: 0 !important; }
   .no-print { display: none !important; }
   .receipt-container { background: white; box-shadow: none; }
 }
+
+.promo-rules,
+.promo-free-services {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.promo-subheading {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.promo-rule-chip {
+  display: inline-block;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.06);
+  font-size: 0.78rem;
+}
+
+.promo-free-service-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+
+.promo-free-service-row small {
+  margin-left: auto;
+  opacity: 0.65;
+}

@@ -27,7 +27,29 @@ export interface ReservePackagesResponse {
   message: string;
   reservedIds: number[];
 }
+export interface PackagePromotionRule {
+  ruleId: number;
+  ruleName: string;
+}
 
+export interface PackagePromotionFreeService {
+  serviceName: string;
+  expireDate: string;
+}
+
+export interface PackagePromotionPreviewResponse {
+  originalTotal: number;
+  discountAmount: number;
+  discountedTotal: number;
+  discountPercentage: number;
+  bonusPoints: number;
+  appliedRuleIds: PackagePromotionRule[];
+  eligibleFreeServices: PackagePromotionFreeService[];
+}
+
+export interface PackagePromotionPreviewError {
+  message: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -87,7 +109,13 @@ export class PackageService {
   reservePackages(reservationData: ReservePackagesRequest): Observable<ReservePackagesResponse> {
     return this.http.post<ReservePackagesResponse>(`${this.baseUrl}receptionist/reservepackages`, reservationData);
   }
-
+  previewPackagePromotions(totalMoney: number): Observable<PackagePromotionPreviewResponse> {
+    const params = new HttpParams().set('totalMoney', totalMoney.toString());
+    return this.http.get<PackagePromotionPreviewResponse>(
+      `${this.baseUrl}receptionist/package-promotions/preview`,
+      { params }
+    );
+  }
   editPackage(packageId: number, updatedData: any): Observable<any> {
     return this.http.put(`${this.baseUrl}packages/${packageId}`, updatedData);
   }
