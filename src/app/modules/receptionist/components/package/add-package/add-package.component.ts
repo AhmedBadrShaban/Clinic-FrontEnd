@@ -1,3 +1,4 @@
+import { PackagePromotionFreeService } from './../../../services/package-service/package.service';
 import {
   Component,
   ViewEncapsulation,
@@ -72,6 +73,11 @@ interface ReservationData {
   patientName: string;
   items: ReservationItemSummary[];
   cartTotal: number;
+  discountAmount: number;
+  discountPercentage: number;
+  payableTotal: number;
+  appliedRuleNames: string[];
+  freeServices: PackagePromotionFreeService[];
   paymentMethods: {
     cash?: number;
     visa?: number;
@@ -684,6 +690,15 @@ getCartTotal(): number {
         lineTotal: this.getLineTotal(row)
       })),
       cartTotal: this.getCartTotal(),
+      discountAmount: this.hasPromotion ? (this.promotionPreview?.discountAmount || 0) : 0,
+      discountPercentage: this.hasPromotion ? (this.promotionPreview?.discountPercentage || 0) : 0,
+      payableTotal: this.getPayableTotal(),
+      appliedRuleNames: this.hasPromotion
+        ? (this.promotionPreview?.appliedRuleIds.map(r => r.ruleName) || [])
+        : [],
+      freeServices: this.hasPromotion
+        ? (this.promotionPreview?.eligibleFreeServices || [])
+        : [],
       paymentMethods: {
         cash: formValues.cash,
         visa: formValues.visa,
@@ -701,7 +716,6 @@ getCartTotal(): number {
       this.generatePDF();
     }, 500);
   }
-
   generatePDF(): void {
     const receiptElement = this.receiptSection?.nativeElement;
     if (!receiptElement) {
