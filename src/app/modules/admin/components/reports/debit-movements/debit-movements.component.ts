@@ -8,9 +8,10 @@ import {
 } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { DebitReportsService, DebitMovement, DebitMovementsFilter } from '../../../services/debit-reports/debit-reports.service';
- 
+
 import { Clinic } from 'src/app/shared/models/rooms.models';
 import { ReceptionistIdAndName, ReportsService } from '../../../services/reports.service';
 
@@ -57,7 +58,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
   @ViewChild('dateTpl', { static: true }) dateTpl!: TemplateRef<any>;
 
   /* ── collapse state ── */
-  filtersCollapsed = false;
+  filtersCollapsed = true;
 
   /* ── filters ── */
   filters: DebitMovementsFilter = { sortBy: 'createdAt', sortDir: 'desc' };
@@ -84,6 +85,10 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
   hasPatientFilter = false;
   patientResults: PatientSearchResult[] = [];
   patientSearchLoading = false;
+  /** true when this page was opened pre-scoped to one patient, e.g. from the patient-info
+   *  page via queryParams: { patientPhone } (resolved to a patientId via phone search),
+   *  or directly via queryParams: { patientId, patientName? }. */
+  patientLocked = false;
 
   readonly movementTypes = [
     { value: '', label: 'All Types' },
@@ -106,6 +111,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
   constructor(
     private debitService: DebitReportsService,
     private reportsService: ReportsService,
+    private route: ActivatedRoute,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -122,15 +128,101 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
       { key: 'description', label: 'Description', template: this.descriptionTpl },
     ];
 
+    // If the incoming scope resolves asynchronously (patientPhone -> search -> patientId),
+    // it triggers loadMovements() itself once resolved, so we skip the initial call here.
+    const deferredInitialLoad = this.applyIncomingScope();
+
     this.loadClinics();
     this.loadReceptionists();
     this.setupPatientSearch();
-    this.loadMovements();
+
+    if (!deferredInitialLoad) {
+      this.loadMovements();
+    }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /* ── pre-scoping from incoming query params ──
+   * Supported params:
+   *   - patientId (+ optional patientName): scope directly to a known patient, no search needed.
+   *   - patientPhone (no patientId): resolve to a patientId by searching patients by phone and
+   *     taking the first match.
+   * Returns true if this method already kicked off (and will complete) an async patient
+   * resolution that itself calls loadMovements() — in that case the caller should NOT also
+   * call loadMovements() immediately.
+   */
+  private applyIncomingScope(): boolean {
+    const qp = this.route.snapshot.queryParamMap;
+    const patientId = qp.get('patientId');
+    const patientPhone = qp.get('patientPhone');
+
+    if (patientId) {
+      const name = qp.get('patientName');
+      const phone = qp.get('patientPhone');
+      this.filters.patientId = +patientId;
+       this.hasPatientFilter = true;
+      this.patientLocked = true;
+      this.filtersCollapsed = false;
+      this.selectedPatientLabel = name && phone
+        ? `${name} — ${phone}`
+        : (name || (phone ? `Patient — ${phone}` : `Patient #${patientId}`));
+      this.patientSearchInput = this.selectedPatientLabel;
+      return false;
+    }
+
+    if (patientPhone) {
+      this.resolvePatientByPhone(patientPhone);
+      return true;
+    }
+
+    return false;
+  }
+
+  /** Search patients by phone (GET /admin/patients/search-v2), take the first match, and use
+   *  its patientId as the patient filter. If nothing matches, the patient filter is left
+   *  cleared and movements load filtered only by the other active filters. */
+  private resolvePatientByPhone(phone: string): void {
+    this.patientSearchLoading = true;
+    this.patientSearchInput = phone;
+    this.cd.detectChanges();
+
+    this.reportsService.searchPatientsV2(phone.trim(), 0, 1)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          const match = res?.data?.[0];
+          if (match) {
+            this.filters.patientId = match.patientId;
+            this.hasPatientFilter = true;
+            this.patientLocked = true;
+            this.selectedPatientLabel = `${match.patientName} — ${match.primaryPhone}`;
+            this.patientSearchInput = this.selectedPatientLabel;
+          } else {
+            this.clearResolvedPatientState();
+          }
+          this.patientSearchLoading = false;
+          this.cd.detectChanges();
+          this.loadMovements(true);
+        },
+        error: () => {
+          this.clearResolvedPatientState();
+          this.patientSearchLoading = false;
+          this.cd.detectChanges();
+          this.loadMovements(true);
+        }
+      });
+  }
+
+  private clearResolvedPatientState(): void {
+    this.filters.patientId = undefined;
+    this.hasPatientFilter = false;
+    this.patientLocked = false;
+    this.selectedPatientLabel = '';
+    this.patientSearchInput = '';
   }
 
   /* ── active filter count (for collapsed pill) ── */
@@ -179,6 +271,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
   }
 
   onPatientSearchInput(value: string): void {
+    if (this.patientLocked) return;
     this.patientSearchInput = value;
     if (!value.trim()) { this.clearPatientFilter(); return; }
     this.patientSearch$.next(value);
@@ -197,6 +290,7 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
     this.patientSearchInput = '';
     this.selectedPatientLabel = '';
     this.hasPatientFilter = false;
+    this.patientLocked = false;
     this.patientResults = [];
     this.filters.patientId = undefined;
     this.loadMovements(true);
@@ -349,11 +443,13 @@ export class DebitMovementsComponent implements OnInit, OnDestroy {
     this.receptionistSearch = '';
     this.hasReceptionistFilter = false;
     this.filteredReceptionists = [...this.allReceptionists];
-    // patient
-    this.patientSearchInput = '';
-    this.selectedPatientLabel = '';
-    this.hasPatientFilter = false;
-    this.patientResults = [];
+    // patient — keep the scope if it was locked in from another page
+    if (!this.patientLocked) {
+      this.patientSearchInput = '';
+      this.selectedPatientLabel = '';
+      this.hasPatientFilter = false;
+      this.patientResults = [];
+    }
     this.loadMovements(true);
   }
 

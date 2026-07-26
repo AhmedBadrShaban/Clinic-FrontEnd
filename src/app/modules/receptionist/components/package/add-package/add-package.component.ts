@@ -1,7 +1,7 @@
+import { PackagePromotionFreeService } from './../../../services/package-service/package.service';
 import {
   Component,
   ViewEncapsulation,
-  Inject,
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
@@ -11,10 +11,11 @@ import {
 } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   Validators,
   FormGroup
 } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DatePipe } from '@angular/common';
@@ -23,10 +24,24 @@ import jsPDF from "jspdf";
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { ReservationsService } from './../../../services/reservations-services/reservations.service';
-import { PackageService } from 'src/app/modules/receptionist/services/package-service/package.service';
+import {
+  PackagePromotionAppliedRule,
+  PackagePromotionAppliedRuleEntry,
+  PackagePromotionPreviewResponse,
+  PackageService,
+  ReservePackagesRequest,
+  ReservePackagesRequestItem,
+  ReservePackagesRequestTotal,
+  ReservePackagesResponse
+} from 'src/app/modules/receptionist/services/package-service/package.service';
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
+const SEARCH_DEBOUNCE_TIME = 300;
+const MAX_AUTOCOMPLETE_ITEMS = 50;
+const BALANCE_EPSILON = 0.005;
+
+type WizardStep = 1 | 2 | 3;
 
 interface PatientSearchItem {
   displayText: string;
@@ -40,11 +55,32 @@ interface PackageItem {
   description?: string;
 }
 
+interface CartRow {
+  id: number;
+  packageName: string;
+  unitCost: number;
+  quantity: number;
+  description?: string;
+}
+
+interface ReservationItemSummary {
+  packageName: string;
+  quantity: number;
+  unitCost: number;
+  lineTotal: number;
+}
+
 interface ReservationData {
   patientPhone: string;
   patientName: string;
-  packageName: string;
-  packageCost: number;
+  items: ReservationItemSummary[];
+  cartTotal: number;
+  discountAmount: number;
+  discountPercentage: number;
+  bonusPoints: number;
+  payableTotal: number;
+  appliedRules: PackagePromotionAppliedRule[];
+  freeServices: PackagePromotionFreeService[];
   paymentMethods: {
     cash?: number;
     visa?: number;
@@ -55,10 +91,8 @@ interface ReservationData {
   };
   totalPayments: number;
   reservationDate: Date;
+  reservedIds: number[];
 }
-
-const SEARCH_DEBOUNCE_TIME = 300;
-const MAX_AUTOCOMPLETE_ITEMS = 50;
 
 @Component({
   selector: 'app-add-package',
@@ -71,6 +105,11 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   @ViewChild('receiptSection', { static: false }) receiptSection?: ElementRef;
 
   packageFm: FormGroup;
+  packageSearchControl = new FormControl('');
+
+  // Wizard state
+  currentStep: WizardStep = 1;
+  previewTicketCode = '';
 
   // Patient search properties
   patientSearchValue = '';
@@ -83,14 +122,21 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   isPackageLoading = false;
   AllPackages: PackageItem[] = [];
   filteredPackages: PackageItem[] = [];
+
+  // Cart state
+  cart: CartRow[] = [];
+  private nextCartId = 1;
+
   debit: number = 0;
+
   // Form state
   isSubmitting = false;
   showReceipt = false;
   reservationData?: ReservationData;
   generatedAt: Date = new Date();
-
-  // Search subjects for debouncing
+  promotionPreview?: PackagePromotionPreviewResponse;
+  isPromotionLoading = false;
+  promotionError = '';
   private patientSearchSubject = new Subject<string>();
   private packageSearchSubject = new Subject<string>();
   private subscriptions = new Subscription();
@@ -108,6 +154,7 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   ) {
     this.initializeForm();
     this.initializeSearchDebouncing();
+    this.previewTicketCode = this.generateTicketCode();
   }
 
   ngOnInit(): void {
@@ -120,11 +167,13 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     this.packageSearchSubject.complete();
   }
 
+  private generateTicketCode(): string {
+    return 'RSV-' + Math.floor(100000 + Math.random() * 900000);
+  }
+
   private initializeForm(): void {
     this.packageFm = this.fb.group({
       patientPhone: ['', [Validators.required]],
-      packageName: ['', [Validators.required]],
-      packageCost: ['0'],
       cash: [null],
       visa: [null],
       debit: [null],
@@ -135,14 +184,12 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   }
 
   private initializeSearchDebouncing(): void {
-    // Patient search debouncing
     const patientSearchSubscription = this.patientSearchSubject
       .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
       .subscribe((searchTerm: string) => {
         this.performPatientSearch(searchTerm);
       });
 
-    // Package search debouncing
     const packageSearchSubscription = this.packageSearchSubject
       .pipe(debounceTime(SEARCH_DEBOUNCE_TIME), distinctUntilChanged())
       .subscribe((searchTerm: string) => {
@@ -226,7 +273,77 @@ export class AddPackageComponent implements OnInit, OnDestroy {
       };
     });
   }
+  private fetchPromotionPreview(): void {
+    const total = this.getCartTotal();
+    if (total <= 0) {
+      this.promotionPreview = undefined;
+      return;
+    }
 
+    this.isPromotionLoading = true;
+    this.promotionError = '';
+    this.cdr.markForCheck();
+
+    const subscription = this.packageservice.previewPackagePromotions(total)
+      .subscribe({
+        next: (data) => {
+          this.promotionPreview = data;
+          this.isPromotionLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.promotionPreview = undefined;
+          this.isPromotionLoading = false;
+          this.promotionError = err.error?.message || 'Unable to check promotions right now';
+          this.cdr.markForCheck();
+        }
+      });
+
+    this.subscriptions.add(subscription);
+  }
+
+  get hasPromotion(): boolean {
+    if (!this.promotionPreview) return false;
+    return (
+      this.promotionPreview.discountAmount > 0 ||
+      (this.promotionPreview.bonusPoints ?? 0) > 0 ||
+      (this.promotionPreview.eligibleFreeServices?.length ?? 0) > 0
+    );
+  }
+
+  get hasAppliedRules(): boolean {
+    return !!this.promotionPreview?.appliedRuleIds?.length;
+  }
+
+  get hasFreeServices(): boolean {
+    return !!this.promotionPreview?.eligibleFreeServices?.length;
+  }
+
+  /**
+   * Normalizes appliedRuleIds into a consistent { ruleId, ruleName? } shape,
+   * whether the backend sends plain numbers (today) or rule objects (once
+   * the backend team ships ruleName).
+   */
+  get appliedRules(): PackagePromotionAppliedRule[] {
+    return (this.promotionPreview?.appliedRuleIds ?? []).map(entry => this.normalizeAppliedRule(entry));
+  }
+
+  private normalizeAppliedRule(entry: PackagePromotionAppliedRuleEntry): PackagePromotionAppliedRule {
+    return typeof entry === 'number' ? { ruleId: entry } : entry;
+  }
+
+  /** Falls back to "Rule #<id>" until the backend starts sending ruleName. */
+  ruleDisplayLabel(rule: PackagePromotionAppliedRule): string {
+    return rule.ruleName?.trim() ? rule.ruleName : `Rule #${rule.ruleId}`;
+  }
+
+  // The total the patient actually owes right now — discounted if a promo applies
+  getPayableTotal(): number {
+    if (this.hasPromotion && this.promotionPreview) {
+      return this.round2(this.promotionPreview.discountedTotal);
+    }
+    return this.getCartTotal();
+  }
   // Patient search methods
   onPatientSearch(event: any): void {
     const value = event.target.value;
@@ -279,6 +396,10 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     this.packageFm.patchValue({ patientPhone: selectedValue });
   }
 
+  get patientSelected(): boolean {
+    return !!this.packageFm.get('patientPhone')?.value;
+  }
+
   // Package search methods
   onPackageSearch(event: any): void {
     const value = event.target.value;
@@ -299,43 +420,43 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  onPackageSelected(event: MatAutocompleteSelectedEvent): void {
-    const selectedPackageName = event.option.value as string;
-    const selectedPackage = this.AllPackages.find(pkg => pkg.packageName === selectedPackageName);
-
-    this.packageSearchValue = selectedPackageName;
-    this.packageFm.patchValue({
-      packageName: selectedPackageName,
-      packageCost: selectedPackage ? selectedPackage.packageCost : 0
-    });
-
-    this.updatePaymentSummary();
+  // Cart management
+  addToCart(pkg: PackageItem): void {
+    const newRow: CartRow = {
+      id: this.nextCartId++,
+      packageName: pkg.packageName,
+      unitCost: Number(pkg.packageCost),
+      quantity: 1,
+      description: pkg.description
+    };
+    this.cart = [...this.cart, newRow];
+    this.snackBar.open(`${pkg.packageName} added to the ticket`, '', { duration: 1500 });
+    this.cdr.markForCheck();
   }
 
-  // Utility methods
-  extractPatientName(patient: string): string {
-    if (!patient) return '';
-
-    // Split by hyphen with or without spaces
-    const parts = patient.split(/\s*-\s*/);
-
-    // Everything before the last "-" is considered name
-    const namePart = parts.slice(0, -1).join('-').trim();
-
-    return namePart || patient.trim();
+  removeFromCart(id: number): void {
+    this.cart = this.cart.filter(row => row.id !== id);
+    this.cdr.markForCheck();
   }
 
-  extractPatientPhone(patient: string): string {
-    if (!patient) return '';
-
-    // Split by hyphen with or without spaces
-    const parts = patient.split(/\s*-\s*/);
-
-    // Last part after "-" is the phone
-    return parts.length > 1 ? parts[parts.length - 1].trim() : '';
+  incrementQuantity(id: number): void {
+    this.cart = this.cart.map(row =>
+      row.id === id ? { ...row, quantity: row.quantity + 1 } : row
+    );
+    this.cdr.markForCheck();
   }
 
-  // Track by functions for performance
+  decrementQuantity(id: number): void {
+    this.cart = this.cart.map(row =>
+      row.id === id && row.quantity > 1 ? { ...row, quantity: row.quantity - 1 } : row
+    );
+    this.cdr.markForCheck();
+  }
+
+  trackByCartRow(index: number, row: CartRow): number {
+    return row.id;
+  }
+
   trackByPatient(index: number, item: string): string {
     return item;
   }
@@ -344,102 +465,226 @@ export class AddPackageComponent implements OnInit, OnDestroy {
     return item.packageName;
   }
 
+  getLineTotal(row: CartRow): number {
+    return this.round2(Number(row.unitCost) * Number(row.quantity));
+  }
+
+  private round2(n: number): number {
+    return Math.round((n + Number.EPSILON) * 100) / 100;
+  }
+
+  getCartTotal(): number {
+    return this.round2(this.cart.reduce((sum, row) => sum + this.getLineTotal(row), 0));
+  }
+
+  // Utility methods
+  extractPatientName(patient: string): string {
+    if (!patient) return '';
+    const parts = patient.split(/\s*-\s*/);
+    const namePart = parts.slice(0, -1).join('-').trim();
+    return namePart || patient.trim();
+  }
+
+  extractPatientPhone(patient: string): string {
+    if (!patient) return '';
+    const parts = patient.split(/\s*-\s*/);
+    return parts.length > 1 ? parts[parts.length - 1].trim() : '';
+  }
+
   // Payment calculation methods
   getTotalPayments(): number {
     const formValues = this.packageFm.value;
-    return (formValues.cash || 0) +
+    return this.round2(
+      (formValues.cash || 0) +
       (formValues.vodafoneCash || 0) +
       (formValues.visa || 0) +
       (formValues.credit || 0) +
       (formValues.instaPay || 0) +
-      (formValues.debit || 0);
-  }
-
-  getPackageCost(): number {
-    return this.packageFm.get('packageCost')?.value || 0;
+      (formValues.debit || 0)
+    );
   }
 
   getBalance(): number {
-    const packageCost = this.getPackageCost();
-    const payments = this.getTotalPayments();
-    return packageCost - payments;
+    return this.round2(this.getPayableTotal() - this.getTotalPayments());
+  }
+
+  getPaidPercent(): number {
+    const total = this.getPayableTotal();
+    if (total <= 0) return this.getTotalPayments() > 0 ? 100 : 0;
+    return Math.min(100, Math.max(0, (this.getTotalPayments() / total) * 100));
   }
 
   getBalanceClass(): string {
     const balance = this.getBalance();
-    if (balance > 0) return 'text-danger'; // Underpaid
-    if (balance < 0) return 'text-warning'; // Overpaid
-    return 'text-success'; // Exact payment
-  }
-
-  getBalanceColor(): string {
-    const balance = this.getBalance();
-    if (balance > 0) return 'warn'; // Underpaid
-    if (balance < 0) return 'accent'; // Overpaid
-    return 'primary'; // Exact payment
+    if (balance > BALANCE_EPSILON) return 'text-danger';
+    if (balance < -BALANCE_EPSILON) return 'text-warning';
+    return 'text-success';
   }
 
   getBalanceIcon(): string {
     const balance = this.getBalance();
-    if (balance > 0) return 'error'; // Underpaid
-    if (balance < 0) return 'warning'; // Overpaid
-    return 'check_circle'; // Exact payment
+    if (balance > BALANCE_EPSILON) return 'error';
+    if (balance < -BALANCE_EPSILON) return 'warning';
+    return 'check_circle';
   }
 
   getBalanceStatus(): string {
     const balance = this.getBalance();
-    if (balance > 0) return 'Underpaid';
-    if (balance < 0) return 'Overpaid';
+    if (balance > BALANCE_EPSILON) return 'Underpaid';
+    if (balance < -BALANCE_EPSILON) return 'Overpaid';
     return 'Paid in Full';
   }
+
+
 
   updatePaymentSummary(): void {
     this.cdr.markForCheck();
   }
 
-  // Form submission
+  get isSuper(): boolean | null {
+    return this.authService.isSuper;
+  }
+
+  // Wizard navigation
+  canProceedToPayment(): boolean {
+    return this.patientSelected && this.cart.length > 0;
+  }
+
+  canProceedToReview(): boolean {
+    const paid = this.getTotalPayments();
+    if (this.isSuper) {
+      return paid === 0;
+    }
+    return Math.abs(this.getBalance()) <= BALANCE_EPSILON;
+  }
+
+  nextStep(): void {
+    if (this.currentStep === 1) {
+      if (!this.patientSelected) {
+        this.showErrorMessage('Select a patient before continuing');
+        return;
+      }
+      if (this.cart.length === 0) {
+        this.showErrorMessage('Add at least one package to the ticket before continuing');
+        return;
+      }
+      this.currentStep = 2;
+      this.fetchPromotionPreview();
+    } else if (this.currentStep === 2) {
+      if (!this.canProceedToReview()) {
+        if (this.isSuper) {
+          this.showErrorMessage('Super Receptionist reservations must have a total payment of 0');
+        } else {
+          const balance = this.getBalance();
+          this.showErrorMessage(
+            balance > 0
+              ? 'Total Payments Value is Less Than the Cart Total!!'
+              : 'Total Payments Value is More Than the Cart Total!!'
+          );
+        }
+        return;
+      }
+      this.currentStep = 3;
+    }
+    this.cdr.markForCheck();
+  }
+  prevStep(): void {
+    if (this.currentStep > 1) {
+      if (this.currentStep === 2) {
+        // going back to edit the cart — promo total is now stale
+        this.promotionPreview = undefined;
+        this.promotionError = '';
+      }
+      this.currentStep = (this.currentStep - 1) as WizardStep;
+      this.cdr.markForCheck();
+    }
+  }
+
+  goToStep(step: WizardStep): void {
+    if (step === this.currentStep) return;
+    if (step < this.currentStep) {
+      if (step === 1) {
+        this.promotionPreview = undefined;
+        this.promotionError = '';
+      }
+      this.currentStep = step;
+      this.cdr.markForCheck();
+      return;
+    }
+    if (step === 2 && this.canProceedToPayment()) {
+      this.currentStep = 2;
+      this.fetchPromotionPreview();
+    } else if (step === 3 && this.canProceedToPayment() && this.canProceedToReview()) {
+      this.currentStep = 3;
+    }
+    this.cdr.markForCheck();
+  }
+
+
+
+  private buildPackagesPayload(): ReservePackagesRequestItem[] {
+    return this.cart.map(row => ({
+      packageName: row.packageName,
+      quantity: row.quantity
+    }));
+  }
+
+  private buildTotalPayload(): ReservePackagesRequestTotal {
+    const formValues = this.packageFm.value;
+    return {
+      cash: Number(formValues.cash) || 0,
+      visa: Number(formValues.visa) || 0,
+      vodafoneCash: Number(formValues.vodafoneCash) || 0,
+      debit: Number(formValues.debit) || 0,
+      credit: Number(formValues.credit) || 0,
+      instaPay: Number(formValues.instaPay) || 0,
+    };
+  }
   submit(): void {
     if (this.packageFm.invalid) {
       this.markFormGroupTouched(this.packageFm);
       return;
     }
 
-    const formData = this.packageFm.value;
-    const totalPayments = this.getTotalPayments();
-    const packageCost = this.getPackageCost();
+    if (this.cart.length === 0) {
+      this.showErrorMessage('Add at least one package to the ticket before reserving');
+      return;
+    }
 
-    if (this.isSuper) {
-       if (totalPayments !== 0) {
-        this.showErrorMessage("Super user reservations must have a total payment of 0!");
-        return;
+    if (!this.canProceedToReview()) {
+      if (this.isSuper) {
+        this.showErrorMessage('Super Receptionist reservations must have a total payment of 0!');
+      } else {
+        const balance = this.getBalance();
+        this.showErrorMessage(
+          balance > 0
+            ? 'Total Payments Value is Less Than the Cart Total!!'
+            : 'Total Payments Value is More Than the Cart Total!!'
+        );
       }
-    } else {
-      // Regular user: total payments must match package cost exactly
-      if (packageCost > totalPayments) {
-        this.showErrorMessage("Total Payments Value is Less Than the Package Cost!!");
-        return;
-      } else if (packageCost < totalPayments) {
-        this.showErrorMessage("Total Payments Value is More Than the Package Cost!!");
-        return;
-      }
+      return;
     }
 
     this.isSubmitting = true;
     this.cdr.markForCheck();
 
-    // Extract phone number from search result
-    formData.patientPhone = this.namesAndNumbers.extractPhoneNumberFromSearchResult(formData.patientPhone);
+    const patientPhone = this.namesAndNumbers.extractPhoneNumberFromSearchResult(
+      this.packageFm.value.patientPhone
+    );
 
-    const subscription = this.packageservice.reservePackage(formData)
+    const requestPayload: ReservePackagesRequest = {
+      patientPhone: patientPhone,
+      packages: this.buildPackagesPayload(),
+      total: this.buildTotalPayload()
+    };
+    const subscription = this.packageservice.reservePackages(requestPayload)
       .subscribe({
-        next: (data: any) => {
+        next: (data: ReservePackagesResponse) => {
           this.isSubmitting = false;
-          this.showSuccessMessage("Package Reserved Successfully!");
+          this.showSuccessMessage(data?.message || 'Packages Reserved Successfully!');
 
-          // Prepare reservation data for receipt
-          this.prepareReservationData(formData);
+          this.prepareReservationData(data);
 
-          // Show receipt and generate PDF
           this.showReceipt = true;
           this.cdr.markForCheck();
 
@@ -448,45 +693,54 @@ export class AddPackageComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.isSubmitting = false;
           this.cdr.markForCheck();
-          console.error("Error in Reserve a Package", err);
-          this.showErrorMessage(err.error?.message || 'An error occurred while reserving the package');
+          console.error("Error in Reserve Packages", err);
+          this.showErrorMessage(err.error?.message || 'An error occurred while reserving the packages');
         }
       });
 
     this.subscriptions.add(subscription);
   }
-  get isSuper(): boolean | null {
-    return this.authService.isSuper;
-  }
 
-  private prepareReservationData(formData: any): void {
+  private prepareReservationData(response: ReservePackagesResponse): void {
     const patientName = this.extractPatientName(this.patientSearchValue);
     const patientPhone = this.extractPatientPhone(this.patientSearchValue);
+    const formValues = this.packageFm.value;
 
     this.reservationData = {
       patientPhone: patientPhone,
       patientName: patientName,
-      packageName: formData.packageName,
-      packageCost: formData.packageCost,
+      items: this.cart.map(row => ({
+        packageName: row.packageName,
+        quantity: row.quantity,
+        unitCost: row.unitCost,
+        lineTotal: this.getLineTotal(row)
+      })),
+      cartTotal: this.getCartTotal(),
+      discountAmount: this.hasPromotion ? (this.promotionPreview?.discountAmount || 0) : 0,
+      discountPercentage: this.hasPromotion ? (this.promotionPreview?.discountPercentage || 0) : 0,
+      bonusPoints: this.hasPromotion ? (this.promotionPreview?.bonusPoints || 0) : 0, 
+      payableTotal: this.getPayableTotal(),
+      appliedRules: this.hasPromotion ? this.appliedRules : [],
+      freeServices: this.hasPromotion
+        ? (this.promotionPreview?.eligibleFreeServices || [])
+        : [],
       paymentMethods: {
-        cash: formData.cash,
-        visa: formData.visa,
-        debit: formData.debit,
-        credit: formData.credit,
-        instaPay: formData.instaPay,
-        vodafoneCash: formData.vodafoneCash
+        cash: formValues.cash,
+        visa: formValues.visa,
+        debit: formValues.debit,
+        credit: formValues.credit,
+        instaPay: formValues.instaPay,
+        vodafoneCash: formValues.vodafoneCash
       },
       totalPayments: this.getTotalPayments(),
-      reservationDate: new Date()
+      reservationDate: new Date(),
+      reservedIds: response.reservedIds || []
     };
-    console.log('reservationData', this.reservationData)
-    // Generate PDF after a short delay to ensure DOM is rendered
+
     setTimeout(() => {
       this.generatePDF();
     }, 500);
-
   }
-
   generatePDF(): void {
     const receiptElement = this.receiptSection?.nativeElement;
     if (!receiptElement) {
@@ -501,7 +755,6 @@ export class AddPackageComponent implements OnInit, OnDestroy {
 
     this.snackBar.open('Generating PDF...', '', { duration: 2000 });
 
-    // Configure html2canvas options for better quality
     const canvasOptions = {
       scale: 2,
       useCORS: true,
@@ -510,57 +763,53 @@ export class AddPackageComponent implements OnInit, OnDestroy {
       removeContainer: true
     };
 
-   html2canvas(receiptElement, canvasOptions).then((canvas) => {
-  const imgData = canvas.toDataURL('image/png', 1.0);
-  const pdf = new jsPDF('p', 'mm', 'a4');
+    html2canvas(receiptElement, canvasOptions).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
 
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = pdf.internal.pageSize.getHeight();
-  const imgWidth = pdfWidth - 20; // margins
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  const logoImg = new Image();
-  logoImg.onload = () => {
-    // Draw logo
-    pdf.addImage(logoImg, 'PNG', 10, 10, 30, 30);
+      const logoImg = new Image();
+      logoImg.onload = () => {
+        pdf.addImage(logoImg, 'PNG', 10, 10, 30, 30);
 
-    // Place receipt below logo (leave space, e.g., 50mm)
-    let y = 50;
+        let y = 50;
 
-    // If content too tall for one page, split across pages
-    if (imgHeight > pdfHeight - y - 10) {
-      let remainingHeight = imgHeight;
-      let position = y;
+        if (imgHeight > pdfHeight - y - 10) {
+          let remainingHeight = imgHeight;
+          let position = y;
 
-      while (remainingHeight > 0) {
-        pdf.addImage(
-          imgData,
-          'PNG',
-          10,
-          position,
-          imgWidth,
-          imgHeight
-        );
-        remainingHeight -= pdfHeight - y;
-        if (remainingHeight > 0) {
-          pdf.addPage();
-          position = 10; // reset top margin for new page
+          while (remainingHeight > 0) {
+            pdf.addImage(
+              imgData,
+              'PNG',
+              10,
+              position,
+              imgWidth,
+              imgHeight
+            );
+            remainingHeight -= pdfHeight - y;
+            if (remainingHeight > 0) {
+              pdf.addPage();
+              position = 10;
+            }
+          }
+        } else {
+          pdf.addImage(imgData, 'PNG', 10, y, imgWidth, imgHeight);
         }
-      }
-    } else {
-      pdf.addImage(imgData, 'PNG', 10, y, imgWidth, imgHeight);
-    }
 
-    const dateStr = this.datePipe.transform(new Date(), 'yyyy-MM-dd') || 'receipt';
-const patientName = this.reservationData?.patientName
-  ? this.extractPatientName(this.reservationData.patientName)
-  : 'Patient';
-  pdf.save(`package-receipt-${patientName}-${dateStr}.pdf`);
-  };
+        const dateStr = this.datePipe.transform(new Date(), 'yyyy-MM-dd') || 'receipt';
+        const patientName = this.reservationData?.patientName
+          ? this.extractPatientName(this.reservationData.patientName)
+          : 'Patient';
+        pdf.save(`package-receipt-${patientName}-${dateStr}.pdf`);
+      };
 
-  logoImg.src = 'assets/logo.png';
-});
-
+      logoImg.src = 'assets/logo.png';
+    });
   }
 
   getPaymentMethodsUsed(): Array<{ method: string, amount: number }> {
@@ -630,15 +879,23 @@ const patientName = this.reservationData?.patientName
 
     this.subscriptions.add(subscription);
   }
+
   get userType(): string | null {
     return this.authService.userType;
   }
+
   closeDialog(): void {
     this.dialogRef.close();
   }
 
   backToForm(): void {
     this.showReceipt = false;
+    this.currentStep = 1;
+    this.cart = [];
+    this.packageFm.reset();
+    this.previewTicketCode = this.generateTicketCode();
+    this.promotionPreview = undefined;
+    this.promotionError = '';
     this.cdr.markForCheck();
   }
 }

@@ -5,6 +5,7 @@ import { Package } from 'src/app/modules/admin/models/package';
 import { PackageService } from 'src/app/modules/admin/services/package/package.service';
 import { ServiceService } from 'src/app/modules/admin/services/services/service.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-add-new-package',
   templateUrl: './add-new-package.component.html',
@@ -27,7 +28,7 @@ export class AddNewPackageComponent implements OnInit {
     this.isEditMode = !!data;
 
     this.newpackageFm = this.fb.group({
-      packageName: ['', [Validators.required ]],
+      packageName: ['', [Validators.required]],
       packageCost: [null, [Validators.required, Validators.min(1)]],
       numberOfPoints: [null],
       validatedDays: [null, [Validators.required, Validators.min(1)]],
@@ -42,13 +43,11 @@ export class AddNewPackageComponent implements OnInit {
         numberOfPoints: data.numberOfPoints,
         validatedDays: data.validatedDays
       });
-      if (this.isEditMode) {
-        if (this.isServicesPackage) {
-          this.newpackageFm.get('numberOfPoints')?.disable();
-        } else if (this.isPointsPackage) {
-          this.newpackageFm.get('numberOfPoints')?.enable();
-        }
-      }
+
+      // Points and services are now independent — both stay enabled
+      // regardless of what the package currently has, so an admin can
+      // add either on top of the other.
+
       // Rebuild services FormArray from existing data
       if (data.services?.length) {
         const servicesArray = this.newpackageFm.get('services') as FormArray;
@@ -73,10 +72,9 @@ export class AddNewPackageComponent implements OnInit {
   }
 
   createService(serviceName: any = '', sessions: any = ''): FormGroup {
-    const disabled = this.isEditMode && this.isPointsPackage;
     return this.fb.group({
-      serviceName: [{ value: serviceName, disabled }],
-      sessions: [{ value: sessions, disabled }]
+      serviceName: [serviceName],
+      sessions: [sessions]
     });
   }
 
@@ -107,20 +105,14 @@ export class AddNewPackageComponent implements OnInit {
       this.newpackageFm.markAllAsTouched();
       return;
     }
-    const hasPoints = !!this.newpackageFm.value.numberOfPoints;
 
+    const hasPoints = !!this.newpackageFm.value.numberOfPoints;
     const hasServicess = this.newpackageFm.value.services?.some(
       (s: any) => s.serviceName || s.sessions
     );
 
-    if (hasPoints && hasServicess) {
-      this.showMessage(
-        'Package cannot contain both points and services.',
-        'error'
-      );
-      return;
-    }
-
+    // Combos of points + services are now allowed — only block the
+    // case where a package would have neither.
     if (!hasPoints && !hasServicess) {
       this.showMessage(
         'Package must contain either points or services.',
@@ -128,6 +120,7 @@ export class AddNewPackageComponent implements OnInit {
       );
       return;
     }
+
     const payload: any = { ...this.newpackageFm.value };
 
     // Strip empty services array (Points-only package)
@@ -139,10 +132,9 @@ export class AddNewPackageComponent implements OnInit {
     }
 
     if (this.isEditMode && this.data) {
-      // ── Edit mode
       this.packageService.updatePackage(this.data.packageId, payload).subscribe({
         next: (res: any) => {
-          this.showMessage(res.message ?? 'Package updated successfully.' , 'success');
+          this.showMessage(res.message ?? 'Package updated successfully.', 'success');
           this.dialogRef.close(true);
         },
         error: (err: any) => this.showMessage(
@@ -151,13 +143,10 @@ export class AddNewPackageComponent implements OnInit {
         )
       });
     } else {
-      // ── Add mode
       this.packageService.addPackage(payload).subscribe({
         next: (res: any) => {
-          this.showMessage(
-            res.message ?? 'Package added successfully.',
-            'success'
-          );          this.dialogRef.close(true);
+          this.showMessage(res.message ?? 'Package added successfully.', 'success');
+          this.dialogRef.close(true);
         },
         error: (err: any) => this.showMessage(
           err.error?.message ?? 'Add failed.',
@@ -166,6 +155,7 @@ export class AddNewPackageComponent implements OnInit {
       });
     }
   }
+
   get hasServices(): boolean {
     return this.Services.controls.some(ctrl => {
       const value = ctrl.value;
@@ -176,18 +166,20 @@ export class AddNewPackageComponent implements OnInit {
   get hasPoints(): boolean {
     return !!this.newpackageFm.get('numberOfPoints')?.value;
   }
-  
-  get isServicesPackage(): boolean {
-  return !!(this.data?.services?.length);
-}
 
-get isPointsPackage(): boolean {
-  return !!(this.data?.numberOfPoints && !this.data?.services?.length);
-}
-clearServices(): void {
+  get isServicesPackage(): boolean {
+    return !!(this.data?.services?.length);
+  }
+
+  get isPointsPackage(): boolean {
+    return !!(this.data?.numberOfPoints && !this.data?.services?.length);
+  }
+
+  clearServices(): void {
     this.Services.clear();
     this.Services.push(this.createService());
   }
+
   showMessage(
     message: string,
     type: 'success' | 'error' | 'info' = 'info'
@@ -199,6 +191,7 @@ clearServices(): void {
       panelClass: [`snackbar-${type}`]
     });
   }
+
   closeDialog(): void {
     this.dialogRef.close(false);
   }

@@ -1,3 +1,4 @@
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -47,6 +48,10 @@ import { DebitReportComponent } from './components/reports/depit-report/debit-re
 import { DebitMovementsComponent } from './components/reports/debit-movements/debit-movements.component';
  import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
+import { PackageMovementsComponent } from './components/reports/package-movements/package-movements.component';
+import { PriceEditDialogComponent } from './components/packages/price-edit-dialog/price-edit-dialog.component';
+import { PromotionRulesComponent } from './components/promotion-rules/promotion-rules.component';
+import { PromotionRuleFormComponent } from './components/promotion-rules/promotion-rule-form/promotion-rule-form.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +67,7 @@ import { WhatsAppMessagesComponent } from './components/reports/whatsapp-message
     MonthlyMoneyReportComponent,
     AddNewReceptionistComponent,
     AddNewPackageComponent,
+    PriceEditDialogComponent,
     AddNewServiceComponent,
     ReservationsComponent,
     AdminProfileComponent,
@@ -71,8 +77,11 @@ import { WhatsAppMessagesComponent } from './components/reports/whatsapp-message
     AddContributorComponent,
     DebitReportComponent,
     DebitMovementsComponent,
+    PackageMovementsComponent,
     WhatsAppMessagesComponent,
-    DashboardComponent
+    DashboardComponent,
+    PromotionRulesComponent ,
+    PromotionRuleFormComponent
   ],
 
   imports: [
@@ -97,6 +106,7 @@ import { WhatsAppMessagesComponent } from './components/reports/whatsapp-message
     MatInputModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatSlideToggleModule ,
     MatTableModule,
     MatChipsModule,
     MatTooltipModule,

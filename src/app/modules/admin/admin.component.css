@@ -153,3 +153,48 @@
     font-size: 15px;
   }
 }
+/* ═══════════════════════════════════════════════
+   ADD to admin.component.css
+   (I don't have your existing file, so these are
+   new rules only — append, don't overwrite)
+   ═══════════════════════════════════════════════ */
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-page-icon {
+  font-size: 20px;
+  color: var(--brand-purple, #6F2DBD);
+  flex-shrink: 0;
+}
+
+.topbar-page-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.topbar-page-text .page-title {
+  font-size: var(--font-size-lg, 16px);
+  font-weight: 700;
+  color: var(--text-primary, #1A1523);
+}
+
+.topbar-page-text .page-subtitle {
+  font-size: var(--font-size-xs, 12px);
+  color: var(--text-muted, #8A8599);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60vw;
+}
+
+@media (max-width: 768px) {
+  .topbar-page-text .page-subtitle {
+    display: none; /* keep the mobile topbar compact */
+  }
+}

@@ -1,0 +1,51 @@
+.promotion-rules-page {
+  padding: 16px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.clinic-filter {
+  min-width: 220px;
+}
+
+.loading-row {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.rules-table {
+  width: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  color: #757575;
+  padding: 32px 0;
+}
+
+.type-chip {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.type-percentage {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.type-free_services {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.type-free_pulses {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}

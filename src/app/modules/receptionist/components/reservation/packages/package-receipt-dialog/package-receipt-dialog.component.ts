@@ -115,30 +115,40 @@ export class PackageReceiptDialogComponent implements OnInit, OnDestroy {
       allowTaint: true,
       backgroundColor: '#ffffff'
     }).then(canvas => {
-      const imgData = canvas.toDataURL('image/png', 1.0);
       const pdf = new jsPDF('p', 'mm', 'a4');
-
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = pdfWidth - 20;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pxPerMm = canvas.width / imgWidth; // canvas px that correspond to 1mm of output
 
-      const logoImg = new Image();
-      logoImg.onload = () => {
-        // Logo top-left
-        pdf.addImage(logoImg, 'PNG', 10, 8, 28, 28);
+      const renderPages = (startY: number) => {
+        let sourceY = 0;      // how far into the source canvas we've already drawn
+        let pageIndex = 0;
 
-        const startY = 45;
-        let remainingHeight = imgHeight;
-        let positionY = startY;
+        while (sourceY < canvas.height) {
+          const contentHeightMm = pageIndex === 0 ? (pdfHeight - startY - 10) : (pdfHeight - 20);
+          const sliceHeightPx = Math.min(canvas.height - sourceY, contentHeightMm * pxPerMm);
 
-        while (remainingHeight > 0) {
-          pdf.addImage(imgData, 'PNG', 10, positionY, imgWidth, imgHeight);
-          remainingHeight -= (pdfHeight - startY - 10);
-          if (remainingHeight > 0) {
-            pdf.addPage();
-            positionY = 10;
-          }
+          // crop just this page's slice out of the full canvas
+          const pageCanvas = document.createElement('canvas');
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = sliceHeightPx;
+          pageCanvas.getContext('2d')?.drawImage(
+            canvas, 0, sourceY, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx
+          );
+
+          if (pageIndex > 0) pdf.addPage();
+          pdf.addImage(
+            pageCanvas.toDataURL('image/png', 1.0),
+            'PNG',
+            10,
+            pageIndex === 0 ? startY : 10,
+            imgWidth,
+            sliceHeightPx / pxPerMm
+          );
+
+          sourceY += sliceHeightPx;
+          pageIndex++;
         }
 
         const dateStr = this.datePipe.transform(new Date(), 'yyyy-MM-dd') || 'receipt';
@@ -147,27 +157,16 @@ export class PackageReceiptDialogComponent implements OnInit, OnDestroy {
           .toLowerCase();
 
         pdf.save(`package-receipt-${patientName}-${dateStr}.pdf`);
-
         this.isGeneratingPdf = false;
         this.cdr.markForCheck();
       };
 
-      logoImg.onerror = () => {
-        // Fallback: generate PDF without logo
-        const startY = 15;
-        pdf.addImage(imgData, 'PNG', 10, startY, imgWidth, imgHeight);
-
-        const dateStr = this.datePipe.transform(new Date(), 'yyyy-MM-dd') || 'receipt';
-        const patientName = (this.receiptData?.patientName || 'patient')
-          .replace(/\s+/g, '-')
-          .toLowerCase();
-
-        pdf.save(`package-receipt-${patientName}-${dateStr}.pdf`);
-
-        this.isGeneratingPdf = false;
-        this.cdr.markForCheck();
+      const logoImg = new Image();
+      logoImg.onload = () => {
+        pdf.addImage(logoImg, 'PNG', 10, 8, 28, 28);
+        renderPages(45);
       };
-
+      logoImg.onerror = () => renderPages(15);
       logoImg.src = 'assets/logo.png';
     }).catch(err => {
       console.error('PDF generation error:', err);

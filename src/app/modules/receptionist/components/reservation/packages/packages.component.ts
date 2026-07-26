@@ -17,7 +17,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PackageDetailsComponent } from './package-details/package-details.component';
 import { PackageReceiptDialogComponent } from './package-receipt-dialog/package-receipt-dialog.component';
 import { Subscription } from 'rxjs';
-
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services/auth.service';
 @Component({
   selector: 'app-packages',
   templateUrl: './packages.component.html',
@@ -42,7 +43,9 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private reservationservice: ReservationsService,
     private dialogRef: MatDialog,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -104,7 +107,20 @@ export class PackagesComponent implements OnInit, OnDestroy, OnChanges {
       panelClass: 'receipt-dialog-panel'
     });
   }
-
+  openPackageMovements(row: patientPackages): void {
+    this.router.navigate(
+      ['admin', 'reports', 'package-movements'],
+      {
+        queryParams: {
+          packageName: row.packageName,
+          patientPhone: this.phoneNumber
+        }
+      }
+    );
+  }
+  get isAdmin(): boolean {
+    return this.authService.userType === 'ROLE_ADMIN';
+  }
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }

@@ -1,287 +1,368 @@
-<!-- add-product.component.html -->
 <div class="add-product-container">
-  <!-- Modern Header -->
-  <div class="form-header">
-    <div class="d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center gap-4 me-3">
-        <mat-icon class="header-icon me-3">shopping_cart</mat-icon>
-        <div>
-          <h2 class="mb-0">New Product</h2>
-          <small class="text-muted">Add products for patient</small>
+
+  <div class="wizard">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title-group">
+          <h2 class="modal-title">New Product Ticket</h2>
         </div>
+        <button mat-icon-button (click)="closeDialog()" class="close-btn">
+          <mat-icon>close</mat-icon>
+        </button>
       </div>
-      <button mat-icon-button (click)="closeDialog()" class="close-btn">
-        <mat-icon>close</mat-icon>
-      </button>
+
+      <!-- Stepper rail -->
+      <div class="stepper-rail">
+        <button type="button" class="rail-step" [class.active]="currentStep === 1" [class.done]="currentStep > 1"
+          (click)="goToStep(1)">
+          <span class="rail-badge">
+            <mat-icon *ngIf="currentStep > 1">check</mat-icon>
+            <span *ngIf="currentStep <= 1">1</span>
+          </span>
+          <span class="rail-label">Products</span>
+        </button>
+
+        <div class="rail-connector" [class.filled]="currentStep > 1"></div>
+
+        <button type="button" class="rail-step" [class.active]="currentStep === 2" [class.done]="currentStep > 2"
+          (click)="goToStep(2)">
+          <span class="rail-badge">
+            <mat-icon *ngIf="currentStep > 2">check</mat-icon>
+            <span *ngIf="currentStep <= 2">2</span>
+          </span>
+          <span class="rail-label">Payment</span>
+        </button>
+
+        <div class="rail-connector" [class.filled]="currentStep > 2"></div>
+
+        <button type="button" class="rail-step" [class.active]="currentStep === 3" (click)="goToStep(3)">
+          <span class="rail-badge">
+            <span>3</span>
+          </span>
+          <span class="rail-label">Review</span>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- Enhanced Form -->
-  <form [formGroup]="addProductFm" (ngSubmit)="submit()" class="add-product-form">
-    <mat-card class="form-card">
-      <mat-card-content>
+    <form [formGroup]="productFm" class="wizard-form">
+      <div class="wizard-body">
 
-        <!-- Patient Selection Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">person</mat-icon>
-            <h3>Patient Information</h3>
-          </div>
+        <!-- ============ STEP 1: PRODUCTS ============ -->
+        <div class="step-panel" *ngIf="currentStep === 1">
+          <div class="step-grid">
 
-          <div class="row g-3">
-            <div class="col-12">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Search Patient</mat-label>
-                <input matInput formControlName="patientPhone" [matAutocomplete]="PatientAuto"
-                  (input)="onPatientSearch($event)" placeholder="Type patient's name or phone number"
-                  autocomplete="off">
+            <!-- Left: search + patient + product gallery -->
+            <div class="step-main">
 
-                <!-- Loading spinner for patient search -->
-                <mat-spinner *ngIf="isPatientLoading" matSuffix diameter="20"></mat-spinner>
+              <div class="field-block">
+                <label class="field-label"><mat-icon class="field-label-icon">person</mat-icon>Patient</label>
+                <mat-form-field appearance="outline" class="w-100 luxe-field">
+                  <input matInput formControlName="patientPhone" [matAutocomplete]="PatientAuto"
+                    (input)="onPatientSearch($event)" placeholder="Search by name or phone number" autocomplete="off">
 
-                <!-- Search icon -->
-                <mat-icon *ngIf="!isPatientLoading" matSuffix>search</mat-icon>
+                  <mat-spinner *ngIf="isPatientLoading" matSuffix diameter="18"></mat-spinner>
+                  <mat-icon *ngIf="!isPatientLoading" matSuffix>search</mat-icon>
 
-                <!-- Validation errors -->
-                <mat-error *ngIf="addProductFm.get('patientPhone')?.hasError('required')">
-                  Patient selection is required
-                </mat-error>
-
-                <!-- Enhanced Autocomplete -->
-                <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)"
-                  class="modern-autocomplete">
-                  <mat-option *ngFor="let patient of filteredPatients; trackBy: trackByPatient" [value]="patient"
-                    class="patient-option">
-                    <div class="d-flex align-items-center">
-                      <div class="patient-details">
-                          <small class="patient-phone text-muted">
-                            <mat-icon class="small-icon">phone</mat-icon>
-                            {{ extractPatientPhone(patient) }}
-                          </small>
-                        <div class="patient-name">{{ extractPatientName(patient) }}</div>
-                      
+                  <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)">
+                    <mat-option *ngFor="let patient of filteredPatients; trackBy: trackByPatient" [value]="patient">
+                      <div class="patient-option-row">
+                        <span class="patient-option-name">{{ extractPatientName(patient) }}</span>
+                        <small class="patient-option-phone">
+                          <mat-icon class="small-icon">phone</mat-icon>{{ extractPatientPhone(patient) }}
+                        </small>
                       </div>
-                    </div>
-                  </mat-option>
+                    </mat-option>
 
-                  <!-- No results -->
-                  <mat-option *ngIf="filteredPatients.length === 0 && patientSearchValue && !isPatientLoading" disabled>
-                    <div class="text-center py-3">
-                      <mat-icon class="text-muted">person_search</mat-icon>
-                      <p class="mb-0 mt-2">No patients found</p>
-                    </div>
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
+                    <mat-option *ngIf="filteredPatients.length === 0 && patientSearchValue && !isPatientLoading"
+                      disabled>
+                      <div class="autocomplete-empty">
+                        <mat-icon>person_search</mat-icon> No patients found
+                      </div>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+
+              <div class="field-block">
+                <label class="field-label"><mat-icon class="field-label-icon">inventory_2</mat-icon>Products</label>
+                <mat-form-field appearance="outline" class="w-100 luxe-field">
+                  <input matInput [formControl]="productSearchControl" (input)="onProductSearch($event)"
+                    placeholder="Search a product to add it to the ticket" autocomplete="off">
+                  <mat-spinner *ngIf="isProductLoading" matSuffix diameter="18"></mat-spinner>
+                  <mat-icon *ngIf="!isProductLoading" matSuffix>search</mat-icon>
+                </mat-form-field>
+              </div>
+
+              <div class="product-gallery">
+                <button type="button" class="product-card"
+                  *ngFor="let product of filteredProducts; trackBy: trackByProduct" (click)="addToCart(product)">
+                  <div class="product-card-top">
+                    <span class="product-card-name">{{ product.materialName }}</span>
+                    <span class="product-card-price">{{ product.cost | currency:'EGP':'symbol':'1.0-0' }}</span>
+                  </div>
+                  <span class="product-card-cta"><mat-icon>add</mat-icon>Add to ticket</span>
+                </button>
+
+                <div class="gallery-empty" *ngIf="filteredProducts.length === 0 && !isProductLoading">
+                  <mat-icon>search_off</mat-icon>
+                  <p>No products match your search</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <mat-divider class="my-4"></mat-divider>
+            <!-- Right: ticket -->
+            <div class="step-aside">
+              <div class="ticket">
 
-        <!-- Products Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">inventory_2</mat-icon>
-            <h3>Products</h3>
-          </div>
+                <h4 class="ticket-heading">Your Ticket</h4>
 
-          <div formArrayName="products">
-            <div class="product-item" *ngFor="let productGroup of Products.controls; let i = index" [formGroupName]="i"
-              class="mb-4">
+                <div class="ticket-empty" *ngIf="cart.length === 0">
+                  <mat-icon>confirmation_number</mat-icon>
+                  <p>No products added yet</p>
+                  <small>Tap a product on the left to add it here</small>
+                </div>
 
-              <mat-card class="product-card">
-                <mat-card-content>
-                  <div class="row g-3 align-items-end">
-                    <!-- Product Name -->
-                    <div class="col-md-5">
-                      <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Product Name</mat-label>
-                        <mat-select formControlName="productName" (selectionChange)="updatePrice(i)"
-                          placeholder="Select Product">
-                          <mat-option value="">Choose a product</mat-option>
-                          <mat-option *ngFor="let product of AllProducts" [value]="product.materialName">
-                            {{ product.materialName }}
-                          </mat-option>
-                        </mat-select>
-                        <mat-icon matSuffix>inventory_2</mat-icon>
-                        <mat-error *ngIf="productGroup.get('productName')?.hasError('required')">
-                          Product selection is required
-                        </mat-error>
-                      </mat-form-field>
+                <div class="ticket-rows" *ngIf="cart.length > 0">
+                  <div class="ticket-row" *ngFor="let row of cart; trackBy: trackByCartRow">
+                    <div class="ticket-row-main">
+                      <span class="ticket-row-name">{{ row.productName }}</span>
+                      <span class="ticket-row-unit">{{ row.unitCost | currency:'EGP':'symbol':'1.0-0' }} / unit</span>
                     </div>
-
-                    <!-- Quantity -->
-                    <div class="col-md-3">
-                      <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Quantity</mat-label>
-                        <input matInput type="number" formControlName="amount" (input)="updatePrice(i)"
-                          placeholder="Quantity" min="1">
-                        <mat-icon matSuffix>tag</mat-icon>
-                        <mat-error *ngIf="productGroup.get('amount')?.hasError('required')">
-                          Quantity is required
-                        </mat-error>
-                        <mat-error *ngIf="productGroup.get('amount')?.hasError('min')">
-                          Quantity must be at least 1
-                        </mat-error>
-                      </mat-form-field>
-                    </div>
-
-                    <!-- Cost -->
-                    <div class="col-md-3">
-                      <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Cost</mat-label>
-                        <input matInput formControlName="price" readonly class="readonly-field" placeholder="0.00">
-                        <mat-icon matSuffix>attach_money</mat-icon>
-                      </mat-form-field>
-                    </div>
-
-                    <!-- Remove Button -->
-                    <div class="col-md-1" *ngIf="Products.controls.length > 1">
-                      <button mat-icon-button type="button" color="warn" (click)="removeProduct(i)"
-                        matTooltip="Remove product">
-                        <mat-icon>remove_circle</mat-icon>
+                    <div class="qty-stepper">
+                      <button type="button" mat-icon-button (click)="decrementQuantity(row.id)"
+                        [disabled]="row.quantity <= 1">
+                        <mat-icon>remove</mat-icon>
+                      </button>
+                      <span class="qty-value">{{ row.quantity }}</span>
+                      <button type="button" mat-icon-button (click)="incrementQuantity(row.id)">
+                        <mat-icon>add</mat-icon>
                       </button>
                     </div>
+                    <span class="ticket-row-total">{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</span>
+                    <button type="button" mat-icon-button class="ticket-row-remove" (click)="removeFromCart(row.id)">
+                      <mat-icon>close</mat-icon>
+                    </button>
                   </div>
-                </mat-card-content>
-              </mat-card>
-            </div>
-          </div>
-
-          <!-- Add Product Button -->
-          <div class="text-center mt-3">
-            <button mat-raised-button type="button" color="primary" (click)="addProduct()" class="add-product-btn">
-              <mat-icon>add_circle</mat-icon>
-              Add Another Product
-            </button>
-          </div>
-        </div>
-
-        <mat-divider class="my-4"></mat-divider>
-
-        <!-- Payment Methods Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">payment</mat-icon>
-            <h3>Payment Methods</h3>
-          </div>
-
-          <div class="row g-3">
-            <!-- Cash -->
-            <div class="col-md-4 col-sm-6">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Cash</mat-label>
-                <input matInput type="number" formControlName="cash" placeholder="0.00" min="0" step="0.01">
-                <mat-icon matSuffix>money</mat-icon>
-              </mat-form-field>
-            </div>
-
-            <!-- Vodafone Cash -->
-            <div class="col-md-4 col-sm-6">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Vodafone Cash</mat-label>
-                <input matInput type="number" formControlName="vodafoneCash" placeholder="0.00" min="0" step="0.01">
-                <mat-icon matSuffix>phone_android</mat-icon>
-              </mat-form-field>
-            </div>
-
-            <!-- Visa -->
-            <div class="col-md-4 col-sm-6">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Visa</mat-label>
-                <input matInput type="number" formControlName="visa" placeholder="0.00" min="0" step="0.01">
-                <mat-icon matSuffix>credit_card</mat-icon>
-              </mat-form-field>
-            </div>
-
-            <!-- Credit -->
-            <div class="col-md-4 col-sm-6">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Credit</mat-label>
-                <input matInput type="number" formControlName="credit" placeholder="0.00" min="0" step="0.01">
-                <mat-icon matSuffix>credit_score</mat-icon>
-              </mat-form-field>
-            </div>
-
-            <!-- InstaPay -->
-            <div class="col-md-4 col-sm-6">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>InstaPay</mat-label>
-                <input matInput type="number" formControlName="instaPay" placeholder="0.00" min="0" step="0.01">
-                <mat-icon matSuffix>flash_on</mat-icon>
-              </mat-form-field>
-            </div>
-          </div>
-        </div>
-
-        <mat-divider class="my-4"></mat-divider>
-
-        <!-- Total Cost Section -->
-        <div class="form-section">
-          <div class="section-header">
-            <mat-icon class="section-icon">calculate</mat-icon>
-            <h3>Total</h3>
-          </div>
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Total Cost</mat-label>
-                <input matInput formControlName="total" readonly class="readonly-field total-field" placeholder="0.00">
-                <mat-icon matSuffix>attach_money</mat-icon>
-              </mat-form-field>
-            </div>
-          </div>
-
-          <!-- Payment Summary -->
-          <div class="payment-summary mt-3" *ngIf="getTotalPayments() > 0">
-            <mat-card class="summary-card">
-              <mat-card-content>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span>Total Payments:</span>
-                  <span class="fw-bold">{{ getTotalPayments() |  currency:'EGP':'symbol':'1.2-2' }}</span>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                  <span>Balance:</span>
-                  <span [class]="getBalanceClass()" class="fw-bold">
-                    {{ getBalance() |  currency:'EGP':'symbol':'1.2-2' }}
-                  </span>
+
+                <div class="ticket-perforation" *ngIf="cart.length > 0"></div>
+
+                <div class="ticket-total-row" *ngIf="cart.length > 0">
+                  <span>Subtotal</span>
+                  <span class="ticket-total-amount">{{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
                 </div>
-              </mat-card-content>
-            </mat-card>
+              </div>
+            </div>
+
           </div>
         </div>
 
-      </mat-card-content>
-    </mat-card>
+        <!-- ============ STEP 2: PAYMENT ============ -->
+        <div class="step-panel" *ngIf="currentStep === 2">
+          <div class="step-grid">
 
-    <!-- Form Actions -->
-    <div class="form-actions">
-      <div class="m-3 d-flex justify-content-center align-items-center">
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-          <button mat-stroked-button type="button" (click)="closeDialog()" class="me-3">
-            <mat-icon>cancel</mat-icon>
-            Cancel
-          </button>
+            <div class="step-main">
+              <div class="hero-total">
+                <span class="hero-total-label">Cart Total</span>
+                <span class="hero-total-amount">{{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
+              </div>
 
-          <button mat-raised-button color="primary" type="submit" [disabled]="addProductFm.invalid || isSubmitting"
-            class="submit-btn">
-            <mat-icon>{{ isSubmitting ? '' : 'add_shopping_cart' }}</mat-icon>
-            <mat-spinner *ngIf="isSubmitting" diameter="20" class="me-2"></mat-spinner>
-            {{ isSubmitting ? 'Adding...' : 'Add Product' }}
-          </button>
+              <div class="field-block">
+                <label class="field-label"><mat-icon class="field-label-icon">payments</mat-icon>Payment Methods</label>
+
+                <div class="pay-grid">
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">payments</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Cash</span>
+                      <input type="number" formControlName="cash" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">phone_android</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Vodafone Cash</span>
+                      <input type="number" formControlName="vodafoneCash" (input)="updatePaymentSummary()"
+                        placeholder="0.00" min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">credit_card</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Visa</span>
+                      <input type="number" formControlName="visa" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">credit_score</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Credit</span>
+                      <input type="number" formControlName="credit" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">flash_on</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">InstaPay</span>
+                      <input type="number" formControlName="instaPay" (input)="updatePaymentSummary()"
+                        placeholder="0.00" min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">account_balance_wallet</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Debit</span>
+                      <input type="number" formControlName="debit" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-aside">
+              <div class="ticket">
+
+                <h4 class="ticket-heading">Your Ticket</h4>
+
+                <div class="ticket-rows compact">
+                  <div class="ticket-row-compact" *ngFor="let row of cart; trackBy: trackByCartRow">
+                    <span>{{ row.productName }} &times; {{ row.quantity }}</span>
+                    <b>{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</b>
+                  </div>
+                </div>
+
+                <div class="ticket-perforation"></div>
+
+                <div class="balance-block">
+                  <div class="balance-bar">
+                    <div class="balance-bar-fill" [ngClass]="getBalanceClass()" [style.width.%]="getPaidPercent()">
+                    </div>
+                  </div>
+                  <div class="balance-figures">
+                    <span>Paid: <b>{{ getTotalPayments() | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                    <span>Total: <b>{{ getCartTotal() | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                  </div>
+                  <div class="balance-status-pill" [ngClass]="getBalanceClass()">
+                    <mat-icon>{{ getBalanceIcon() }}</mat-icon>
+                    <span>{{ getBalanceStatus() }}</span>
+                    <b>{{ getBalance() | currency:'EGP':'symbol':'1.2-2' }}</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
+
+        <!-- ============ STEP 3: REVIEW ============ -->
+        <div class="step-panel" *ngIf="currentStep === 3">
+          <div class="review-layout">
+
+            <div class="ticket ticket-wide">
+
+              <div class="review-patient">
+                <mat-icon>person</mat-icon>
+                <div>
+                  <div class="review-patient-name">{{ extractPatientName(patientSearchValue) }}</div>
+                  <small>{{ extractPatientPhone(patientSearchValue) }}</small>
+                </div>
+                <button type="button" class="edit-link" (click)="goToStep(1)">Edit</button>
+              </div>
+
+              <div class="ticket-perforation"></div>
+
+              <div class="review-items">
+                <div class="review-items-header">
+                  <span>Product</span>
+                  <span>Qty</span>
+                  <span>Unit</span>
+                  <span>Total</span>
+                </div>
+                <div class="review-items-row" *ngFor="let row of cart; trackBy: trackByCartRow">
+                  <span>{{ row.productName }}</span>
+                  <span>{{ row.quantity }}</span>
+                  <span>{{ row.unitCost | currency:'EGP':'symbol':'1.0-0' }}</span>
+                  <span><b>{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                </div>
+                <button type="button" class="edit-link edit-link-block" (click)="goToStep(1)">
+                  <mat-icon class="small-icon">edit</mat-icon> Edit products
+                </button>
+              </div>
+
+              <div class="ticket-perforation"></div>
+
+              <div class="review-payments">
+                <div class="review-payments-row" *ngFor="let payment of [
+                  {label:'Cash', value: productFm.value.cash},
+                  {label:'Vodafone Cash', value: productFm.value.vodafoneCash},
+                  {label:'Visa', value: productFm.value.visa},
+                  {label:'Credit', value: productFm.value.credit},
+                  {label:'InstaPay', value: productFm.value.instaPay},
+                  {label:'Debit', value: productFm.value.debit}
+                ]">
+                  <ng-container *ngIf="payment.value && payment.value > 0">
+                    <span>{{ payment.label }}</span>
+                    <b>{{ payment.value | currency:'EGP':'symbol':'1.0-0' }}</b>
+                  </ng-container>
+                </div>
+                <button type="button" class="edit-link edit-link-block" (click)="goToStep(2)">
+                  <mat-icon class="small-icon">edit</mat-icon> Edit payment
+                </button>
+              </div>
+
+              <div class="ticket-perforation"></div>
+
+              <div class="review-grand-total">
+                <span>Total to Confirm</span>
+                <span class="hero-total-amount">{{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer navigation -->
+      <div class="wizard-footer">
+        <button type="button" mat-stroked-button class="footer-btn"
+          (click)="currentStep === 1 ? closeDialog() : prevStep()" [disabled]="isSubmitting">
+          <mat-icon>{{ currentStep === 1 ? 'close' : 'arrow_back' }}</mat-icon>
+          {{ currentStep === 1 ? 'Cancel' : 'Back' }}
+        </button>
+
+        <button type="button" mat-raised-button class="footer-btn footer-btn-primary" *ngIf="currentStep < 3"
+          (click)="nextStep()">
+          Continue
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+
+        <button type="button" mat-raised-button class="footer-btn footer-btn-primary" *ngIf="currentStep === 3"
+          [disabled]="isSubmitting" (click)="submit()">
+          <mat-spinner *ngIf="isSubmitting" diameter="18" class="me-2"></mat-spinner>
+          <mat-icon *ngIf="!isSubmitting">add_shopping_cart</mat-icon>
+          {{ isSubmitting ? 'Adding...' : 'Confirm & Add' }}
+        </button>
+      </div>
+    </form>
+
+    <div class="loading-overlay" *ngIf="isSubmitting">
+      <div class="loading-content">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p class="mt-3">Adding your products...</p>
       </div>
     </div>
-  </form>
-
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" *ngIf="isSubmitting">
-    <div class="loading-content">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p class="mt-3">Adding your products...</p>
-    </div>
   </div>
+
 </div>

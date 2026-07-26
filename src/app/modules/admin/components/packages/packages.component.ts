@@ -6,6 +6,7 @@ import { AddNewPackageComponent } from './add-new-package/add-new-package.compon
 import { PackageDetailsDialogComponent } from './package-details-dialog/package-details-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { PriceEditDialogComponent } from './price-edit-dialog/price-edit-dialog.component';
 
 @Component({
   selector: 'app-packages',
@@ -125,7 +126,22 @@ export class PackagesComponent implements OnInit {
       if (saved) this.getAllPackages(this.pageIndex);
     });
   }
-
+openPriceEdit(pkg: Package): void {
+  const ref = this.dialog.open(PriceEditDialogComponent, {
+    width: '380px',
+    data: {
+      packageId: pkg.packageId,
+      packageName: pkg.packageName,
+      currentPrice: pkg.packageCost
+    }
+  });
+  ref.afterClosed().subscribe((newPrice) => {
+    if (newPrice !== null && newPrice !== undefined) {
+      this.showMessage('Price updated successfully.', 'success');
+      this.getAllPackages(this.pageIndex);
+    }
+  });
+}
   openDetails(pkg: Package): void {
 this.dialog.open(PackageDetailsDialogComponent, {
   width: '700px',

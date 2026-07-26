@@ -1,0 +1,26 @@
+<div class="price-dialog">
+  <div class="price-dialog-header">
+    <h2 class="price-dialog-title">Update Price</h2>
+    <p class="price-dialog-sub">{{ data.packageName }}</p>
+    <button class="price-dialog-close" (click)="cancel()">✕</button>
+  </div>
+
+  <div class="price-dialog-body">
+    <label class="price-label">New Cost (EGP)</label>
+    <input type="number" class="price-input" [formControl]="priceCtrl"
+      [class.input-error]="priceCtrl.invalid && priceCtrl.touched" placeholder="e.g. 500" autofocus />
+    <span class="price-error" *ngIf="priceCtrl.hasError('required') && priceCtrl.touched">
+      Price is required.
+    </span>
+    <span class="price-error" *ngIf="priceCtrl.hasError('min') && priceCtrl.touched">
+      Price must be at least 1.
+    </span>
+  </div>
+
+  <div class="price-dialog-footer">
+    <button class="btn-cancel" (click)="cancel()" [disabled]="saving">Cancel</button>
+    <button class="btn-submit" (click)="save()" [disabled]="priceCtrl.invalid || saving">
+      {{ saving ? 'Saving…' : 'Save Price' }}
+    </button>
+  </div>
+</div>

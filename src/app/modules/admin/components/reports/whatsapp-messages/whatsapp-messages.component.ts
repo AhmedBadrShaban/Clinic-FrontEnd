@@ -62,7 +62,7 @@ export class WhatsAppMessagesComponent implements OnInit, OnDestroy {
   @ViewChild('pdfTpl', { static: true }) pdfTpl!: TemplateRef<any>;
 
   /* ── collapse state ── */
-  filtersCollapsed = false;
+  filtersCollapsed = true;
 
   /* ── filters ── */
   filters: WhatsAppMessagesFilter = { sortBy: 'createdAt', sortDir: 'desc' };

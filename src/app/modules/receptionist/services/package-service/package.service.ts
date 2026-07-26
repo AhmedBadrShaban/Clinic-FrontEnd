@@ -3,6 +3,67 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 
+export interface ReservePackagesRequestItem {
+  packageName: string;
+  quantity: number;
+}
+
+export interface ReservePackagesRequestTotal {
+  cash: number;
+  visa: number;
+  vodafoneCash: number;
+  debit: number;
+  credit: number;
+  instaPay: number;
+}
+
+export interface ReservePackagesRequest {
+  patientPhone: string | null;
+  packages: ReservePackagesRequestItem[];
+  total: ReservePackagesRequestTotal;
+}
+
+export interface ReservePackagesResponse {
+  message: string;
+  reservedIds: number[];
+}
+
+/**
+ * Backend currently returns `appliedRuleIds` as plain numbers, e.g.
+ * "appliedRuleIds": [1, 2, 3]. The backend team is working on adding
+ * `ruleName` to each entry. This union lets the UI use the name the moment
+ * it shows up, while still working correctly against today's plain-number
+ * response — no further type changes needed when that ships.
+ */
+export interface PackagePromotionAppliedRule {
+  ruleId: number;
+  ruleName?: string;
+}
+export type PackagePromotionAppliedRuleEntry = number | PackagePromotionAppliedRule;
+
+export interface PackagePromotionFreeService {
+  ruleId: number;
+  ruleName: string;
+  serviceId: number;
+  serviceName: string;
+  sessions: number;
+  validatedDays: number;
+}
+
+export interface PackagePromotionPreviewResponse {
+  originalTotal: number;
+  discountAmount: number;
+  discountedTotal: number;
+  discountPercentage: number;
+  bonusPoints: number;
+  appliedRuleIds: PackagePromotionAppliedRuleEntry[];
+  eligibleFreeServices: PackagePromotionFreeService[];
+}
+
+export interface PackagePromotionPreviewError {
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +84,7 @@ export class PackageService {
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-details`, { params });
   }
 
-   getReservedPackagePaymentDetails(id: string | number): Observable<any> {
+  getReservedPackagePaymentDetails(id: string | number): Observable<any> {
     const params = new HttpParams().set('id', id.toString());
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-package-history-details`, { params });
   }
@@ -49,7 +110,6 @@ export class PackageService {
     return this.http.get<any>(`${this.baseUrl}receptionist/reserved-packages-v2`, { params });
   }
 
-
   filterByDate(date: any): Observable<any> {
     const url = `${this.baseUrl}receptionist/reserved-package-filter-v2`;
     const queryParams = new HttpParams().set('date', date);
@@ -60,6 +120,16 @@ export class PackageService {
     return this.http.post(`${this.baseUrl}receptionist/reservepackage`, reservationData);
   }
 
+  reservePackages(reservationData: ReservePackagesRequest): Observable<ReservePackagesResponse> {
+    return this.http.post<ReservePackagesResponse>(`${this.baseUrl}receptionist/reservepackages`, reservationData);
+  }
+  previewPackagePromotions(totalMoney: number): Observable<PackagePromotionPreviewResponse> {
+    const params = new HttpParams().set('totalMoney', totalMoney.toString());
+    return this.http.get<PackagePromotionPreviewResponse>(
+      `${this.baseUrl}receptionist/package-promotions/preview`,
+      { params }
+    );
+  }
   editPackage(packageId: number, updatedData: any): Observable<any> {
     return this.http.put(`${this.baseUrl}packages/${packageId}`, updatedData);
   }

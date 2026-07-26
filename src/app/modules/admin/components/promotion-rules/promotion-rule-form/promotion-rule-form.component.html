@@ -1,0 +1,190 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Promotion Rule' : 'New Promotion Rule' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="promotion-rule-form">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Rule Name</mat-label>
+      <input matInput formControlName="ruleName" placeholder="e.g. Summer 10% off mid packages">
+      <mat-error *ngIf="form.get('ruleName')?.hasError('required')">Rule name is required.</mat-error>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="PERCENTAGE">Percentage</mat-option>
+          <mat-option value="FREE_SERVICES">Free Services</mat-option>
+          <mat-option value="FREE_PULSES">Free Pulses</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Clinic</mat-label>
+        <mat-select formControlName="clinicId">
+          <mat-option *ngFor="let clinic of data.clinics" [value]="clinic.clinicId">
+            {{ clinic.clinicName }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('clinicId')?.hasError('required')">Clinic is required.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-slide-toggle formControlName="active" class="active-toggle">
+      {{ form.get('active')?.value ? 'Active' : 'Inactive' }}
+    </mat-slide-toggle>
+
+    <!-- PERCENTAGE -->
+    <div class="type-section" *ngIf="form.get('type')?.value === 'PERCENTAGE'" formArrayName="tiers">
+      <div class="section-heading">
+        <h3>Tiers</h3>
+        <button mat-icon-button type="button" matTooltip="Add tier" (click)="addTier()">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+
+      <div class="tier-row" *ngFor="let tier of tiers.controls; let i = index" [formGroupName]="i">
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>From (EGP)</mat-label>
+          <input matInput type="number" formControlName="from">
+          <mat-error *ngIf="tier.get('from')?.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="tier.get('from')?.hasError('min')">Must be ≥ 0</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>To (EGP)</mat-label>
+          <input matInput type="number" formControlName="to" placeholder="Open-ended">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>Percentage (%)</mat-label>
+          <input matInput type="number" formControlName="percentage">
+          <mat-error *ngIf="tier.get('percentage')?.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="tier.get('percentage')?.hasError('min') || tier.get('percentage')?.hasError('max')">Must be
+            0–100</mat-error>
+        </mat-form-field>
+
+        <button mat-icon-button type="button" color="warn" matTooltip="Remove tier" [disabled]="tiers.length === 1"
+          (click)="removeTier(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- FREE_SERVICES -->
+    <div class="type-section" *ngIf="form.get('type')?.value === 'FREE_SERVICES'" formArrayName="freeServicesTiers">
+      <div class="section-heading">
+        <h3>Tiers</h3>
+        <button mat-icon-button type="button" matTooltip="Add tier" (click)="addFreeServicesTier()">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+
+      <div class="fs-tier-block" *ngFor="let tier of freeServicesTiers.controls; let ti = index" [formGroupName]="ti">
+        <div class="tier-row">
+          <mat-form-field appearance="outline" class="tier-field">
+            <mat-label>From (EGP)</mat-label>
+            <input matInput type="number" formControlName="from">
+            <mat-error *ngIf="tier.get('from')?.hasError('required')">Required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="tier-field">
+            <mat-label>To (EGP)</mat-label>
+            <input matInput type="number" formControlName="to">
+            <mat-error *ngIf="tier.get('to')?.hasError('required')">Required</mat-error>
+          </mat-form-field>
+
+          <button mat-icon-button type="button" color="warn" matTooltip="Remove tier"
+            [disabled]="freeServicesTiers.length === 1" (click)="removeFreeServicesTier(ti)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Search services</mat-label>
+          <input matInput [ngModel]="serviceFilter(ti)" [ngModelOptions]="{standalone: true}"
+            (ngModelChange)="setServiceFilter(ti, $event)" placeholder="Type to filter...">
+          <mat-spinner matSuffix *ngIf="loadingServices()" diameter="18"></mat-spinner>
+        </mat-form-field>
+
+        <div class="service-options" *ngIf="serviceFilter(ti)">
+          <button type="button" mat-stroked-button class="service-option"
+            *ngFor="let service of filteredServicesForTier(ti)" (click)="addServiceToTier(ti, service)">
+            {{ service.serviceName }}
+          </button>
+          <span class="no-results" *ngIf="filteredServicesForTier(ti).length === 0">No matching services.</span>
+        </div>
+
+        <div class="fs-service-list" formArrayName="services">
+          <mat-error class="services-error" *ngIf="tier.get('services')?.hasError('minLengthArray')">
+            Select at least one service.
+          </mat-error>
+
+          <div class="fs-service-row" *ngFor="let svc of freeServicesArray(ti).controls; let si = index"
+            [formGroupName]="si">
+            <span class="fs-service-name">{{ serviceName(svc.get('serviceId')?.value) }}</span>
+
+            <mat-form-field appearance="outline" class="fs-mini-field">
+              <mat-label>Sessions</mat-label>
+              <input matInput type="number" formControlName="sessions">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="fs-mini-field">
+              <mat-label>Valid Days</mat-label>
+              <input matInput type="number" formControlName="validatedDays">
+            </mat-form-field>
+
+            <button mat-icon-button type="button" color="warn" matTooltip="Remove service"
+              (click)="removeServiceFromTier(ti, si)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FREE_PULSES -->
+    <div class="type-section" *ngIf="form.get('type')?.value === 'FREE_PULSES'" formArrayName="freePulsesTiers">
+      <div class="section-heading">
+        <h3>Tiers</h3>
+        <button mat-icon-button type="button" matTooltip="Add tier" (click)="addFreePulsesTier()">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+
+      <div class="tier-row" *ngFor="let tier of freePulsesTiers.controls; let i = index" [formGroupName]="i">
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>Pulses</mat-label>
+          <input matInput type="number" formControlName="pulses">
+          <mat-error *ngIf="tier.get('pulses')?.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="tier.get('pulses')?.hasError('min')">Must be at least 1</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>From (EGP) <span class="optional-tag">optional</span></mat-label>
+          <input matInput type="number" formControlName="from">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="tier-field">
+          <mat-label>To (EGP) <span class="optional-tag">optional</span></mat-label>
+          <input matInput type="number" formControlName="to">
+        </mat-form-field>
+
+        <button mat-icon-button type="button" color="warn" matTooltip="Remove tier"
+          [disabled]="freePulsesTiers.length === 1" (click)="removeFreePulsesTier(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <p class="hint-text">Leave From/To empty for a tier that applies regardless of purchase amount.</p>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()" [disabled]="saving()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="saving()">
+      <mat-spinner *ngIf="saving()" diameter="18" class="btn-spinner"></mat-spinner>
+      <span *ngIf="!saving()">{{ isEdit ? 'Save Changes' : 'Create Rule' }}</span>
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -38,6 +38,10 @@ export class PackageService {
   addPackage(data:any){
       return this.http.post(`${this.baseUrl}admin/packages` , data);
   }
+  updatePackagePrice(id: number, price: number): Observable<any> {
+    const params = new HttpParams().set('price', price.toString());
+    return this.http.put(`${this.baseUrl}admin/packages/${id}/price`, null, { params });
+  }
   updatePackage(id: string, data: any): Observable<any> {
     return this.http.put(`${this.baseUrl}admin/update-package?id=${id}`, data);
   }

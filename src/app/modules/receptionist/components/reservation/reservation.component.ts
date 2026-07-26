@@ -11,6 +11,7 @@ import { ReservationsService } from '../../services/reservations-services/reserv
 import { PatientInfo } from '../../models/patient-Info';
 import { AddNewPatientComponent } from '../add-new-patient/add-new-patient.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../services/patient-server/patient.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -70,7 +71,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   PatientInfo: PatientInfo = {
     name: '',
-    id: -1,
+    patient_id: -1,
     gender: '',
     primaryPhone: '',
     secondaryPhone: '',
@@ -90,6 +91,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
     private router: Router,
     private loggedIn: AuthService,
     private dialogRef: MatDialog,
+    private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
   ) {
     this.userType = loggedIn.userType;
@@ -165,6 +167,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error loading patient data:', error);
           this.isLoading = false;
+          this.showMessage('Could not load patient list. Please try again.', 'error');
           this.cdr.markForCheck();
         }
       });
@@ -261,6 +264,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
         console.error('Error during search:', error);
         this.filteredData = [];
         this.isLoading = false;
+        this.showMessage('Search failed. Please try again.', 'error');
         this.cdr.markForCheck();
       }
     });
@@ -288,13 +292,27 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.filteredData = filtered;
   }
 
+  /** Clears the search box and any pending autocomplete results. */
+  clearSearch(): void {
+    this.searchValue = '';
+    this.filteredData = [];
+    this.cdr.markForCheck();
+  }
+
   searchPatient(): void {
+    // Guard against empty/whitespace-only search — the Search button is disabled in this
+    // state too, but this also covers an Enter-key submit and keeps the check in one place.
+    if (!this.searchValue || !this.searchValue.trim()) {
+      this.showMessage('Please enter a patient name or phone number to search.', 'error');
+      return;
+    }
+
     const phoneNumber = this.extractPhoneNumberFromSearchResult(this.searchValue);
 
     this.selectedTabIndex = 0;
 
     if (!phoneNumber) {
-      this.showMessage('No valid phone number found in search value', 'error');
+      this.showMessage('Please pick a patient from the suggestions list, or enter a valid phone number.', 'error');
       return;
     }
 
@@ -324,6 +342,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
           console.error('Error searching patient:', error);
           this.setTabError('patientInfoTab', 'Failed to load patient information');
           this.isLoading = false;
+          this.showMessage('Could not find a patient with that phone number.', 'error');
           this.cdr.markForCheck();
         }
       });
@@ -399,8 +418,20 @@ export class ReservationComponent implements OnInit, OnDestroy {
     this.tabDataStates[tabName].loading = false;
   }
 
+  /** Shows a real toast notification (MatSnackBar) instead of just logging to console. */
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
-    //console.log(`${type.toUpperCase()}: ${message}`);
+    const panelClass = type === 'success'
+      ? 'rsv-snackbar--success'
+      : type === 'error'
+        ? 'rsv-snackbar--error'
+        : 'rsv-snackbar--info';
+
+    this.snackBar.open(message, 'Dismiss', {
+      duration: 3500,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['rsv-snackbar', panelClass]
+    });
   }
 
   trackByFn(index: number, item: string): string {
@@ -444,9 +475,16 @@ export class ReservationComponent implements OnInit, OnDestroy {
   get hasSelectedPatient(): boolean {
     return !!this.patientNumber;
   }
+
   get searchPlaceholder(): string {
     return this.userType === 'ROLE_ADMIN'
       ? 'Search by Patient name or phone number...'
       : 'Search by Patient phone number...';
+  }
+
+  /** True once a search has been run and returned zero autocomplete suggestions —
+   *  drives the "No matches found" row in the dropdown. */
+  get hasNoResults(): boolean {
+    return !this.isLoading && this.searchValue.trim().length > 0 && this.filteredData.length === 0;
   }
 }

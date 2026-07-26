@@ -1,327 +1,588 @@
-<!-- add-package.component.html -->
 <div class="add-package-container">
-  <!-- Show Form -->
-  <div *ngIf="!showReceipt">
-    <!-- Modern Header -->
-    <div class="form-header">
-      <div class="d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-4 me-3">
-          <mat-icon class="header-icon me-3">card_giftcard</mat-icon>
-          <div>
-            <h2 class="mb-0">New Package</h2>
-            <small class="text-muted">Reserve package for patient</small>
-          </div>
+
+  <!-- Wizard -->
+  <div *ngIf="!showReceipt" class="wizard">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-title-group">
+          <!-- <span class="modal-eyebrow">Reservation Ticket {{ previewTicketCode }}</span> -->
+          <h2 class="modal-title">New Package Reservation</h2>
         </div>
-        <button mat-icon-button (click)="closeDialog()" class="close-btn">
-          <mat-icon>close</mat-icon>
+
+      </div>
+
+      <!-- Stepper rail -->
+      <div class="stepper-rail">
+        <button type="button" class="rail-step" [class.active]="currentStep === 1" [class.done]="currentStep > 1"
+          (click)="goToStep(1)">
+          <span class="rail-badge">
+            <mat-icon *ngIf="currentStep > 1">check</mat-icon>
+            <span *ngIf="currentStep <= 1">1</span>
+          </span>
+          <span class="rail-label">Packages</span>
+        </button>
+
+        <div class="rail-connector" [class.filled]="currentStep > 1"></div>
+
+        <button type="button" class="rail-step" [class.active]="currentStep === 2" [class.done]="currentStep > 2"
+          (click)="goToStep(2)">
+          <span class="rail-badge">
+            <mat-icon *ngIf="currentStep > 2">check</mat-icon>
+            <span *ngIf="currentStep <= 2">2</span>
+          </span>
+          <span class="rail-label">Payment</span>
+        </button>
+
+        <div class="rail-connector" [class.filled]="currentStep > 2"></div>
+
+        <button type="button" class="rail-step" [class.active]="currentStep === 3" (click)="goToStep(3)">
+          <span class="rail-badge">
+            <span>3</span>
+          </span>
+          <span class="rail-label">Review</span>
         </button>
       </div>
     </div>
 
-    <!-- Enhanced Form -->
-    <form [formGroup]="packageFm" (ngSubmit)="submit()" class="add-package-form">
-      <mat-card class="form-card">
-        <mat-card-content>
+    <form [formGroup]="packageFm" class="wizard-form">
+      <div class="wizard-body">
 
-          <!-- Patient Selection Section -->
-          <div class="form-section">
-            <div class="section-header">
-              <mat-icon class="section-icon">person</mat-icon>
-              <h3>Patient Information</h3>
-            </div>
+        <!-- ============ STEP 1: PACKAGES ============ -->
+        <div class="step-panel" *ngIf="currentStep === 1">
+          <div class="step-grid">
 
-            <div class="row g-3">
-              <div class="col-12">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Search Patient</mat-label>
+            <!-- Left: search + patient + package gallery -->
+            <div class="step-main">
+
+              <div class="field-block">
+                <label class="field-label"><mat-icon class="field-label-icon">person</mat-icon>Patient</label>
+                <mat-form-field appearance="outline" class="w-100 luxe-field">
                   <input matInput formControlName="patientPhone" [matAutocomplete]="PatientAuto"
-                    (input)="onPatientSearch($event)" placeholder="Type patient's name or phone number"
-                    autocomplete="off">
+                    (input)="onPatientSearch($event)" placeholder="Search by name or phone number" autocomplete="off">
 
-                  <!-- Loading spinner for patient search -->
-                  <mat-spinner *ngIf="isPatientLoading" matSuffix diameter="20"></mat-spinner>
-
-                  <!-- Search icon -->
+                  <mat-spinner *ngIf="isPatientLoading" matSuffix diameter="18"></mat-spinner>
                   <mat-icon *ngIf="!isPatientLoading" matSuffix>search</mat-icon>
 
-                  <!-- Validation errors -->
-                  <mat-error *ngIf="packageFm.get('patientPhone')?.hasError('required')">
-                    Patient selection is required
-                  </mat-error>
-
-                  <!-- Enhanced Autocomplete -->
-                  <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)"
-                    class="modern-autocomplete">
-                    <mat-option *ngFor="let patient of filteredPatients; trackBy: trackByPatient" [value]="patient"
-                      class="patient-option">
-                      <div class="d-flex align-items-center">
-                        <div class="patient-details">
-                          <small class="patient-phone text-muted">
-                            <mat-icon class="small-icon">phone</mat-icon>
-                            {{ extractPatientPhone(patient) }}
-                          </small>
-                          <div class="patient-name">{{ extractPatientName(patient) }}</div>
-
-                        </div>
+                  <mat-autocomplete #PatientAuto="matAutocomplete" (optionSelected)="onPatientSelected($event)">
+                    <mat-option *ngFor="let patient of filteredPatients; trackBy: trackByPatient" [value]="patient">
+                      <div class="patient-option-row">
+                        <span class="patient-option-name">{{ extractPatientName(patient) }}</span>
+                        <small class="patient-option-phone">
+                          <mat-icon class="small-icon">phone</mat-icon>{{ extractPatientPhone(patient) }}
+                        </small>
                       </div>
                     </mat-option>
 
-                    <!-- No results -->
                     <mat-option *ngIf="filteredPatients.length === 0 && patientSearchValue && !isPatientLoading"
                       disabled>
-                      <div class="text-center py-3">
-                        <mat-icon class="text-muted">person_search</mat-icon>
-                        <p class="mb-0 mt-2">No patients found</p>
-                      </div>
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-              </div>
-            </div>
-          </div>
-
-          <mat-divider class="my-4"></mat-divider>
-
-          <!-- Package Selection Section -->
-          <div class="form-section">
-            <div class="section-header">
-              <mat-icon class="section-icon">card_giftcard</mat-icon>
-              <h3>Package Details</h3>
-            </div>
-
-            <div class="row g-3">
-              <!-- Package Name -->
-              <div class="col-md-8">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Search Package</mat-label>
-                  <input matInput formControlName="packageName" [matAutocomplete]="PackageAuto"
-                    (input)="onPackageSearch($event)" placeholder="Type package name" autocomplete="off">
-
-                  <!-- Loading spinner for package search -->
-                  <mat-spinner *ngIf="isPackageLoading" matSuffix diameter="20"></mat-spinner>
-
-                  <!-- Package icon -->
-                  <mat-icon *ngIf="!isPackageLoading" matSuffix>card_giftcard</mat-icon>
-
-                  <!-- Validation errors -->
-                  <mat-error *ngIf="packageFm.get('packageName')?.hasError('required')">
-                    Package selection is required
-                  </mat-error>
-
-                  <!-- Package Autocomplete -->
-                  <mat-autocomplete #PackageAuto="matAutocomplete" (optionSelected)="onPackageSelected($event)"
-                    class="modern-autocomplete">
-                    <mat-option *ngFor="let package of filteredPackages; trackBy: trackByPackage"
-                      [value]="package.packageName" class="package-option">
-                      <div class="d-flex align-items-center justify-content-between w-100">
-                        <div class="package-details">
-                          <div class="package-name">{{ package.packageName }}</div>
-                          <small class="package-description text-muted" *ngIf="package.description">
-                            {{ package.description }}
-                          </small>
-                        </div>
-                        <div class="package-cost">
-                          <mat-chip class="cost-chip">{{ package.packageCost | currency:'EGP':'symbol':'1.2-2'
-                            }}</mat-chip>
-                        </div>
-                      </div>
-                    </mat-option>
-
-                    <!-- No results -->
-                    <mat-option *ngIf="filteredPackages.length === 0 && packageSearchValue && !isPackageLoading"
-                      disabled>
-                      <div class="text-center py-3">
-                        <mat-icon class="text-muted">search</mat-icon>
-                        <p class="mb-0 mt-2">No packages found</p>
+                      <div class="autocomplete-empty">
+                        <mat-icon>person_search</mat-icon> No patients found
                       </div>
                     </mat-option>
                   </mat-autocomplete>
                 </mat-form-field>
               </div>
 
-              <!-- Package Cost -->
-              <div class="col-md-4">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Package Cost</mat-label>
-                  <input matInput formControlName="packageCost" readonly class="readonly-field cost-field"
-                    placeholder="0.00">
-                  <span matSuffix class="currency-suffix">EGP</span>
+              <div class="field-block">
+                <label class="field-label"><mat-icon class="field-label-icon">spa</mat-icon>Packages</label>
+                <mat-form-field appearance="outline" class="w-100 luxe-field">
+                  <input matInput [formControl]="packageSearchControl" (input)="onPackageSearch($event)"
+                    placeholder="Search a package to add it to the ticket" autocomplete="off">
+                  <mat-spinner *ngIf="isPackageLoading" matSuffix diameter="18"></mat-spinner>
+                  <mat-icon *ngIf="!isPackageLoading" matSuffix>search</mat-icon>
                 </mat-form-field>
+              </div>
+
+              <div class="package-gallery">
+                <button type="button" class="package-card"
+                  *ngFor="let package of filteredPackages; trackBy: trackByPackage" (click)="addToCart(package)">
+                  <div class="package-card-top">
+                    <span class="package-card-name">{{ package.packageName }}</span>
+                    <span class="package-card-price">{{ package.packageCost | currency:'EGP':'symbol':'1.0-0' }}</span>
+                  </div>
+                  <p class="package-card-desc" *ngIf="package.description">{{ package.description }}</p>
+                  <span class="package-card-cta"><mat-icon>add</mat-icon>Add to ticket</span>
+                </button>
+
+                <div class="gallery-empty" *ngIf="filteredPackages.length === 0 && !isPackageLoading">
+                  <mat-icon>search_off</mat-icon>
+                  <p>No packages match your search</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <mat-divider class="my-4"></mat-divider>
+            <!-- Right: ticket -->
+            <div class="step-aside">
+              <div class="ticket">
 
-          <!-- Payment Methods Section -->
-          <div class="form-section">
-            <div class="section-header">
-              <mat-icon class="section-icon">payment</mat-icon>
-              <h3>Payment Methods</h3>
-            </div>
+                <h4 class="ticket-heading">Your Ticket</h4>
 
-            <div class="row g-3">
-              <!-- Cash -->
-              <div class="col-md-4 col-sm-6">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Cash</mat-label>
-                  <input matInput type="number" formControlName="cash" (input)="updatePaymentSummary()"
-                    placeholder="0.00" min="0" step="0.01">
-                  <mat-icon matSuffix>money</mat-icon>
-                </mat-form-field>
-              </div>
+                <div class="ticket-empty" *ngIf="cart.length === 0">
+                  <mat-icon>confirmation_number</mat-icon>
+                  <p>No packages added yet</p>
+                  <small>Tap a package on the left to add it here</small>
+                </div>
 
-              <!-- Vodafone Cash -->
-              <div class="col-md-4 col-sm-6">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Vodafone Cash</mat-label>
-                  <input matInput type="number" formControlName="vodafoneCash" (input)="updatePaymentSummary()"
-                    placeholder="0.00" min="0" step="0.01">
-                  <mat-icon matSuffix>phone_android</mat-icon>
-                </mat-form-field>
-              </div>
+                <div class="ticket-rows" *ngIf="cart.length > 0">
+                  <div class="ticket-row" *ngFor="let row of cart; trackBy: trackByCartRow">
+                    <div class="ticket-row-main">
+                      <span class="ticket-row-name">{{ row.packageName }}</span>
+                      <span class="ticket-row-unit">{{ row.unitCost | currency:'EGP':'symbol':'1.0-0' }} / unit</span>
+                    </div>
+                    <div class="qty-stepper">
+                      <button type="button" mat-icon-button (click)="decrementQuantity(row.id)"
+                        [disabled]="row.quantity <= 1">
+                        <mat-icon>remove</mat-icon>
+                      </button>
+                      <span class="qty-value">{{ row.quantity }}</span>
+                      <button type="button" mat-icon-button (click)="incrementQuantity(row.id)">
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </div>
+                    <span class="ticket-row-total">{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</span>
+                    <button type="button" mat-icon-button class="ticket-row-remove" (click)="removeFromCart(row.id)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                </div>
 
-              <!-- Visa -->
-              <div class="col-md-4 col-sm-6">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Visa</mat-label>
-                  <input matInput type="number" formControlName="visa" (input)="updatePaymentSummary()"
-                    placeholder="0.00" min="0" step="0.01">
-                  <mat-icon matSuffix>credit_card</mat-icon>
-                </mat-form-field>
-              </div>
+                <div class="ticket-perforation" *ngIf="cart.length > 0"></div>
 
-              <!-- Credit -->
-              <div class="col-md-4 col-sm-6">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Credit</mat-label>
-                  <input matInput type="number" formControlName="credit" (input)="updatePaymentSummary()"
-                    placeholder="0.00" min="0" step="0.01">
-                  <mat-icon matSuffix>credit_score</mat-icon>
-                </mat-form-field>
-              </div>
-
-              <!-- InstaPay -->
-              <div class="col-md-4 col-sm-6">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>InstaPay</mat-label>
-                  <input matInput type="number" formControlName="instaPay" (input)="updatePaymentSummary()"
-                    placeholder="0.00" min="0" step="0.01">
-                  <mat-icon matSuffix>flash_on</mat-icon>
-                </mat-form-field>
-              </div>
-
-              <!-- Debit -->
-              <div class="col-md-4 col-sm-6">
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Debit</mat-label>
-                  <input matInput type="number" formControlName="debit" (input)="updatePaymentSummary()"
-                    placeholder="0.00" min="0" step="0.01">
-                  <mat-icon matSuffix>account_balance_wallet</mat-icon>
-                </mat-form-field>
+                <div class="ticket-total-row" *ngIf="cart.length > 0">
+                  <span>Subtotal</span>
+                  <span class="ticket-total-amount">{{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-        </mat-card-content>
-      </mat-card>
-
-      <!-- Form Actions -->
-      <div class="form-actions">
-        <div class="m-3 d-flex justify-content-center align-items-center">
-          <!-- Action Buttons -->
-          <div class="action-buttons">
-            <button mat-stroked-button type="button" (click)="closeDialog()" class="me-3">
-              <mat-icon>cancel</mat-icon>
-              Cancel
-            </button>
-
-            <button mat-raised-button color="primary" type="submit" [disabled]="packageFm.invalid || isSubmitting"
-              class="submit-btn">
-              <mat-icon>{{ isSubmitting ? '' : 'card_giftcard' }}</mat-icon>
-              <mat-spinner *ngIf="isSubmitting" diameter="20" class="me-2"></mat-spinner>
-              {{ isSubmitting ? 'Reserving...' : 'Reserve Package' }}
-            </button>
           </div>
         </div>
+
+        <!-- ============ STEP 2: PAYMENT ============ -->
+        <div class="step-panel" *ngIf="currentStep === 2">
+          <div class="step-grid">
+
+            <div class="step-main">
+              <div class="hero-total">
+                <span class="hero-total-label" *ngIf="!hasPromotion">Cart Total</span>
+                <span class="hero-total-label" *ngIf="hasPromotion">Amount Due (after discount)</span>
+
+                <span class="hero-total-amount" *ngIf="!hasPromotion">
+                  {{ getCartTotal() | currency:'EGP':'symbol':'1.2-2' }}
+                </span>
+                <span class="hero-total-amount" *ngIf="hasPromotion">
+                  {{ getPayableTotal() | currency:'EGP':'symbol':'1.2-2' }}
+                </span>
+
+                <span class="hero-total-original" *ngIf="hasPromotion">
+                  Original: {{ getCartTotal() | currency:'EGP':'symbol':'1.0-0' }}
+                </span>
+              </div>
+
+              <div class="field-block">
+                <label class="field-label"><mat-icon class="field-label-icon">payments</mat-icon>Payment Methods</label>
+
+                <div class="pay-grid">
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">payments</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Cash</span>
+                      <input type="number" formControlName="cash" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">phone_android</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Vodafone Cash</span>
+                      <input type="number" formControlName="vodafoneCash" (input)="updatePaymentSummary()"
+                        placeholder="0.00" min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">credit_card</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Visa</span>
+                      <input type="number" formControlName="visa" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">credit_score</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Credit</span>
+                      <input type="number" formControlName="credit" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">flash_on</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">InstaPay</span>
+                      <input type="number" formControlName="instaPay" (input)="updatePaymentSummary()"
+                        placeholder="0.00" min="0" step="0.01">
+                    </span>
+                  </label>
+
+                  <label class="pay-tile">
+                    <mat-icon class="pay-tile-icon">account_balance_wallet</mat-icon>
+                    <span class="pay-tile-body">
+                      <span class="pay-tile-label">Debit</span>
+                      <input type="number" formControlName="debit" (input)="updatePaymentSummary()" placeholder="0.00"
+                        min="0" step="0.01">
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-aside">
+              <div class="ticket">
+
+                <h4 class="ticket-heading">Your Ticket</h4>
+
+                <div class="ticket-rows compact">
+                  <div class="ticket-row-compact" *ngFor="let row of cart; trackBy: trackByCartRow">
+                    <span>{{ row.packageName }} &times; {{ row.quantity }}</span>
+                    <b>{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</b>
+                  </div>
+                </div>
+
+                <div class="ticket-perforation"></div>
+
+                <!-- Promotion status, checked before payment entry -->
+                <div class="promo-block promo-loading" *ngIf="isPromotionLoading">
+                  <mat-spinner diameter="18"></mat-spinner>
+                  <span>Checking for promotions...</span>
+                </div>
+
+<div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
+  <mat-icon>local_offer</mat-icon>
+  <div class="promo-block-body">
+    <span class="promo-block-title" *ngIf="promotionPreview?.discountAmount">
+      {{ promotionPreview?.discountPercentage }}% discount applied
+    </span>
+    <span class="promo-block-title" *ngIf="!promotionPreview?.discountAmount">
+      Promotion applied
+    </span>
+
+    <span class="promo-block-detail" *ngIf="promotionPreview?.discountAmount">
+      Patient owes {{ promotionPreview?.discountedTotal | currency:'EGP':'symbol':'1.0-0' }}
+      instead of {{ promotionPreview?.originalTotal | currency:'EGP':'symbol':'1.0-0' }}
+    </span>
+    <span class="promo-block-detail" *ngIf="promotionPreview?.bonusPoints">
+      + {{ promotionPreview?.bonusPoints }} bonus points
+    </span>
+  </div>
+</div>
+                <div class="promo-block promo-none" *ngIf="!isPromotionLoading && !hasPromotion && !promotionError">
+                  <mat-icon>info</mat-icon>
+                  <span>No promotion applies to this order</span>
+                </div>
+
+                <div class="promo-block promo-error" *ngIf="!isPromotionLoading && promotionError">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>{{ promotionError }}</span>
+                </div>
+
+                <div class="ticket-perforation"></div>
+
+                <div class="balance-block">
+                  <div class="balance-bar">
+                    <div class="balance-bar-fill" [ngClass]="getBalanceClass()" [style.width.%]="getPaidPercent()">
+                    </div>
+                  </div>
+                  <div class="balance-figures">
+                    <span>Paid: <b>{{ getTotalPayments() | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                    <span>Due: <b>{{ getPayableTotal() | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                  </div>
+                  <div class="balance-status-pill" [ngClass]="getBalanceClass()">
+                    <mat-icon>{{ getBalanceIcon() }}</mat-icon>
+                    <span>{{ getBalanceStatus() }}</span>
+                    <b>{{ getBalance() | currency:'EGP':'symbol':'1.2-2' }}</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- ============ STEP 3: REVIEW ============ -->
+        <div class="step-panel" *ngIf="currentStep === 3">
+          <div class="step-grid review-grid">
+
+            <!-- Left: patient, items, payments -->
+            <div class="step-main review-main">
+
+              <div class="review-card">
+                <div class="review-card-header">
+                  <mat-icon>person</mat-icon>
+                  <span>Patient</span>
+                  <button type="button" class="edit-link" (click)="goToStep(1)">Edit</button>
+                </div>
+                <div class="review-patient">
+                  <div class="review-patient-name">{{ extractPatientName(patientSearchValue) }}</div>
+                  <small>{{ extractPatientPhone(patientSearchValue) }}</small>
+                </div>
+              </div>
+
+              <div class="review-card">
+                <div class="review-card-header">
+                  <mat-icon>spa</mat-icon>
+                  <span>Packages</span>
+                  <button type="button" class="edit-link" (click)="goToStep(1)">Edit</button>
+                </div>
+                <div class="review-items">
+                  <div class="review-items-header">
+                    <span>Package</span>
+                    <span>Qty</span>
+                    <span>Unit</span>
+                    <span>Total</span>
+                  </div>
+                  <div class="review-items-row" *ngFor="let row of cart; trackBy: trackByCartRow">
+                    <span>{{ row.packageName }}</span>
+                    <span>{{ row.quantity }}</span>
+                    <span>{{ row.unitCost | currency:'EGP':'symbol':'1.0-0' }}</span>
+                    <span><b>{{ getLineTotal(row) | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="review-card">
+                <div class="review-card-header">
+                  <mat-icon>payments</mat-icon>
+                  <span>Payment</span>
+                  <button type="button" class="edit-link" (click)="goToStep(2)">Edit</button>
+                </div>
+                <div class="review-payments">
+                  <div class="review-payments-row" *ngFor="let payment of [
+            {label:'Cash', value: packageFm.value.cash},
+            {label:'Vodafone Cash', value: packageFm.value.vodafoneCash},
+            {label:'Visa', value: packageFm.value.visa},
+            {label:'Credit', value: packageFm.value.credit},
+            {label:'InstaPay', value: packageFm.value.instaPay},
+            {label:'Debit', value: packageFm.value.debit}
+          ]">
+                    <ng-container *ngIf="payment.value && payment.value > 0">
+                      <span>{{ payment.label }}</span>
+                      <b>{{ payment.value | currency:'EGP':'symbol':'1.0-0' }}</b>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right: sticky summary + promo -->
+            <div class="step-aside review-aside">
+              <div class="ticket review-summary">
+
+                <div class="review-grand-total">
+                  <span>Total to Reserve</span>
+                  <span class="hero-total-amount">{{ getPayableTotal() | currency:'EGP':'symbol':'1.2-2' }}</span>
+                </div>
+
+                <div class="ticket-perforation"></div>
+
+                <div class="promo-block promo-loading" *ngIf="isPromotionLoading">
+                  <mat-spinner diameter="18"></mat-spinner>
+                  <span>Checking for promotions...</span>
+                </div>
+
+          <div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
+            <mat-icon>local_offer</mat-icon>
+            <div class="promo-block-body">
+              <span class="promo-block-title" *ngIf="promotionPreview?.discountAmount">
+                Promotion applied — {{ promotionPreview?.discountPercentage }}% off
+              </span>
+              <span class="promo-block-title" *ngIf="!promotionPreview?.discountAmount">
+                Promotion applied
+              </span>
+          
+              <span class="promo-block-detail" *ngIf="promotionPreview?.discountAmount">
+                You save {{ promotionPreview?.discountAmount | currency:'EGP':'symbol':'1.0-0' }}
+              </span>
+              <span class="promo-block-detail" *ngIf="promotionPreview?.bonusPoints">
+                + {{ promotionPreview?.bonusPoints }} bonus points
+              </span>
+          
+              <div class="promo-free-services" *ngIf="hasFreeServices">
+                <span class="promo-subheading">Free services included</span>
+                <div class="promo-free-service-row" *ngFor="let service of promotionPreview?.eligibleFreeServices">
+                  <mat-icon class="small-icon">redeem</mat-icon>
+                  <span>{{ service.serviceName }}</span>
+                  <small>{{ service.sessions }} session{{ service.sessions === 1 ? '' : 's' }} · valid {{ service.validatedDays }}
+                    days</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+                <div class="promo-block promo-none" *ngIf="!isPromotionLoading && !hasPromotion && !promotionError">
+                  <mat-icon>info</mat-icon>
+                  <span>No promotion applies to this order</span>
+                </div>
+
+                <div class="promo-block promo-error" *ngIf="!isPromotionLoading && promotionError">
+                  <mat-icon>error_outline</mat-icon>
+                  <span>{{ promotionError }}</span>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer navigation -->
+      <div class="wizard-footer">
+        <button type="button" mat-stroked-button class="footer-btn"
+          (click)="currentStep === 1 ? closeDialog() : prevStep()" [disabled]="isSubmitting">
+          <mat-icon>{{ currentStep === 1 ? 'close' : 'arrow_back' }}</mat-icon>
+          {{ currentStep === 1 ? 'Cancel' : 'Back' }}
+        </button>
+
+        <button type="button" mat-raised-button class="footer-btn footer-btn-primary" *ngIf="currentStep < 3"
+          (click)="nextStep()">
+          Continue
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+
+        <button type="button" mat-raised-button class="footer-btn footer-btn-primary" *ngIf="currentStep === 3"
+          [disabled]="isSubmitting" (click)="submit()">
+          <mat-spinner *ngIf="isSubmitting" diameter="18" class="me-2"></mat-spinner>
+          <mat-icon *ngIf="!isSubmitting">task_alt</mat-icon>
+          {{ isSubmitting ? 'Reserving...' : 'Confirm & Reserve' }}
+        </button>
       </div>
     </form>
 
-    <!-- Loading Overlay -->
     <div class="loading-overlay" *ngIf="isSubmitting">
       <div class="loading-content">
         <mat-spinner diameter="50"></mat-spinner>
-        <p class="mt-3">Reserving your package...</p>
+        <p class="mt-3">Reserving your packages...</p>
       </div>
     </div>
   </div>
 
-  <!-- Receipt Section -->
- <div *ngIf="showReceipt && reservationData" class="receipt-container">
-  <div  #receiptSection>
-  <mat-card class="receipt-card" >
-    <mat-card-content>
+  <!-- Receipt Section (post-submit, unchanged flow) -->
+  <div *ngIf="showReceipt && reservationData" class="receipt-container">
+    <div #receiptSection>
+      <mat-card class="receipt-card">
+        <mat-card-content>
 
-      <!-- Header -->
-      <div class="text-center mb-2">
-        <h3 class="mb-0">U Clinic</h3>
-        <small class="text-muted">Package Reservation Receipt</small>
-        <p class="receipt-date">{{ reservationData.reservationDate | date:'mediumDate' }}</p>
-      </div>
+          <div class="text-center mb-2">
+            <h3 class="mb-0">U Clinic</h3>
+            <small class="text-muted">Package Reservation Receipt</small>
+            <p class="receipt-date">{{ reservationData.reservationDate | date:'mediumDate' }}</p>
+          </div>
 
-      <mat-divider class="my-1"></mat-divider>
+          <mat-divider class="my-1"></mat-divider>
 
-      <!-- Patient Info -->
-      <div class="info-grid small-text">
-        <div><b>Patient:</b> {{ reservationData.patientName }}</div>
-        <div><b>Phone:</b> {{  reservationData.patientPhone }}</div>
-      </div>
+          <div class="info-grid small-text">
+            <div><b>Patient:</b> {{ reservationData.patientName }}</div>
+            <div><b>Phone:</b> {{ reservationData.patientPhone }}</div>
+          </div>
 
-      <mat-divider class="my-1"></mat-divider>
+          <mat-divider class="my-1"></mat-divider>
+          <div class="small-text">
+            <div class="receipt-item-row receipt-item-header">
+              <span>Package</span>
+              <span>Qty</span>
+              <span>Unit</span>
+              <span>Total</span>
+            </div>
+            <div class="receipt-item-row" *ngFor="let item of reservationData.items">
+              <span>{{ item.packageName }}</span>
+              <span>{{ item.quantity }}</span>
+              <span>{{ item.unitCost | currency:'EGP':'symbol':'1.0-0' }}</span>
+              <span><b>{{ item.lineTotal | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+            </div>
 
-      <!-- Package Info -->
-      <div class="info-grid small-text">
-        <div><b>Package:</b> {{ reservationData.packageName }}</div>
-        <div><b>Cost:</b> {{ reservationData.packageCost | currency:'EGP':'symbol':'1.0-0' }}</div>
-      </div>
+            <mat-divider class="my-1"></mat-divider>
 
-      <mat-divider class="my-1"></mat-divider>
+            <div class="d-flex justify-content-between">
+              <span>Cart Total:</span>
+              <span>{{ reservationData.cartTotal | currency:'EGP':'symbol':'1.0-0' }}</span>
+            </div>
 
-      <!-- Payment Info -->
-      <div class="small-text">
-        <div *ngFor="let payment of getPaymentMethodsUsed()" class="d-flex justify-content-between">
-          <span>{{ payment.method }}:</span>
-          <span><b>{{ payment.amount | currency:'EGP':'symbol':'1.0-0' }}</b></span>
-        </div>
+            <!-- Discount, only if a promo was applied -->
+            <div class="d-flex justify-content-between text-success" *ngIf="reservationData.discountAmount > 0">
+              <span>Discount ({{ reservationData.discountPercentage }}%):</span>
+              <span>- {{ reservationData.discountAmount | currency:'EGP':'symbol':'1.0-0' }}</span>
+            </div>
 
+            <div class="d-flex justify-content-between" *ngIf="reservationData.discountAmount > 0">
+              <span><b>Payable Total:</b></span>
+              <span><b>{{ reservationData.payableTotal | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+            </div>
+
+            <div class="d-flex justify-content-between" *ngIf="reservationData.discountAmount === 0">
+              <span><b>Cart Total:</b></span>
+              <span><b>{{ reservationData.cartTotal | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+            </div>
+          </div>
+
+      <!-- Applied promo rules / free services -->
+      <ng-container
+        *ngIf="reservationData.discountAmount > 0 || reservationData.bonusPoints > 0 || reservationData.freeServices.length > 0">
         <mat-divider class="my-1"></mat-divider>
-
-        <div class="d-flex justify-content-between">
-          <span><b>Total Paid:</b></span>
-          <span class="text-success fw-bold">{{ reservationData.totalPayments -  debit | currency:'EGP':'symbol':'1.0-0' }}</span>
+        <div class="small-text">
+          <div class="d-flex justify-content-between" *ngIf="reservationData.bonusPoints > 0">
+            <span>🏆 Bonus points earned:</span>
+            <span><b>{{ reservationData.bonusPoints }}</b></span>
+          </div>
+          <div *ngFor="let service of reservationData.freeServices" class="d-flex justify-content-between">
+            <span>🎁 {{ service.serviceName }} (free)</span>
+            <span class="text-muted">{{ service.sessions }} session{{ service.sessions === 1 ? '' : 's' }} · valid {{
+              service.validatedDays }} days</span>
+          </div>
         </div>
+      </ng-container>
 
-      </div>
+          <mat-divider class="my-1"></mat-divider>
 
-      <mat-divider class="my-1"></mat-divider>
+          <div class="small-text">
+            <div *ngFor="let payment of getPaymentMethodsUsed()" class="d-flex justify-content-between">
+              <span>{{ payment.method }}:</span>
+              <span><b>{{ payment.amount | currency:'EGP':'symbol':'1.0-0' }}</b></span>
+            </div>
 
-      <!-- Footer -->
-      <div class="text-center small-text mt-1">
-        <p class="mb-1">Thank you for choosing our services!</p>
-        <p class="mb-1">Generated on: {{ generatedAt | date:'short' }}</p>
-      </div>
-    </mat-card-content>
-  </mat-card>
+            <mat-divider class="my-1"></mat-divider>
+
+            <div class="d-flex justify-content-between">
+              <span><b>Total Paid:</b></span>
+              <span class="text-success fw-bold">{{ reservationData.totalPayments - debit |
+                currency:'EGP':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
+
+          <mat-divider class="my-1"></mat-divider>
+
+          <div class="text-center small-text mt-1">
+            <p class="mb-1">Thank you for choosing our services!</p>
+            <p class="mb-1">Generated on: {{ generatedAt | date:'short' }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="d-flex justify-content-center gap-2 mt-2 no-print">
+      <button mat-raised-button color="accent" (click)="regeneratePDF()">
+        <mat-icon>download</mat-icon> PDF
+      </button>
+      <button mat-raised-button color="primary" (click)="closeDialog()">
+        <mat-icon>check</mat-icon> Done
+      </button>
+    </div>
   </div>
-     <!-- Actions -->
-  <div class="d-flex justify-content-center gap-2 mt-2 no-print">
-    <button mat-raised-button color="accent" (click)="regeneratePDF()">
-      <mat-icon>download</mat-icon> PDF
-    </button>
-    <button mat-raised-button color="primary" (click)="closeDialog()">
-      <mat-icon>check</mat-icon> Done
-    </button>
-  </div>
-</    div>
 
 </div>

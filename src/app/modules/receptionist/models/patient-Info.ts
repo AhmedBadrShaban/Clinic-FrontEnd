@@ -1,6 +1,6 @@
 
 export interface PatientInfo {
-  id:number;
+  patient_id:number;
   name:string;
   gender:string;
   primaryPhone:string;

@@ -1,0 +1,142 @@
+.price-dialog {
+  --pri: #4c2c77;
+  --pri-light: #6b3fa0;
+  --border: #e4ddf0;
+  --bg: #faf8fd;
+  --text: #1e1333;
+  --muted: #7c6fa0;
+  --error: #dc2626;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--text);
+}
+
+.price-dialog-header {
+  position: relative;
+  padding: 20px 24px 16px;
+  background: linear-gradient(135deg, var(--pri) 0%, var(--pri-light) 100%);
+}
+
+.price-dialog-title {
+  margin: 0;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.price-dialog-sub {
+  margin: 2px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+}
+
+.price-dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.price-dialog-close:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.price-dialog-body {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #fff;
+}
+
+.price-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.price-input {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.price-input:focus {
+  border-color: var(--pri-light);
+  box-shadow: 0 0 0 3px rgba(107, 63, 160, 0.12);
+  background: #fff;
+}
+
+.input-error {
+  border-color: var(--error) !important;
+}
+
+.price-error {
+  font-size: 11px;
+  color: var(--error);
+}
+
+.price-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 22px;
+  background: #fff;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  border-color: var(--pri-light);
+  color: var(--pri);
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, var(--pri), var(--pri-light));
+  border: none;
+  border-radius: 8px;
+  padding: 9px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(76, 44, 119, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(76, 44, 119, 0.38);
+}
+
+.btn-cancel:disabled,
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

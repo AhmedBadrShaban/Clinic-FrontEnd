@@ -1,67 +1,127 @@
-<div class="container">
-  <div class="row">
-    <form [formGroup]="formData" (ngSubmit)="updateInfo()" role="form">
-      <div class="row my-3 justify-content-between">
-        <div class="form-group col-6">
-          <label class="control-label">Name:</label>
-          <input class="form-control" formControlName="name" />
+<div class="patient-info-wrap">
+  <div class="clinic-card patient-info-card" [class.patient-info-card--loading]="isLoading">
+
+    <!-- ── Header ── -->
+    <div class="patient-info-card__header">
+      <div class="patient-info-card__header-left">
+        <i class="bi bi-person-vcard patient-info-card__icon"></i>
+        <div>
+          <h3 class="patient-info-card__title">Patient Information</h3>
+          <p class="patient-info-card__sub" *ngIf="oldInfo?.primaryPhone">{{ oldInfo?.primaryPhone }}</p>
         </div>
-         <div class="form-group col-6">
-            <label class="control-label">Note:</label>
-            <input class="form-control" formControlName="note" />
+      </div>
+
+      <span *ngIf="isLoading" class="pi-status pi-status--loading">
+        <i class="bi bi-arrow-repeat pi-spin"></i> Loading…
+      </span>
+      <span *ngIf="hasError && !isLoading" class="pi-status pi-status--error">
+        <i class="bi bi-exclamation-triangle"></i> {{ errorMessage }}
+      </span>
+      <button *ngIf="isDataReady && !isEditMode" type="button" class="btn-ghost-clinic pi-edit-btn"
+        (click)="enterEditMode()">
+        <i class="bi bi-pencil"></i> Edit
+      </button>
+    </div>
+
+    <!-- ── Empty state (nothing loaded yet) ── -->
+    <div class="pi-empty" *ngIf="!isDataReady && !isLoading && !hasError">
+      <i class="bi bi-person-badge pi-empty__icon"></i>
+      <p class="pi-empty__text">Search for a patient to see their information here.</p>
+    </div>
+
+    <!-- ── Form ── -->
+    <form class="patient-info-form" [formGroup]="formData" (ngSubmit)="updateInfo()" role="form"
+      *ngIf="isDataReady || isLoading">
+
+      <div class="pi-grid">
+        <div class="pi-field">
+          <label class="pi-label"><i class="bi bi-person"></i>Name</label>
+          <input class="pi-input" [class.pi-input--readonly]="!isEditMode" [readOnly]="!isEditMode"
+            formControlName="name" placeholder="Full name" />
+        </div>
+
+        <div class="pi-field">
+          <label class="pi-label"><i class="bi bi-chat-left-text"></i>Note</label>
+          <input class="pi-input" [class.pi-input--readonly]="!isEditMode" [readOnly]="!isEditMode"
+            formControlName="note" placeholder="Add a note…" />
+        </div>
+
+        <div class="pi-field">
+          <label class="pi-label"><i class="bi bi-telephone"></i>Primary Phone</label>
+          <input class="pi-input" [class.pi-input--readonly]="!isEditMode" [readOnly]="!isEditMode"
+            formControlName="primaryPhone" placeholder="e.g. 01xxxxxxxxx" />
+        </div>
+
+        <div class="pi-field">
+          <label class="pi-label"><i class="bi bi-telephone-plus"></i>Secondary Phone</label>
+          <input class="pi-input" [class.pi-input--readonly]="!isEditMode" [readOnly]="!isEditMode"
+            formControlName="secondaryPhone" placeholder="Optional" />
+        </div>
+
+        <div class="pi-field">
+          <label class="pi-label"><i class="bi bi-calendar-event"></i>Joined At</label>
+          <input class="pi-input" [class.pi-input--readonly]="!isEditMode" [readOnly]="!isEditMode" type="date"
+            formControlName="date" />
+        </div>
+
+        <div class="pi-field">
+          <label class="pi-label"><i class="bi bi-signpost"></i>Know Us From</label>
+          <input class="pi-input" [class.pi-input--readonly]="!isEditMode" [readOnly]="!isEditMode"
+            formControlName="knowUsThrough" placeholder="e.g. Instagram, referral…" />
+        </div>
+
+        <div class="pi-field">
+          <label class="pi-label"><i class="bi bi-calendar-check"></i>Last Reservation</label>
+          <input class="pi-input" [class.pi-input--readonly]="!isEditMode" [readOnly]="!isEditMode" type="date"
+            formControlName="lastReservation" />
+        </div>
+      </div>
+
+      <div class="pi-actions" *ngIf="isEditMode">
+        <button type="submit" class="btn-primary-clinic" [disabled]="isLoading">
+          <i class="bi bi-check2"></i> Save Changes
+        </button>
+        <button type="button" class="btn-ghost-clinic" (click)="cancel()" [disabled]="isLoading">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+      </div>
+
+      <!-- ── Debit panel ── -->
+      <div class="pi-debit-panel">
+        <div class="pi-debit-panel__top">
+          <div class="pi-debit-balance">
+            <span class="pi-debit-balance__label">Current Debit</span>
+            <span class="pi-debit-balance__value" [ngClass]="debitBalanceClass">
+              {{ (oldInfo?.debit || 0) | number:'1.0-2' }} EGP
+            </span>
           </div>
-      </div>
 
-      <div class="row my-3 justify-content-between">
-        <div class="form-group col-6">
-          <label class="control-label">Primary Phone Number:</label>
-          <input class="form-control" formControlName="primaryPhone" />
+          <ng-container *ngIf="isAdmin">
+            <a *ngIf="debitHistoryQueryParams" [routerLink]="['/admin/reports/debit-movements']"
+              [queryParams]="debitHistoryQueryParams" class="btn-ghost-clinic pi-history-link">
+              <i class="bi bi-clock-history"></i> View debit history
+            </a>
+          </ng-container>
+       
         </div>
-        <div class="form-group col-6">
-          <label class="control-label">Secondary Phone Number:</label>
-          <input class="form-control" formControlName="secondaryPhone" />
-        </div>
-      </div>
 
-      <div class="row my-3 justify-content-between">
-        <div class="form-group col-6">
-          <label class="control-label">Joined At:</label>
-          <input class="form-control" type="date" formControlName="date" />
-        </div>
-        <div class="form-group col-6">
-          <label class="control-label">Know Us From:</label>
-          <input class="form-control" formControlName="knowUsThrough" />
-        </div>
-      </div>
+        <div class="pi-debit-panel__adjust">
+<label class="pi-label">
+  <i class="bi bi-plus-slash-minus"></i>
+  Update Debit
+</label>
 
-      <div class="row my-3 justify-content-between">
-        <div class="form-group col-6">
-          <label class="control-label">Last Reservation:</label>
-          <input class="form-control" type="date" formControlName="lastReservation" />
-        </div>
-        <div class="form-group col-6">
-          <label class="control-label">Depit:</label>
-          <input [disabled]="true"  class="form-control"  [(ngModel)]="info!.debit" 
-          [ngModelOptions]="{standalone: true}"  />
+<div class="pi-debit-adjust-row">
+  <input class="pi-input" type="number" min="0" [max]="oldInfo?.debit!" formControlName="debit" placeholder="Amount" />
+
+  <button type="button" class="btn-primary-clinic" (click)="confirmDebitUpdate()">
+    <i class="bi bi-arrow-repeat"></i>
+    Update Debit
+  </button>
+</div>
         </div>
       </div>
 
-      <div class="row my-3 justify-content-center">
-        <div class="form-group col-6">
-          <label class="control-label"></label>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-          <span></span>
-          <button type="button" (click)="cancel()" class="btn btn-default">Cancel</button>
-        </div>
-        <div  class="form-group col-6">
-          <label class="control-label">Update Depit</label>
-           <input   class="form-control"  formControlName="debit"
-           />
-          <button type="button" (click)="updateDepit()" class="btn btn-default">Update</button>
-
-         </div>
-
-      </div>
     </form>
   </div>
 </div>

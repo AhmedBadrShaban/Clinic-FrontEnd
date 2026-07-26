@@ -56,9 +56,9 @@
       <div class="services-header">
         <div>
           <span class="services-label">Services</span>
-          <span class="services-hint">
-            Leave empty for a Points-only package
-          </span>
+        <span class="services-hint">
+          Optional — combine with points, or leave empty for a Points-only package
+        </span>
         </div>
 
         <button type="button" class="btn-clear-services" (click)="clearServices()" *ngIf="Services.length">
@@ -80,10 +80,9 @@
         <button type="button" class="btn-remove-service" (click)="removeService(i)" *ngIf="Services.controls.length > 1"
           title="Remove">✕</button>
       </div>
-
-      <button type="button" class="btn-add-service" (click)="addService()" [disabled]="isEditMode && isPointsPackage">
-        + Add Service
-      </button>
+<button type="button" class="btn-add-service" (click)="addService()">
+  + Add Service
+</button>
     </div>
 
     <!-- Footer Actions -->
