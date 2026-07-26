@@ -15,7 +15,7 @@ export interface ReservePackagesRequestTotal {
   debit: number;
   credit: number;
   instaPay: number;
- }
+}
 
 export interface ReservePackagesRequest {
   patientPhone: string | null;
@@ -27,14 +27,27 @@ export interface ReservePackagesResponse {
   message: string;
   reservedIds: number[];
 }
-export interface PackagePromotionRule {
+
+/**
+ * Backend currently returns `appliedRuleIds` as plain numbers, e.g.
+ * "appliedRuleIds": [1, 2, 3]. The backend team is working on adding
+ * `ruleName` to each entry. This union lets the UI use the name the moment
+ * it shows up, while still working correctly against today's plain-number
+ * response — no further type changes needed when that ships.
+ */
+export interface PackagePromotionAppliedRule {
   ruleId: number;
-  ruleName: string;
+  ruleName?: string;
 }
+export type PackagePromotionAppliedRuleEntry = number | PackagePromotionAppliedRule;
 
 export interface PackagePromotionFreeService {
+  ruleId: number;
+  ruleName: string;
+  serviceId: number;
   serviceName: string;
-  expireDate: string;
+  sessions: number;
+  validatedDays: number;
 }
 
 export interface PackagePromotionPreviewResponse {
@@ -43,13 +56,14 @@ export interface PackagePromotionPreviewResponse {
   discountedTotal: number;
   discountPercentage: number;
   bonusPoints: number;
-  appliedRuleIds: PackagePromotionRule[];
+  appliedRuleIds: PackagePromotionAppliedRuleEntry[];
   eligibleFreeServices: PackagePromotionFreeService[];
 }
 
 export interface PackagePromotionPreviewError {
   message: string;
 }
+
 @Injectable({
   providedIn: 'root'
 })

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { PromotionRule, PromotionRulePayload } from '../models/promotion-rules';
+import { PromotionRule, PromotionRulePayload, PromotionRuleWirePayload } from '../models/promotion-rules';
 
 @Injectable({
     providedIn: 'root'
@@ -32,17 +32,17 @@ export class PromotionRulesService {
             .pipe(map(r => this.normalize(r)));
     }
 
-    /** POST /admin/promotion-rules */
+    /** POST /admin/promotion-rules — configuration goes over the wire as a JSON string */
     create(payload: PromotionRulePayload): Observable<PromotionRule> {
         return this.http
-            .post<PromotionRule>(`${this.baseUrl}admin/promotion-rules`, payload)
+            .post<PromotionRule>(`${this.baseUrl}admin/promotion-rules`, this.toWirePayload(payload))
             .pipe(map(r => this.normalize(r)));
     }
 
     /** PUT /admin/promotion-rules/{id} — full replace, resend every field */
     update(id: number, payload: PromotionRulePayload): Observable<PromotionRule> {
         return this.http
-            .put<PromotionRule>(`${this.baseUrl}admin/promotion-rules/${id}`, payload)
+            .put<PromotionRule>(`${this.baseUrl}admin/promotion-rules/${id}`, this.toWirePayload(payload))
             .pipe(map(r => this.normalize(r)));
     }
 
@@ -62,6 +62,17 @@ export class PromotionRulesService {
      */
     delete(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}admin/promotion-rules/${id}`);
+    }
+
+    /** Backend expects `configuration` as a JSON-encoded string in the request body (confirmed). */
+    private toWirePayload(payload: PromotionRulePayload): PromotionRuleWirePayload {
+        return {
+            ruleName: payload.ruleName,
+            type: payload.type,
+            active: payload.active,
+            clinicId: payload.clinicId,
+            configuration: JSON.stringify(payload.configuration)
+        };
     }
 
     /**

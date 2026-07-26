@@ -25,6 +25,8 @@ import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs'
 
 import { ReservationsService } from './../../../services/reservations-services/reservations.service';
 import {
+  PackagePromotionAppliedRule,
+  PackagePromotionAppliedRuleEntry,
   PackagePromotionPreviewResponse,
   PackageService,
   ReservePackagesRequest,
@@ -35,7 +37,7 @@ import {
 import { PatientService } from 'src/app/modules/receptionist/services/patient-server/patient.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
- const SEARCH_DEBOUNCE_TIME = 300;
+const SEARCH_DEBOUNCE_TIME = 300;
 const MAX_AUTOCOMPLETE_ITEMS = 50;
 const BALANCE_EPSILON = 0.005;
 
@@ -75,8 +77,9 @@ interface ReservationData {
   cartTotal: number;
   discountAmount: number;
   discountPercentage: number;
+  bonusPoints: number;
   payableTotal: number;
-  appliedRuleNames: string[];
+  appliedRules: PackagePromotionAppliedRule[];
   freeServices: PackagePromotionFreeService[];
   paymentMethods: {
     cash?: number;
@@ -300,7 +303,12 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   }
 
   get hasPromotion(): boolean {
-    return !!this.promotionPreview && this.promotionPreview.discountAmount > 0;
+    if (!this.promotionPreview) return false;
+    return (
+      this.promotionPreview.discountAmount > 0 ||
+      (this.promotionPreview.bonusPoints ?? 0) > 0 ||
+      (this.promotionPreview.eligibleFreeServices?.length ?? 0) > 0
+    );
   }
 
   get hasAppliedRules(): boolean {
@@ -309,6 +317,24 @@ export class AddPackageComponent implements OnInit, OnDestroy {
 
   get hasFreeServices(): boolean {
     return !!this.promotionPreview?.eligibleFreeServices?.length;
+  }
+
+  /**
+   * Normalizes appliedRuleIds into a consistent { ruleId, ruleName? } shape,
+   * whether the backend sends plain numbers (today) or rule objects (once
+   * the backend team ships ruleName).
+   */
+  get appliedRules(): PackagePromotionAppliedRule[] {
+    return (this.promotionPreview?.appliedRuleIds ?? []).map(entry => this.normalizeAppliedRule(entry));
+  }
+
+  private normalizeAppliedRule(entry: PackagePromotionAppliedRuleEntry): PackagePromotionAppliedRule {
+    return typeof entry === 'number' ? { ruleId: entry } : entry;
+  }
+
+  /** Falls back to "Rule #<id>" until the backend starts sending ruleName. */
+  ruleDisplayLabel(rule: PackagePromotionAppliedRule): string {
+    return rule.ruleName?.trim() ? rule.ruleName : `Rule #${rule.ruleId}`;
   }
 
   // The total the patient actually owes right now — discounted if a promo applies
@@ -395,18 +421,18 @@ export class AddPackageComponent implements OnInit, OnDestroy {
   }
 
   // Cart management
-addToCart(pkg: PackageItem): void {
-  const newRow: CartRow = {
-    id: this.nextCartId++,
-    packageName: pkg.packageName,
-    unitCost: Number(pkg.packageCost),
-    quantity: 1,
-    description: pkg.description
-  };
-  this.cart = [...this.cart, newRow];
-  this.snackBar.open(`${pkg.packageName} added to the ticket`, '', { duration: 1500 });
-  this.cdr.markForCheck();
-}
+  addToCart(pkg: PackageItem): void {
+    const newRow: CartRow = {
+      id: this.nextCartId++,
+      packageName: pkg.packageName,
+      unitCost: Number(pkg.packageCost),
+      quantity: 1,
+      description: pkg.description
+    };
+    this.cart = [...this.cart, newRow];
+    this.snackBar.open(`${pkg.packageName} added to the ticket`, '', { duration: 1500 });
+    this.cdr.markForCheck();
+  }
 
   removeFromCart(id: number): void {
     this.cart = this.cart.filter(row => row.id !== id);
@@ -439,17 +465,17 @@ addToCart(pkg: PackageItem): void {
     return item.packageName;
   }
 
-getLineTotal(row: CartRow): number {
-  return this.round2(Number(row.unitCost) * Number(row.quantity));
-}
+  getLineTotal(row: CartRow): number {
+    return this.round2(Number(row.unitCost) * Number(row.quantity));
+  }
 
   private round2(n: number): number {
     return Math.round((n + Number.EPSILON) * 100) / 100;
   }
 
-getCartTotal(): number {
-  return this.round2(this.cart.reduce((sum, row) => sum + this.getLineTotal(row), 0));
-}
+  getCartTotal(): number {
+    return this.round2(this.cart.reduce((sum, row) => sum + this.getLineTotal(row), 0));
+  }
 
   // Utility methods
   extractPatientName(patient: string): string {
@@ -509,7 +535,7 @@ getCartTotal(): number {
     return 'Paid in Full';
   }
 
- 
+
 
   updatePaymentSummary(): void {
     this.cdr.markForCheck();
@@ -594,7 +620,7 @@ getCartTotal(): number {
     this.cdr.markForCheck();
   }
 
-  
+
 
   private buildPackagesPayload(): ReservePackagesRequestItem[] {
     return this.cart.map(row => ({
@@ -612,9 +638,9 @@ getCartTotal(): number {
       debit: Number(formValues.debit) || 0,
       credit: Number(formValues.credit) || 0,
       instaPay: Number(formValues.instaPay) || 0,
-     };
+    };
   }
-   submit(): void {
+  submit(): void {
     if (this.packageFm.invalid) {
       this.markFormGroupTouched(this.packageFm);
       return;
@@ -642,15 +668,15 @@ getCartTotal(): number {
     this.isSubmitting = true;
     this.cdr.markForCheck();
 
-     const patientPhone = this.namesAndNumbers.extractPhoneNumberFromSearchResult(
-       this.packageFm.value.patientPhone
-     );
+    const patientPhone = this.namesAndNumbers.extractPhoneNumberFromSearchResult(
+      this.packageFm.value.patientPhone
+    );
 
-     const requestPayload: ReservePackagesRequest = {
-       patientPhone: patientPhone,
-       packages: this.buildPackagesPayload(),
-       total: this.buildTotalPayload()
-     };
+    const requestPayload: ReservePackagesRequest = {
+      patientPhone: patientPhone,
+      packages: this.buildPackagesPayload(),
+      total: this.buildTotalPayload()
+    };
     const subscription = this.packageservice.reservePackages(requestPayload)
       .subscribe({
         next: (data: ReservePackagesResponse) => {
@@ -692,10 +718,9 @@ getCartTotal(): number {
       cartTotal: this.getCartTotal(),
       discountAmount: this.hasPromotion ? (this.promotionPreview?.discountAmount || 0) : 0,
       discountPercentage: this.hasPromotion ? (this.promotionPreview?.discountPercentage || 0) : 0,
+      bonusPoints: this.hasPromotion ? (this.promotionPreview?.bonusPoints || 0) : 0, 
       payableTotal: this.getPayableTotal(),
-      appliedRuleNames: this.hasPromotion
-        ? (this.promotionPreview?.appliedRuleIds.map(r => r.ruleName) || [])
-        : [],
+      appliedRules: this.hasPromotion ? this.appliedRules : [],
       freeServices: this.hasPromotion
         ? (this.promotionPreview?.eligibleFreeServices || [])
         : [],

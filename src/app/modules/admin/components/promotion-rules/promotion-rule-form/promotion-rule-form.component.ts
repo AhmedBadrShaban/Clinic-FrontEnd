@@ -1,17 +1,24 @@
-import { Component, Inject, OnInit, signal, computed } from '@angular/core';
- import {
+import { Component, Inject, OnInit, signal } from '@angular/core';
+import {
   AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
-   ValidationErrors,
+  ValidationErrors,
   Validators
 } from '@angular/forms';
- 
- 
+
 import { Clinic } from 'src/app/shared/models/rooms.models';
 import { ServiceService } from 'src/app/modules/admin/services/services/service.service';
-import { PromotionRule, PatientServiceLite, PromotionRuleType, PercentageConfiguration, FreeServicesConfiguration, FreePulsesConfiguration, PromotionRulePayload } from '../../../models/promotion-rules';
+import {
+  PromotionRule,
+  PatientServiceLite,
+  PromotionRuleType,
+  PercentageConfiguration,
+  FreeServicesConfiguration,
+  FreePulsesConfiguration,
+  PromotionRulePayload
+} from '../../../models/promotion-rules';
 import { PromotionRulesService } from '../../../services/promotion-rules.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,14 +28,16 @@ export interface PromotionRuleFormData {
   clinics: Clinic[];
 }
 
-function atLeastOneSelected(control: AbstractControl): ValidationErrors | null {
-  const value = (control.value as number[]) ?? [];
-  return value.length > 0 ? null : { required: true };
+/** Used on each FREE_SERVICES tier's `services` FormArray — must have at least one service. */
+function minLengthArray(min: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const arr = control as FormArray;
+    return arr && arr.length >= min ? null : { minLengthArray: true };
+  };
 }
 
 @Component({
   selector: 'app-promotion-rule-form',
- 
   templateUrl: './promotion-rule-form.component.html',
   styleUrls: ['./promotion-rule-form.component.css']
 })
@@ -38,31 +47,17 @@ export class PromotionRuleFormComponent implements OnInit {
   loadingServices = signal(false);
 
   allServices = signal<PatientServiceLite[]>([]);
-  serviceFilter = signal('');
-  filteredServices = computed(() => {
-    const filter = this.serviceFilter().trim().toLowerCase();
-    const selectedIds = new Set(this.form.get('freeServices.serviceIds')?.value ?? []);
-    return this.allServices()
-      .filter(s => !selectedIds.has(s.patientServiceId))
-      .filter(s => !filter || s.serviceName.toLowerCase().includes(filter));
-  });
+  /** One filter string per FREE_SERVICES tier, indexed the same as freeServicesTiers. */
+  serviceFilters = signal<string[]>(['']);
 
   form: FormGroup = this.fb.group({
     ruleName: ['', [Validators.required]],
     type: ['PERCENTAGE' as PromotionRuleType, [Validators.required]],
     clinicId: [null as number | null, [Validators.required]],
     active: [true],
-    tiers: this.fb.array([this.createTierGroup()]),
-    freeServices: this.fb.group({
-      from: [null as number | null, [Validators.required, Validators.min(0)]],
-      to: [null as number | null, [Validators.required, Validators.min(0)]],
-      serviceIds: [[] as number[], [atLeastOneSelected]]
-    }),
-    freePulses: this.fb.group({
-      pulses: [null as number | null, [Validators.required, Validators.min(1)]],
-      from: [null as number | null],
-      to: [null as number | null]
-    })
+    tiers: this.fb.array([this.createPercentageTierGroup()]),
+    freeServicesTiers: this.fb.array([this.createFreeServicesTierGroup()]),
+    freePulsesTiers: this.fb.array([this.createFreePulsesTierGroup()])
   });
 
   constructor(
@@ -86,11 +81,13 @@ export class PromotionRuleFormComponent implements OnInit {
     }
   }
 
+  // ---------- PERCENTAGE tiers ----------
+
   get tiers(): FormArray {
     return this.form.get('tiers') as FormArray;
   }
 
-  createTierGroup(from: number | null = null, to: number | null = null, percentage: number | null = null): FormGroup {
+  createPercentageTierGroup(from: number | null = null, to: number | null = null, percentage: number | null = null): FormGroup {
     return this.fb.group({
       from: [from, [Validators.required, Validators.min(0)]],
       to: [to], // optional — last tier can be open-ended
@@ -99,7 +96,7 @@ export class PromotionRuleFormComponent implements OnInit {
   }
 
   addTier(): void {
-    this.tiers.push(this.createTierGroup());
+    this.tiers.push(this.createPercentageTierGroup());
   }
 
   removeTier(index: number): void {
@@ -108,9 +105,124 @@ export class PromotionRuleFormComponent implements OnInit {
     }
   }
 
+  // ---------- FREE_SERVICES tiers ----------
+
+  get freeServicesTiers(): FormArray {
+    return this.form.get('freeServicesTiers') as FormArray;
+  }
+
+  freeServicesTierGroup(tierIndex: number): FormGroup {
+    return this.freeServicesTiers.at(tierIndex) as FormGroup;
+  }
+
+  freeServicesArray(tierIndex: number): FormArray {
+    return this.freeServicesTierGroup(tierIndex).get('services') as FormArray;
+  }
+
+  createFreeServicesTierGroup(
+    from: number | null = null,
+    to: number | null = null,
+    services: { serviceId: number; sessions: number; validatedDays: number }[] = []
+  ): FormGroup {
+    return this.fb.group({
+      from: [from, [Validators.required, Validators.min(0)]],
+      to: [to, [Validators.required, Validators.min(0)]],
+      services: this.fb.array(
+        services.map(s => this.createFreeServiceItemGroup(s.serviceId, s.sessions, s.validatedDays)),
+        [minLengthArray(1)]
+      )
+    });
+  }
+
+  createFreeServiceItemGroup(serviceId: number, sessions: number | null = 1, validatedDays: number | null = 30): FormGroup {
+    return this.fb.group({
+      serviceId: [serviceId, [Validators.required]],
+      sessions: [sessions, [Validators.required, Validators.min(1)]],
+      validatedDays: [validatedDays, [Validators.required, Validators.min(1)]]
+    });
+  }
+
+  addFreeServicesTier(): void {
+    this.freeServicesTiers.push(this.createFreeServicesTierGroup());
+    this.serviceFilters.update(filters => [...filters, '']);
+  }
+
+  removeFreeServicesTier(index: number): void {
+    if (this.freeServicesTiers.length > 1) {
+      this.freeServicesTiers.removeAt(index);
+      this.serviceFilters.update(filters => filters.filter((_, i) => i !== index));
+    }
+  }
+
+  addServiceToTier(tierIndex: number, service: PatientServiceLite): void {
+    const arr = this.freeServicesArray(tierIndex);
+    const alreadyAdded = arr.controls.some(c => c.get('serviceId')?.value === service.patientServiceId);
+    if (!alreadyAdded) {
+      arr.push(this.createFreeServiceItemGroup(service.patientServiceId));
+      arr.markAsDirty();
+    }
+    this.setServiceFilter(tierIndex, '');
+  }
+
+  removeServiceFromTier(tierIndex: number, serviceIndex: number): void {
+    const arr = this.freeServicesArray(tierIndex);
+    arr.removeAt(serviceIndex);
+    arr.markAsDirty();
+  }
+
+  serviceFilter(tierIndex: number): string {
+    return this.serviceFilters()[tierIndex] ?? '';
+  }
+
+  setServiceFilter(tierIndex: number, value: string): void {
+    this.serviceFilters.update(filters => {
+      const next = [...filters];
+      next[tierIndex] = value;
+      return next;
+    });
+  }
+
+  filteredServicesForTier(tierIndex: number): PatientServiceLite[] {
+    const filter = this.serviceFilter(tierIndex).trim().toLowerCase();
+    const selectedIds = new Set(this.freeServicesArray(tierIndex).controls.map(c => c.get('serviceId')?.value));
+    return this.allServices()
+      .filter(s => !selectedIds.has(s.patientServiceId))
+      .filter(s => !filter || s.serviceName.toLowerCase().includes(filter));
+  }
+
+  serviceName(serviceId: number): string {
+    return this.allServices().find(s => s.patientServiceId === serviceId)?.serviceName ?? `#${serviceId}`;
+  }
+
+  // ---------- FREE_PULSES tiers ----------
+
+  get freePulsesTiers(): FormArray {
+    return this.form.get('freePulsesTiers') as FormArray;
+  }
+
+  createFreePulsesTierGroup(pulses: number | null = null, from: number | null = null, to: number | null = null): FormGroup {
+    return this.fb.group({
+      pulses: [pulses, [Validators.required, Validators.min(1)]],
+      from: [from],
+      to: [to]
+    });
+  }
+
+  addFreePulsesTier(): void {
+    this.freePulsesTiers.push(this.createFreePulsesTierGroup());
+  }
+
+  removeFreePulsesTier(index: number): void {
+    if (this.freePulsesTiers.length > 1) {
+      this.freePulsesTiers.removeAt(index);
+    }
+  }
+
+  // ---------- shared ----------
+
   private loadServices(): void {
     this.loadingServices.set(true);
- 
+
     this.serviceService.getAllServices(0, 200).subscribe({
       next: (res: any) => {
         const services: PatientServiceLite[] = (res?.data ?? []).map((s: any) => ({
@@ -128,60 +240,25 @@ export class PromotionRuleFormComponent implements OnInit {
     });
   }
 
-  onServiceFilterChange(value: string): void {
-    this.serviceFilter.set(value);
-  }
-
-  addService(service: PatientServiceLite): void {
-    const control = this.form.get('freeServices.serviceIds')!;
-    const current: number[] = control.value ?? [];
-    if (!current.includes(service.patientServiceId)) {
-      control.setValue([...current, service.patientServiceId]);
-      control.markAsDirty();
-    }
-    this.serviceFilter.set('');
-  }
-
-  removeService(serviceId: number): void {
-    const control = this.form.get('freeServices.serviceIds')!;
-    const current: number[] = control.value ?? [];
-    control.setValue(current.filter(id => id !== serviceId));
-    control.markAsDirty();
-  }
-
-  serviceName(serviceId: number): string {
-    return this.allServices().find(s => s.patientServiceId === serviceId)?.serviceName ?? `#${serviceId}`;
-  }
-
-  get selectedServiceIds(): number[] {
-    return this.form.get('freeServices.serviceIds')?.value ?? [];
-  }
-
-  /** Only the fields belonging to the selected type are required; the rest are cleared of validators. */
+  /** Only the FormArray belonging to the selected type stays enabled; the rest are disabled (and excluded from validation). */
   private applyTypeValidators(type: PromotionRuleType): void {
-    const tiersArray = this.tiers;
-    const freeServices = this.form.get('freeServices') as FormGroup;
-    const freePulses = this.form.get('freePulses') as FormGroup;
-
-    const setGroupValidators = (group: FormGroup, active: boolean, requiredKeys: string[]) => {
-      Object.keys(group.controls).forEach(key => {
-        const control = group.get(key)!;
-        if (active && requiredKeys.includes(key)) {
-          control.enable({ emitEvent: false });
-        } else {
-          control.disable({ emitEvent: false });
-        }
-      });
-    };
-
     if (type === 'PERCENTAGE') {
-      tiersArray.enable({ emitEvent: false });
+      this.tiers.enable({ emitEvent: false });
     } else {
-      tiersArray.disable({ emitEvent: false });
+      this.tiers.disable({ emitEvent: false });
     }
 
-    setGroupValidators(freeServices, type === 'FREE_SERVICES', ['from', 'to', 'serviceIds']);
-    setGroupValidators(freePulses, type === 'FREE_PULSES', ['pulses', 'from', 'to']);
+    if (type === 'FREE_SERVICES') {
+      this.freeServicesTiers.enable({ emitEvent: false });
+    } else {
+      this.freeServicesTiers.disable({ emitEvent: false });
+    }
+
+    if (type === 'FREE_PULSES') {
+      this.freePulsesTiers.enable({ emitEvent: false });
+    } else {
+      this.freePulsesTiers.disable({ emitEvent: false });
+    }
   }
 
   private patchFromExistingRule(rule: PromotionRule): void {
@@ -195,21 +272,16 @@ export class PromotionRuleFormComponent implements OnInit {
     if (rule.type === 'PERCENTAGE') {
       const config = rule.configuration as PercentageConfiguration;
       this.tiers.clear();
-      config.tiers.forEach(t => this.tiers.push(this.createTierGroup(t.from, t.to ?? null, t.percentage)));
+      config.tiers.forEach(t => this.tiers.push(this.createPercentageTierGroup(t.from, t.to ?? null, t.percentage)));
     } else if (rule.type === 'FREE_SERVICES') {
       const config = rule.configuration as FreeServicesConfiguration;
-      this.form.get('freeServices')!.patchValue({
-        from: config.from,
-        to: config.to,
-        serviceIds: config.serviceIds ?? []
-      });
+      this.freeServicesTiers.clear();
+      this.serviceFilters.set(config.tiers.map(() => ''));
+      config.tiers.forEach(t => this.freeServicesTiers.push(this.createFreeServicesTierGroup(t.from, t.to, t.services)));
     } else if (rule.type === 'FREE_PULSES') {
       const config = rule.configuration as FreePulsesConfiguration;
-      this.form.get('freePulses')!.patchValue({
-        pulses: config.pulses,
-        from: config.from ?? null,
-        to: config.to ?? null
-      });
+      this.freePulsesTiers.clear();
+      config.tiers.forEach(t => this.freePulsesTiers.push(this.createFreePulsesTierGroup(t.pulses, t.from ?? null, t.to ?? null)));
     }
 
     this.applyTypeValidators(rule.type);
@@ -217,7 +289,7 @@ export class PromotionRuleFormComponent implements OnInit {
 
   private buildPayload(): PromotionRulePayload {
     const raw = this.form.getRawValue();
-    let configuration;
+    let configuration: PercentageConfiguration | FreeServicesConfiguration | FreePulsesConfiguration;
 
     switch (raw.type as PromotionRuleType) {
       case 'PERCENTAGE':
@@ -231,16 +303,24 @@ export class PromotionRuleFormComponent implements OnInit {
         break;
       case 'FREE_SERVICES':
         configuration = {
-          from: raw.freeServices.from,
-          to: raw.freeServices.to,
-          serviceIds: raw.freeServices.serviceIds
+          tiers: raw.freeServicesTiers.map((t: any) => ({
+            from: t.from,
+            to: t.to,
+            services: t.services.map((s: any) => ({
+              serviceId: s.serviceId,
+              sessions: s.sessions,
+              validatedDays: s.validatedDays
+            }))
+          }))
         } as FreeServicesConfiguration;
         break;
       case 'FREE_PULSES':
         configuration = {
-          pulses: raw.freePulses.pulses,
-          ...(raw.freePulses.from !== null ? { from: raw.freePulses.from } : {}),
-          ...(raw.freePulses.to !== null ? { to: raw.freePulses.to } : {})
+          tiers: raw.freePulsesTiers.map((t: any) => ({
+            pulses: t.pulses,
+            ...(t.from !== null && t.from !== undefined ? { from: t.from } : {}),
+            ...(t.to !== null && t.to !== undefined ? { to: t.to } : {})
+          }))
         } as FreePulsesConfiguration;
         break;
     }

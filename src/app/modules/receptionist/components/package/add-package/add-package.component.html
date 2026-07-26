@@ -262,19 +262,25 @@
                   <span>Checking for promotions...</span>
                 </div>
 
-                <div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
-                  <mat-icon>local_offer</mat-icon>
-                  <div class="promo-block-body">
-                    <span class="promo-block-title">
-                      {{ promotionPreview?.discountPercentage }}% discount applied
-                    </span>
-                    <span class="promo-block-detail">
-                      Patient owes {{ promotionPreview?.discountedTotal | currency:'EGP':'symbol':'1.0-0' }}
-                      instead of {{ promotionPreview?.originalTotal | currency:'EGP':'symbol':'1.0-0' }}
-                    </span>
-                  </div>
-                </div>
+<div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
+  <mat-icon>local_offer</mat-icon>
+  <div class="promo-block-body">
+    <span class="promo-block-title" *ngIf="promotionPreview?.discountAmount">
+      {{ promotionPreview?.discountPercentage }}% discount applied
+    </span>
+    <span class="promo-block-title" *ngIf="!promotionPreview?.discountAmount">
+      Promotion applied
+    </span>
 
+    <span class="promo-block-detail" *ngIf="promotionPreview?.discountAmount">
+      Patient owes {{ promotionPreview?.discountedTotal | currency:'EGP':'symbol':'1.0-0' }}
+      instead of {{ promotionPreview?.originalTotal | currency:'EGP':'symbol':'1.0-0' }}
+    </span>
+    <span class="promo-block-detail" *ngIf="promotionPreview?.bonusPoints">
+      + {{ promotionPreview?.bonusPoints }} bonus points
+    </span>
+  </div>
+</div>
                 <div class="promo-block promo-none" *ngIf="!isPromotionLoading && !hasPromotion && !promotionError">
                   <mat-icon>info</mat-icon>
                   <span>No promotion applies to this order</span>
@@ -389,37 +395,34 @@
                   <span>Checking for promotions...</span>
                 </div>
 
-                <div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
-                  <mat-icon>local_offer</mat-icon>
-                  <div class="promo-block-body">
-                    <span class="promo-block-title">
-                      Promotion applied — {{ promotionPreview?.discountPercentage }}% off
-                    </span>
-                    <span class="promo-block-detail">
-                      You save {{ promotionPreview?.discountAmount | currency:'EGP':'symbol':'1.0-0' }}
-                    </span>
-                    <span class="promo-block-detail" *ngIf="promotionPreview?.bonusPoints">
-                      + {{ promotionPreview?.bonusPoints }} bonus points
-                    </span>
-
-                    <div class="promo-rules" *ngIf="hasAppliedRules">
-                      <span class="promo-subheading">Applied rules</span>
-                      <span class="promo-rule-chip" *ngFor="let rule of promotionPreview?.appliedRuleIds">
-                        {{ rule.ruleName }}
-                      </span>
-                    </div>
-
-                    <div class="promo-free-services" *ngIf="hasFreeServices">
-                      <span class="promo-subheading">Free services included</span>
-                      <div class="promo-free-service-row"
-                        *ngFor="let service of promotionPreview?.eligibleFreeServices">
-                        <mat-icon class="small-icon">redeem</mat-icon>
-                        <span>{{ service.serviceName }}</span>
-                        <small>Valid until {{ service.expireDate | date:'mediumDate' }}</small>
-                      </div>
-                    </div>
-                  </div>
+          <div class="promo-block promo-applied" *ngIf="!isPromotionLoading && hasPromotion">
+            <mat-icon>local_offer</mat-icon>
+            <div class="promo-block-body">
+              <span class="promo-block-title" *ngIf="promotionPreview?.discountAmount">
+                Promotion applied — {{ promotionPreview?.discountPercentage }}% off
+              </span>
+              <span class="promo-block-title" *ngIf="!promotionPreview?.discountAmount">
+                Promotion applied
+              </span>
+          
+              <span class="promo-block-detail" *ngIf="promotionPreview?.discountAmount">
+                You save {{ promotionPreview?.discountAmount | currency:'EGP':'symbol':'1.0-0' }}
+              </span>
+              <span class="promo-block-detail" *ngIf="promotionPreview?.bonusPoints">
+                + {{ promotionPreview?.bonusPoints }} bonus points
+              </span>
+          
+              <div class="promo-free-services" *ngIf="hasFreeServices">
+                <span class="promo-subheading">Free services included</span>
+                <div class="promo-free-service-row" *ngFor="let service of promotionPreview?.eligibleFreeServices">
+                  <mat-icon class="small-icon">redeem</mat-icon>
+                  <span>{{ service.serviceName }}</span>
+                  <small>{{ service.sessions }} session{{ service.sessions === 1 ? '' : 's' }} · valid {{ service.validatedDays }}
+                    days</small>
                 </div>
+              </div>
+            </div>
+          </div>
 
                 <div class="promo-block promo-none" *ngIf="!isPromotionLoading && !hasPromotion && !promotionError">
                   <mat-icon>info</mat-icon>
@@ -528,22 +531,22 @@
             </div>
           </div>
 
-          <!-- Applied promo rules / free services -->
-          <ng-container *ngIf="reservationData.discountAmount > 0">
-            <mat-divider class="my-1"></mat-divider>
-            <div class="small-text">
-              <div *ngIf="reservationData.appliedRuleNames.length" class="mb-1">
-                <b>Promotion applied:</b>
-                <span *ngFor="let name of reservationData.appliedRuleNames; let last = last">
-                  {{ name }}{{ last ? '' : ', ' }}
-                </span>
-              </div>
-              <div *ngFor="let service of reservationData.freeServices" class="d-flex justify-content-between">
-                <span>🎁 {{ service.serviceName }} (free)</span>
-                <span class="text-muted">until {{ service.expireDate | date:'mediumDate' }}</span>
-              </div>
-            </div>
-          </ng-container>
+      <!-- Applied promo rules / free services -->
+      <ng-container
+        *ngIf="reservationData.discountAmount > 0 || reservationData.bonusPoints > 0 || reservationData.freeServices.length > 0">
+        <mat-divider class="my-1"></mat-divider>
+        <div class="small-text">
+          <div class="d-flex justify-content-between" *ngIf="reservationData.bonusPoints > 0">
+            <span>🏆 Bonus points earned:</span>
+            <span><b>{{ reservationData.bonusPoints }}</b></span>
+          </div>
+          <div *ngFor="let service of reservationData.freeServices" class="d-flex justify-content-between">
+            <span>🎁 {{ service.serviceName }} (free)</span>
+            <span class="text-muted">{{ service.sessions }} session{{ service.sessions === 1 ? '' : 's' }} · valid {{
+              service.validatedDays }} days</span>
+          </div>
+        </div>
+      </ng-container>
 
           <mat-divider class="my-1"></mat-divider>
 
