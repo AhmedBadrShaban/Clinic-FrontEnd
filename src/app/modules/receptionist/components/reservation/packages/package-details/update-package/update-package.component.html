@@ -21,14 +21,14 @@
 
   <form [formGroup]="formData" (ngSubmit)="update()" class="pkg-modal__form" role="form">
 
-    <div class="pkg-ticket" [class.pkg-ticket--single]="userType !== 'ROLE_ADMIN'">
+<div class="pkg-ticket" [class.pkg-ticket--single]="!canEditExpiry">
       <div class="pkg-ticket__stat">
         <label for="points" class="pkg-ticket__label">Points remaining</label>
         <input id="points" class="pkg-ticket__value" type="number" formControlName="numberOfPoints" [min]="0"
           [max]="data.numberOfPoints" />
       </div>
 
-      <div class="pkg-ticket__stat" *ngIf="userType === 'ROLE_ADMIN'">
+  <div class="pkg-ticket__stat" *ngIf="canEditExpiry">
         <label class="pkg-ticket__label">Expires on</label>
         <input class="pkg-ticket__value pkg-ticket__value--date" type="date" formControlName="expire" [min]="minDate" />
       </div>

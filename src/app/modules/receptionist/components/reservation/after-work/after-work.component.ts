@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { DoctorReservationsService } from 'src/app/modules/doctor/Services/doctor-reservations.service';
 import { ServiceService } from 'src/app/modules/doctor/Services/service.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ReservationsService } from '../../../services/reservations-services/reservations.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-after-work',
@@ -19,8 +19,8 @@ export class AfterWorkComponent implements OnInit {
   @Input() isActive: boolean = false;
   @Input() isLaser: boolean = false;
 
-
   userType: any;
+  canEditRecord = false;
   reservationServices: string[] = [];
   editedForm!: FormGroup;
   loadingState = false;
@@ -44,9 +44,11 @@ export class AfterWorkComponent implements OnInit {
     private reservationsApi: ReservationsService,
     private router: Router,
     private cd: ChangeDetectorRef,
-    private loggedIn: AuthService
+    private loggedIn: AuthService,
+    private snackBar: MatSnackBar
   ) {
     this.userType = loggedIn.userType;
+    this.canEditRecord = this.userType === 'ROLE_ADMIN' || loggedIn.isSuper === true;
   }
 
   ngOnInit(): void {
@@ -186,17 +188,16 @@ export class AfterWorkComponent implements OnInit {
     this.doctorService.completeReservation(this.id!, afterWork).subscribe({
       next: (data: any) => {
         this.isSubmitting = false;
-        alert(data.message);
+        this.showToast(data.message, 'success');
         this.cd.detectChanges();
         this.router.navigate(['doctor']);
       },
       error: (error: any) => {
         this.isSubmitting = false;
-        alert(error.error.message);
+        this.showToast(error.error.message, 'error');
       }
     });
   }
-
 
   updateHistory(): void {
     this.doneServicesForm.markAllAsTouched();
@@ -210,18 +211,26 @@ export class AfterWorkComponent implements OnInit {
     ).subscribe({
       next: (data: any) => {
         this.isUpdating = false;
-        alert(data.message);
-        this.closeDialog();
+        this.showToast(data.message, 'success');
+        this.dialogRef.close({ updated: true });
         this.cd.detectChanges();
       },
       error: (error: any) => {
         this.isUpdating = false;
-        alert(error.error.message);
+        this.showToast(error.error.message, 'error');
       }
     });
   }
 
-
   cancelUpdate(): void { this.closeDialog(); }
   closeDialog(): void { this.dialogRef.close(); }
+
+  private showToast(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: type === 'success' ? ['snack-success'] : ['snack-error']
+    });
+  }
 }

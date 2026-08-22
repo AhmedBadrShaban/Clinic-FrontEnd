@@ -11,7 +11,11 @@ export class LoginComponent implements OnInit {
   @ViewChild('username') username!: ElementRef;
   @ViewChild('password') password!: ElementRef;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  showPassword = false;
+  isSubmitting = false;
+  errorMessage: string | null = null;
+
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     if (this.authService.isLogged) {
@@ -20,11 +24,23 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   onLoginClicked(): void {
     const credentials = {
       username: this.username.nativeElement.value,
       password: this.password.nativeElement.value
     };
+
+    if (!credentials.username || !credentials.password) {
+      this.errorMessage = 'Please enter both username and password.';
+      return;
+    }
+
+    this.errorMessage = null;
+    this.isSubmitting = true;
 
     this.authService.login(credentials).subscribe({
       next: (data: any) => {
@@ -46,19 +62,19 @@ export class LoginComponent implements OnInit {
         );
       },
       error: (error) => {
-        alert(error.error.message);
+        this.isSubmitting = false;
+        this.errorMessage = error?.error?.message || 'Unable to sign in. Please try again.';
       }
     });
   }
 
-
   private mapUserRoleToString(userRole: string | null): string {
     switch (userRole) {
       case 'ROLE_RECEPTIONIST': return 'receptionist';
-      case 'ROLE_ADMIN':        return 'admin';
-      case 'ROLE_DOCTOR':       return 'doctor';
-      case 'ROLE_CONTRIBUTOR':  return 'contributer';
-      default:                  return '';
+      case 'ROLE_ADMIN': return 'admin';
+      case 'ROLE_DOCTOR': return 'doctor';
+      case 'ROLE_CONTRIBUTOR': return 'contributer';
+      default: return '';
     }
   }
 }

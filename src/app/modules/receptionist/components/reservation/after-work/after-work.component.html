@@ -10,7 +10,7 @@
   <div *ngIf="!loadingState" class="aw-body">
 
     <!-- Admin header -->
-    <div *ngIf="userType=='ROLE_ADMIN'" class="admin-banner">
+    <div *ngIf="canEditRecord" class="admin-banner">
       <mat-icon>edit_note</mat-icon>
       <span>Edit History Record</span>
     </div>
@@ -55,7 +55,7 @@
     </span>
   </div>
 
-  <button *ngIf="userType != 'ROLE_ADMIN'" type="button" class="remove-btn" (click)="onCancel(i)"
+  <button *ngIf="!canEditRecord" type="button" class="remove-btn" (click)="onCancel(i)"
     matTooltip="Remove this service">
     <mat-icon>close</mat-icon>
   </button>
@@ -175,7 +175,7 @@
         </div>
 
         <!-- Doctor: Confirm -->
-        <div *ngIf="userType != 'ROLE_ADMIN' && dataListControls.length > 0" class="action-row">
+        <div *ngIf="!canEditRecord && dataListControls.length > 0"  class="action-row">
     <button type="button" class="confirm-btn" [disabled]="doneServicesForm.invalid || isSubmitting" (click)="onSubmit()">
     
       <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
@@ -187,7 +187,7 @@
         </div>
 
         <!-- Admin: Update / Cancel -->
-        <div *ngIf="userType == 'ROLE_ADMIN' && dataListControls.length > 0" class="action-row admin-actions">
+        <div *ngIf="canEditRecord && dataListControls.length > 0" class="action-row admin-actions">
         <button type="button" class="update-btn" [disabled]="doneServicesForm.invalid || isUpdating" (click)="updateHistory()">
         
           <mat-spinner *ngIf="isUpdating" diameter="20"></mat-spinner>

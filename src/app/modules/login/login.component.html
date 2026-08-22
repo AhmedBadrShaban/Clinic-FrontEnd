@@ -35,59 +35,91 @@
         <h2 class="form-title">Sign In</h2>
       </div>
 
-      <div class="field-group">
-        <label class="field-label" for="username">Username</label>
-        <div class="field-wrap">
-          <span class="field-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </span>
-          <input
-            id="username"
-            type="text"
-            placeholder="Enter your username"
-            class="field-input"
-            #username
-            required />
-        </div>
+      <!-- Inline error banner (replaces alert()) -->
+      <div class="error-banner" [class.error-banner--show]="errorMessage" *ngIf="errorMessage">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>{{ errorMessage }}</span>
       </div>
 
-      <div class="field-group">
-        <label class="field-label" for="password">Password</label>
-        <div class="field-wrap">
-          <span class="field-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      <form (ngSubmit)="onLoginClicked()">
+
+        <div class="field-group">
+          <label class="field-label" for="username">Username</label>
+          <div class="field-wrap">
+            <span class="field-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </span>
+            <input
+              id="username"
+              type="text"
+              placeholder="Enter your username"
+              class="field-input"
+              #username
+              autocomplete="username"
+              required />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="password">Password</label>
+          <div class="field-wrap">
+            <span class="field-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Enter your password"
+              class="field-input field-input--with-action"
+              #password
+              autocomplete="current-password"
+              required />
+
+            <!-- Eye toggle -->
+            <button
+              type="button"
+              class="eye-toggle"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+              [class.eye-toggle--active]="showPassword">
+              <svg class="eye-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="eye-outline" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
+                <circle class="eye-pupil" cx="12" cy="12" r="3"/>
+                <line class="eye-slash" x1="2" y1="2" x2="22" y2="22"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn" [disabled]="isSubmitting" [class.login-btn--loading]="isSubmitting">
+          <span class="btn-text" *ngIf="!isSubmitting">Sign In</span>
+          <span class="btn-text" *ngIf="isSubmitting">Signing In…</span>
+          <span class="btn-arrow" *ngIf="!isSubmitting">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </span>
-          <input
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            class="field-input"
-            #password
-            required />
-        </div>
-      </div>
+          <span class="btn-spinner" *ngIf="isSubmitting"></span>
+          <div class="btn-shimmer" *ngIf="!isSubmitting"></div>
+        </button>
+      </form>
 
-      <button class="login-btn" (click)="onLoginClicked()">
-        <span class="btn-text">Sign In</span>
-        <span class="btn-arrow">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </span>
-        <div class="btn-shimmer"></div>
-      </button>
-
-<p class="form-footer">
-  UClinic Management System
-  <br>
-<span class="footer-rights"><strong>Development Team</strong> © 2026  · All rights reserved</span></p>
- </div>
+      <p class="form-footer">
+        UClinic Management System
+        <br>
+        <span class="footer-rights"><strong>Development Team</strong> © 2026 · All rights reserved</span>
+      </p>
+    </div>
 
   </div>
 </div>

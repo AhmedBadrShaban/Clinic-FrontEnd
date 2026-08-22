@@ -147,7 +147,6 @@
 /* Brand mark */
 .brand-mark {
   position: relative;
- 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,9 +162,6 @@
   position: absolute;
   inset: 0;
   border-radius: 20px;
-  /* border: 2px solid rgba(255,255,255,0.25); */
-  /* background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(10px); */
   animation: ringPulse 3s ease-in-out infinite;
 }
 
@@ -175,11 +171,9 @@
 }
 
 .brand-logo {
- 
   object-fit: contain;
   position: relative;
   z-index: 1;
-  /* filter: brightness(0) invert(1); */
 }
 
 .brand-title {
@@ -226,6 +220,12 @@
   width: 6px; height: 6px;
   border-radius: 50%;
   background: #e8c5ff;
+  animation: dotGlow 2.4s ease-in-out infinite;
+}
+
+@keyframes dotGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,197,255,0.5); }
+  50%       { box-shadow: 0 0 8px 2px rgba(232,197,255,0.5); }
 }
 
 /* ─── Right Panel ─── */
@@ -236,7 +236,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 24px;
+  gap: 20px;
 }
 
 .form-header {
@@ -267,6 +267,40 @@
   letter-spacing: -0.5px;
 }
 
+/* ─── Error Banner ─── */
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: #fdecf3;
+  border: 1.5px solid rgba(255, 110, 199, 0.4);
+  color: #b21463;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  animation: shakeIn 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.error-banner svg { flex-shrink: 0; }
+
+@keyframes shakeIn {
+  0%   { opacity: 0; transform: translateX(0); }
+  15%  { opacity: 1; transform: translateX(-6px); }
+  30%  { transform: translateX(5px); }
+  45%  { transform: translateX(-4px); }
+  60%  { transform: translateX(3px); }
+  75%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
 /* ─── Fields ─── */
 .field-group {
   display: flex;
@@ -275,8 +309,8 @@
   animation: fadeSlideUp 0.6s ease both;
 }
 
-.field-group:nth-child(3) { animation-delay: 0.5s; }
-.field-group:nth-child(4) { animation-delay: 0.6s; }
+.field-group:nth-of-type(1) { animation-delay: 0.5s; }
+.field-group:nth-of-type(2) { animation-delay: 0.6s; }
 
 .field-label {
   font-family: 'DM Sans', sans-serif;
@@ -299,6 +333,7 @@
   align-items: center;
   pointer-events: none;
   transition: color 0.2s ease;
+  z-index: 1;
 }
 
 .field-input {
@@ -315,6 +350,10 @@
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
+.field-input--with-action {
+  padding-right: 46px;
+}
+
 .field-input::placeholder { color: #c4aee8; }
 
 .field-input:focus {
@@ -327,12 +366,60 @@
   color: #6F2DBD;
 }
 
+/* ─── Password Eye Toggle ─── */
+.eye-toggle {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  color: #A379D5;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.eye-toggle:hover {
+  color: #6F2DBD;
+  background: rgba(111, 45, 189, 0.08);
+}
+
+.eye-toggle:active {
+  transform: scale(0.9);
+}
+
+.eye-icon .eye-outline,
+.eye-icon .eye-pupil {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform-origin: center;
+}
+
+.eye-icon .eye-slash {
+  stroke-dasharray: 29;
+  stroke-dashoffset: 29;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+/* When password is visible: slash draws across the eye */
+.eye-toggle--active .eye-icon .eye-slash {
+  stroke-dashoffset: 0;
+}
+
+.eye-toggle--active .eye-icon .eye-outline {
+  transform: scaleY(0.75);
+}
+
 /* ─── Login Button ─── */
 .login-btn {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content:center ;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
   padding: 15px 22px;
   background: #6F2DBD;
@@ -349,14 +436,23 @@
   animation: fadeSlideUp 0.6s 0.7s ease both;
 }
 
-.login-btn:hover {
+.login-btn:hover:not(:disabled) {
   background: #5a1fa8;
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(111, 45, 189, 0.45);
 }
 
-.login-btn:active {
+.login-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.login-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.login-btn--loading {
+  background: #5a1fa8;
 }
 
 .btn-arrow {
@@ -367,6 +463,19 @@
 
 .login-btn:hover .btn-arrow {
   transform: translateX(4px);
+}
+
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Shimmer sweep */
@@ -399,6 +508,20 @@
   animation: fadeSlideUp 0.6s 0.8s ease both;
 }
 
+.footer-rights {
+  font-size: 11px;
+  color: #d4bef5;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.footer-rights strong {
+  color: #6F2DBD;
+  font-weight: 700;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 680px) {
   .login-card {
@@ -419,21 +542,8 @@
 
   .card-right {
     padding: 32px 28px;
-    gap: 18px;
+    gap: 16px;
   }
 
   .form-title  { font-size: 26px; }
-}
-.footer-rights {
-  font-size: 11px;
-  color: #d4bef5;
-  margin-top: 4px;
-  display: block;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-
-.footer-rights strong {
-  color: #6F2DBD;
-  font-weight: 700;
 }

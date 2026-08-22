@@ -15,14 +15,14 @@ export class UpdatePackageComponent implements OnInit {
   formData: FormGroup;
   minDate: string = '';
   userType: string | null = null;
-
+  canEditExpiry: boolean = false;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<UpdatePackageComponent>,
     private fb: FormBuilder,
     private pkgApi: PackageService,
     private authService: AuthService,
-    private snackBar: MatSnackBar        // ← inject here
+    private snackBar: MatSnackBar
   ) {
     this.formData = this.fb.group({
       numberOfPoints: [{ value: this.data.numberOfPoints, disabled: this.data.numberOfPoints == 0 }],
@@ -43,6 +43,7 @@ export class UpdatePackageComponent implements OnInit {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     this.userType = this.authService.userType;
+    this.canEditExpiry = this.userType === 'ROLE_ADMIN' || this.authService.isSuper === true;  // NEW
     this.minDate = `${yyyy}-${mm}-${dd}`;
   }
 
