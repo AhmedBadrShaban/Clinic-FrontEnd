@@ -1,4 +1,3 @@
-// history.component.ts
 import {
   Component, OnDestroy, OnInit, Input, TemplateRef,
   ViewChild, OnChanges, SimpleChanges, ChangeDetectorRef
@@ -29,6 +28,7 @@ export class HistoryComponent implements OnInit, OnDestroy, OnChanges {
 
   tableColumns: Array<{ key: string; label: string; template?: TemplateRef<any> }> = [];
   userType: any;
+  canEditHistory = false;
   dataSource = new MatTableDataSource<PatientHistory>();
   totalItems = 0;
   pageSize = 10;
@@ -55,7 +55,8 @@ export class HistoryComponent implements OnInit, OnDestroy, OnChanges {
     private datePipe: DatePipe
   ) {
     this.userType = loggedIn.userType;
-    if (this.userType === 'ROLE_ADMIN') {
+    this.canEditHistory = this.userType === 'ROLE_ADMIN' || loggedIn.isSuper === true;
+    if (this.canEditHistory) {
       this.displayedColumns.push('action');
     }
   }
@@ -74,7 +75,7 @@ export class HistoryComponent implements OnInit, OnDestroy, OnChanges {
       { key: 'roomName', label: 'Room' },
       { key: 'clinic', label: 'Clinic' },
       { key: 'note', label: 'Note' },
-      ...(this.userType === 'ROLE_ADMIN'
+      ...(this.canEditHistory
         ? [{ key: 'action', label: 'Action', template: this.actionTemplate }]
         : [])
     ];
@@ -169,7 +170,13 @@ export class HistoryComponent implements OnInit, OnDestroy, OnChanges {
   // ── Dialog ────────────────────────────────────────────────
 
   openDialog(data: any): void {
-    this.dialogRef.open(AfterWorkComponent, { data });
+    const ref = this.dialogRef.open(AfterWorkComponent, { data });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result?.updated) {
+        this.getPatientHistory(this.currentPage);
+      }
+    });
   }
 
   ngOnDestroy(): void {
