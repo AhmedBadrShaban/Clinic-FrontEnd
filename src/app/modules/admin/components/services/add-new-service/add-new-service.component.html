@@ -47,13 +47,50 @@
           Room is required.
         </div>
       </div>
+
+      <!-- Billing Model -->
+      <div class="col-12 my-2">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-cash-coin me-2 fs-4" style="margin-bottom: 5px;"></i>
+          <label class="form-label w-100">Doctor Payment Model</label>
+        </div>
+        <div class="btn-group w-100" role="group">
+          <input type="radio" class="btn-check" name="billingModel" id="bm-none" value="none" formControlName="billingModel">
+          <label class="btn btn-outline-secondary" for="bm-none">None</label>
+          <input type="radio" class="btn-check" name="billingModel" id="bm-fixed" value="fixed" formControlName="billingModel">
+          <label class="btn btn-outline-secondary" for="bm-fixed">Fixed Fee</label>
+          <input type="radio" class="btn-check" name="billingModel" id="bm-percentage" value="percentage" formControlName="billingModel">
+          <label class="btn btn-outline-secondary" for="bm-percentage">Percentage</label>
+        </div>
+      </div>
+
+      <!-- Fixed Fee -->
+      <div class="col-12 my-2" *ngIf="newServiceFm.get('billingModel')!.value === 'fixed'">
+        <div class="d-flex align-items-center">
+          <label class="form-label w-100">Fixed Doctor Fee</label>
+        </div>
+        <input type="number" formControlName="fixedDoctorFee" placeholder="e.g. 20" class="form-control shadow" />
+      </div>
+
+      <!-- Percentage -->
+      <div class="col-6 my-2" *ngIf="newServiceFm.get('billingModel')!.value === 'percentage'">
+        <div class="d-flex align-items-center">
+          <label class="form-label w-100">Material Cost</label>
+        </div>
+        <input type="number" formControlName="materialCost" placeholder="e.g. 50" class="form-control shadow" />
+      </div>
+      <div class="col-6 my-2" *ngIf="newServiceFm.get('billingModel')!.value === 'percentage'">
+        <div class="d-flex align-items-center">
+          <label class="form-label w-100">Doctor Percentage</label>
+        </div>
+        <input type="number" formControlName="doctorPercentage" placeholder="0.1 = 10%" step="0.01" class="form-control shadow" />
+      </div>
     </div>
 
     <!-- Submit Button -->
     <div class="mt-3 d-flex justify-content-center" style="margin-bottom: 25px;">
       <button type="submit"
-        style="width: 160px; height: 40px; background-color: green; color: #fff; border: none; border-radius: 4px;">Add
-        Service
+        style="width: 160px; height: 40px; background-color: green; color: #fff; border: none; border-radius: 4px;">{{ editing ? 'Save Changes' : 'Add Service' }}
       </button>
     </div>
   </form>

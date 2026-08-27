@@ -1,121 +1,127 @@
 <!-- doctor-schedule.component.html -->
 
-<div class="schedule-page">
+<div class="ds-page">
 
-  <!-- ── Toolbar ─────────────────────────────────────────── -->
-  <div class="schedule-toolbar">
-
-    <button mat-raised-button color="primary" class="add-btn" (click)="openDialog({ new: true })">
-      <mat-icon>add</mat-icon>
-      Add Schedule
-    </button>
-
-    <!-- Date picker -->
-    <mat-form-field appearance="outline" class="toolbar-field">
-      <mat-label>Filter by date</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)" readonly
-        placeholder="Pick a date">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-
-    <!-- Search -->
-    <mat-form-field appearance="outline" class="toolbar-field toolbar-search">
-      <mat-label>Search</mat-label>
-      <input matInput [(ngModel)]="searchValue" placeholder="Doctor, room, date…" (keyup.enter)="search(searchValue)">
-      <button *ngIf="searchValue" matSuffix mat-icon-button (click)="clearSearch()" matTooltip="Clear search">
-        <mat-icon>close</mat-icon>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="page-icon">🗓️</div>
+      <div>
+        <h1 class="page-title">Doctor Schedule</h1>
+        <p class="page-subtitle">View, add and manage doctor shifts</p>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <button class="btn-add" (click)="openDialog({ new: true })">
+        <span class="btn-add-icon">+</span>
+        Add Schedule
       </button>
-      <mat-icon *ngIf="!searchValue" matSuffix>search</mat-icon>
-    </mat-form-field>
-
-    <button mat-raised-button color="accent" (click)="search(searchValue)">
-      <mat-icon>search</mat-icon>
-      Search
-    </button>
-
+    </div>
   </div>
 
-  <!-- ── Search mode banner ─────────────────────────────── -->
-  <div *ngIf="isSearchMode" class="search-banner">
-    <mat-icon>info_outline</mat-icon>
+  <!-- Filters Card -->
+  <div class="table-card filter-card">
+    <div class="filters">
+      <div class="filter-field">
+        <label class="filter-label">Filter by date</label>
+        <input type="date" class="filter-input" [value]="selectedDate | date: 'yyyy-MM-dd'" (change)="onDateInput($any($event.target).value)">
+      </div>
+
+      <div class="filter-field search-field">
+        <label class="filter-label">Search</label>
+        <div class="ac-wrap">
+          <span class="search-leading">⌕</span>
+          <input class="filter-input" [(ngModel)]="searchValue" placeholder="Doctor, room, date…"
+            (keyup.enter)="search(searchValue)">
+          <button type="button" class="badge-clear" *ngIf="searchValue" (click)="clearSearch()" title="Clear">✕</button>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-primary-clinic" (click)="search(searchValue)">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search mode banner -->
+  <div class="search-banner" *ngIf="isSearchMode">
+    <span class="banner-icon">ℹ️</span>
     Showing search results for <strong>"{{ searchValue }}"</strong> — date filter is paused.
-    <button mat-button color="primary" (click)="clearSearch()">Back to date filter</button>
+    <button class="banner-link" (click)="clearSearch()">Back to date filter</button>
   </div>
 
-  <!-- ── Loading bar ────────────────────────────────────── -->
-  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" class="loading-bar"></mat-progress-bar>
+  <!-- Table Card -->
+  <div class="table-card">
 
-  <!-- ── Table ──────────────────────────────────────────── -->
-  <nz-table class="schedule-table" #dynamicTable [nzScroll]="{ x: scrollX, y: scrollY }" [nzData]="listOfData"
-    [nzTableLayout]="settingValue.tableLayout" [nzBordered]="settingValue.bordered" [nzOuterBordered]="true"
-    [nzLoading]="isLoading" [nzPaginationType]="settingValue.paginationType"
-    [nzPaginationPosition]="settingValue.position" [nzFrontPagination]="settingValue.pagination"
-    [nzShowPagination]="settingValue.pagination" [nzSize]="settingValue.size">
+    <div class="loading-overlay" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <span>Loading schedules…</span>
+    </div>
 
-    <thead>
-      <tr>
-        <th nzAlign="center">Room</th>
-        <th nzAlign="center">Doctor</th>
-        <th nzAlign="center">Date</th>
-        <th nzAlign="center">Start</th>
-        <th nzAlign="center">End</th>
-        <th nzAlign="center">Status</th>
-        <th nzAlign="center">Actions</th>
-      </tr>
-    </thead>
+    <div class="empty-state" *ngIf="!isLoading && listOfData.length === 0">
+      <div class="empty-icon">📅</div>
+      <p class="empty-title">No schedules found</p>
+      <p class="empty-sub">Pick another date or add a new schedule.</p>
+    </div>
 
-    <tbody>
-      <ng-container *ngFor="let data of dynamicTable.data">
-        <tr class="schedule-row">
-          <td nzAlign="center">{{ data.roomName }}</td>
-          <td nzAlign="center">{{ data.doctorName }}</td>
-          <td nzAlign="center" class="date-cell">{{ data.date }}</td>
-          <td nzAlign="center">{{ formatTimeTo12Hour(data.startTime) }}</td>
-          <td nzAlign="center">{{ formatTimeTo12Hour(data.endTime) }}</td>
+    <div class="table-scroll" *ngIf="!isLoading && listOfData.length > 0">
+      <table class="pkg-table">
+        <thead>
+          <tr>
+            <th>Room</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Start</th>
+            <th>End</th>
+            <th class="center-cell">Status</th>
+            <th class="center-cell">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of listOfData; let i = index" [class.row-even]="i % 2 === 0">
+            <td class="name-cell">{{ data.roomName }}</td>
+            <td>{{ data.doctorName }}</td>
+            <td class="num-cell">{{ data.date }}</td>
+            <td class="num-cell">{{ formatTimeTo12Hour(data.startTime) }}</td>
+            <td class="num-cell">{{ formatTimeTo12Hour(data.endTime) }}</td>
 
-          <!-- Status cell -->
-          <td nzAlign="center">
-            <ng-container *ngIf="data.confirmed; else notConfirmed">
-              <button mat-stroked-button class="status-btn confirmed" [disabled]="!isAdmin"
+            <td class="center-cell">
+              <button *ngIf="data.confirmed; else notConfirmed"
+                class="status-chip st-confirmed" [disabled]="!isAdmin"
                 (click)="isAdmin && changeConfirmStatus(data.schedulerId)">
-                <mat-icon>check_circle</mat-icon>
+                <span class="status-dot"></span>
                 Confirmed
               </button>
-            </ng-container>
-            <ng-template #notConfirmed>
-              <button mat-stroked-button class="status-btn pending" (click)="changeConfirmStatus(data.schedulerId)">
-                <mat-icon>pending</mat-icon>
-                Not Confirmed
-              </button>
-            </ng-template>
-          </td>
+              <ng-template #notConfirmed>
+                <button class="status-chip st-pending" (click)="changeConfirmStatus(data.schedulerId)">
+                  <span class="status-dot"></span>
+                  Not Confirmed
+                </button>
+              </ng-template>
+            </td>
 
-          <!-- Actions -->
-          <td nzAlign="center">
-            <button mat-icon-button color="primary" matTooltip="Edit schedule" (click)="openDialog({
-                      new: false,
-                      schedulerId: data.schedulerId,
-                      roomName: data.roomName,
-                      doctorName: data.doctorName,
-                      date: data.date,
-                      startTime: data.startTime,
-                      endTime: data.endTime,
-                      startPulses: data.startPulses,
-                      endPulses: data.endPulses
-                    })">
-              <mat-icon>edit</mat-icon>
-            </button>
+            <td class="center-cell">
+              <div class="actions-cell">
+                <button class="btn-view" matTooltip="Edit schedule" (click)="openDialog({
+                  new: false,
+                  schedulerId: data.schedulerId,
+                  roomName: data.roomName,
+                  doctorName: data.doctorName,
+                  date: data.date,
+                  startTime: data.startTime,
+                  endTime: data.endTime,
+                  startPulses: data.startPulses,
+                  endPulses: data.endPulses
+                })">Edit</button>
+                <button *ngIf="isAdmin" class="btn-cancel" matTooltip="Delete schedule"
+                  (click)="deleteSchedule(data.schedulerId)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <button *ngIf="isAdmin" mat-icon-button color="warn" matTooltip="Delete schedule"
-              (click)="deleteSchedule(data.schedulerId)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-
-        </tr>
-      </ng-container>
-    </tbody>
-  </nz-table>
+  </div>
 
 </div>

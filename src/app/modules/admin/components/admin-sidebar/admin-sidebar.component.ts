@@ -60,13 +60,24 @@ export class AdminSidebarComponent implements OnInit {
           label: 'WhatsApp Messages Report', icon: 'bi-whatsapp', route: '/admin/reports/whatsapp-messages',
           description: 'Delivery status of automated messages'
         },
+        {
+          label: 'Doctor Monthly Billing', icon: 'bi-cash-stack', route: '/admin/reports/monthly-billing',
+          description: 'Monthly paid and unpaid billing totals per doctor'
+        },
       ]
     },
     { label: 'Rooms', icon: 'bi-door-open', route: '/admin/rooms' },
     { label: 'Patients', icon: 'bi-people', route: '/admin/patients' },
     { label: 'Receptionists', icon: 'bi-headset', route: '/admin/receptionists' },
-    { label: 'Doctors', icon: 'bi-person-badge', route: '/admin/doctors' },
-    { label: 'Doctor Schedule', icon: 'bi-calendar3', route: '/admin/doctor-schedular' },
+    {
+      label: 'Doctors', icon: 'bi-person-badge',
+      children: [
+        { label: 'Doctors', icon: 'bi-person-badge', route: '/admin/doctors' },
+        { label: 'Doctor Schedule', icon: 'bi-calendar3', route: '/admin/doctor-schedular' },
+        { label: 'Doctor Billing', icon: 'bi-cash-coin', route: '/admin/doctor-billing' },
+        { label: 'Billing List', icon: 'bi-receipt-cutoff', route: '/admin/billing-list' },
+      ]
+    },
     { label: 'Services', icon: 'bi-stars', route: '/admin/services' },
     { label: 'Packages', icon: 'bi-box-seam', route: '/admin/admin-package' },
     { label: 'Reserved Packages', icon: 'bi-bookmark-check', route: '/admin/reserved-packages' },

@@ -1,0 +1,96 @@
+<div class="mr-page">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="page-icon">📊</div>
+      <div>
+        <h1 class="page-title">Monthly Billing Report</h1>
+        <p class="page-subtitle">Paid and unpaid totals per doctor</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="table-card filter-card">
+    <form [formGroup]="reportForm" class="filters" (ngSubmit)="onGenerate()">
+      <div class="filter-field">
+        <label class="filter-label">Year</label>
+        <select class="filter-input" formControlName="year">
+          <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Month</label>
+        <select class="filter-input" formControlName="month">
+          <option *ngFor="let m of months" [value]="m.value">{{ m.name }}</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Doctor (optional)</label>
+        <div class="ac-wrap">
+          <input class="filter-input" type="text" placeholder="All doctors"
+            [matAutocomplete]="doctorAuto" [(ngModel)]="doctorSearch" [ngModelOptions]="{standalone: true}" (blur)="onDoctorSelected(doctorSearch)" />
+          <button type="button" class="badge-clear" *ngIf="reportForm.get('doctorId')!.value" (click)="clearDoctor()" title="Clear">✕</button>
+          <mat-autocomplete #doctorAuto="matAutocomplete" (optionSelected)="onDoctorSelected($event.option.value)">
+            <mat-option *ngFor="let d of filteredDoctors" [value]="d.doctorName">{{ d.doctorName }}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Clinic (optional)</label>
+        <div class="ac-wrap">
+          <input class="filter-input" type="text" placeholder="All branches"
+            [matAutocomplete]="clinicAuto" [(ngModel)]="clinicSearch" [ngModelOptions]="{standalone: true}" (blur)="onClinicSelected(clinicSearch)" />
+          <button type="button" class="badge-clear" *ngIf="reportForm.get('clinicBranchId')!.value" (click)="clearClinic()" title="Clear">✕</button>
+          <mat-autocomplete #clinicAuto="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value)">
+            <mat-option *ngFor="let c of filteredClinics" [value]="c.clinicName">{{ c.clinicName }}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+      <button class="btn-primary-clinic" type="submit" [disabled]="loading || !reportForm.get('year')!.value || !reportForm.get('month')!.value">Generate Report</button>
+    </form>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+
+    <div class="loading-overlay" *ngIf="loading">
+      <div class="spinner"></div>
+      <span>Loading report…</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && searched && rows.length === 0">
+      <div class="empty-icon">📭</div>
+      <p class="empty-title">No billing data found for the selected period</p>
+      <p class="empty-sub">Try a different month, doctor or clinic.</p>
+    </div>
+
+    <div class="table-scroll" *ngIf="!loading && rows.length > 0">
+      <table class="pkg-table">
+        <thead>
+          <tr>
+            <th>Doctor Name</th>
+            <th class="center-cell">Total Paid</th>
+            <th class="center-cell">Remaining Unpaid</th>
+            <th class="center-cell">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows; let i = index" [class.row-even]="i % 2 === 0" [class.row-unbilled]="hasRemaining(row)">
+            <td class="name-cell">{{ row.doctorName }}</td>
+            <td class="num-cell center-cell paid">{{ row.totalPaidAmount }}</td>
+            <td class="center-cell">
+              <span class="paid-chip" [class.unpaid-chip]="hasRemaining(row)">
+                {{ row.remainingAmount }}
+                <span *ngIf="hasRemaining(row)" class="mini-tag">Unbilled</span>
+              </span>
+            </td>
+            <td class="center-cell"><strong>{{ total(row) }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

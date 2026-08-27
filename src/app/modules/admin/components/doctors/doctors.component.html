@@ -1,86 +1,94 @@
-<div style="display: flex;justify-content: space-around;">
-    <div class="navClass">
-        <div class="buttnAdd" (click)="goToForm()">
+<div class="dr-page">
 
-            <button (click)="openDialog()" class="btn btn-info" style="width: 150px; height: 37px;">Add new Doctor</button>
-
-        </div>
-        <div class="searchInput" >
-          <div class="col-6">
-            <input  class="form-control h-100 bg-light" id="material-search"
-            placeholder="search" type="search"
-            nz-input
-            [(ngModel)]="searchValue"
-            [ngModelOptions]="{standalone: true}"
-            (ngModelChange)="onChange($event)"
-            [nzAutocomplete]="doctorsAuto"
-          />
-          <nz-autocomplete [nzDataSource]="filteredData" #doctorsAuto></nz-autocomplete>
-          </div>
-          <button class="btn btn-sm btn-info mx-2" (click)="search()">Search</button>
-          <a  class="text-decoration-underline" style="color: white;" (click)="clearSearch()">Clear</a>
-        </div>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="page-icon">👨‍⚕️</div>
+      <div>
+        <h1 class="page-title">Doctors</h1>
+        <p class="page-subtitle">Manage your doctors and their activity</p>
+      </div>
     </div>
+    <div class="top-bar-right">
+      <div class="search-wrapper">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" placeholder="Search doctors..." type="search" nz-input
+          [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}"
+          (ngModelChange)="onChange($event)" (keyup.enter)="search()"
+          [nzAutocomplete]="doctorsAuto" />
+        <nz-autocomplete [nzDataSource]="filteredData" #doctorsAuto></nz-autocomplete>
+        <button class="btn-search" (click)="search()">Search</button>
+        <button class="btn-clear" (click)="clearSearch()" *ngIf="searchValue">✕</button>
+      </div>
+      <button class="btn-add" (click)="openDialog()">
+        <span class="btn-add-icon">+</span>
+        Add Doctor
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+
+    <!-- Loading -->
+    <div class="loading-overlay" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <span>Loading doctors…</span>
+    </div>
+
+    <!-- Empty -->
+    <div class="empty-state" *ngIf="!isLoading && doctors.length === 0">
+      <div class="empty-icon">🩺</div>
+      <p class="empty-title">No doctors found</p>
+      <p class="empty-sub">Try adjusting your search or add a new doctor.</p>
+    </div>
+
+    <!-- Table -->
+    <div class="table-scroll" *ngIf="!isLoading && doctors.length > 0">
+      <table class="pkg-table">
+        <thead>
+          <tr>
+            <th>Doctor Name</th>
+            <th class="center-cell">Services</th>
+            <th class="center-cell">Total Hours</th>
+            <th class="center-cell">Total Pulses</th>
+            <th class="center-cell">Laser</th>
+            <th class="center-cell">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of pagedDoctors; let i = index" [class.row-even]="i % 2 === 0"
+            class="row-click" (click)="goToDoctorData(data.doctorId!)">
+            <td class="name-cell">{{ data.doctorName }}</td>
+            <td class="num-cell center-cell">{{ data.numberOfServices !== undefined ? data.numberOfServices : 0 }}</td>
+            <td class="num-cell center-cell">{{ data.totalHours !== undefined ? data.totalHours : 0 }}</td>
+            <td class="num-cell center-cell">{{ data.totalPulses !== undefined ? data.totalPulses : 0 }}</td>
+            <td class="center-cell">
+              <span class="laser-chip" [class.laser-yes]="data.isLaser" [class.laser-no]="!data.isLaser">
+                <span class="laser-dot"></span>
+                {{ data.isLaser ? 'Laser' : 'No Laser' }}
+              </span>
+            </td>
+            <td class="center-cell">
+              <span class="status-toggle" [class.status-active]="data.isActive" [class.status-inactive]="!data.isActive">
+                <span class="status-dot"></span>
+                {{ data.isActive ? 'Active' : 'Not Active' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-bar" *ngIf="!isLoading && doctors.length > 0">
+      <div class="pagination-info">Showing {{ pagedDoctors.length }} of {{ totalItems }} doctors</div>
+      <div class="pagination-controls">
+        <button class="pg-btn" [disabled]="pageIndex === 1" (click)="onPageChange(pageIndex - 1)">‹</button>
+        <button class="pg-btn pg-num" *ngFor="let p of pages" [class.pg-active]="p === pageIndex" (click)="onPageChange(p)">{{ p }}</button>
+        <button class="pg-btn" [disabled]="pageIndex === totalPages" (click)="onPageChange(pageIndex + 1)">›</button>
+      </div>
+    </div>
+
+  </div>
 </div>
-
-<nz-table
-        class="mx-auto"
-        style="width: 75%; margin-top: 3%"
-        #dynamicTable
-        [nzData]="doctors"
-        [nzTableLayout]="'auto'"
-        [nzBordered]="true"
-        [nzOuterBordered]="true"
-        [nzSimple]="false"
-        [nzPaginationType]="paginationType"
-        [nzPaginationPosition]="position"
-        [nzFrontPagination]="true"
-        [nzShowPagination]="true"
-        [nzSize]="size"
->
-    <thead>
-    <tr style="font-size: 18px">
-        <th [nzAlign]="'center'">Doctor Name</th>
-        <th [nzAlign]="'center'">Number of Services</th>
-        <th [nzAlign]="'center'">Total Hours</th>
-        <th [nzAlign]="'center'">Total Pulses</th>
-        <th [nzAlign]="'center'">Liser</th>
-        <th [nzAlign]="'center'">status</th>
-    </tr>
-    </thead>
-    <tbody style="background-color: #f2f2f2">
-    <ng-container *ngFor="let data of dynamicTable.data">
-        <tr  style="cursor: pointer; font-size: 16px" >
-          <!--  -->
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId!  )">{{ data.doctorName  }}</td>
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! )">{{ data.numberOfServices !== undefined ? data.numberOfServices : 0 }}</td>
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! )">{{ data.totalHours !== undefined ? data.totalHours : 0 }}</td>
-            <td [nzAlign]="'center'" (click)="goToDoctorData(data.doctorId! )">{{ data.totalPulses !== undefined ? data.totalPulses : 0 }}</td>
-            <td *ngIf="data.isLaser" [nzAlign]="'center'" >
-                <img src="../../../../assets/5289675.png" height="35" width="35"/>
-            </td>
-            <td *ngIf="!data.isLaser" [nzAlign]="'center'">
-                <img src="../../../../assets/image_processing20210717-12803-1pmcnvj.png" height="32" width="32"/>
-            </td>
-            <td [nzAlign]="'center'">
-              <a
-              *ngIf="data.isActive"
-              style="width: 120px; cursor:pointer"
-              class = 'btn  btn-sm btn-success  small-font'
-              (click)="goToDoctorData(data.doctorId!  )">
-              Active
-             </a>
-            <a
-              *ngIf="!data.isActive"
-              style="width: 120px; cursor: pointer"
-              class = 'btn  btn-sm  btn-warning small-font'
-              (click)="goToDoctorData(data.doctorId!  )"
-             >
-            Not Active
-             </a>
-            </td>
-        </tr>
-    </ng-container>
-    </tbody>
-</nz-table>
-

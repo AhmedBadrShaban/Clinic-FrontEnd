@@ -1,0 +1,46 @@
+<div class="p-4" style="min-width: 520px;">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Billing Detail</h5>
+    <span class="badge" [class.bg-warning]="record.paymentStatus === 'PENDING'" [class.bg-success]="record.paymentStatus === 'PAID'" [class.bg-secondary]="record.paymentStatus === 'CANCELLED'">
+      {{ record.paymentStatus }}
+    </span>
+  </div>
+
+  <table class="table table-sm table-bordered">
+    <tbody>
+      <tr><th style="width:40%">Doctor</th><td>{{ record.doctorName }}</td></tr>
+      <tr><th>Room</th><td>{{ record.roomName }}</td></tr>
+      <tr><th>Clinic Branch</th><td>{{ record.clinicBranchName }}</td></tr>
+      <tr><th>Billing Date</th><td>{{ record.billingDate }}</td></tr>
+      <tr><th>Hours</th><td>{{ record.totalHoursWorked }} h × {{ record.hourlyRateApplied }} = {{ record.hourlyPaymentAmount }}</td></tr>
+      <tr><th>Pulses</th><td>{{ record.totalPulses }} × {{ record.pulseRateApplied }} = {{ record.pulsePaymentAmount }}</td></tr>
+      <tr><th>Services</th><td>{{ record.totalServicesCount }} = {{ record.servicePaymentAmount }}</td></tr>
+      <tr class="table-primary"><th>Total Payment</th><td><strong>{{ record.totalPaymentAmount }}</strong></td></tr>
+      <tr *ngIf="record.paidAt"><th>Paid At</th><td>{{ record.paidAt }}</td></tr>
+      <tr *ngIf="record.paidByUsername"><th>Paid By</th><td>{{ record.paidByUsername }}</td></tr>
+    </tbody>
+  </table>
+
+  <h6>Service Lines</h6>
+  <table class="table table-sm table-bordered" *ngIf="record.serviceLines && record.serviceLines.length">
+    <thead class="table-light">
+      <tr>
+        <th>Service</th>
+        <th class="text-end">Count</th>
+        <th class="text-end">Payment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let line of record.serviceLines">
+        <td>{{ line.serviceName }}</td>
+        <td class="text-end">{{ line.serviceCount }}</td>
+        <td class="text-end">{{ line.linePaymentAmount }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!record.serviceLines || !record.serviceLines.length" class="text-muted">No service lines</div>
+
+  <div class="text-end mt-3">
+    <button class="btn btn-secondary" (click)="ref.close()">Close</button>
+  </div>
+</div>

@@ -22,6 +22,16 @@ export class ServicesComponent implements OnInit {
   pageIndex: number = 1;
   pageSize: number = 10;
   totalItems: number = 0;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
+  }
+
+  get pages(): number[] {
+    const arr: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) arr.push(i);
+    return arr;
+  }
    constructor(private servService : ServiceService,private dialogRef : MatDialog) {
     this.size= 'small' as NzTableSize,
       this.paginationType= 'default' as NzTablePaginationType,
@@ -81,6 +91,20 @@ ngOnInit(): void {
   goToForm(){}
   openDialog(){
     this.dialogRef.open(AddNewServiceComponent);
+  }
+  openEditDialog(service: Service){
+    this.dialogRef.open(AddNewServiceComponent, { data: { service } });
+  }
+
+  billingLabel(service: Service): string {
+    if (service.fixedDoctorFee != null) {
+      return `Fixed: ${service.fixedDoctorFee}`;
+    }
+    if (service.materialCost != null || service.doctorPercentage != null) {
+      const pct = service.doctorPercentage != null ? service.doctorPercentage * 100 : 0;
+      return `${pct}% of (cost - material)`;
+    }
+    return '—';
   }
   autoComplete(){
     this.AllDataToSearchIn =  this.services.map(services => `${services.serviceName}`);

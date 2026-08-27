@@ -1,0 +1,146 @@
+<div class="bl-page">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="page-icon">🏥</div>
+      <div>
+        <h1 class="page-title">Billing List</h1>
+        <p class="page-subtitle">Search, view and cancel doctor billing records</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access denied -->
+  <div class="table-card denied-card" *ngIf="accessDenied">
+    <div class="empty-state">
+      <div class="empty-icon">🔒</div>
+      <p class="empty-title">Access denied</p>
+      <p class="empty-sub">You do not have permission to view this page.</p>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!accessDenied">
+
+    <!-- Filters Card -->
+    <div class="table-card filter-card">
+      <div class="filters">
+        <div class="filter-field">
+          <label class="filter-label">Doctor</label>
+          <div class="ac-wrap">
+            <input class="filter-input" type="text" placeholder="All doctors"
+              [matAutocomplete]="doctorAuto" [(ngModel)]="doctorSearch" (blur)="onDoctorSelected(doctorSearch)" />
+            <button type="button" class="badge-clear" *ngIf="doctorId" (click)="clearDoctor()" title="Clear">✕</button>
+            <mat-autocomplete #doctorAuto="matAutocomplete" (optionSelected)="onDoctorSelected($event.option.value)">
+              <mat-option *ngFor="let d of filteredDoctors" [value]="d.doctorName">{{ d.doctorName }}</mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label">Clinic</label>
+          <div class="ac-wrap">
+            <input class="filter-input" type="text" placeholder="All branches"
+              [matAutocomplete]="clinicAuto" [(ngModel)]="clinicSearch" (blur)="onClinicSelected(clinicSearch)" />
+            <button type="button" class="badge-clear" *ngIf="clinicBranchId" (click)="clearClinic()" title="Clear">✕</button>
+            <mat-autocomplete #clinicAuto="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value)">
+              <mat-option *ngFor="let c of filteredClinics" [value]="c.clinicName">{{ c.clinicName }}</mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label">Status</label>
+          <select class="filter-input" [(ngModel)]="status">
+            <option [ngValue]="undefined">All</option>
+            <option value="PENDING">Pending</option>
+            <option value="PAID">Paid</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label">From</label>
+          <input type="date" class="filter-input" [(ngModel)]="from" />
+        </div>
+        <div class="filter-field">
+          <label class="filter-label">To</label>
+          <input type="date" class="filter-input" [(ngModel)]="to" />
+        </div>
+        <div class="filter-actions">
+          <button class="btn-primary-clinic" (click)="applyFilters()">Search</button>
+          <button class="btn-ghost" (click)="resetFilters()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+
+      <div class="loading-overlay" *ngIf="loading">
+        <div class="spinner"></div>
+        <span>Loading billing records…</span>
+      </div>
+
+      <div class="empty-state" *ngIf="!loading && records.length === 0">
+        <div class="empty-icon">🔍</div>
+        <p class="empty-title">No billing records found</p>
+        <p class="empty-sub">Try adjusting the filters.</p>
+      </div>
+
+      <div class="table-scroll" *ngIf="!loading && records.length > 0">
+        <table class="pkg-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Doctor</th>
+              <th>Room</th>
+              <th>Branch</th>
+              <th>Date</th>
+              <th class="center-cell">Hourly</th>
+              <th class="center-cell">Pulses</th>
+              <th class="center-cell">Services</th>
+              <th class="center-cell">Total</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of records; let i = index" [class.row-even]="i % 2 === 0">
+              <td>#{{ record.id }}</td>
+              <td class="name-cell">{{ record.doctorName }}</td>
+              <td>{{ record.roomName }}</td>
+              <td>{{ record.clinicBranchName }}</td>
+              <td>{{ record.billingDate }}</td>
+              <td class="num-cell center-cell">{{ record.hourlyPaymentAmount }}</td>
+              <td class="num-cell center-cell">{{ record.pulsePaymentAmount }}</td>
+              <td class="num-cell center-cell">{{ record.servicePaymentAmount }}</td>
+              <td class="center-cell"><strong>{{ record.totalPaymentAmount }}</strong></td>
+              <td>
+                <span class="status-chip" [class.st-pending]="record.paymentStatus === 'PENDING'"
+                  [class.st-paid]="record.paymentStatus === 'PAID'" [class.st-cancelled]="record.paymentStatus === 'CANCELLED'">
+                  {{ record.paymentStatus }}
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <button class="btn-view" (click)="viewDetail(record)">View Detail</button>
+                  <button *ngIf="canCancel(record)" class="btn-cancel" (click)="confirmCancel(record)">Cancel</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-bar" *ngIf="!loading && totalItems > 0">
+        <div class="pagination-info">Showing {{ records.length }} of {{ totalItems }} records</div>
+        <div class="pagination-controls">
+          <button class="pg-btn" [disabled]="pageIndex === 1" (click)="onPageChange(pageIndex - 1)">‹</button>
+          <button class="pg-btn pg-num" *ngFor="let p of pages" [class.pg-active]="p === pageIndex" (click)="onPageChange(p)">{{ p }}</button>
+          <button class="pg-btn" [disabled]="pageIndex === totalPages" (click)="onPageChange(pageIndex + 1)">›</button>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+</div>

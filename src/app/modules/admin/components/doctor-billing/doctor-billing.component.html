@@ -1,0 +1,207 @@
+<div class="fb-page">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="page-icon">⛒</div>
+      <div>
+        <h1 class="page-title">Doctor Billing</h1>
+        <p class="page-subtitle">Preview unbilled shifts and bill doctors by day or month</p>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <div class="seg" role="group">
+        <button class="seg-btn" [class.active]="activeTab === 'day'" (click)="switchTab('day')">Bill for Day</button>
+        <button class="seg-btn" [class.active]="activeTab === 'month'" (click)="switchTab('month')">Bill for Month</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="table-card filter-card">
+    <form *ngIf="activeTab === 'day'" [formGroup]="dayForm" class="filters" (ngSubmit)="previewDay()">
+      <div class="filter-field">
+        <label class="filter-label">Date</label>
+        <input type="date" class="filter-input" formControlName="date" />
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Doctor (optional)</label>
+        <div class="ac-wrap">
+          <input class="filter-input" type="text" placeholder="All doctors"
+            [matAutocomplete]="doctorAutoDay" [(ngModel)]="doctorSearch" [ngModelOptions]="{standalone: true}" (blur)="onDoctorSelected(doctorSearch, dayForm)" />
+          <button type="button" class="badge-clear" *ngIf="dayForm.get('doctorId')!.value" (click)="clearDoctor(dayForm)" title="Clear">✕</button>
+          <mat-autocomplete #doctorAutoDay="matAutocomplete" (optionSelected)="onDoctorSelected($event.option.value, dayForm)">
+            <mat-option *ngFor="let d of filteredDoctors" [value]="d.doctorName">{{ d.doctorName }}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Clinic (optional)</label>
+        <div class="ac-wrap">
+          <input class="filter-input" type="text" placeholder="All branches"
+            [matAutocomplete]="clinicAutoDay" [(ngModel)]="clinicSearch" [ngModelOptions]="{standalone: true}" (blur)="onClinicSelected(clinicSearch, dayForm)" />
+          <button type="button" class="badge-clear" *ngIf="dayForm.get('clinicBranchId')!.value" (click)="clearClinic(dayForm)" title="Clear">✕</button>
+          <mat-autocomplete #clinicAutoDay="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value, dayForm)">
+            <mat-option *ngFor="let c of filteredClinics" [value]="c.clinicName">{{ c.clinicName }}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+      <button class="btn-primary-clinic" type="submit" [disabled]="dayForm.invalid || loading">Preview Day</button>
+    </form>
+
+    <form *ngIf="activeTab === 'month'" [formGroup]="monthForm" class="filters" (ngSubmit)="previewMonth()">
+      <div class="filter-field">
+        <label class="filter-label">Year</label>
+        <select class="filter-input" formControlName="year">
+          <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Month</label>
+        <select class="filter-input" formControlName="month">
+          <option *ngFor="let m of months" [value]="m.value">{{ m.name }}</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Doctor (optional)</label>
+        <div class="ac-wrap">
+          <input class="filter-input" type="text" placeholder="All doctors"
+            [matAutocomplete]="doctorAutoMon" [(ngModel)]="doctorSearch" [ngModelOptions]="{standalone: true}" (blur)="onDoctorSelected(doctorSearch, monthForm)" />
+          <button type="button" class="badge-clear" *ngIf="monthForm.get('doctorId')!.value" (click)="clearDoctor(monthForm)" title="Clear">✕</button>
+          <mat-autocomplete #doctorAutoMon="matAutocomplete" (optionSelected)="onDoctorSelected($event.option.value, monthForm)">
+            <mat-option *ngFor="let d of filteredDoctors" [value]="d.doctorName">{{ d.doctorName }}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Clinic (optional)</label>
+        <div class="ac-wrap">
+          <input class="filter-input" type="text" placeholder="All branches"
+            [matAutocomplete]="clinicAutoMon" [(ngModel)]="clinicSearch" [ngModelOptions]="{standalone: true}" (blur)="onClinicSelected(clinicSearch, monthForm)" />
+          <button type="button" class="badge-clear" *ngIf="monthForm.get('clinicBranchId')!.value" (click)="clearClinic(monthForm)" title="Clear">✕</button>
+          <mat-autocomplete #clinicAutoMon="matAutocomplete" (optionSelected)="onClinicSelected($event.option.value, monthForm)">
+            <mat-option *ngFor="let c of filteredClinics" [value]="c.clinicName">{{ c.clinicName }}</mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+      <button class="btn-primary-clinic" type="submit" [disabled]="!monthForm.get('year')!.value || !monthForm.get('month')!.value || loading">Preview Month</button>
+    </form>
+  </div>
+
+  <!-- Bill success summary -->
+  <div class="success-banner" *ngIf="billResult">
+    <div class="success-title">✓ Billing successful!</div>
+    <div class="success-line">Doctor: <strong>{{ billResult.doctorName }}</strong></div>
+    <div class="success-line">Records billed: <strong>{{ billResult.billedRecordsCount }}</strong></div>
+    <div class="success-line">Total amount: <strong>{{ billResult.totalAmount }} EGP</strong></div>
+    <div class="success-line">Period: <strong>{{ billResult.periodDescription }}</strong></div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+
+    <div class="loading-overlay" *ngIf="loading">
+      <div class="spinner"></div>
+      <span>Loading preview…</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && preview.length === 0">
+      <div class="empty-icon">🧾</div>
+      <p class="empty-title">No unbilled shifts found for the selected period</p>
+      <p class="empty-sub">Try adjusting the date, doctor or clinic filters.</p>
+    </div>
+
+    <div *ngIf="!loading && preview.length > 0">
+      <div *ngFor="let doctor of preview" class="billing-group">
+        <div class="billing-group-header" (click)="toggleExpand(doctor.doctorId)">
+          <div class="group-title">
+            <span class="doctor-avatar">{{ doctor.doctorName.charAt(0) }}</span>
+            <span class="doctor-name">{{ doctor.doctorName }}</span>
+          </div>
+          <div class="group-meta">
+            <span class="meta-badge">{{ doctor.shifts.length }} shift(s)</span>
+            <span class="meta-badge total">Total: {{ doctor.totalMoney }} EGP</span>
+            <span class="chevron">{{ isExpanded(doctor.doctorId) ? '▲' : '▼' }}</span>
+          </div>
+        </div>
+
+        <div class="billing-group-body" *ngIf="isExpanded(doctor.doctorId)">
+          <div *ngFor="let shift of doctor.shifts" class="shift-block">
+            <div class="shift-head">
+              <div>
+                <strong>{{ shift.roomName }}</strong>
+                <span class="muted"> — {{ shift.clinicBranchName }}</span>
+                <span class="muted ms-2">{{ shift.billingDate }}</span>
+              </div>
+              <span class="status-badge">{{ shift.paymentStatus }}</span>
+            </div>
+
+            <div class="table-scroll">
+              <table class="pkg-table inner">
+                <thead>
+                  <tr>
+                    <th>Component</th>
+                    <th>Rate</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Hourly</td>
+                    <td>{{ shift.hourlyRateApplied }}</td>
+                    <td>{{ shift.totalHoursWorked }} h</td>
+                    <td class="num-cell">{{ shift.hourlyPaymentAmount }}</td>
+                  </tr>
+                  <tr>
+                    <td>Pulses</td>
+                    <td>{{ shift.pulseRateApplied }}</td>
+                    <td>{{ shift.totalPulses }}</td>
+                    <td class="num-cell">{{ shift.pulsePaymentAmount }}</td>
+                  </tr>
+                  <tr>
+                    <td>Services</td>
+                    <td>—</td>
+                    <td>{{ shift.totalServicesCount }}</td>
+                    <td class="num-cell">{{ shift.servicePaymentAmount }}</td>
+                  </tr>
+                  <tr class="row-total">
+                    <td colspan="3"><strong>Total Payment</strong></td>
+                    <td><strong>{{ shift.totalPaymentAmount }}</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="shift.serviceLines && shift.serviceLines.length" class="service-lines">
+              <div class="sl-title">Service Lines</div>
+              <table class="pkg-table inner">
+                <thead>
+                  <tr>
+                    <th>Service</th>
+                    <th>Count</th>
+                    <th>Payment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let line of shift.serviceLines">
+                    <td>{{ line.serviceName }}</td>
+                    <td>{{ line.serviceCount }}</td>
+                    <td class="num-cell">{{ line.linePaymentAmount }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="group-actions">
+            <button class="btn-bill" [disabled]="billing" (click)="confirmBill(doctor)">
+              {{ activeTab === 'day' ? 'Bill for Day' : 'Bill for Month' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

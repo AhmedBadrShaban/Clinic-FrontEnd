@@ -1,85 +1,81 @@
-<div style="display: flex;justify-content: space-around;">
-  <div class="navClass">
-    <div class="buttnAdd" (click)="goToForm()">
+<div class="sv-page">
 
-      <button (click)="openDialog()" class="btn btn-info" style="width: fit-content; height: 37px;">Add new service</button>
-
-    </div>
-    <div class="searchInput" >
-      <div class="col-6">
-        <input  class="form-control h-100 bg-light" id="material-search"
-        placeholder="search" type="search"
-        nz-input
-        [(ngModel)]="searchValue"
-        [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="onChange($event)"
-        [nzAutocomplete]="MaterialAuto"
-      />
-      <nz-autocomplete [nzDataSource]="filteredData" #MaterialAuto></nz-autocomplete>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="page-icon">🩺</div>
+      <div>
+        <h1 class="page-title">Services</h1>
+        <p class="page-subtitle">Manage your clinic services and doctor payment rules</p>
       </div>
-      <button class="btn btn-sm btn-info mx-2" (click)="search()">Search</button>
-      <a  class="text-decoration-underline" style="color: white;" (click)="clearSearch()">Clear</a>    </div>
+    </div>
+    <div class="top-bar-right">
+      <div class="search-wrapper">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" placeholder="Search services..." type="search" nz-input
+          [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}"
+          (ngModelChange)="onChange($event)" (keyup.enter)="search()"
+          [nzAutocomplete]="MaterialAuto" />
+        <nz-autocomplete [nzDataSource]="filteredData" #MaterialAuto></nz-autocomplete>
+        <button class="btn-search" (click)="search()">Search</button>
+        <button class="btn-clear" (click)="clearSearch()" *ngIf="searchValue">✕</button>
+      </div>
+      <button class="btn-add" (click)="openDialog()">
+        <span class="btn-add-icon">+</span>
+        Add Service
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+
+    <div class="table-scroll">
+      <table class="pkg-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th class="center-cell">Cost</th>
+            <th>Rooms</th>
+            <th>Doctor Payment</th>
+            <th class="center-cell">Status</th>
+            <th class="center-cell">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of services; let i = index" [class.row-even]="i % 2 === 0">
+            <td class="name-cell">{{ data.serviceName }}</td>
+            <td class="num-cell center-cell">{{ data.costPerSession }}</td>
+            <td>
+              <span *ngFor="let room of data.rooms; let last = last">
+                {{ room.roomName }}<ng-container *ngIf="!last">, </ng-container>
+              </span>
+            </td>
+            <td class="num-cell">{{ billingLabel(data) }}</td>
+            <td class="center-cell">
+              <button class="status-toggle" [class.status-active]="data.isActive" [class.status-inactive]="!data.isActive"
+                (click)="switchStatus(data.patientServiceId)">
+                <span class="status-dot"></span>
+                {{ data.isActive ? 'Active' : 'Not Active' }}
+              </button>
+            </td>
+            <td class="center-cell">
+              <button class="btn-edit" (click)="openEditDialog(data)">Edit</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-bar">
+      <div class="pagination-info">Page {{ pageIndex }} of {{ totalPages }} · {{ totalItems }} items</div>
+      <div class="pagination-controls">
+        <button class="pg-btn" [disabled]="pageIndex === 1" (click)="onPageChange(pageIndex - 1)">‹</button>
+        <button class="pg-btn pg-num" *ngFor="let p of pages" [class.pg-active]="p === pageIndex" (click)="onPageChange(p)">{{ p }}</button>
+        <button class="pg-btn" [disabled]="pageIndex === totalPages" (click)="onPageChange(pageIndex + 1)">›</button>
+      </div>
+    </div>
+
   </div>
 </div>
-
-<nz-table
-  class="mx-auto"
-  style="width: 55%; margin-top: 3%"
-  #dynamicTable
-  [nzData]="services"
-  [nzTableLayout]="'auto'"
-  [nzBordered]="true"
-  [nzOuterBordered]="true"
-  [nzSimple]="false"
-  [nzPaginationType]="paginationType"
-  [nzPaginationPosition]="position"
-  [nzFrontPagination]="false"
-  [nzTotal]="totalItems"
-  [nzPageSize]="pageSize"
-  [nzPageIndex]="pageIndex"
-  (nzPageIndexChange)="onPageChange($event)"
-  [nzShowPagination]="true"
-  [nzSize]="size"
->
-  <thead>
-  <tr style="font-size: 18px">
-    <th [nzAlign]="'center'">Name</th>
-    <th [nzAlign]="'center'">Cost</th>
-    <th [nzAlign]="'center'">Rooms</th>
-    <th [nzAlign]="'center'">Status</th>
-   </tr>
-  </thead>
-  <tbody style="background-color: #f2f2f2">
-  <ng-container *ngFor="let data of dynamicTable.data">
-    <tr  style="cursor: pointer; font-size: 16px">
-      <td [nzAlign]="'center'">{{ data.serviceName }}</td>
-      <td [nzAlign]="'center'">{{ data.costPerSession  }}</td>
-      <td [nzAlign]="'center'">
-        <span *ngFor="let room of data.rooms let last = last">
-          {{room.roomName }}
-          <ng-container *ngIf="!last"> - </ng-container>
-         </span>
-      </td>
-      <td [nzAlign]="'center'">
-        <a
-          *ngIf="data.isActive"
-          style="width: 120px; cursor:pointer"
-          class = 'btn  btn-sm btn-success  small-font'
-          (click)="switchStatus(data.patientServiceId)">
-          Active
-         </a>
-        <a
-          *ngIf="!data.isActive"
-          style="width: 120px; cursor: pointer"
-          class = 'btn  btn-sm  btn-warning small-font'
-          (click)="switchStatus(data.patientServiceId)"
-        >
-        Not Active
-         </a>
-      </td>
-     
-    </tr>
-  </ng-container>
-  </tbody>
-</nz-table>
-

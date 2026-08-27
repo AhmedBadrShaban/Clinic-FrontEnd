@@ -148,6 +148,12 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
     this.loadByDate(this.selectedDate);
   }
 
+  onDateInput(value: string): void {
+    if (!value) return;
+    const d = new Date(`${value}T00:00:00`);
+    this.onDateChange({ value: d });
+  }
+
   search(key: string): void {
     if (!key?.trim()) {
       // If search is cleared, go back to date filter

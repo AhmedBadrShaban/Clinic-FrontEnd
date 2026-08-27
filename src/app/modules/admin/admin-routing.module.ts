@@ -25,6 +25,9 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { WhatsAppMessagesComponent } from './components/reports/whatsapp-messages/whatsapp-messages.component';
 import { PackageMovementsComponent } from './components/reports/package-movements/package-movements.component';
 import { PromotionRulesComponent } from './components/promotion-rules/promotion-rules.component';
+import { DoctorBillingComponent } from './components/doctor-billing/doctor-billing.component';
+import { MonthlyBillingReportComponent } from './components/doctor-billing/monthly-report/monthly-report.component';
+import { BillListComponent } from './components/doctor-billing/bill-list/bill-list.component';
 
 const routes: Routes = [
   {
@@ -41,6 +44,8 @@ const routes: Routes = [
       { path: 'receptionists', component: ReceptionistsComponent },
       { path: 'receptionist/:id', component: ReceptionistProfileComponent },
       { path: 'services', component: ServicesComponent },
+      { path: 'doctor-billing', component: DoctorBillingComponent, pathMatch: 'full' },
+      { path: 'billing-list', component: BillListComponent, pathMatch: 'full' },
       { path: 'promotions', component: PromotionRulesComponent },
       { path: 'admin-package', component: PackagesComponent, pathMatch: 'full' },
       { path: 'reserved-packages', component: PackageComponent, pathMatch: 'full' }, // ← NEW
@@ -58,6 +63,7 @@ const routes: Routes = [
 
           { path: 'monthly-income', component: MonthlyMoneyReportComponent },
           { path: 'whatsapp-messages', component: WhatsAppMessagesComponent },
+          { path: 'monthly-billing', component: MonthlyBillingReportComponent },
         ]
       },
     ]

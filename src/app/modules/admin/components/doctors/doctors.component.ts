@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize} from "ng-zorro-antd/table";
 import {Doctors} from "../../models/doctors";
 import {DoctorsService} from "../../services/doctors/doctors.service";
 import {Router} from "@angular/router";
@@ -12,48 +11,64 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./doctors.component.css']
 })
 export class DoctorsComponent implements OnInit {
-  size: NzTableSize;
-  tableLayout: NzTableLayout;
-  position: NzTablePaginationPosition;
-  paginationType: NzTablePaginationType;
   doctors: Doctors[] = [];
   doctorsTemp: Doctors[] = [];
+  allDoctors: Doctors[] = [];
   AllDataToSearchIn: any[];
   filteredData: any[] = [];
   searchValue?: any;
+  isLoading = false;
 
-  constructor(private docService : DoctorsService, private router: Router
-    ,private dialogRef : MatDialog) {
-        this.size= 'small' as NzTableSize,
-        this.paginationType= 'default' as NzTablePaginationType,
-        this.tableLayout='auto' as NzTableLayout,
-        this.position= 'bottom' as NzTablePaginationPosition
-        // this.doctors = docService.getDoctors()
+  pageIndex: number = 1;
+  pageSize: number = 10;
+  totalItems = 0;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
   }
+
+  get pages(): number[] {
+    const arr: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) arr.push(i);
+    return arr;
+  }
+
+  get pagedDoctors(): Doctors[] {
+    const start = (this.pageIndex - 1) * this.pageSize;
+    return this.doctors.slice(start, start + this.pageSize);
+  }
+
+  constructor(private docService: DoctorsService, private router: Router, private dialogRef: MatDialog) {}
+
   ngOnInit(): void {
     this.getAllDoctorsReports();
     this.docService.listOfData$.subscribe((data: any) => {
-      this.doctors = data;
-      //console.log('Updated Data recived : ', this.doctors);
+      this.doctors = data || [];
       this.autoComplete();
     });
   }
+
   getAllDoctorsReports() {
+    this.isLoading = true;
     this.docService.DoctorsReport().subscribe((data) => {
-      this.doctors = data;
-      this.doctorsTemp=this.doctors;
-      //console.log('AllDataToSearchIn :>> ', this.doctorsTemp);
+      this.isLoading = false;
+      this.allDoctors = data || [];
+      this.doctors = [...this.allDoctors];
+      this.doctorsTemp = [...this.allDoctors];
+      this.totalItems = this.doctors.length;
+      this.pageIndex = 1;
       this.autoComplete();
-      //console.log('Doctors :>> ', this.doctors);
     });
   }
+
   getAllDoctors() {
     this.docService.getAllDoctors().subscribe((data) => {
-      this.doctors = data;
+      this.doctors = data || [];
+      this.totalItems = this.doctors.length;
       this.autoComplete();
-      //console.log('Doctors :>> ', this.doctors);
     });
   }
+
   switchStatus(id: any) {
     this.docService.changeStatus(id).subscribe({
       next: (responed) => {
@@ -67,12 +82,16 @@ export class DoctorsComponent implements OnInit {
   }
 
   search() {
-    this.doctors = this.doctorsTemp;
-    //console.log('doctors :>> ', this.doctors);
-    this.doctors = this.doctors.filter((doctor) =>
-      doctor.doctorName.toLowerCase().includes(this.searchValue.toLowerCase())
+    const query = (this.searchValue || '').toString().trim().toLowerCase();
+    if (!query) {
+      this.clearSearch();
+      return;
+    }
+    this.doctors = this.allDoctors.filter(doctor =>
+      (doctor.doctorName || '').toLowerCase().includes(query)
     );
-    //console.log('Search results:', this.doctors);
+    this.totalItems = this.doctors.length;
+    this.pageIndex = 1;
   }
 
   clearSearch() {
@@ -80,28 +99,27 @@ export class DoctorsComponent implements OnInit {
     this.searchValue = null;
   }
 
+  onPageChange(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.pageIndex = page;
+  }
+
   autoComplete() {
-    this.AllDataToSearchIn = this.doctors.map(
-      (doctors) => `${doctors.doctorName}`
-    );
+    this.AllDataToSearchIn = this.allDoctors.map(doctors => `${doctors.doctorName}`);
     this.filteredData = this.AllDataToSearchIn;
-    //console.log(this.filteredData);
   }
 
   onChange(value: string): void {
     this.filteredData = this.AllDataToSearchIn.filter(
-      (AllDataToSearchIn) =>
-        AllDataToSearchIn.toLowerCase().indexOf(value.toLowerCase()) !== -1
+      (d) => d.toLowerCase().indexOf(value.toLowerCase()) !== -1
     );
   }
 
-  goToForm(){
-
-  }
-  openDialog(){
+  openDialog() {
     this.dialogRef.open(AddNewDoctorComponent);
   }
-  goToDoctorData(id : string){
-    this.router.navigate(['admin/doctor' , id])
+
+  goToDoctorData(id: string) {
+    this.router.navigate(['admin/doctor', id]);
   }
 }

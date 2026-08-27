@@ -38,6 +38,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
@@ -52,6 +53,10 @@ import { PackageMovementsComponent } from './components/reports/package-movement
 import { PriceEditDialogComponent } from './components/packages/price-edit-dialog/price-edit-dialog.component';
 import { PromotionRulesComponent } from './components/promotion-rules/promotion-rules.component';
 import { PromotionRuleFormComponent } from './components/promotion-rules/promotion-rule-form/promotion-rule-form.component';
+import { DoctorBillingComponent } from './components/doctor-billing/doctor-billing.component';
+import { MonthlyBillingReportComponent } from './components/doctor-billing/monthly-report/monthly-report.component';
+import { BillListComponent } from './components/doctor-billing/bill-list/bill-list.component';
+import { BillingDetailDialogComponent } from './components/doctor-billing/billing-detail-dialog/billing-detail-dialog.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +86,11 @@ import { PromotionRuleFormComponent } from './components/promotion-rules/promoti
     WhatsAppMessagesComponent,
     DashboardComponent,
     PromotionRulesComponent ,
-    PromotionRuleFormComponent
+    PromotionRuleFormComponent,
+    DoctorBillingComponent,
+    MonthlyBillingReportComponent,
+    BillListComponent,
+    BillingDetailDialogComponent
   ],
 
   imports: [
@@ -104,6 +113,7 @@ import { PromotionRuleFormComponent } from './components/promotion-rules/promoti
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatSlideToggleModule ,
