@@ -8,6 +8,7 @@ import { CoverSheetComponent } from './components/cover-sheet/cover-sheet.compon
 import { AddNewPatientComponent } from './components/add-new-patient/add-new-patient.component';
 import { ConfirmDeleteDialogComponent, DoctorScheduleComponent } from './components/doctor-schedule/doctor-schedule.component';
 import { PopUpFormComponent } from './components/doctor-schedule/pop-up-form/pop-up-form.component';
+import { ScheduleBillingDetailDialogComponent } from './components/doctor-schedule/schedule-billing-detail-dialog/schedule-billing-detail-dialog.component';
 import { ExpenseComponent } from './components/expense/expense.component';
 import { AddExpenseComponent } from './components/expense/add-expense/add-expense.component';
 import { PackageComponent } from './components/package/package.component';
@@ -74,6 +75,7 @@ import { DebitConfirmDialogComponent } from './components/reservation/patient-in
     DoctorScheduleComponent,
     ConfirmDeleteDialogComponent,
     PopUpFormComponent,
+    ScheduleBillingDetailDialogComponent,
     AddExpenseComponent,
     PackageComponent,
     AddPackageComponent,

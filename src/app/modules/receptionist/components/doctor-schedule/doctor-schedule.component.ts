@@ -10,6 +10,8 @@ import { scheduleData } from '../../models/doctor.schedule.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ScheduleBillingService } from '../../services/schedule-billing/schedule-billing.service';
+import { ScheduleBillingDetailDialogComponent } from './schedule-billing-detail-dialog/schedule-billing-detail-dialog.component';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 
@@ -63,6 +65,7 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private datePipe: DatePipe,
     private doctorScheduleService: DoctorScheduleServiceService,
+    private scheduleBillingService: ScheduleBillingService,
     private loggedIn: AuthService
   ) {
     this.settingValue = {
@@ -113,7 +116,7 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: scheduleData[]) => {
-          this.listOfData = [...data].sort((a, b) => a.startTime.localeCompare(b.startTime));
+          this.listOfData = this.applyEffectiveStatus([...data]).sort((a, b) => a.startTime.localeCompare(b.startTime));
           this.isLoading = false;
         },
         error: () => {
@@ -129,7 +132,7 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: scheduleData[]) => {
-          this.listOfData = data;
+          this.listOfData = this.applyEffectiveStatus([...data]);
           this.isLoading = false;
         },
         error: () => {
@@ -137,6 +140,14 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
           this.showError('Search failed.');
         }
       });
+  }
+
+  /* Keeps the PAID state consistent in mock mode after mark-paid (survives re-fetch) */
+  private applyEffectiveStatus(rows: scheduleData[]): scheduleData[] {
+    return rows.map(r => {
+      const effective = this.scheduleBillingService.effectiveStatusFor(r.billingId, r.paymentStatus ?? null);
+      return { ...r, paymentStatus: effective };
+    });
   }
 
   // ── User Actions ──────────────────────────────────────────
@@ -212,6 +223,40 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
           },
           error: (err) => this.showError(err.error?.message || 'Delete failed.')
         });
+    });
+  }
+
+  // ── Billing actions ───────────────────────────────────────
+
+  /** Show "Mark as Paid" only when PENDING and billingId is not null */
+  canMarkPaid(row: scheduleData): boolean {
+    return row.paymentStatus === 'PENDING' && row.billingId != null;
+  }
+
+  markPaid(row: scheduleData): void {
+    const billingId = row.billingId;
+    if (billingId == null) return;
+
+    this.scheduleBillingService.markPaid(billingId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          row.paymentStatus = 'PAID';
+          this.showSuccess(`Billing #${billingId} marked as paid`);
+        },
+        error: (err) => {
+          const msg = err?.error?.message || 'Failed to mark billing as paid';
+          this.showError(msg);
+        }
+      });
+  }
+
+  viewBillingDetail(row: scheduleData): void {
+    if (row.billingId == null) return;
+    this.dialog.open(ScheduleBillingDetailDialogComponent, {
+      data: { billingId: row.billingId },
+      width: '760px',
+      maxWidth: '95vw'
     });
   }
 

@@ -73,6 +73,7 @@
             <th>Date</th>
             <th>Start</th>
             <th>End</th>
+            <th class="center-cell">Payment</th>
             <th class="center-cell">Status</th>
             <th class="center-cell">Actions</th>
           </tr>
@@ -85,6 +86,23 @@
             <td class="num-cell">{{ formatTimeTo12Hour(data.startTime) }}</td>
             <td class="num-cell">{{ formatTimeTo12Hour(data.endTime) }}</td>
 
+            <!-- Payment status -->
+            <td class="center-cell">
+              <span *ngIf="data.paymentStatus === 'PENDING'" class="payment-chip st-pending">
+                <span class="status-dot"></span>
+                Pending
+              </span>
+              <span *ngIf="data.paymentStatus === 'PAID'" class="payment-chip st-paid">
+                <span class="status-dot"></span>
+                Paid
+              </span>
+              <span *ngIf="data.paymentStatus === 'CANCELLED'" class="payment-chip st-cancelled">
+                <span class="status-dot"></span>
+                Cancelled
+              </span>
+            </td>
+
+            <!-- Confirmation status -->
             <td class="center-cell">
               <button *ngIf="data.confirmed; else notConfirmed"
                 class="status-chip st-confirmed" [disabled]="!isAdmin"
@@ -102,6 +120,10 @@
 
             <td class="center-cell">
               <div class="actions-cell">
+                <button class="btn-view" matTooltip="View billing detail"
+                  *ngIf="data.billingId != null" (click)="viewBillingDetail(data)">View Bill</button>
+                <button class="btn-primary-sm" matTooltip="Mark as paid"
+                  *ngIf="canMarkPaid(data)" (click)="markPaid(data)">Mark as Paid</button>
                 <button class="btn-view" matTooltip="Edit schedule" (click)="openDialog({
                   new: false,
                   schedulerId: data.schedulerId,

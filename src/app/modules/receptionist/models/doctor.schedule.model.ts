@@ -1,3 +1,5 @@
+export type SchedulePaymentStatus = 'PENDING' | 'PAID' | 'CANCELLED' | null;
+
 export interface scheduleData {
   schedulerId:number;
   new:boolean;
@@ -9,6 +11,9 @@ export interface scheduleData {
   confirmed:boolean;
   startPulses:number;
   endPulses:number;
+  clinic?: string;
+  billingId?: number | null;
+  paymentStatus?: SchedulePaymentStatus;
   disabled?: boolean;
   expand: boolean;
   checked: boolean;

@@ -1,0 +1,72 @@
+import { scheduleData } from '../../models/doctor.schedule.model';
+
+export const mockScheduleRows: scheduleData[] = [
+  {
+    schedulerId: 1709,
+    new: false,
+    roomName: 'Laser Room 1',
+    doctorName: 'Dr. Ahmed Hassan',
+    date: '2026-08-21',
+    startTime: '22:00:00',
+    endTime: '23:00:00',
+    confirmed: true,
+    startPulses: 1000,
+    endPulses: 1350,
+    clinic: 'Main Branch',
+    billingId: 5,
+    paymentStatus: 'PENDING',
+    expand: false,
+    checked: false
+  },
+  {
+    schedulerId: 1710,
+    new: false,
+    roomName: 'Room 2',
+    doctorName: 'Dr. Salma Mostafa',
+    date: '2026-08-21',
+    startTime: '10:00:00',
+    endTime: '12:00:00',
+    confirmed: true,
+    startPulses: 500,
+    endPulses: 1020,
+    clinic: 'October',
+    billingId: 9,
+    paymentStatus: 'PAID',
+    expand: false,
+    checked: false
+  },
+  {
+    schedulerId: 1711,
+    new: false,
+    roomName: 'Laser Room 1',
+    doctorName: 'Dr. Omar Khaled',
+    date: '2026-08-21',
+    startTime: '14:00:00',
+    endTime: '16:00:00',
+    confirmed: false,
+    startPulses: 0,
+    endPulses: 0,
+    clinic: 'Main Branch',
+    billingId: null,
+    paymentStatus: null,
+    expand: false,
+    checked: false
+  },
+  {
+    schedulerId: 1712,
+    new: false,
+    roomName: 'Room 3',
+    doctorName: 'Dr. Ahmed Hassan',
+    date: '2026-08-22',
+    startTime: '09:00:00',
+    endTime: '11:00:00',
+    confirmed: false,
+    startPulses: 100,
+    endPulses: 480,
+    clinic: 'Nasr City',
+    billingId: 11,
+    paymentStatus: 'CANCELLED',
+    expand: false,
+    checked: false
+  }
+];
