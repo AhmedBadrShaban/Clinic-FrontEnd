@@ -8,13 +8,14 @@ import {
   MOCK_ROOMS_NAMES,
   MOCK_SERVICES_PAGE
 } from './service-mock.data';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceService {
     private readonly baseUrl ;
-    private readonly useMockData = true;
+    private readonly useMockData = environment.useMockData;
 
     private mockServices = [...MOCK_SERVICES_PAGE.data];
    constructor(private http:HttpClient , private configService:ConfigService) {

@@ -1,0 +1,111 @@
+<div class="bill-dialog">
+
+  <!-- Header -->
+  <div class="bill-header">
+    <div class="bill-header-left">
+      <div class="bill-icon">🧾</div>
+      <div>
+        <h2 class="bill-title">Billing Detail</h2>
+        <p class="bill-sub">Bill #{{ billingId }} · {{ detail?.billingDate || '' }}</p>
+      </div>
+    </div>
+    <button class="bill-close" (click)="close()" title="Close">✕</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <span>Loading billing details…</span>
+  </div>
+
+  <!-- 404 / Error -->
+  <div class="bill-error" *ngIf="!loading && error">
+    <div class="error-icon">⚠️</div>
+    <p class="error-text">{{ error }}</p>
+    <button class="btn-ghost" (click)="close()">Close</button>
+  </div>
+
+  <!-- Detail -->
+  <ng-container *ngIf="!loading && !error && detail">
+
+    <div class="bill-meta">
+      <span class="meta-item">{{ detail.doctorName }}</span>
+      <span class="meta-item">{{ detail.roomName }}</span>
+      <span class="meta-item">{{ detail.clinicBranchName }}</span>
+      <span class="status-badge" [class.st-paid]="detail.paymentStatus === 'PAID'"
+        [class.st-pending]="detail.paymentStatus === 'PENDING'"
+        [class.st-cancelled]="detail.paymentStatus === 'CANCELLED'">
+        {{ detail.paymentStatus || '—' }}
+      </span>
+    </div>
+
+    <!-- Summary section -->
+    <div class="section">
+      <div class="section-title">Summary</div>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">Hours × Rate</span>
+          <span class="summary-value">{{ detail.totalHoursWorked }} h × {{ detail.hourlyRateApplied }}</span>
+          <span class="summary-amount">{{ detail.hourlyPaymentAmount }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Pulses × Rate</span>
+          <span class="summary-value">{{ detail.totalPulses }} × {{ detail.pulseRateApplied }}</span>
+          <span class="summary-amount">{{ detail.pulsePaymentAmount }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Service Pay</span>
+          <span class="summary-value">{{ detail.totalServicesCount }} service(s)</span>
+          <span class="summary-amount">{{ detail.servicePaymentAmount }}</span>
+        </div>
+        <div class="summary-item total">
+          <span class="summary-label">Total Payment</span>
+          <span class="summary-value"></span>
+          <span class="summary-amount">{{ detail.totalPaymentAmount }}</span>
+        </div>
+      </div>
+
+      <!-- Paid metadata -->
+      <div class="paid-meta" *ngIf="isPaid(detail)">
+        <div><strong>Paid at:</strong> {{ detail.paidAt || '—' }}</div>
+        <div><strong>Paid by:</strong> {{ detail.paidByUsername || '—' }}</div>
+      </div>
+    </div>
+
+    <!-- Service lines section -->
+    <div class="section">
+      <div class="section-title">Service Lines</div>
+      <ng-container *ngIf="detail.serviceLines && detail.serviceLines.length; else noLines">
+        <div class="table-scroll">
+          <table class="line-table">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Count</th>
+                <th>Cost Applied</th>
+                <th>Material Cost</th>
+                <th>Doctor Rate</th>
+                <th>Line Payment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let line of detail.serviceLines">
+                <td class="name-cell">{{ line.serviceName }}</td>
+                <td class="num-cell">{{ line.serviceCount }}</td>
+                <td class="num-cell">{{ line.serviceCostApplied ?? '—' }}</td>
+                <td class="num-cell">{{ line.materialCostApplied ?? '—' }}</td>
+                <td class="num-cell">{{ doctorRateLabel(line) }}</td>
+                <td class="num-cell total-cell">{{ totalForLine(line) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+      <ng-template #noLines>
+        <p class="no-lines">No service lines for this billing.</p>
+      </ng-template>
+    </div>
+
+  </ng-container>
+
+</div>

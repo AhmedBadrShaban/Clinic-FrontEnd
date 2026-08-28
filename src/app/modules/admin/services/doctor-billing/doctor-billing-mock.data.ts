@@ -5,8 +5,9 @@ import {
   DoctorMonthlyBillingReportRow,
   DoctorPreview
 } from '../../models/doctor-billing';
+import { environment } from 'src/environments/environment';
 
-export const useMockDoctorBilling = true;
+export const useMockDoctorBilling = environment.useMockData;
 
 export interface MockClinicOption { clinicId: number; clinicName: string; }
 export interface MockDoctorOption { doctorId: number; doctorName: string; }

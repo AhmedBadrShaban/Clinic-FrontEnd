@@ -276,6 +276,40 @@
   background: currentColor;
 }
 
+/* ─── Payment chips ─────────────────────────────── */
+.payment-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.payment-chip.st-pending { background: var(--amber-bg); color: var(--amber); }
+.payment-chip.st-paid { background: var(--green-bg); color: var(--green); }
+.payment-chip.st-cancelled { background: #e2e8f0; color: #475569; }
+
+/* ─── Action: Mark as Paid ──────────────────────── */
+.btn-primary-sm {
+  background: linear-gradient(135deg, var(--pri), var(--pri-light));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-primary-sm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(76,44,119,0.3);
+}
+
 /* ─── Actions ───────────────────────────────────── */
 .actions-cell { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: nowrap; }
 
