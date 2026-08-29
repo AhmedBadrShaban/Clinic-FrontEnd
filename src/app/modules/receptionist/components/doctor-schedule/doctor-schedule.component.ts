@@ -12,6 +12,7 @@ import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ScheduleBillingService } from '../../services/schedule-billing/schedule-billing.service';
 import { ScheduleBillingDetailDialogComponent } from './schedule-billing-detail-dialog/schedule-billing-detail-dialog.component';
+import { DoctorScheduleConfirmDialogComponent } from './confirm-dialog/doctor-schedule-confirm-dialog.component';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 
@@ -196,21 +197,47 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
       });
   }
 
-  changeConfirmStatus(scheduleId: number): void {
-    this.doctorScheduleService.changeScheduleStatus(scheduleId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.showSuccess(res.message);
-          this.refreshAfterChange();
-        },
-        error: (err) => this.showError(err.error?.message || 'Failed to update status.')
-      });
+  changeConfirmStatus(row: scheduleData): void {
+    const toConfirm = !row.confirmed;
+    const dialogRef = this.dialog.open(DoctorScheduleConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: toConfirm ? 'Confirm schedule?' : 'Mark as not confirmed?',
+        message: toConfirm
+          ? `Confirm this schedule for ${row.doctorName} in ${row.roomName} on ${row.date}?`
+          : `Mark the schedule for ${row.doctorName} on ${row.date} as not confirmed?`,
+        confirmLabel: toConfirm ? 'Confirm' : 'Yes, unconfirm',
+        variant: toConfirm ? 'primary' : 'warn'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+
+      this.doctorScheduleService.changeScheduleStatus(row.schedulerId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            this.showSuccess(res.message);
+            this.refreshAfterChange();
+          },
+          error: (err) => this.showError(err.error?.message || 'Failed to update status.')
+        });
+    });
   }
 
   deleteSchedule(id: number): void {
     // FIX: Material confirm dialog instead of browser confirm()
-    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
+    const dialogRef = this.dialog.open(DoctorScheduleConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: 'Delete schedule?',
+        message: 'This action cannot be undone.',
+        confirmLabel: 'Delete',
+        variant: 'warn'
+      }
+    });
+
     dialogRef.afterClosed().subscribe(confirmed => {
       if (!confirmed) return;
 
@@ -237,18 +264,31 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
     const billingId = row.billingId;
     if (billingId == null) return;
 
-    this.scheduleBillingService.markPaid(billingId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          row.paymentStatus = 'PAID';
-          this.showSuccess(`Billing #${billingId} marked as paid`);
-        },
-        error: (err) => {
-          const msg = err?.error?.message || 'Failed to mark billing as paid';
-          this.showError(msg);
-        }
-      });
+    const dialogRef = this.dialog.open(DoctorScheduleConfirmDialogComponent, {
+      width: '420px',
+      data: {
+        title: 'Mark as paid?',
+        message: `Mark billing #${billingId} for ${row.doctorName} on ${row.date} as paid?`,
+        confirmLabel: 'Mark as Paid'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (!confirmed) return;
+
+      this.scheduleBillingService.markPaid(billingId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            row.paymentStatus = 'PAID';
+            this.showSuccess(`Billing #${billingId} marked as paid`);
+          },
+          error: (err) => {
+            const msg = err?.error?.message || 'Failed to mark billing as paid';
+            this.showError(msg);
+          }
+        });
+    });
   }
 
   viewBillingDetail(row: scheduleData): void {
@@ -299,45 +339,4 @@ export class DoctorScheduleComponent implements OnInit, OnDestroy {
       panelClass: ['error-snackbar']
     });
   }
-}
-
-// ── Inline confirm dialog component ──────────────────────────
-// Kept inline to avoid creating a separate file for a tiny dialog
-import { Component as Comp } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-
-@Comp({
-  selector: 'app-confirm-delete-dialog',
-  template: `
-    <div class="confirm-dialog">
-      <div class="confirm-icon">
-        <mat-icon>warning_amber</mat-icon>
-      </div>
-      <h3>Delete Schedule?</h3>
-      <p>This action cannot be undone.</p>
-      <div class="confirm-actions">
-        <button mat-stroked-button (click)="dialogRef.close(false)">Cancel</button>
-        <button mat-raised-button color="warn" (click)="dialogRef.close(true)">Delete</button>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .confirm-dialog {
-      padding: 24px;
-      text-align: center;
-      min-width: 280px;
-    }
-    .confirm-icon mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      color: #f57c00;
-    }
-    h3 { margin: 12px 0 6px; font-size: 1.1rem; font-weight: 700; color: #333; }
-    p  { color: #777; margin: 0 0 20px; font-size: 0.9rem; }
-    .confirm-actions { display: flex; gap: 12px; justify-content: center; }
-  `]
-})
-export class ConfirmDeleteDialogComponent {
-  constructor(public dialogRef: MatDialogRef<ConfirmDeleteDialogComponent>) { }
 }

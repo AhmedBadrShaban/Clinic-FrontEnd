@@ -1,0 +1,13 @@
+<div class="confirm-dialog">
+  <div class="confirm-icon" [class.warn]="data.variant === 'warn'">
+    <mat-icon>{{ data.variant === 'warn' ? 'warning_amber' : 'help_outline' }}</mat-icon>
+  </div>
+  <h3 class="confirm-title">{{ data.title }}</h3>
+  <p class="confirm-msg">{{ data.message }}</p>
+  <div class="confirm-actions">
+    <button class="btn-cancel" (click)="ref.close(false)">{{ cancelLabel }}</button>
+    <button class="btn-confirm" [class.warn]="data.variant === 'warn'" (click)="ref.close(true)">
+      {{ confirmLabel }}
+    </button>
+  </div>
+</div>

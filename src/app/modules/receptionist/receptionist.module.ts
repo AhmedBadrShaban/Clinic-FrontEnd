@@ -6,7 +6,8 @@ import { NavBarComponent } from 'src/app/shared/components/nav-bar/nav-bar.compo
 import { ReservationFmComponent } from './components/reservation-fm/reservation-fm.component';
 import { CoverSheetComponent } from './components/cover-sheet/cover-sheet.component';
 import { AddNewPatientComponent } from './components/add-new-patient/add-new-patient.component';
-import { ConfirmDeleteDialogComponent, DoctorScheduleComponent } from './components/doctor-schedule/doctor-schedule.component';
+import { DoctorScheduleComponent } from './components/doctor-schedule/doctor-schedule.component';
+import { DoctorScheduleConfirmDialogComponent } from './components/doctor-schedule/confirm-dialog/doctor-schedule-confirm-dialog.component';
 import { PopUpFormComponent } from './components/doctor-schedule/pop-up-form/pop-up-form.component';
 import { ScheduleBillingDetailDialogComponent } from './components/doctor-schedule/schedule-billing-detail-dialog/schedule-billing-detail-dialog.component';
 import { ExpenseComponent } from './components/expense/expense.component';
@@ -73,7 +74,7 @@ import { DebitConfirmDialogComponent } from './components/reservation/patient-in
     TableComponent,
     AddNewPatientComponent,
     DoctorScheduleComponent,
-    ConfirmDeleteDialogComponent,
+    DoctorScheduleConfirmDialogComponent,
     PopUpFormComponent,
     ScheduleBillingDetailDialogComponent,
     AddExpenseComponent,

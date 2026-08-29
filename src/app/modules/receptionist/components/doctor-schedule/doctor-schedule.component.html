@@ -106,12 +106,12 @@
             <td class="center-cell">
               <button *ngIf="data.confirmed; else notConfirmed"
                 class="status-chip st-confirmed" [disabled]="!isAdmin"
-                (click)="isAdmin && changeConfirmStatus(data.schedulerId)">
+                (click)="isAdmin && changeConfirmStatus(data)">
                 <span class="status-dot"></span>
                 Confirmed
               </button>
               <ng-template #notConfirmed>
-                <button class="status-chip st-pending" (click)="changeConfirmStatus(data.schedulerId)">
+                <button class="status-chip st-pending" (click)="changeConfirmStatus(data)">
                   <span class="status-dot"></span>
                   Not Confirmed
                 </button>
@@ -120,10 +120,11 @@
 
             <td class="center-cell">
               <div class="actions-cell">
+                <!-- Billing actions only visible once the schedule is confirmed -->
                 <button class="btn-view" matTooltip="View billing detail"
-                  *ngIf="data.billingId != null" (click)="viewBillingDetail(data)">View Bill</button>
+                  *ngIf="data.confirmed && data.billingId != null" (click)="viewBillingDetail(data)">View Bill</button>
                 <button class="btn-primary-sm" matTooltip="Mark as paid"
-                  *ngIf="canMarkPaid(data)" (click)="markPaid(data)">Mark as Paid</button>
+                  *ngIf="data.confirmed && canMarkPaid(data)" (click)="markPaid(data)">Mark as Paid</button>
                 <button class="btn-view" matTooltip="Edit schedule" (click)="openDialog({
                   new: false,
                   schedulerId: data.schedulerId,
